@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/organic-6b25758f-a590-435f-88d7-0acbf3e03d5b/styles.css">
+<script src="_ds/organic-6b25758f-a590-435f-88d7-0acbf3e03d5b/_ds_bundle.js"></script>
+<script src="./image-slot.js"></script>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --color-bg:#FBF5E9; --color-surface:#F3E8D3; --color-text:#17232E;
+  --color-divider:color-mix(in srgb, #17232E 14%, transparent);
+  --color-accent:#C08A2E; --color-accent-100:#F8EDD6; --color-accent-200:#EFDAAE;
+  --color-accent-300:#E2C179; --color-accent-600:#A97620; --color-accent-700:#8A5F16;
+  --color-accent-2:#17656B; --color-accent-2-100:#DDEAE9; --color-accent-2-200:#B4D1D0;
+  --color-accent-2-300:#7CAFAF; --color-accent-2-600:#12565C; --color-accent-2-700:#0E464B;
+  --color-accent-2-800:#0B383D; --color-accent-2-900:#072026;
+  --font-heading:"Marcellus", Georgia, serif; --font-heading-weight:400;
+  --font-body:"Figtree", system-ui, sans-serif;
+  --sb-coral:#DE7159;
+}
+body{margin:0;background:var(--color-bg);color:var(--color-text);font-family:var(--font-body);font-size:17px;line-height:1.6}
+h1,h2,h3,h4{letter-spacing:0}
+a{color:var(--color-accent-2-700);text-decoration:none}
+a:hover{color:var(--color-accent-700)}
+::-webkit-scrollbar{height:8px;width:8px}
+::-webkit-scrollbar-thumb{background:var(--color-accent-200);border-radius:999px}
+@keyframes sbFlicker{0%,100%{opacity:.85;transform:scale(1)}50%{opacity:1;transform:scale(1.08)}}
+</style>
+</helmet>
+
+<div style="background:var(--color-bg);min-height:100vh;min-width:1340px">
+
+  <div style="background:var(--color-accent-2-900);color:#EAF1F0;font-size:14.5px;letter-spacing:.01em">
+    <div style="max-width:1280px;margin:0 auto;padding:9px 32px;display:flex;align-items:center;gap:28px">
+      <div style="display:flex;align-items:center;gap:9px">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent-300)" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round" style="animation:sbFlicker 2.6s ease-in-out infinite"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>
+        <span style="color:var(--color-accent-300);text-transform:uppercase;font-size:11.5px;letter-spacing:.16em">Light Candles</span>
+        <strong style="font-weight:600">7:45 PM</strong><span style="opacity:.6">Fri</span>
+      </div>
+      <div style="width:1px;height:16px;background:rgba(234,241,240,.22)"></div>
+      <div style="display:flex;align-items:center;gap:9px">
+        <span style="color:var(--color-accent-300);text-transform:uppercase;font-size:11.5px;letter-spacing:.16em">Shabbat Ends</span>
+        <strong style="font-weight:600">8:38 PM</strong><span style="opacity:.6">Sat</span>
+      </div>
+      <div style="width:1px;height:16px;background:rgba(234,241,240,.22)"></div>
+      <div style="display:flex;align-items:center;gap:9px">
+        <span style="color:var(--color-accent-300);text-transform:uppercase;font-size:11.5px;letter-spacing:.16em">Parsha</span>
+        <em style="font-style:normal;font-family:var(--font-heading);font-size:16px">Re'eh</em>
+      </div>
+      <div style="margin-left:auto;display:flex;align-items:center;gap:22px">
+        <a href="#contact" style="color:#EAF1F0" style-hover="color:var(--color-accent-300)">Contact</a>
+        <a href="#signin" style="display:flex;align-items:center;gap:7px;color:#EAF1F0" style-hover="color:var(--color-accent-300)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          Sign In
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <header ref="{{ headerRef }}" style="position:sticky;top:0;z-index:60;background:rgba(251,245,233,.96);backdrop-filter:blur(10px);border-bottom:1px solid var(--color-divider);transition:padding 260ms ease, box-shadow 260ms ease">
+    <div style="max-width:1280px;margin:0 auto;padding:0 32px;display:flex;align-items:center;gap:36px">
+      <a href="#top" style="display:flex;align-items:center;gap:14px;padding:16px 0;color:var(--color-text)">
+        <span ref="{{ markRef }}" style="width:48px;height:48px;flex:none;border-radius:999px 999px 6px 6px;background:var(--color-accent-2);display:flex;align-items:flex-end;justify-content:center;padding-bottom:7px;box-shadow:inset 0 0 0 1px var(--color-accent-2),inset 0 0 0 3px var(--color-bg),inset 0 0 0 4px var(--color-accent-300);transition:width 260ms ease,height 260ms ease">
+          <svg width="20" height="26" viewBox="0 0 20 26" fill="none" stroke="var(--color-accent-300)" stroke-width="1.6" stroke-linecap="round"><path d="M10 24V9"/><path d="M10 12 4 8v10"/><path d="M10 12l6-4v10"/><path d="M2 24h16"/></svg>
+        </span>
+        <span style="display:flex;flex-direction:column;line-height:1.05">
+          <span ref="{{ wordmarkRef }}" style="font-family:var(--font-heading);font-size:25px;letter-spacing:.005em;transition:font-size 260ms ease">Chabad in South Beach</span>
+          <span style="font-size:11.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--color-accent-700);margin-top:5px">320 Meridian Ave · Miami Beach</span>
+        </span>
+      </a>
+
+      <nav style="margin-left:auto;display:flex;align-items:center;gap:4px;font-size:16px">
+        <div onMouseEnter="{{ openEvents }}" onMouseLeave="{{ closeMenu }}" style="position:relative">
+          <a href="#events" style="display:flex;align-items:center;gap:6px;padding:12px 11px;border-radius:999px;white-space:nowrap;color:var(--color-text)" style-hover="background:var(--color-accent-100)">Events
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+          </a>
+          <div style="{{ menuStyle.events }}">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px 30px;padding:22px 26px">
+              <div style="grid-column:1/-1;font-size:11.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--color-accent-700);border-bottom:1px solid var(--color-divider);padding-bottom:10px;margin-bottom:8px">What's on</div>
+              <a href="#events" style="padding:9px 0;color:var(--color-text)" style-hover="color:var(--color-accent-700)">Event Calendar</a>
+              <a href="#events" style="padding:9px 0;color:var(--color-text)" style-hover="color:var(--color-accent-700)">Whiskey &amp; Wisdom</a>
+              <a href="#events" style="padding:9px 0;color:var(--color-text)" style-hover="color:var(--color-accent-700)">Jewish Women's Circle</a>
+              <a href="#events" style="padding:9px 0;color:var(--color-text)" style-hover="color:var(--color-accent-700)">Young Professionals</a>
+              <a href="#learning" style="padding:9px 0;color:var(--color-text)" style-hover="color:var(--color-accent-700)">Weekly Learning</a>
+              <a href="#events" style="padding:9px 0;color:var(--color-text)" style-hover="color:var(--color-accent-700)">High Holidays 5787</a>
+            </div>
+          </div>
+        </div>
+
+        <a href="#shabbat" style="padding:12px 11px;border-radius:999px;white-space:nowrap;color:var(--color-text)" style-hover="background:var(--color-accent-100)">Reservations</a>
+
+        <div onMouseEnter="{{ openTourist }}" onMouseLeave="{{ closeMenu }}" style="position:relative">
+          <a href="#tourist" style="display:flex;align-items:center;gap:6px;padding:12px 11px;border-radius:999px;white-space:nowrap;color:var(--color-text)" style-hover="background:var(--color-accent-100)">Tourist Info
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+          </a>
+          <div style="{{ menuStyle.tourist }}">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px 30px;padding:22px 26px">
+              <div style="grid-column:1/-1;font-size:11.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--color-accent-700);border-bottom:1px solid var(--color-divider);padding-bottom:10px;margin-bottom:8px">Visiting Miami Beach</div>
+              <a href="#tourist" style="padding:9px 0;color:var(--color-text)" style-hover="color:var(--color-accent-700)">Kosher Restaurants</a>
+              <a href="#tourist" style="padding:9px 0;color:var(--color-text)" style-hover="color:var(--color-accent-700)">Eruv &amp; Mikvah</a>
+              <a href="#tourist" style="padding:9px 0;color:var(--color-text)" style-hover="color:var(--color-accent-700)">Hotels Near the Shul</a>
+              <a href="#tourist" style="padding:9px 0;color:var(--color-text)" style-hover="color:var(--color-accent-700)">Attractions</a>
+              <a href="#minyan" style="padding:9px 0;color:var(--color-text)" style-hover="color:var(--color-accent-700)">Daily Minyan Times</a>
+              <a href="#shabbat" style="padding:9px 0;color:var(--color-text)" style-hover="color:var(--color-accent-700)">Shabbat Meals</a>
+            </div>
+          </div>
+        </div>
+
+        <a href="#kidz" style="padding:12px 11px;border-radius:999px;white-space:nowrap;color:var(--color-text)" style-hover="background:var(--color-accent-100)">Kidz Club</a>
+        <a href="#learning" style="padding:12px 11px;border-radius:999px;white-space:nowrap;color:var(--color-text)" style-hover="background:var(--color-accent-100)">Yerushalaim Series</a>
+
+        <div onMouseEnter="{{ openAbout }}" onMouseLeave="{{ closeMenu }}" style="position:relative">
+          <a href="#welcome" style="display:flex;align-items:center;gap:6px;padding:12px 11px;border-radius:999px;white-space:nowrap;color:var(--color-text)" style-hover="background:var(--color-accent-100)">About
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+          </a>
+          <div style="{{ menuStyle.about }}">
+            <div style="display:flex;flex-direction:column;padding:22px 26px;min-width:230px">
+              <div style="font-size:11.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--color-accent-700);border-bottom:1px solid var(--color-divider);padding-bottom:10px;margin-bottom:8px">Our community</div>
+              <a href="#welcome" style="padding:9px 0;color:var(--color-text)" style-hover="color:var(--color-accent-700)">Our Story</a>
+              <a href="#welcome" style="padding:9px 0;color:var(--color-text)" style-hover="color:var(--color-accent-700)">The Rabbi &amp; Rebbetzin</a>
+              <a href="#photos" style="padding:9px 0;color:var(--color-text)" style-hover="color:var(--color-accent-700)">Photo Gallery</a>
+              <a href="#contact" style="padding:9px 0;color:var(--color-text)" style-hover="color:var(--color-accent-700)">Contact &amp; Directions</a>
+            </div>
+          </div>
+        </div>
+
+        <a href="#donate" class="btn btn-primary" style="margin-left:12px;padding:13px 26px;font-size:15.5px;letter-spacing:.04em;background:var(--color-accent);color:#fff" style-hover="background:var(--color-accent-600)">Donate</a>
+      </nav>
+    </div>
+  </header>
+
+  <section id="top" style="position:relative;height:660px;overflow:hidden;background:var(--color-accent-2-900)">
+    <div style="position:absolute;inset:0;display:flex;width:300%;transition:transform 800ms cubic-bezier(.4,0,.2,1);transform:translateX({{ trackX }})">
+
+      <div style="position:relative;width:33.3333%;height:100%">
+        <div style="position:absolute;inset:0"><image-slot id="hero-1" shape="rect" placeholder="Shabbat dinner table on the terrace"></image-slot></div>
+        <div style="position:absolute;inset:0;background:linear-gradient(100deg,rgba(7,32,38,.86) 0%,rgba(7,32,38,.62) 46%,rgba(7,32,38,.12) 78%);pointer-events:none"></div>
+        <div style="position:absolute;inset:0;display:flex;align-items:center;pointer-events:none">
+          <div style="max-width:1280px;margin:0 auto;padding:0 32px;width:100%">
+            <div style="max-width:820px;color:#FBF5E9">
+              <div style="display:flex;align-items:flex-end;gap:5px;margin-bottom:22px">
+                <span style="width:3px;height:14px;background:var(--color-accent-300)"></span>
+                <span style="width:3px;height:22px;background:var(--color-accent-300)"></span>
+                <span style="width:3px;height:30px;background:var(--color-accent-300)"></span>
+                <span style="font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--color-accent-300);margin-left:12px;padding-bottom:1px">Friday nights on Meridian</span>
+              </div>
+              <h1 style="font-size:62px;line-height:1.06;margin:0 0 20px">Your crowd is here.<br>Put down some roots.</h1>
+              <p style="font-size:20px;line-height:1.55;margin:0 0 32px;max-width:520px;color:rgba(251,245,233,.88)">Shabbat dinner every Friday — long tables, real food, and a seat saved for whoever walks in.</p>
+              <div style="display:flex;gap:14px;pointer-events:auto">
+                <a href="#shabbat" class="btn btn-primary" style="padding:16px 32px;font-size:16.5px;background:var(--color-accent);color:#fff" style-hover="background:var(--color-accent-600)">Reserve your seat</a>
+                <a href="#shabbat" class="btn" style="padding:16px 30px;font-size:16.5px;color:#FBF5E9;box-shadow:inset 0 0 0 1.5px rgba(251,245,233,.55)" style-hover="background:rgba(251,245,233,.12)">See the menu</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="position:relative;width:33.3333%;height:100%">
+        <div style="position:absolute;inset:0"><image-slot id="hero-2" shape="rect" placeholder="Sanctuary during services"></image-slot></div>
+        <div style="position:absolute;inset:0;background:linear-gradient(100deg,rgba(7,32,38,.86) 0%,rgba(7,32,38,.62) 46%,rgba(7,32,38,.12) 78%);pointer-events:none"></div>
+        <div style="position:absolute;inset:0;display:flex;align-items:center;pointer-events:none">
+          <div style="max-width:1280px;margin:0 auto;padding:0 32px;width:100%">
+            <div style="max-width:820px;color:#FBF5E9">
+              <div style="font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--color-accent-300);margin-bottom:18px">Synagogue Services</div>
+              <h1 style="font-size:58px;line-height:1.08;margin:0 0 20px">Warm, lively davening —<br>and nobody keeping score.</h1>
+              <p style="font-size:20px;line-height:1.55;margin:0 0 32px;max-width:520px;color:rgba(251,245,233,.88)">Daily minyan, Shabbat morning at 9:30, Hebrew-English siddurim and a kiddush that runs long.</p>
+              <div style="display:flex;gap:14px;pointer-events:auto">
+                <a href="#minyan" class="btn btn-primary" style="padding:16px 32px;font-size:16.5px;background:var(--color-accent);color:#fff" style-hover="background:var(--color-accent-600)">Service times</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="position:relative;width:33.3333%;height:100%">
+        <div style="position:absolute;inset:0"><image-slot id="hero-3" shape="rect" placeholder="Community group photo outside the shul"></image-slot></div>
+        <div style="position:absolute;inset:0;background:linear-gradient(100deg,rgba(7,32,38,.86) 0%,rgba(7,32,38,.62) 46%,rgba(7,32,38,.12) 78%);pointer-events:none"></div>
+        <div style="position:absolute;inset:0;display:flex;align-items:center;pointer-events:none">
+          <div style="max-width:1280px;margin:0 auto;padding:0 32px;width:100%">
+            <div style="max-width:820px;color:#FBF5E9">
+              <div style="font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--color-accent-300);margin-bottom:18px">About Us</div>
+              <h1 style="font-size:58px;line-height:1.08;margin:0 0 20px">A Jewish home in the<br>heart of South Beach.</h1>
+              <p style="font-size:20px;line-height:1.55;margin:0 0 32px;max-width:520px;color:rgba(251,245,233,.88)">Two blocks from Ocean Drive, open to locals, snowbirds and first-time visitors alike.</p>
+              <div style="display:flex;gap:14px;pointer-events:auto">
+                <a href="#welcome" class="btn btn-primary" style="padding:16px 32px;font-size:16.5px;background:var(--color-accent);color:#fff" style-hover="background:var(--color-accent-600)">Meet the community</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="position:absolute;bottom:34px;left:0;right:0;z-index:5">
+      <div style="max-width:1280px;margin:0 auto;padding:0 32px;display:flex;align-items:center;gap:12px">
+        <button onClick="{{ goto0 }}" style="{{ dotStyle.a }}"></button>
+        <button onClick="{{ goto1 }}" style="{{ dotStyle.b }}"></button>
+        <button onClick="{{ goto2 }}" style="{{ dotStyle.c }}"></button>
+        <div style="margin-left:auto;display:flex;gap:10px">
+          <button onClick="{{ prev }}" aria-label="Previous slide" style="width:52px;height:52px;border:none;border-radius:999px;background:rgba(251,245,233,.14);box-shadow:inset 0 0 0 1px rgba(251,245,233,.45);color:#FBF5E9;cursor:pointer;display:flex;align-items:center;justify-content:center" style-hover="background:rgba(251,245,233,.28)">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+          </button>
+          <button onClick="{{ next }}" aria-label="Next slide" style="width:52px;height:52px;border:none;border-radius:999px;background:rgba(251,245,233,.14);box-shadow:inset 0 0 0 1px rgba(251,245,233,.45);color:#FBF5E9;cursor:pointer;display:flex;align-items:center;justify-content:center" style-hover="background:rgba(251,245,233,.28)">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="welcome" style="background:var(--color-surface);border-bottom:1px solid var(--color-divider)">
+    <div style="max-width:1280px;margin:0 auto;padding:88px 32px;display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:72px;align-items:center">
+      <div>
+        <div style="font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--color-accent-700);margin-bottom:20px">Welcome</div>
+        <h2 style="font-size:44px;line-height:1.12;margin:0 0 22px;max-width:620px">Whoever you are, however you daven, you already have a place at our table.</h2>
+        <p style="font-size:18.5px;line-height:1.65;margin:0 0 16px;max-width:600px">Chabad in South Beach is a synagogue and community center on Meridian Avenue — a block from the beach and a world away from anywhere you have to prove yourself. Everyone is welcome regardless of background, knowledge or affiliation, and there is no membership required to walk in, sit down and eat.</p>
+        <p style="font-size:18.5px;line-height:1.65;margin:0;max-width:600px">Locals, young professionals, families and the ten thousand visitors a year who find us on a Friday afternoon: this is your Jewish home in Miami Beach.</p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:18px">
+        <div style="position:relative;height:300px;border-radius:50% 50% var(--radius-lg) var(--radius-lg) / 30% 30% var(--radius-lg) var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-md)">
+          <image-slot id="welcome-1" shape="rect" placeholder="Rabbi and community, arched crop"></image-slot>
+        </div>
+        <div style="display:flex;gap:16px;align-items:center">
+          <div style="flex:1;height:1px;background:var(--color-accent-300)"></div>
+          <span style="font-family:var(--font-heading);font-size:19px;color:var(--color-accent-2-700)">Est. 5760 · Miami Beach</span>
+          <div style="flex:1;height:1px;background:var(--color-accent-300)"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="programs" style="max-width:1280px;margin:0 auto;padding:96px 32px 20px">
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:40px;margin-bottom:46px">
+      <div>
+        <div style="font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--color-accent-700);margin-bottom:18px">What we do</div>
+        <h2 style="font-size:46px;line-height:1.1;margin:0">Find your corner of the community</h2>
+      </div>
+      <a href="#events" style="font-size:16.5px;border-bottom:1px solid var(--color-accent-300);padding-bottom:4px;white-space:nowrap">All programs →</a>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:32px">
+
+      <a href="#shabbat" class="card" style="padding:0;overflow:hidden;background:var(--color-surface);box-shadow:var(--shadow-sm);color:var(--color-text);display:flex;flex-direction:column" style-hover="box-shadow:var(--shadow-lg)">
+        <div style="position:relative;height:220px"><image-slot id="prog-1" shape="rect" placeholder="Shabbat table"></image-slot></div>
+        <div style="padding:26px 28px 30px">
+          <h3 style="font-size:26px;margin:0 0 10px">Shabbat Meals</h3>
+          <p style="font-size:17px;line-height:1.55;margin:0 0 16px;color:color-mix(in srgb,var(--color-text) 80%,transparent)">Friday night dinner at 7:30 and Shabbat lunch after kiddush — reserve by Thursday.</p>
+          <span style="font-size:15.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--color-accent-700)">Reserve →</span>
+        </div>
+      </a>
+
+      <a href="#kidz" class="card" style="padding:0;overflow:hidden;background:var(--color-surface);box-shadow:var(--shadow-sm);color:var(--color-text);display:flex;flex-direction:column" style-hover="box-shadow:var(--shadow-lg)">
+        <div style="position:relative;height:220px"><image-slot id="prog-2" shape="rect" placeholder="Kids program"></image-slot></div>
+        <div style="padding:26px 28px 30px">
+          <h3 style="font-size:26px;margin:0 0 10px">Kidz Club</h3>
+          <p style="font-size:17px;line-height:1.55;margin:0 0 16px;color:color-mix(in srgb,var(--color-text) 80%,transparent)">Sunday mornings of stories, crafts and challah baking for ages 3–11.</p>
+          <span style="font-size:15.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--color-accent-700)">Sign up →</span>
+        </div>
+      </a>
+
+      <a href="#tourist" class="card" style="padding:0;overflow:hidden;background:var(--color-surface);box-shadow:var(--shadow-sm);color:var(--color-text);display:flex;flex-direction:column" style-hover="box-shadow:var(--shadow-lg)">
+        <div style="position:relative;height:220px"><image-slot id="prog-3" shape="rect" placeholder="Ocean Drive deco facades"></image-slot></div>
+        <div style="padding:26px 28px 30px">
+          <h3 style="font-size:26px;margin:0 0 10px">Tourist Info</h3>
+          <p style="font-size:17px;line-height:1.55;margin:0 0 16px;color:color-mix(in srgb,var(--color-text) 80%,transparent)">Kosher food, the eruv map, mikvah hours and hotels within walking distance.</p>
+          <span style="font-size:15.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--color-accent-700)">Plan your visit →</span>
+        </div>
+      </a>
+
+      <a href="#minyan" class="card" style="padding:0;overflow:hidden;background:var(--color-surface);box-shadow:var(--shadow-sm);color:var(--color-text);display:flex;flex-direction:column" style-hover="box-shadow:var(--shadow-lg)">
+        <div style="position:relative;height:220px"><image-slot id="prog-4" shape="rect" placeholder="Morning minyan, tefillin"></image-slot></div>
+        <div style="padding:26px 28px 30px">
+          <h3 style="font-size:26px;margin:0 0 10px">Daily Minyan</h3>
+          <p style="font-size:17px;line-height:1.55;margin:0 0 16px;color:color-mix(in srgb,var(--color-text) 80%,transparent)">Shachris 8:00am weekdays, 7:00am Monday &amp; Thursday. Mincha/Maariv at sunset.</p>
+          <span style="font-size:15.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--color-accent-700)">Full schedule →</span>
+        </div>
+      </a>
+
+      <a href="#events" class="card" style="padding:0;overflow:hidden;background:var(--color-surface);box-shadow:var(--shadow-sm);color:var(--color-text);display:flex;flex-direction:column" style-hover="box-shadow:var(--shadow-lg)">
+        <div style="position:relative;height:220px"><image-slot id="prog-5" shape="rect" placeholder="Event crowd, evening"></image-slot></div>
+        <div style="padding:26px 28px 30px">
+          <h3 style="font-size:26px;margin:0 0 10px">Upcoming Events</h3>
+          <p style="font-size:17px;line-height:1.55;margin:0 0 16px;color:color-mix(in srgb,var(--color-text) 80%,transparent)">Whiskey &amp; Wisdom, Women's Circle, holiday parties and beachside barbecues.</p>
+          <span style="font-size:15.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--color-accent-700)">See calendar →</span>
+        </div>
+      </a>
+
+      <a href="#learning" class="card" style="padding:0;overflow:hidden;background:var(--color-surface);box-shadow:var(--shadow-sm);color:var(--color-text);display:flex;flex-direction:column" style-hover="box-shadow:var(--shadow-lg)">
+        <div style="position:relative;height:220px"><image-slot id="prog-6" shape="rect" placeholder="Learning around a table"></image-slot></div>
+        <div style="padding:26px 28px 30px">
+          <h3 style="font-size:26px;margin:0 0 10px">Weekly Learning</h3>
+          <p style="font-size:17px;line-height:1.55;margin:0 0 16px;color:color-mix(in srgb,var(--color-text) 80%,transparent)">The Yerushalaim Series, parsha class before mincha, and one-on-one study.</p>
+          <span style="font-size:15.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--color-accent-700)">Join a class →</span>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <section id="events" style="max-width:1280px;margin:0 auto;padding:96px 32px 40px">
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:40px;margin-bottom:40px">
+      <div>
+        <div style="font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--color-accent-700);margin-bottom:18px">On the calendar</div>
+        <h2 style="font-size:46px;line-height:1.1;margin:0">Upcoming events</h2>
+      </div>
+      <div style="display:flex;gap:10px">
+        <button onClick="{{ scrollLeft }}" aria-label="Scroll events left" style="width:52px;height:52px;border:none;border-radius:999px;background:transparent;box-shadow:inset 0 0 0 1.5px var(--color-accent-300);color:var(--color-accent-2-700);cursor:pointer;display:flex;align-items:center;justify-content:center" style-hover="background:var(--color-accent-100)">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+        </button>
+        <button onClick="{{ scrollRight }}" aria-label="Scroll events right" style="width:52px;height:52px;border:none;border-radius:999px;background:transparent;box-shadow:inset 0 0 0 1.5px var(--color-accent-300);color:var(--color-accent-2-700);cursor:pointer;display:flex;align-items:center;justify-content:center" style-hover="background:var(--color-accent-100)">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+        </button>
+      </div>
+    </div>
+    <div ref="{{ railRef }}" style="display:flex;gap:26px;overflow-x:auto;scroll-behavior:smooth;padding:6px 4px 26px">
+
+      <div class="card" style="flex:0 0 336px;padding:0;overflow:hidden;background:var(--color-bg);box-shadow:var(--shadow-sm);border:1px solid var(--color-divider)">
+        <div style="display:flex;gap:20px;padding:26px 26px 22px">
+          <div style="flex:none;width:74px;text-align:center;border-radius:var(--radius-md);background:var(--color-accent-2);color:#FBF5E9;padding:12px 0 10px">
+            <div style="font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--color-accent-300)">Thu</div>
+            <div style="font-family:var(--font-heading);font-size:30px;line-height:1.1">21</div>
+            <div style="font-size:12.5px;letter-spacing:.1em;text-transform:uppercase">Aug</div>
+          </div>
+          <div>
+            <h3 style="font-size:23px;margin:0 0 8px">Shachris Minyan</h3>
+            <div style="font-size:16px;color:var(--color-accent-2-700)">8:00 am · Sanctuary</div>
+            <p style="font-size:16.5px;line-height:1.5;margin:10px 0 0;color:color-mix(in srgb,var(--color-text) 78%,transparent)">Coffee and tefillin, in and out in forty minutes.</p>
+          </div>
+        </div>
+        <div style="border-top:1px solid var(--color-divider);padding:14px 26px"><a href="#minyan" style="font-size:15.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--color-accent-700)">Details →</a></div>
+      </div>
+
+      <div class="card" style="flex:0 0 336px;padding:0;overflow:hidden;background:var(--color-bg);box-shadow:var(--shadow-sm);border:1px solid var(--color-divider)">
+        <div style="display:flex;gap:20px;padding:26px 26px 22px">
+          <div style="flex:none;width:74px;text-align:center;border-radius:var(--radius-md);background:var(--color-accent);color:#fff;padding:12px 0 10px">
+            <div style="font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--color-accent-100)">Fri</div>
+            <div style="font-family:var(--font-heading);font-size:30px;line-height:1.1">22</div>
+            <div style="font-size:12.5px;letter-spacing:.1em;text-transform:uppercase">Aug</div>
+          </div>
+          <div>
+            <h3 style="font-size:23px;margin:0 0 8px">Shabbat Dinner</h3>
+            <div style="font-size:16px;color:var(--color-accent-2-700)">7:30 pm · Terrace</div>
+            <p style="font-size:16.5px;line-height:1.5;margin:10px 0 0;color:color-mix(in srgb,var(--color-text) 78%,transparent)">Four courses, singing, and a seat for every guest in town.</p>
+          </div>
+        </div>
+        <div style="border-top:1px solid var(--color-divider);padding:14px 26px"><a href="#shabbat" style="font-size:15.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--color-accent-700)">Reserve →</a></div>
+      </div>
+
+      <div class="card" style="flex:0 0 336px;padding:0;overflow:hidden;background:var(--color-bg);box-shadow:var(--shadow-sm);border:1px solid var(--color-divider)">
+        <div style="display:flex;gap:20px;padding:26px 26px 22px">
+          <div style="flex:none;width:74px;text-align:center;border-radius:var(--radius-md);background:var(--color-accent-2);color:#FBF5E9;padding:12px 0 10px">
+            <div style="font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--color-accent-300)">Tue</div>
+            <div style="font-family:var(--font-heading);font-size:30px;line-height:1.1">26</div>
+            <div style="font-size:12.5px;letter-spacing:.1em;text-transform:uppercase">Aug</div>
+          </div>
+          <div>
+            <h3 style="font-size:23px;margin:0 0 8px">Whiskey &amp; Wisdom</h3>
+            <div style="font-size:16px;color:var(--color-accent-2-700)">8:30 pm · Rooftop</div>
+            <p style="font-size:16.5px;line-height:1.5;margin:10px 0 0;color:color-mix(in srgb,var(--color-text) 78%,transparent)">A good pour and a good question, for men 21+.</p>
+          </div>
+        </div>
+        <div style="border-top:1px solid var(--color-divider);padding:14px 26px"><a href="#events" style="font-size:15.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--color-accent-700)">RSVP →</a></div>
+      </div>
+
+      <div class="card" style="flex:0 0 336px;padding:0;overflow:hidden;background:var(--color-bg);box-shadow:var(--shadow-sm);border:1px solid var(--color-divider)">
+        <div style="display:flex;gap:20px;padding:26px 26px 22px">
+          <div style="flex:none;width:74px;text-align:center;border-radius:var(--radius-md);background:var(--color-accent-2);color:#FBF5E9;padding:12px 0 10px">
+            <div style="font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--color-accent-300)">Wed</div>
+            <div style="font-family:var(--font-heading);font-size:30px;line-height:1.1">03</div>
+            <div style="font-size:12.5px;letter-spacing:.1em;text-transform:uppercase">Sep</div>
+          </div>
+          <div>
+            <h3 style="font-size:23px;margin:0 0 8px">Jewish Women's Circle</h3>
+            <div style="font-size:16px;color:var(--color-accent-2-700)">7:00 pm · Social Hall</div>
+            <p style="font-size:16.5px;line-height:1.5;margin:10px 0 0;color:color-mix(in srgb,var(--color-text) 78%,transparent)">Rosh Hashanah honey tasting and centerpiece workshop.</p>
+          </div>
+        </div>
+        <div style="border-top:1px solid var(--color-divider);padding:14px 26px"><a href="#events" style="font-size:15.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--color-accent-700)">RSVP →</a></div>
+      </div>
+
+      <div class="card" style="flex:0 0 336px;padding:0;overflow:hidden;background:var(--color-accent-2-900);box-shadow:var(--shadow-sm);color:#FBF5E9">
+        <div style="display:flex;gap:20px;padding:26px 26px 22px">
+          <div style="flex:none;width:74px;text-align:center;border-radius:var(--radius-md);background:rgba(251,245,233,.12);box-shadow:inset 0 0 0 1px var(--color-accent-300);padding:12px 0 10px">
+            <div style="font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--color-accent-300)">Fri</div>
+            <div style="font-family:var(--font-heading);font-size:30px;line-height:1.1">11</div>
+            <div style="font-size:12.5px;letter-spacing:.1em;text-transform:uppercase">Sep</div>
+          </div>
+          <div>
+            <h3 style="font-size:23px;margin:0 0 8px">High Holidays 5787</h3>
+            <div style="font-size:16px;color:var(--color-accent-300)">Sep 11–13 · Rosh Hashanah</div>
+            <p style="font-size:16.5px;line-height:1.5;margin:10px 0 0;color:rgba(251,245,233,.82)">Services, meals and shofar — no tickets, no seat fees.</p>
+          </div>
+        </div>
+        <div style="border-top:1px solid rgba(251,245,233,.2);padding:14px 26px"><a href="#events" style="font-size:15.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--color-accent-300)">Register →</a></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="shabbat" style="background:var(--color-accent-2-900);color:#FBF5E9;margin-top:56px">
+    <div style="max-width:1280px;margin:0 auto;padding:64px 32px">
+      <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;align-items:stretch">
+        <div style="padding:0 44px 0 0">
+          <div style="font-size:11.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--color-accent-300);margin-bottom:20px">This Shabbat</div>
+          <div style="display:flex;align-items:baseline;gap:14px;margin-bottom:8px">
+            <span style="font-family:var(--font-heading);font-size:42px;line-height:1">7:45<span style="font-size:22px;margin-left:6px">PM</span></span>
+            <span style="font-size:16.5px;color:rgba(251,245,233,.78)">Light candles, Friday</span>
+          </div>
+          <div style="display:flex;align-items:baseline;gap:14px">
+            <span style="font-family:var(--font-heading);font-size:42px;line-height:1">8:38<span style="font-size:22px;margin-left:6px">PM</span></span>
+            <span style="font-size:16.5px;color:rgba(251,245,233,.78)">Shabbat ends, Saturday</span>
+          </div>
+        </div>
+        <div style="padding:0 44px;border-left:1px solid rgba(251,245,233,.22);border-right:1px solid rgba(251,245,233,.22)">
+          <div style="font-size:11.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--color-accent-300);margin-bottom:20px">Weekly Parsha</div>
+          <h3 style="font-size:42px;margin:0 0 12px;color:#FBF5E9">Re'eh</h3>
+          <p style="font-size:17px;line-height:1.55;margin:0 0 16px;color:rgba(251,245,233,.82)">Deuteronomy 11:26–16:17. "See, I set before you today a blessing and a curse."</p>
+          <a href="#learning" style="font-size:15.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--color-accent-300)">Read the summary →</a>
+        </div>
+        <div style="padding:0 0 0 44px">
+          <div style="font-size:11.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--color-accent-300);margin-bottom:20px">Next Holiday</div>
+          <h3 style="font-size:42px;margin:0 0 12px;color:#FBF5E9">Rosh Hashanah</h3>
+          <p style="font-size:17px;line-height:1.55;margin:0 0 20px;color:rgba(251,245,233,.82)">September 11–13, 2026. Services, dinners and shofar in the sanctuary.</p>
+          <a href="#shabbat" class="btn btn-primary" style="padding:14px 26px;font-size:16px;background:var(--color-accent);color:#fff" style-hover="background:var(--color-accent-600)">Reserve for the holidays</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="tourist" style="background:var(--color-surface);border-bottom:1px solid var(--color-divider)">
+    <div style="max-width:1280px;margin:0 auto;padding:88px 32px">
+      <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.95fr);gap:72px;align-items:center">
+        <div>
+          <div style="display:flex;align-items:flex-end;gap:5px;margin-bottom:22px">
+            <span style="width:3px;height:14px;background:var(--color-accent)"></span>
+            <span style="width:3px;height:22px;background:var(--color-accent)"></span>
+            <span style="width:3px;height:30px;background:var(--color-accent)"></span>
+            <span style="font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--color-accent-700);margin-left:12px;padding-bottom:1px">Visiting Miami Beach</span>
+          </div>
+          <h2 style="font-size:52px;line-height:1.08;margin:0 0 20px">Your Jewish home away from home</h2>
+          <p style="font-size:18.5px;line-height:1.65;margin:0 0 30px;max-width:560px">In town for the weekend? We will tell you where to eat, where the eruv ends, which hotels are a short walk from shul, and what time to show up on Friday. Just come — no reservation required for services, and dinner only needs a heads-up.</p>
+          <div style="display:flex;flex-wrap:wrap;gap:12px;margin-bottom:32px">
+            <a href="#tourist" class="tag tag-outline" style="font-size:16px;padding:11px 22px;color:var(--color-accent-2-700)" style-hover="background:var(--color-accent-2-100)">Kosher Restaurants</a>
+            <a href="#tourist" class="tag tag-outline" style="font-size:16px;padding:11px 22px;color:var(--color-accent-2-700)" style-hover="background:var(--color-accent-2-100)">Eruv &amp; Mikvah</a>
+            <a href="#tourist" class="tag tag-outline" style="font-size:16px;padding:11px 22px;color:var(--color-accent-2-700)" style-hover="background:var(--color-accent-2-100)">Hotels</a>
+            <a href="#tourist" class="tag tag-outline" style="font-size:16px;padding:11px 22px;color:var(--color-accent-2-700)" style-hover="background:var(--color-accent-2-100)">Attractions</a>
+            <a href="#minyan" class="tag tag-outline" style="font-size:16px;padding:11px 22px;color:var(--color-accent-2-700)" style-hover="background:var(--color-accent-2-100)">Daily Minyan</a>
+          </div>
+          <div style="display:flex;gap:36px;align-items:center;font-size:16.5px">
+            <div><strong style="font-family:var(--font-heading);font-size:24px;display:block">2 min</strong><span style="color:var(--color-accent-2-700)">walk from Ocean Drive</span></div>
+            <div style="width:1px;height:44px;background:var(--color-divider)"></div>
+            <div><strong style="font-family:var(--font-heading);font-size:24px;display:block">7 days</strong><span style="color:var(--color-accent-2-700)">a week minyan</span></div>
+            <div style="width:1px;height:44px;background:var(--color-divider)"></div>
+            <div><strong style="font-family:var(--font-heading);font-size:24px;display:block">No fee</strong><span style="color:var(--color-accent-2-700)">for guests, ever</span></div>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px">
+          <div style="position:relative;height:340px;grid-row:span 2;border-radius:50% 50% var(--radius-lg) var(--radius-lg) / 26% 26% var(--radius-lg) var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-md)">
+            <image-slot id="tour-1" shape="rect" placeholder="Deco hotel facade on Ocean Drive"></image-slot>
+          </div>
+          <div style="position:relative;height:161px;border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-sm)">
+            <image-slot id="tour-2" shape="rect" placeholder="Kosher plate"></image-slot>
+          </div>
+          <div style="position:relative;height:161px;border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-sm)">
+            <image-slot id="tour-3" shape="rect" placeholder="Beach and lifeguard stand"></image-slot>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="photos" style="max-width:1280px;margin:0 auto;padding:88px 32px 20px">
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:40px;margin-bottom:38px">
+      <div>
+        <div style="font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--color-accent-700);margin-bottom:18px">Gallery</div>
+        <h2 style="font-size:46px;line-height:1.1;margin:0">Latest photos</h2>
+      </div>
+      <a href="#photos" style="font-size:16.5px;border-bottom:1px solid var(--color-accent-300);padding-bottom:4px;white-space:nowrap">All albums →</a>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-auto-rows:150px;gap:18px">
+      <div style="position:relative;grid-row:span 2;border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-sm)"><image-slot id="gal-1" shape="rect" placeholder="Shabbat dinner crowd"></image-slot></div>
+      <div style="position:relative;border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-sm)"><image-slot id="gal-2" shape="rect" placeholder="Kidz Club"></image-slot></div>
+      <div style="position:relative;grid-column:span 2;border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-sm)"><image-slot id="gal-3" shape="rect" placeholder="Chanukah on the beach"></image-slot></div>
+      <div style="position:relative;border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-sm)"><image-slot id="gal-4" shape="rect" placeholder="Torah class"></image-slot></div>
+      <div style="position:relative;border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-sm)"><image-slot id="gal-5" shape="rect" placeholder="Purim party"></image-slot></div>
+      <div style="position:relative;border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-sm)"><image-slot id="gal-6" shape="rect" placeholder="Sukkah on Meridian"></image-slot></div>
+    </div>
+  </section>
+
+  <section id="signup" style="max-width:1280px;margin:0 auto;padding:88px 32px 96px">
+    <div class="card" style="background:var(--color-accent-100);box-shadow:none;border:1px solid var(--color-accent-200);padding:52px 56px;display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:56px;align-items:center">
+      <div>
+        <h2 style="font-size:38px;line-height:1.12;margin:0 0 12px">Get the week ahead in one email</h2>
+        <p style="font-size:17.5px;line-height:1.6;margin:0;color:color-mix(in srgb,var(--color-text) 82%,transparent)">Candle lighting times, what's for dinner Friday, and the events worth clearing your calendar for. One email, every Wednesday.</p>
+      </div>
+      <div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
+          <label class="field" style="display:flex;flex-direction:column;gap:7px;font-size:14.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--color-accent-700)">First name
+            <input class="input" type="text" placeholder="Sarah" style="font-size:17px;height:54px;background:var(--color-bg);text-transform:none;letter-spacing:0;color:var(--color-text)">
+          </label>
+          <label class="field" style="display:flex;flex-direction:column;gap:7px;font-size:14.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--color-accent-700)">Last name
+            <input class="input" type="text" placeholder="Cohen" style="font-size:17px;height:54px;background:var(--color-bg);text-transform:none;letter-spacing:0;color:var(--color-text)">
+          </label>
+        </div>
+        <div style="display:flex;gap:14px;align-items:flex-end">
+          <label class="field" style="flex:1;display:flex;flex-direction:column;gap:7px;font-size:14.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--color-accent-700)">Email
+            <input class="input" type="email" placeholder="you@email.com" style="font-size:17px;height:54px;background:var(--color-bg);text-transform:none;letter-spacing:0;color:var(--color-text)">
+          </label>
+          <button class="btn btn-primary" style="height:54px;padding:0 30px;font-size:16.5px;background:var(--color-accent);color:#fff;border:none" style-hover="background:var(--color-accent-600)">Subscribe</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer id="contact" style="background:var(--color-accent-2-900);color:#FBF5E9">
+    <div style="max-width:1280px;margin:0 auto;padding:68px 32px 30px;display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr) minmax(0,1fr);gap:56px">
+      <div>
+        <div style="display:flex;align-items:center;gap:14px;margin-bottom:22px">
+          <span style="width:44px;height:44px;flex:none;border-radius:999px 999px 6px 6px;background:rgba(251,245,233,.1);display:flex;align-items:flex-end;justify-content:center;padding-bottom:6px;box-shadow:inset 0 0 0 1px var(--color-accent-300)">
+            <svg width="18" height="24" viewBox="0 0 20 26" fill="none" stroke="var(--color-accent-300)" stroke-width="1.6" stroke-linecap="round"><path d="M10 24V9"/><path d="M10 12 4 8v10"/><path d="M10 12l6-4v10"/><path d="M2 24h16"/></svg>
+          </span>
+          <span style="font-family:var(--font-heading);font-size:24px">Chabad in South Beach</span>
+        </div>
+        <p style="font-size:17px;line-height:1.6;margin:0 0 22px;color:rgba(251,245,233,.8);max-width:380px">320 Meridian Avenue<br>Miami Beach, FL 33139</p>
+        <a href="tel:7869202302" style="font-family:var(--font-heading);font-size:26px;color:var(--color-accent-300)" style-hover="color:#FBF5E9">786-920-2302</a>
+        <div style="display:flex;gap:12px;margin-top:26px">
+          <a href="#facebook" aria-label="Facebook" style="width:46px;height:46px;border-radius:999px;box-shadow:inset 0 0 0 1px rgba(251,245,233,.4);display:flex;align-items:center;justify-content:center;color:#FBF5E9" style-hover="background:rgba(251,245,233,.14)">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+          </a>
+          <a href="#whatsapp" aria-label="WhatsApp" style="width:46px;height:46px;border-radius:999px;box-shadow:inset 0 0 0 1px rgba(251,245,233,.4);display:flex;align-items:center;justify-content:center;color:#FBF5E9" style-hover="background:rgba(251,245,233,.14)">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8z"/></svg>
+          </a>
+          <a href="#instagram" aria-label="Instagram" style="width:46px;height:46px;border-radius:999px;box-shadow:inset 0 0 0 1px rgba(251,245,233,.4);display:flex;align-items:center;justify-content:center;color:#FBF5E9" style-hover="background:rgba(251,245,233,.14)">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M17.5 6.5h.01"/></svg>
+          </a>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:11.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--color-accent-300);margin-bottom:20px">Visit</div>
+        <div style="display:flex;flex-direction:column;gap:12px;font-size:17px">
+          <a href="#minyan" style="color:rgba(251,245,233,.85)" style-hover="color:var(--color-accent-300)">Service Times</a>
+          <a href="#shabbat" style="color:rgba(251,245,233,.85)" style-hover="color:var(--color-accent-300)">Shabbat Reservations</a>
+          <a href="#tourist" style="color:rgba(251,245,233,.85)" style-hover="color:var(--color-accent-300)">Tourist Info</a>
+          <a href="#events" style="color:rgba(251,245,233,.85)" style-hover="color:var(--color-accent-300)">Event Calendar</a>
+          <a href="#photos" style="color:rgba(251,245,233,.85)" style-hover="color:var(--color-accent-300)">Photo Gallery</a>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:11.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--color-accent-300);margin-bottom:20px">Get involved</div>
+        <div style="display:flex;flex-direction:column;gap:12px;font-size:17px;margin-bottom:26px">
+          <a href="#kidz" style="color:rgba(251,245,233,.85)" style-hover="color:var(--color-accent-300)">Kidz Club</a>
+          <a href="#learning" style="color:rgba(251,245,233,.85)" style-hover="color:var(--color-accent-300)">Yerushalaim Series</a>
+          <a href="#signup" style="color:rgba(251,245,233,.85)" style-hover="color:var(--color-accent-300)">Mailing List</a>
+          <a href="#contact" style="color:rgba(251,245,233,.85)" style-hover="color:var(--color-accent-300)">Contact Us</a>
+        </div>
+        <a href="#donate" class="btn btn-primary" style="padding:14px 28px;font-size:16px;background:var(--color-accent);color:#fff" style-hover="background:var(--color-accent-600)">Donate</a>
+      </div>
+    </div>
+    <div style="max-width:1280px;margin:0 auto;padding:22px 32px 40px;border-top:1px solid rgba(251,245,233,.2);display:flex;justify-content:space-between;gap:24px;font-size:15px;color:rgba(251,245,233,.65)">
+      <span>© 2026 Chabad in South Beach. All rights reserved.</span>
+      <span>Powered by <a href="https://www.chabad.org" style="color:var(--color-accent-300)">Chabad.org</a></span>
+    </div>
+  </footer>
+
+  <section style="background:var(--color-bg);border-top:1px solid var(--color-divider)">
+    <div style="max-width:1280px;margin:0 auto;padding:80px 32px 96px">
+      <div style="font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--color-accent-700);margin-bottom:16px">Responsive treatment</div>
+      <h2 style="font-size:40px;margin:0 0 12px">Mobile header &amp; hero</h2>
+      <p style="font-size:17.5px;max-width:620px;margin:0 0 46px;color:color-mix(in srgb,var(--color-text) 80%,transparent)">Utility bar collapses to candle time only, nav becomes a drawer, hero drops to a single column with the tagline intact.</p>
+      <div style="display:flex;gap:56px;flex-wrap:wrap;align-items:flex-start">
+
+        <div>
+          <div style="width:392px;border-radius:44px;background:var(--color-accent-2-900);padding:12px;box-shadow:var(--shadow-lg)">
+            <div style="border-radius:34px;overflow:hidden;background:var(--color-bg);height:720px;position:relative">
+              <div style="background:var(--color-accent-2-900);color:#EAF1F0;padding:8px 18px;display:flex;align-items:center;gap:8px;font-size:13.5px">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent-300)" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>
+                <span style="color:var(--color-accent-300);text-transform:uppercase;font-size:10.5px;letter-spacing:.14em">Candles</span>
+                <strong style="font-weight:600">7:45 PM</strong>
+                <span style="margin-left:auto;font-family:var(--font-heading)">Re'eh</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:11px;padding:12px 18px;background:rgba(251,245,233,.97);border-bottom:1px solid var(--color-divider)">
+                <span style="width:38px;height:38px;flex:none;border-radius:999px 999px 5px 5px;background:var(--color-accent-2);display:flex;align-items:flex-end;justify-content:center;padding-bottom:5px;box-shadow:inset 0 0 0 3px var(--color-bg),inset 0 0 0 4px var(--color-accent-300)">
+                  <svg width="15" height="20" viewBox="0 0 20 26" fill="none" stroke="var(--color-accent-300)" stroke-width="1.8" stroke-linecap="round"><path d="M10 24V9"/><path d="M10 12 4 8v10"/><path d="M10 12l6-4v10"/><path d="M2 24h16"/></svg>
+                </span>
+                <span style="font-family:var(--font-heading);font-size:18px;line-height:1.1">Chabad in<br>South Beach</span>
+                <a href="#donate" class="btn btn-primary" style="margin-left:auto;padding:9px 16px;font-size:13.5px;background:var(--color-accent);color:#fff">Donate</a>
+                <button aria-label="Menu" style="width:40px;height:40px;flex:none;border:none;border-radius:999px;background:var(--color-accent-100);color:var(--color-accent-2-700);display:flex;align-items:center;justify-content:center;cursor:pointer">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+                </button>
+              </div>
+              <div style="position:relative;height:474px">
+                <div style="position:absolute;inset:0"><image-slot id="m-hero" shape="rect" placeholder="Hero, mobile crop"></image-slot></div>
+                <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,32,38,.55) 0%,rgba(7,32,38,.86) 62%);pointer-events:none"></div>
+                <div style="position:absolute;left:0;right:0;bottom:0;padding:26px 22px 30px;color:#FBF5E9">
+                  <div style="display:flex;align-items:flex-end;gap:4px;margin-bottom:14px">
+                    <span style="width:2.5px;height:10px;background:var(--color-accent-300)"></span>
+                    <span style="width:2.5px;height:16px;background:var(--color-accent-300)"></span>
+                    <span style="width:2.5px;height:22px;background:var(--color-accent-300)"></span>
+                    <span style="font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--color-accent-300);margin-left:9px">Friday nights on Meridian</span>
+                  </div>
+                  <h3 style="font-size:34px;line-height:1.08;margin:0 0 12px;color:#FBF5E9">Your crowd is here. Put down some roots.</h3>
+                  <p style="font-size:17px;line-height:1.5;margin:0 0 20px;color:rgba(251,245,233,.86)">Shabbat dinner every Friday at 7:30.</p>
+                  <a href="#shabbat" class="btn btn-primary" style="width:100%;padding:15px 0;font-size:17px;background:var(--color-accent);color:#fff">Reserve your seat</a>
+                  <div style="display:flex;gap:8px;margin-top:20px">
+                    <span style="width:28px;height:4px;border-radius:999px;background:var(--color-accent-300)"></span>
+                    <span style="width:10px;height:4px;border-radius:999px;background:rgba(251,245,233,.4)"></span>
+                    <span style="width:10px;height:4px;border-radius:999px;background:rgba(251,245,233,.4)"></span>
+                  </div>
+                </div>
+              </div>
+              <div style="padding:22px;background:var(--color-surface);border-top:1px solid var(--color-divider)">
+                <div style="font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--color-accent-700);margin-bottom:8px">Welcome</div>
+                <p style="font-size:17px;line-height:1.5;margin:0">Everyone welcome, whatever your background or affiliation.</p>
+              </div>
+            </div>
+          </div>
+          <div style="text-align:center;margin-top:18px;font-size:15px;color:var(--color-accent-2-700)">Home · 390pt</div>
+        </div>
+
+        <div>
+          <div style="width:392px;border-radius:44px;background:var(--color-accent-2-900);padding:12px;box-shadow:var(--shadow-lg)">
+            <div style="border-radius:34px;overflow:hidden;background:var(--color-accent-2-900);height:720px;position:relative;color:#FBF5E9">
+              <div style="display:flex;align-items:center;gap:11px;padding:16px 18px;border-bottom:1px solid rgba(251,245,233,.2)">
+                <span style="font-family:var(--font-heading);font-size:19px">Menu</span>
+                <button aria-label="Close" style="margin-left:auto;width:40px;height:40px;border:none;border-radius:999px;background:rgba(251,245,233,.12);color:#FBF5E9;display:flex;align-items:center;justify-content:center;cursor:pointer">
+                  <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+                </button>
+              </div>
+              <div style="padding:10px 18px;display:flex;flex-direction:column">
+                <a href="#events" style="font-family:var(--font-heading);font-size:25px;color:#FBF5E9;padding:16px 0;border-bottom:1px solid rgba(251,245,233,.14);display:flex;justify-content:space-between;align-items:center">Events <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent-300)" stroke-width="2.75" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg></a>
+                <a href="#shabbat" style="font-family:var(--font-heading);font-size:25px;color:#FBF5E9;padding:16px 0;border-bottom:1px solid rgba(251,245,233,.14)">Reservations</a>
+                <a href="#tourist" style="font-family:var(--font-heading);font-size:25px;color:#FBF5E9;padding:16px 0;border-bottom:1px solid rgba(251,245,233,.14);display:flex;justify-content:space-between;align-items:center">Tourist Info <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent-300)" stroke-width="2.75" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg></a>
+                <a href="#kidz" style="font-family:var(--font-heading);font-size:25px;color:#FBF5E9;padding:16px 0;border-bottom:1px solid rgba(251,245,233,.14)">Kidz Club</a>
+                <a href="#learning" style="font-family:var(--font-heading);font-size:25px;color:#FBF5E9;padding:16px 0;border-bottom:1px solid rgba(251,245,233,.14)">Yerushalaim Series</a>
+                <a href="#welcome" style="font-family:var(--font-heading);font-size:25px;color:#FBF5E9;padding:16px 0;border-bottom:1px solid rgba(251,245,233,.14);display:flex;justify-content:space-between;align-items:center">About <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent-300)" stroke-width="2.75" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg></a>
+              </div>
+              <div style="position:absolute;left:0;right:0;bottom:0;padding:22px 18px 30px;background:rgba(7,32,38,.9)">
+                <a href="#donate" class="btn btn-primary" style="width:100%;padding:16px 0;font-size:17px;background:var(--color-accent);color:#fff;margin-bottom:18px">Donate</a>
+                <div style="display:flex;gap:18px;font-size:15.5px;color:rgba(251,245,233,.75)">
+                  <a href="tel:7869202302" style="color:var(--color-accent-300)">786-920-2302</a>
+                  <span>320 Meridian Ave</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div style="text-align:center;margin-top:18px;font-size:15px;color:var(--color-accent-2-700)">Nav drawer</div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;accentColor&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#C08A2E&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;options&quot;:[&quot;#C08A2E&quot;,&quot;#DE7159&quot;,&quot;#B8873B&quot;],&quot;section&quot;:&quot;Theme&quot;}}">
+class Component extends DCLogic {
+  state = { slide: 0, menu: null };
+
+  constructor(props) {
+    super(props);
+    this.headerRef = React.createRef();
+    this.markRef = React.createRef();
+    this.wordmarkRef = React.createRef();
+    this.railRef = React.createRef();
+  }
+
+  componentDidMount() {
+    this.timer = setInterval(() => this.setState(s => ({ slide: (s.slide + 1) % 3 })), 7000);
+    this.onScroll = () => {
+      const y = window.scrollY || document.documentElement.scrollTop || 0;
+      const c = y > 40;
+      const h = this.headerRef.current, m = this.markRef.current, w = this.wordmarkRef.current;
+      if (h) {
+        h.style.boxShadow = c ? '0 6px 22px rgba(23,35,46,.13)' : 'none';
+        h.querySelector('a').style.padding = c ? '8px 0' : '16px 0';
+      }
+      if (m) { m.style.width = c ? '38px' : '48px'; m.style.height = c ? '38px' : '48px'; }
+      if (w) { w.style.fontSize = c ? '20px' : '25px'; }
+    };
+    window.addEventListener('scroll', this.onScroll, { passive: true });
+    this.onScroll();
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.timer);
+    window.removeEventListener('scroll', this.onScroll);
+  }
+
+  componentDidUpdate() { this.applyAccent(); }
+
+  applyAccent() {
+    const a = this.props.accentColor;
+    if (!a) return;
+    const r = document.documentElement.style;
+    r.setProperty('--color-accent', a);
+  }
+
+  dot(active) {
+    return {
+      width: active ? '46px' : '12px', height: '6px', border: 'none', padding: 0,
+      borderRadius: '999px', cursor: 'pointer', transition: 'width 400ms ease, background 400ms ease',
+      background: active ? 'var(--color-accent-300)' : 'rgba(251,245,233,.45)'
+    };
+  }
+
+  menuPanel(open, align) {
+    const edge = align === 'right' ? { right: '-8px' } : { left: '-8px' };
+    return Object.assign({
+      display: open ? 'block' : 'none',
+      position: 'absolute', top: '100%', zIndex: 70,
+      background: 'var(--color-bg)', border: '1px solid var(--color-divider)',
+      borderTop: '2px solid var(--color-accent)',
+      borderRadius: '0 0 var(--radius-md) var(--radius-md)',
+      boxShadow: '0 18px 40px rgba(23,35,46,.16)',
+      minWidth: '420px', fontSize: '16.5px',
+      opacity: open ? 1 : 0,
+      visibility: open ? 'visible' : 'hidden',
+      transform: open ? 'translateY(0)' : 'translateY(-8px)',
+      transition: 'opacity 200ms ease, transform 200ms ease, visibility 200ms'
+    }, edge);
+  }
+
+  renderVals() {
+    const s = this.state;
+    return {
+      headerRef: this.headerRef, markRef: this.markRef, wordmarkRef: this.wordmarkRef, railRef: this.railRef,
+      trackX: (-33.3333 * s.slide) + '%',
+      dotStyle: { a: this.dot(s.slide === 0), b: this.dot(s.slide === 1), c: this.dot(s.slide === 2) },
+      menuStyle: {
+        events: this.menuPanel(s.menu === 'events'),
+        tourist: this.menuPanel(s.menu === 'tourist', 'right'),
+        about: this.menuPanel(s.menu === 'about', 'right')
+      },
+      openEvents: () => this.setState({ menu: 'events' }),
+      openTourist: () => this.setState({ menu: 'tourist' }),
+      openAbout: () => this.setState({ menu: 'about' }),
+      closeMenu: () => this.setState({ menu: null }),
+      goto0: () => this.setState({ slide: 0 }),
+      goto1: () => this.setState({ slide: 1 }),
+      goto2: () => this.setState({ slide: 2 }),
+      prev: () => this.setState(st => ({ slide: (st.slide + 2) % 3 })),
+      next: () => this.setState(st => ({ slide: (st.slide + 1) % 3 })),
+      scrollLeft: () => this.railRef.current && this.railRef.current.scrollBy({ left: -362, behavior: 'smooth' }),
+      scrollRight: () => this.railRef.current && this.railRef.current.scrollBy({ left: 362, behavior: 'smooth' })
+    };
+  }
+}
+
+</script>
+</body>
+</html>

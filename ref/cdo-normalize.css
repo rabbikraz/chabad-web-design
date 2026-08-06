@@ -1,0 +1,563 @@
+/* HEADER / BREADCRUMBS */
+.article-header .breadcrumbs {
+  background: none;
+  padding-left: 0;
+}
+
+.article-header h1 {
+  font-size: 30px;
+  /* font-family: Muli, Arial, sans-serif; */
+}
+
+/* Minisite header padding issues */
+
+#BodyContainer
+  .no-hero-image
+  #co_content_container
+  #chabad_body_content
+  .master-content-wrapper.master-content-wrapper {
+  background: none !important;
+  border-bottom: none;
+  padding: 0;
+}
+
+/* GENERAL STYLING */
+body,
+.form-checkbox-item label,
+.form-grading-label,
+.form-radio-item label,
+.form-captcha INPUT,
+.form-checkbox-other-input,
+.form-radio-other-input,
+.form-textarea,
+.co_body .content .form-all .form-dropdown,
+.form-textbox,
+.co_body .content li,
+.co_body .content p,
+body .form-all,
+.co_body .content .form-all li,
+body .co_body .content .form-all p {
+  font-size: 17px;
+}
+
+
+/* html:not(:has(#k32454)) .co_body .content .SCHeading_3, html:not(:has(#k32454)) .co_body h3:not(.form-header) { */
+/* does not get applied on Cteen */
+:where(html:not(:has(#k32454))) .co_body .content .SCHeading_3, 
+:where(html:not(:has(#k32454))) .co_body h3:not(.form-header) {
+  font-size: 19px;
+}
+
+.co_body .content .form-all .form-html li {
+  line-height: 180%;
+}
+
+.page-tools__tool {
+  font-size: 14px;
+}
+
+.page-tools__tool--pinterest {
+  display: none !important;
+}
+
+/* FORMBUILDER */
+@media screen and (max-width: 610px) {
+  body .form-label-left {
+      width: 100% !important;
+  }
+}
+.form-line .form-html ul {
+  margin-bottom: 16px;
+}
+
+.co_body .content .form-all li.form-input-wide,
+.form-line,
+.co_body .content .form-all .form-line {
+  padding: 12px;
+}
+
+.form-line:after {
+  content: "";
+  display: block;
+  clear: both;
+}
+
+.form-header-group {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+img.form-image {
+  max-width: 100%;
+  height: auto;
+}
+
+#formContainer + .center.small {
+  display: none;
+}
+
+.copy-address {
+  margin-top: 10px;
+}
+
+.copy-address label {
+  font-weight: normal;
+}
+
+/* first names*/
+.co_body .content .form-all .form-input-wide .form-sub-label-container {
+  grid-column-start: auto;
+}
+
+.co_body .content .form-all .form-input-wide .form-sub-label-container:first-child {
+  margin-right: 5px;
+}
+
+.showAutoCalendar + .form-sub-label {
+  display: none;
+}
+
+.ccoFormFooter p {
+  display: none;
+}
+
+/* set error z-index to have error above header */
+.form-input .form-error-message, .form-input-wide .form-error-message {
+  z-index: 99;
+}
+
+div.calendar.popup {
+  font-family: inherit;
+}
+
+div.calendar td,
+div.calendar th {
+  font-size: 13px;
+}
+
+/* INDEX PAGES */
+
+.article_index .row {
+  display: flex;
+}
+
+body:not(.sites-article) img.synopsis_icon {
+  border-radius: 100%;
+  /* height: 75px;
+  width: 75px; */
+  object-fit: cover;
+  aspect-ratio: 1 / 1;
+}
+
+/* PHOTO GALLERIES */
+@media (min-width: 650px) {
+  #photos .photo img {
+    width: 181px;
+    height: 155px;
+  }
+  
+  #photos .photo {
+    height: 155px;
+  }
+
+  div#cco_body.g700:has(#photos) {
+    width: 800px;
+  }
+}
+
+#lightbox #comments {
+  display: none;
+}
+
+@media screen and (min-width: 1025px) {
+  #left-panel.comments {
+      right: 0;
+  }
+}
+
+/* HOME PAGE */
+
+.widget-4,
+.widget-4 .wrapper,
+.sneak_peek {
+  box-shadow: none;
+}
+
+.sneak_peek div.widget_content {
+  border: none;
+}
+
+.g160 .sneak_peek.v100 div.wrapper,
+.sneak_peek.v140 div.wrapper,
+.sneak_peek.v100 div.wrapper {
+  height: 100%;
+}
+
+.cs-f-social-icons a:hover {
+  text-decoration: none;
+}
+
+.hp-table .hp-row-first .promo_slider .slider .slides .slide_wrapper img {
+  will-change: opacity !important;
+  mix-blend-mode: multiply !important;
+}
+
+.hp-table .hp-row-first .promo_slider .slider .slides .slide_wrapper a {
+  background-blend-mode: normal !important;
+  will-change: unset;
+}
+
+@media only screen and (max-width: 600px) {
+  .hp-table .hp-row-first .promo_slider .slider .cycle-caption {
+    width: 95% !important;
+  }
+}
+
+/* Button underlines */
+
+[class^="widget-"] a:hover {
+  text-decoration: none;
+}
+
+.widget-3 li:first-child,
+[class^="widget-"] .widget_content > ul > li:first-child {
+  background: transparent;
+}
+
+/* Email Response */
+
+.form-auto-response #ContentBody div {
+  font-size: 16px !important;
+}
+
+/* Footer */
+@media (max-width: 650px) {
+  span.footer-street {
+    display: block;
+  }
+  
+  .footer-street::after {
+    display: none;
+  }
+
+  .hp_subscribe .wrapper #formContainer fieldset input#Fname {
+    width: 40%;
+  }
+
+  .hp_subscribe .wrapper #formContainer fieldset input#Lname {
+    width: 59%;
+  }
+
+  .hp_subscribe .wrapper #formContainer fieldset {
+    padding: 0 20px;
+  }
+}
+
+/* Social icons in footer */
+
+.cs-f-social-icons a:hover {
+  text-decoration: none;
+}
+
+/* CDO Login */
+
+#login_link {
+  display: none;
+}
+
+#mychabad_login_bar {
+  padding-left: 4px;
+}
+
+#mychabad_login_bar:after {
+  display: none;
+}
+
+#header_container .links .float_right:not(.cco_search_header) {
+  /* padding-left: 0; */
+}
+
+/* HP BANNER:START */
+
+.banner .widget_content.index_format .item .subtitle {
+  text-transform: none;
+}
+
+/* HP BANNER:END */
+
+/* USABILITY OF MOBILE MENU FOR TAP TARGETS:START */
+@media (max-width: 1024px) {
+  body.cco_body #header #tabContentMain .co_menu_item span.parent a {
+    margin: 24px;
+    margin-bottom: 10px;
+    margin-left: 0;
+  }
+  .nav-menu i.fa-angle-down,
+  .cs-menu-item-toggle {
+    padding: 24px;
+    padding-right: 5px;
+  }
+}
+/* USABILITY OF MOBILE MENU FOR TAP TARGETS:END */
+
+/* FIX MENU HEADER:START */
+@media (max-width: 460px) {
+  .cs-mobile-menu-open {
+    top: 3px;
+  }
+  .on-scroll .header-wrapper {
+    height: 50px;
+  }
+  .on-scroll .header-wrapper:after {
+    content: "";
+  }
+  .branding-search #header_branding {
+    margin-top: 13px;
+  }
+  body.sites-article #content {
+    margin-top: 37px;
+  }
+}
+/* FIX MENU HEADER:END */
+
+/* REMOVE DUPE BH:END */
+.body_wrapper .bh.mobile-only {
+  display: none;
+}
+/* REMOVE DUPE BH:END */
+
+/* EVENTS:START */
+.event_image {
+  max-width: 100px;
+}
+#RegisterSinglePage .event_image img {
+  width: 100px;
+  height: auto;
+}
+#RegisterSinglePage .co_global_button .button,
+#RegisterSinglePage .regular,
+#RegisterSinglePage .co_form_input {
+  font-size: 16px;
+}
+.column2 .medium {
+  font-size: 16px;
+}
+.medium_top_margin {
+  margin-top: 0;
+}
+/* Hide event name and details headers */
+.column2 .large.bold.heading {
+  display: none;
+}
+#RegisterHeader .event_name {
+  display: none;
+}
+.event_description {
+  font-size: 16px;
+}
+
+.reservation_input_select,
+.reservation_input_select2,
+#Payment .selected_value,
+#Performances .selected_value,
+#RegisterSinglePage .co_form_input,
+#RegisterSinglePage .co_global_button .button,
+#RegisterSinglePage .regular {
+  font-family: inherit;
+}
+/* EVENTS:END */
+
+/* DONATE PAGE */
+.js-payment-select .fa-cc-paypal:before {
+  font-weight: 400;
+}
+
+@media (max-width: 1000px) {
+  #donate-wrapper #donate .intro-wrapper p.description {
+    display: block;
+  }
+  #donate-wrapper #donate aside {
+    width: 100%;
+    padding-bottom: 60%;
+    display: block;
+    opacity: 1;
+  }
+  /* At times would be uncenetered without this */
+  #donate-wrapper main form .content-box:not(.amount-wrapper),
+  .donate-content {
+    padding-left: 0;
+    padding-right: 0;
+  }
+  #donate-wrapper main form .content-box:not(.amount-wrapper) {
+    width: 100%;
+  }
+}
+
+/* HEBREW SCHOOL MINISITE */
+html:has(#k16026) .black,
+html:has(#k16026) .black a,
+html:has(#k16026)
+  .article_index_container
+  .co_index.article_index
+  .row
+  .item
+  .subtitle,
+html:has(#k16026) .co_body .content .form-all p,
+html:has(#k16026) .chabad_navigator_bar ul li a {
+  font-family: inherit;
+}
+html:has(#k16026) .article-header h1 {
+  font-family: "Domine";
+}
+
+html:has(#k16026) div#chabad_head .chabad_content_head {
+  background-size: cover;
+}
+
+.embed-container {
+  position: relative;
+  padding-bottom: 56.25%;
+  height: 0;
+  overflow: hidden;
+  max-width: 100%;
+}
+.embed-container video,
+.embed-container iframe,
+.embed-container object,
+.embed-container embed {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.banner .widget_content.index_format .item.promo-expired {
+  display: none;
+}
+
+.banner .widget_content.index_format .item.promo-expired + .separator {
+  display: none;
+}
+
+/* SIDEBAR */
+body #co_ads_container #customizable_promos {
+  display: none;
+}
+
+img.form-image {
+  width: 100%;
+  height: auto;
+}
+
+/* EVENT APP ADDITIONAL FORM */
+#AdditionalInformation #formContainer input {
+  min-height: 0;
+}
+
+
+/* NEWS IMAGES (and other stuff?) */
+#BodyContainer #co_content_container>.clearfix>.g960:not(.categorized) .hero_wrapper {
+  display: block;
+  padding-left: 15px;
+  margin: 20px auto;
+  max-width: 1105px;
+}
+.imagetable {
+  width: min-content;
+}
+.co_body .article-body .imagecell img {
+  max-width: unset;
+}
+#BodyContainer #co_content_container>.clearfix>.g960:not(.categorized) .hero_wrapper .imagetable {
+  text-align: left;
+}
+
+html:has(#k17618) #BodyContainer .no-hero-image #co_content_container .master-content-wrapper.master-content-wrapper {
+  background: none !important;
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+html:has(#kCommentsStylesheet) #BodyContainer #co_content_container>.clearfix>.g960:not(.categorized) .article-header .article-header__subtitle,
+html:has(#k17618) #BodyContainer #co_content_container>.clearfix>.g960:not(.categorized) .article-header .article-header__subtitle {
+  display: block;
+}
+
+html:has(#kCommentsStylesheet) .co_section_branding {
+  background-size: cover;
+  display: table;
+  padding-bottom: 0;
+}
+
+/* PROGRAMS ICONS:START  */
+@media (max-width: 600px) {
+  .sneak-peek-item.even {
+    padding-right: 5px;
+  }
+  .sneak-peek-item.odd {
+    padding-left: 5px;
+  }
+  .sneak-peek-container .sneak-peek-item {
+      width: 50%;
+  }
+}
+/* PROGRAMS ICONS:END  */
+
+
+
+/* hide expired promo area */
+.hp-row:has(.banner-updates #noRecordsText) {
+  display: none;
+}
+
+
+/* hide monthly arrow when monthly selected */
+.frequency-toggle-wrapper:has(.js-monthly.selected) .monthly-note::before {
+  opacity: 0;
+}
+.frequency-toggle-wrapper:has(.js-monthly.selected) .monthly-note {
+  color: transparent;
+}
+
+.frequency-toggle-wrapper:not(:has(.js-monthly.selected)) .js-one-time {
+  font-weight: 600;
+  font-style: normal;
+  color: #000;
+  letter-spacing: .5px;
+}
+
+
+/* CYP */
+html:has(#k32769) body :is(div.noselect, #chabad_body_page) .home-slider-part .slider-img img {
+  width: 100%;
+}
+
+html:has(#k32769) body .master-content-wrapper {
+  background-size: cover;
+  background-position: center;
+}
+
+
+/* Contact Page */
+.top_padding.blue.regular.phone_number:before {
+	content: '\f095';
+	margin-right: 5px;
+	display: inline-block;
+	font-family: 'Font Awesome 5 Pro' !important;
+}
+
+.top_padding.blue.regular.phone_number img {
+	display: none;
+}
+
+div#MosadInformation a:has(img[alt="Send an Email Message"]) img {
+	display: none;
+}
+
+div#MosadInformation a:has(img[alt="Send an Email Message"]):before {
+	content: '\f0e0';
+	margin-right: 5px;
+	display: inline-block;
+	font-family: 'Font Awesome 5 Pro' !important;
+}
