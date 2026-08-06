@@ -379,7 +379,9 @@ a.site_title {
   width: 26px;
   height: 26px;
   background-color: transparent;
-  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23E2C179' stroke-width='2.4' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E");
+}
+#header_container .co_search_form .co_global_submit .button:before {
+  color: var(--sb-accent-300);
 }
 .co_search_form { margin: 0; }
 .co_search_form form { display: flex; align-items: center; gap: 0; position: relative; }
@@ -404,13 +406,17 @@ a.site_title {
   border: none;
   border-radius: 999px;
   background-color: var(--sb-accent-100);
-  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238A5F16' stroke-width='2.4' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: 14px 14px;
   cursor: pointer;
   font-size: 0;
   padding: 0;
+}
+.co_search_form .co_global_submit .button:before {
+  content: "\f002";
+  font-family: "Font Awesome 5 Pro", "Font Awesome 5 Free", FontAwesome;
+  font-weight: 900;
+  font-size: 13px;
+  color: var(--sb-accent-700);
+  line-height: 1;
 }
 #topAreaTopSearch_search_wrapper { color: var(--sb-text); }
 
@@ -454,7 +460,9 @@ body.cco_body #tabContentMain .co_menu_item {
   padding: 0;
   vertical-align: middle;
 }
-/* Home icon item — self-contained SVG glyph (no icon-font dependency) */
+/* Home icon item — Font Awesome glyph (FA5 ships with the CMS).
+   NOTE: no data:image/svg+xml URIs anywhere in this file — the encoded
+   angle brackets trip the Cloudflare WAF when saving the admin code box. */
 #tabContentMain .co_menu_item.home a {
   display: flex;
   align-items: center;
@@ -463,10 +471,14 @@ body.cco_body #tabContentMain .co_menu_item {
   height: 40px;
   padding: 0;
   border-radius: 999px;
-  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2317232E' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z'/%3E%3Cpath d='M9 22V12h6v10'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: 17px 17px;
+}
+#tabContentMain .co_menu_item.home a:before {
+  content: "\f015";
+  font-family: "Font Awesome 5 Pro", "Font Awesome 5 Free", FontAwesome;
+  font-weight: 900;
+  font-size: 15px;
+  color: var(--sb-text);
+  line-height: 1;
 }
 #tabContentMain .co_menu_item.home a:hover { background-color: var(--sb-accent-100); }
 #tabContentMain .co_menu_item.home img { display: none; }

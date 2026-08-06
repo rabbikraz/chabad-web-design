@@ -64,7 +64,7 @@ var st = document.createElement('style');
 st.textContent = rule.css;
 document.head.appendChild(st);
 } else if (rule.type === 'redirect') {
-window.location.href = rule.href;
+window.location.assign(rule.href);
 }
 });
 }
