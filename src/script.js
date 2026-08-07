@@ -27,10 +27,6 @@
     '<path d="M10 24V9"/><path d="M10 12 4 8v10"/><path d="M10 12l6-4v10"/><path d="M2 24h16"/>' +
     '</svg></span>';
 
-  var CANDLE_SVG =
-    '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#E2C179" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round">' +
-    '<path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>';
-
   var CHEVRON_LEFT =
     '<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>';
   var CHEVRON_RIGHT =
@@ -186,22 +182,14 @@
     });
   }
 
-  /* ---------------- header: utility bar to full width ----------------
-     The bar lives inside the max-width header wrapper; a 100vw margin hack
-     is zoom-fragile, so lift it out to be a direct child of #header. */
+  /* ---------------- header: nav labels ----------------
+     The CMS splits long labels with <br> ("Tourist<br>Info"); replace the
+     breaks with spaces so the nav and every clone of it read correctly. */
 
-  function relocateUtilityBar() {
-    var bar = $('#header .header-wrapper > #header_container');
-    var header = $('#header');
-    if (bar && header) header.insertBefore(bar, header.firstChild);
-  }
-
-  /* ---------------- header: relocate search into the utility bar ---------------- */
-
-  function relocateSearch() {
-    var search = $('.branding-search .cco_search_header');
-    var links = $('#header_container .links');
-    if (search && links) links.appendChild(search);
+  function normalizeNavLabels() {
+    $all('#tabContentMain span.parent a br').forEach(function (br) {
+      br.parentNode.replaceChild(document.createTextNode(' '), br);
+    });
   }
 
   /* ---------------- header: relocate FB like bar to footer ---------------- */
@@ -247,53 +235,6 @@
       holiday: holidayA ? { name: txt(holidayA), href: holidayA.getAttribute('href'), date: holidayDate } : null,
       calendarHref: (rows[0] && rows[0].href) || '/calendar/candlelighting.htm'
     };
-  }
-
-  function shortDay(dateStr) {
-    var m = /^(Sun|Mon|Tue|Wed|Thu|Fri|Sat|Shabbat)/i.exec(dateStr || '');
-    if (!m) return '';
-    return m[1] === 'Shabbat' ? 'Sat' : m[1];
-  }
-
-  /* ---------------- utility top bar ---------------- */
-
-  function buildUtilityBar(candles) {
-    var links = $('#header_container .links');
-    if (!links || $('.sb-candle-info', links)) return;
-    var info = el('div', 'sb-candle-info');
-    var bits = [];
-
-    if (candles && candles.light) {
-      bits.push(
-        '<span class="sb-candle-item">' + CANDLE_SVG +
-        '<span class="sb-candle-label">' + esc(candles.light.label || 'Light Candles') + '</span>' +
-        '<strong class="sb-candle-time">' + esc(candles.light.time) + '</strong>' +
-        (candles.light.date ? '<span class="sb-candle-day">' + esc(shortDay(candles.light.date)) + '</span>' : '') +
-        '</span>'
-      );
-    }
-    if (candles && candles.ends) {
-      bits.push('<span class="sb-candle-sep"></span>');
-      bits.push(
-        '<span class="sb-candle-item sb-candle-ends">' +
-        '<span class="sb-candle-label">' + esc(candles.ends.label) + '</span>' +
-        '<strong class="sb-candle-time">' + esc(candles.ends.time) + '</strong>' +
-        (candles.ends.date ? '<span class="sb-candle-day">' + esc(shortDay(candles.ends.date)) + '</span>' : '') +
-        '</span>'
-      );
-    }
-    if (candles && candles.parsha) {
-      bits.push('<span class="sb-candle-sep"></span>');
-      bits.push(
-        '<span class="sb-candle-item sb-candle-parsha-item">' +
-        '<span class="sb-candle-label">Parsha</span>' +
-        '<em class="sb-candle-parsha">' + esc(candles.parsha.name) + '</em>' +
-        '</span>'
-      );
-    }
-    if (!bits.length) return; // interior pages: bar keeps just its links
-    info.innerHTML = '<a href="' + esc(candles.calendarHref) + '" style="display:flex;align-items:center;gap:22px;color:inherit">' + bits.join('') + '</a>';
-    links.insertBefore(info, links.firstChild);
   }
 
   /* ---------------- hero: promo slider → Swiper ---------------- */
@@ -681,14 +622,19 @@
     // Column 2: Visit — top-level nav links cloned from the main menu
     var col2 = el('div', 'sb-footer-col');
     col2.appendChild(el('div', 'sb-footer-col-title', 'Visit'));
+    // owner-requested exclusions from the footer Visit column
+    var VISIT_EXCLUDE = [/donate/i, /yerushalaim/i, /^sign\s*in$/i];
+    var excluded = function (t) {
+      return VISIT_EXCLUDE.some(function (re) { return re.test(t); });
+    };
     var visit = el('div', 'sb-footer-links');
     visit.innerHTML = '<a href="/">Home</a>';
     $all('#tabContentMain .co_menu_item span.parent > div > a.parent').forEach(function (a) {
-      if (/donate/i.test(txt(a))) return;
+      if (excluded(txt(a))) return;
       visit.innerHTML += '<a href="' + esc(a.getAttribute('href') || '#') + '">' + esc(txt(a)) + '</a>';
     });
     $all('#header_container .links .float_left .topBarLink a').forEach(function (a) {
-      if (/^home$/i.test(txt(a))) return;
+      if (/^home$/i.test(txt(a)) || excluded(txt(a))) return;
       visit.innerHTML += '<a href="' + esc(a.getAttribute('href') || '#') + '">' + esc(txt(a)) + '</a>';
     });
     col2.appendChild(visit);
@@ -744,14 +690,12 @@
     if (isHome()) document.body.classList.add('sb-home');
 
     safe('page-rules', runPageRules);
-    safe('utility-bar-width', relocateUtilityBar);
+    safe('nav-labels', normalizeNavLabels);
     safe('branding', enhanceBranding);
     safe('mobile-menu', initMobileMenu);
-    safe('search', relocateSearch);
 
     var candles = null;
     safe('candle-data', function () { candles = getCandleData(); });
-    safe('utility-bar', function () { buildUtilityBar(candles); });
 
     var heroImg = null;
     if (isHome()) {

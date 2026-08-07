@@ -190,9 +190,15 @@ body:not(.sites-article) img.synopsis_icon {
 [class^="widget-"] .widget_content > ul > li:first-child { background: transparent; }
 
 /* --------------------------------------------------------------------------
-   2. UTILITY TOP BAR  (#header_container — restyled dark strip)
-      JS prepends .sb-candle-info with live candle-lighting data on homepage.
+   2. UTILITY TOP BAR — REMOVED per owner request (2026-08-06): the top-bar
+      links are redundant (Home/About live in nav+footer, Contact in footer,
+      Subscribe in the footer form) and search follows the stock theme, which
+      also hides it. The rules below are retained only for the no-JS state.
    -------------------------------------------------------------------------- */
+body.cco_body #header_container.header_container,
+body.cco_body #header > #header_container {
+  display: none !important;
+}
 body.cco_body #header_container.header_container {
   background: var(--sb-teal-900);
   color: var(--sb-cream-ink);
@@ -1481,14 +1487,19 @@ body.cco_body #footer {
   height: 46px;
   border-radius: 999px;
   box-shadow: inset 0 0 0 1px rgba(251, 245, 233, .4);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
   color: var(--sb-bg) !important;
-  font-size: 19px;
+  font-size: 18px !important;
+  line-height: 1 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  text-align: center;
   background: none;
   transition: background 180ms ease;
 }
+#footer .cs-f-social-icons a:before { line-height: 1 !important; margin: 0 !important; width: auto !important; height: auto !important; }
 #footer .cs-f-social-icons a:hover { background: rgba(251, 245, 233, .14); text-decoration: none; }
 
 /* Bottom bar: copyright / powered by */
@@ -1521,13 +1532,33 @@ body.sites-article #content { background: var(--sb-bg); }
 .co_content_container {
   max-width: var(--sb-max);
   margin: 0 auto;
-  padding: 40px var(--sb-gutter) 80px;
+  padding: 16px var(--sb-gutter) 80px;
 }
 body.cco_body .master-content-wrapper {
   background: none !important;
   border-bottom: none;
   padding: 0;
 }
+/* article/section title band: the theme makes it a grey banner with 135px
+   paddings — we keep the title but collapse the dead space */
+#BodyContainer #co_content_container > .clearfix > .g960:not(.categorized) {
+  padding-top: 28px !important;
+  padding-bottom: 0 !important;
+  background: none !important;
+  background-color: transparent !important;
+}
+#BodyContainer #co_content_container > .clearfix > .g960:not(.categorized) .article-header,
+#BodyContainer #co_content_container > .clearfix > .g960:not(.categorized) .article-header .article-header__title {
+  text-align: left !important;
+  margin-top: 0 !important;
+}
+
+/* the floating share tab (bottom-left) — removed per owner request */
+.page-tools-sidebar,
+.js-page-tools-sidebar,
+.js-fab-wrapper,
+.fab-wrapper { display: none !important; }
+
 /* no white card behind the page title, on any article template.
    The theme paints it with a double-ID !important selector — match it. */
 #BodyContainer .no-hero-image #co_content_container .master-content-wrapper.master-content-wrapper {
