@@ -324,15 +324,25 @@ body.cco_body:not(.sb-js) #feedback_bar { display: block; position: static; } /*
 #header.on-scroll #header_branding.logo { padding: 7px 0; }
 
 /* Logo mark: JS may swap in .sb-logo-mark (arched monogram SVG) */
-#header_branding .site-logo-wrapper { float: none; width: auto; height: auto; flex: none; }
+/* the theme paints a white 100px disc behind the logo — logo sits bare */
+#header_branding .site-logo-wrapper {
+  float: none;
+  width: auto !important;
+  height: auto !important;
+  flex: none;
+  background: none !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
+}
 .branding-search #header_branding.logo img {
-  width: 48px;
-  height: 48px;
+  width: 48px !important;
+  height: 48px !important;
   object-fit: contain;
-  border-radius: 999px 999px 6px 6px;
+  border-radius: 0;
+  background: none !important;
   transition: width 260ms ease, height 260ms ease;
 }
-#header.on-scroll .branding-search #header_branding.logo img { width: 38px; height: 38px; }
+#header.on-scroll .branding-search #header_branding.logo img { width: 38px !important; height: 38px !important; }
 .sb-logo-mark {
   width: 48px;
   height: 48px;
@@ -1437,8 +1447,6 @@ body.cco_body #footer {
   width: 44px;
   height: 44px;
   object-fit: contain;
-  border-radius: 999px;
-  background: #fff;
   flex: none;
 }
 .sb-footer-brand-row .sb-logo-mark {
