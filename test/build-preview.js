@@ -38,10 +38,13 @@ const LIVE_CSS = {
   'css/old/global.css': 'old-global.css',
   'css/cco/home/default/prettyPhoto.min.css': 'prettyPhoto.min.css',
   'css/sections/events/events.css': 'events.css',
+  'css/Cco/Templates/donate/main.css': 'donate-main.css',
+  'css/cco/fundraising/FundraisingTickerltr.css': 'FundraisingTicker.css',
 };
 
 const PAGE_SET = [
   { src: 'home.html', out: 'preview-home.html', snapshot: '20251013120914' },
+  { src: 'donate.html', out: 'preview-donate.html', snapshot: '20251013120914' },
   { src: 'register.html', out: 'preview-register.html', snapshot: '20250317040018' },
   // open-event form page; demo sponsorship config is harness-only
   {
