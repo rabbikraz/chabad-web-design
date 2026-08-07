@@ -324,8 +324,11 @@ body.cco_body:not(.sb-js) #feedback_bar { display: block; position: static; } /*
 #header.on-scroll #header_branding.logo { padding: 7px 0; }
 
 /* Logo mark: JS may swap in .sb-logo-mark (arched monogram SVG) */
-/* the theme paints a white 100px disc behind the logo — logo sits bare */
-#header_branding .site-logo-wrapper {
+/* the theme paints a white 100px disc behind the logo (and hides the logo
+   entirely on mobile) — logo sits bare and stays visible at every width */
+#header_branding .site-logo-wrapper,
+.site-logo-wrapper {
+  display: block !important;
   float: none;
   width: auto !important;
   height: auto !important;
@@ -1894,20 +1897,41 @@ body.cco_body .form-textarea:focus { border-color: var(--sb-accent-300); outline
 #RegisterSinglePage input[type="text"],
 #RegisterSinglePage input[type="email"],
 #RegisterSinglePage input[type="tel"],
+#RegisterSinglePage input[type="number"],
 #RegisterSinglePage select,
 #RegisterSinglePage textarea {
-  font-family: var(--sb-font-body);
-  font-size: 16.5px;
-  color: var(--sb-text);
-  background: #fff;
-  border: 1px solid var(--sb-divider);
-  border-radius: var(--sb-radius-sm);
-  padding: 8px 12px;
-  box-sizing: border-box;
+  font-family: var(--sb-font-body) !important;
+  font-size: 15.5px !important;
+  color: var(--sb-text) !important;
+  background: #fff !important;
+  border: 1px solid rgba(23, 35, 46, .18) !important;
+  border-radius: 10px !important;
+  padding: 8px 12px !important;
+  box-sizing: border-box !important;
+  box-shadow: none !important;
+  min-height: 42px;
 }
 #RegisterSinglePage input:focus,
 #RegisterSinglePage select:focus,
-#RegisterSinglePage textarea:focus { border-color: var(--sb-accent-300); outline: none; }
+#RegisterSinglePage textarea:focus {
+  border-color: var(--sb-event-accent, var(--sb-accent-300)) !important;
+  outline: none !important;
+}
+/* per-reservation name cells (built dynamically by the Event App) */
+#RegisterSinglePage .reservations input,
+#RegisterSinglePage .reservation input {
+  min-width: 130px;
+  margin: 4px 8px 4px 0 !important;
+}
+/* the category picker labels ("Select a category" / "Reservations") */
+#RegisterSinglePage .toggle_options .inline_block > div:first-child {
+  font-size: 12px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--sb-event-accent-dark, var(--sb-accent-700));
+  margin-bottom: 6px !important;
+}
 #RegisterSinglePage .co_global_button .button,
 #RegisterFooter .button {
   padding: 13px 30px;
@@ -1917,9 +1941,13 @@ body.cco_body .form-textarea:focus { border-color: var(--sb-accent-300); outline
 #RegisterSinglePage .blue, #RegisterSinglePage .blue a { color: var(--sb-teal-700); }
 #RegisterSinglePage.shaded { background: var(--sb-bg); }
 
-/* events LISTING page: events.css paints each .row white — card them in the
-   theme surface instead; rows whose event has a PAGE_THEMES entry get their
-   own colors (JS sets --sb-event-* per row) */
+/* events LISTING page: events.css paints rows white — card them in the theme
+   surface instead. Matched structurally (any block holding a registration
+   link) so it works whatever container this template uses. Rows whose event
+   has a PAGE_THEMES entry get their own colors (JS sets --sb-event-* inline). */
+body.cco_body .row:has(a[href*="eventid"]),
+body.cco_body .row:has(a[href*="register"]),
+body.cco_body .item:has(a[href*="eventid"]),
 #cco_body .row,
 .co_body .content .row {
   background: var(--sb-event-soft, var(--sb-surface)) !important;
@@ -1927,12 +1955,16 @@ body.cco_body .form-textarea:focus { border-color: var(--sb-accent-300); outline
   border-radius: var(--sb-radius-lg);
   padding: 24px 28px !important;
   margin: 0 0 20px !important;
+  overflow: hidden;
 }
+body.cco_body .row:has(a[href*="eventid"]) .button,
+body.cco_body .item:has(a[href*="eventid"]) .button,
 #cco_body .row .button,
 #cco_body .row input[type="submit"],
 #cco_body .row .buttonStyle1 {
   background: var(--sb-event-accent, var(--sb-accent)) !important;
 }
+body.cco_body .row:has(a[href*="eventid"]) .button:hover,
 #cco_body .row .button:hover {
   background: var(--sb-event-accent-dark, var(--sb-accent-600)) !important;
 }

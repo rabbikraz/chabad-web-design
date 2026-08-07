@@ -831,7 +831,7 @@
 
   function themeEventListing() {
     if (window.location.pathname.toLowerCase().indexOf('/tools/events') === -1) return;
-    $all('#cco_body .row, .co_body .content .row').forEach(function (row) {
+    $all('.row, .item').forEach(function (row) {
       var link = row.querySelector('a[href*="eventid"]');
       if (!link) return;
       var m = /eventid[=\/](\d+)/i.exec(link.getAttribute('href') || '');
