@@ -18,6 +18,7 @@ var CHEVRON_LEFT =
 var CHEVRON_RIGHT =
 '<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>';
 var PAGE_RULES = [];
+var SPONSOR_TIERS = window.SB_SPONSOR_TIERS || {};
 function $(sel, ctx) { return (ctx || document).querySelector(sel); }
 function $all(sel, ctx) { return Array.prototype.slice.call((ctx || document).querySelectorAll(sel)); }
 function el(tag, cls, html) {
@@ -545,6 +546,97 @@ container.innerHTML = '';
 container.appendChild(grid);
 footer.appendChild(bottom);
 }
+function initSponsorTiers() {
+var idMatch = /\/eventid\/(\d+)/i.exec(window.location.pathname) ||
+/[?&]eventid=(\d+)/i.exec(window.location.search);
+var eventId = (idMatch && idMatch[1]) || String(window.SB_EVENT_ID || '');
+var conf = eventId && SPONSOR_TIERS[eventId];
+if (!conf || !conf.tiers || !conf.tiers.length) return;
+if (!$('#RegisterSinglePage')) return;
+function donationField() { return document.getElementById('TotalDonation'); }
+function root() { return document.getElementById('sb-sponsorship'); }
+function setDonation(value) {
+var field = donationField();
+if (!field) return;
+field.value = value;
+['input', 'change'].forEach(function (type) {
+field.dispatchEvent(new Event(type, { bubbles: true }));
+});
+}
+function paint(amount) {
+var r = root();
+if (!r) return;
+$all('.sb-tier', r).forEach(function (tier) {
+var on = Number(tier.getAttribute('data-amount')) === amount;
+tier.classList.toggle('sb-on', on);
+tier.setAttribute('aria-checked', String(on));
+});
+}
+function choose(amount) {
+var current = root() && root().querySelector('.sb-tier.sb-on');
+if (current && Number(current.getAttribute('data-amount')) === amount) {
+setDonation('');
+paint(null);
+return;
+}
+setDonation(amount);
+paint(amount);
+}
+function syncFromField() {
+var field = donationField();
+if (!field) return;
+var typed = parseFloat(String(field.value).replace(/[^0-9.]/g, ''));
+var hit = conf.tiers.some(function (t) { return t.amount === typed; });
+paint(hit ? typed : null);
+}
+function presetFromURL() {
+var m = /[?&]sponsor=(\d+)/.exec(window.location.search);
+if (!m) return null;
+var amount = parseInt(m[1], 10);
+return conf.tiers.some(function (t) { return t.amount === amount; }) ? amount : null;
+}
+function build() {
+var field = donationField();
+if (!field) return false;
+if (root()) return true;
+var anchor = field.closest ? field.closest('.clearfix') : null;
+if (!anchor || !anchor.parentNode) return false;
+var box = el('div');
+box.id = 'sb-sponsorship';
+box.innerHTML =
+'<div class="sb-sponsor-head">' + esc(conf.heading || 'Sponsorship Opportunities') + '</div>' +
+(conf.blurb ? '<p class="sb-sponsor-blurb">' + esc(conf.blurb) + '</p>' : '') +
+'<div class="sb-sponsor-list" role="radiogroup" aria-label="' + esc(conf.heading || 'Sponsorship Opportunities') + '">' +
+conf.tiers.map(function (t) {
+return '<button type="button" class="sb-tier" role="radio" aria-checked="false" data-amount="' + Number(t.amount) + '">' +
+'<span class="sb-amt">' + ('$') + Number(t.amount).toLocaleString('en-US') + '</span>' +
+'<span class="sb-name">' + esc(t.label) + '</span></button>';
+}).join('') +
+'</div>';
+box.addEventListener('click', function (event) {
+var tier = event.target.closest ? event.target.closest('.sb-tier') : null;
+if (tier) choose(Number(tier.getAttribute('data-amount')));
+});
+anchor.parentNode.insertBefore(box, anchor);
+field.addEventListener('input', syncFromField);
+field.addEventListener('change', syncFromField);
+var preset = presetFromURL();
+if (preset) choose(preset);
+else syncFromField();
+return true;
+}
+build();
+var queued = false;
+var mo = new MutationObserver(function () {
+if (queued) return;
+queued = true;
+requestAnimationFrame(function () {
+queued = false;
+if (!root() || !root().isConnected) build();
+});
+});
+mo.observe(document.body, { childList: true, subtree: true });
+}
 function init() {
 document.body.classList.remove('sb-nojs');
 document.body.classList.add('sb-js');
@@ -574,6 +666,7 @@ safe('subscribe', enhanceSubscribe);
 }
 safe('footer', buildFooter);
 safe('feedback-bar', relocateFeedbackBar);
+safe('sponsor-tiers', initSponsorTiers);
 }
 if (document.readyState !== 'loading') {
 init();

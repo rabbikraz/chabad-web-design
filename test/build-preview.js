@@ -42,6 +42,36 @@ const LIVE_CSS = {
 const PAGE_SET = [
   { src: 'home.html', out: 'preview-home.html', snapshot: '20251013120914' },
   { src: 'register.html', out: 'preview-register.html', snapshot: '20250317040018' },
+  // open-event form page; demo sponsorship config is harness-only
+  {
+    src: 'register-open.html',
+    out: 'preview-register-open.html',
+    snapshot: '20251013120914',
+    preFooter: `<script>
+window.SB_EVENT_ID = '23333';
+window.SB_SPONSOR_TIERS = {
+  '23333': {
+    heading: 'Sponsorship Opportunities',
+    blurb: "Sponsors help cover the evening's program.",
+    tiers: [
+      { label: 'Presenting Sponsor', amount: 5000 },
+      { label: 'Diamond Sponsor', amount: 2500 },
+      { label: 'Gold Sponsor', amount: 1800 },
+      { label: 'Silver Sponsor', amount: 500 },
+      { label: 'Community Sponsor', amount: 360 },
+      { label: 'Friend of The Gathering', amount: 180 }
+    ]
+  }
+};
+// show the Summary step (normally revealed after choosing a category)
+window.addEventListener('load', function () {
+  setTimeout(function () {
+    var s = document.getElementById('SecondaryFormItems');
+    if (s) s.classList.remove('hidden');
+  }, 1200);
+});
+</scr` + `ipt>`,
+  },
 ];
 
 const headerBlock = fs.readFileSync(path.join(DIST, 'header-code.html'), 'utf8');
@@ -62,12 +92,10 @@ for (const page of PAGE_SET) {
     return `${attr}="${archived}/https://www.chabadinsouthbeach.com${url}"`;
   });
 
-  // Inject the header block right before </head> (after the gtag block,
-  // exactly where ChabadOne places Custom Header Code).
-  html = html.replace(/<\/head>/i, `\n${headerBlock}\n</head>`);
-
-  // Inject the footer block right before </body> (Custom Footer Code).
-  html = html.replace(/<\/body>/i, `\n${footerBlock}\n</body>`);
+  // Inject the blocks with replacement FUNCTIONS: a replacement string would
+  // interpret $-patterns ($', $&…) inside the payload and corrupt it.
+  html = html.replace(/<\/head>/i, () => `\n${headerBlock}\n</head>`);
+  html = html.replace(/<\/body>/i, () => `\n${page.preFooter || ''}\n${footerBlock}\n</body>`);
 
   const outPath = path.join(__dirname, page.out);
   fs.writeFileSync(outPath, html);

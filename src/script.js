@@ -42,6 +42,27 @@
      ------------------------------------------------------------------ */
   var PAGE_RULES = [];
 
+  /* ------------------------------------------------------------------
+     SPONSORSHIP TIERS — per-event pill buttons above the Additional
+     Donation field on /tools/events/register_cdo/eventid/<ID> pages.
+     Add an entry per event ID (find it in the event page URL):
+
+       '20383': {
+         heading: 'Sponsorship Opportunities',
+         blurb: 'Sponsors help cover the evening.',
+         tiers: [
+           { label: 'Presenting Sponsor', amount: 5000 },
+           { label: 'Gold Sponsor', amount: 1800 },
+           { label: 'Friend of the Event', amount: 180 }
+         ]
+       }
+
+     Clicking a pill writes the amount into the donation field (and the
+     order total updates); clicking again clears it. ?sponsor=1800 in a
+     link pre-selects a tier. window.SB_SPONSOR_TIERS overrides all.
+     ------------------------------------------------------------------ */
+  var SPONSOR_TIERS = window.SB_SPONSOR_TIERS || {};
+
   /* ---------------- helpers ---------------- */
 
   function $(sel, ctx) { return (ctx || document).querySelector(sel); }
@@ -682,6 +703,117 @@
     footer.appendChild(bottom);
   }
 
+  /* ---------------- sponsorship tiers (event registration pages) ---------------- */
+
+  function initSponsorTiers() {
+    // both URL shapes: /register_cdo/eventid/23338/... and register.asp?eventid=23338
+    var idMatch = /\/eventid\/(\d+)/i.exec(window.location.pathname) ||
+                  /[?&]eventid=(\d+)/i.exec(window.location.search);
+    var eventId = (idMatch && idMatch[1]) || String(window.SB_EVENT_ID || '');
+    var conf = eventId && SPONSOR_TIERS[eventId];
+    if (!conf || !conf.tiers || !conf.tiers.length) return;
+    if (!$('#RegisterSinglePage')) return;
+
+    function donationField() { return document.getElementById('TotalDonation'); }
+    function root() { return document.getElementById('sb-sponsorship'); }
+
+    // set the field AND fire the Event App's own recalculation
+    function setDonation(value) {
+      var field = donationField();
+      if (!field) return;
+      field.value = value;
+      ['input', 'change'].forEach(function (type) {
+        field.dispatchEvent(new Event(type, { bubbles: true }));
+      });
+    }
+
+    function paint(amount) {
+      var r = root();
+      if (!r) return;
+      $all('.sb-tier', r).forEach(function (tier) {
+        var on = Number(tier.getAttribute('data-amount')) === amount;
+        tier.classList.toggle('sb-on', on);
+        tier.setAttribute('aria-checked', String(on));
+      });
+    }
+
+    function choose(amount) {
+      var current = root() && root().querySelector('.sb-tier.sb-on');
+      if (current && Number(current.getAttribute('data-amount')) === amount) {
+        setDonation('');
+        paint(null);
+        return;
+      }
+      setDonation(amount);
+      paint(amount);
+    }
+
+    function syncFromField() {
+      var field = donationField();
+      if (!field) return;
+      var typed = parseFloat(String(field.value).replace(/[^0-9.]/g, ''));
+      var hit = conf.tiers.some(function (t) { return t.amount === typed; });
+      paint(hit ? typed : null);
+    }
+
+    function presetFromURL() {
+      var m = /[?&]sponsor=(\d+)/.exec(window.location.search);
+      if (!m) return null;
+      var amount = parseInt(m[1], 10);
+      return conf.tiers.some(function (t) { return t.amount === amount; }) ? amount : null;
+    }
+
+    function build() {
+      var field = donationField();
+      if (!field) return false;
+      if (root()) return true;
+      var anchor = field.closest ? field.closest('.clearfix') : null;
+      if (!anchor || !anchor.parentNode) return false;
+
+      var box = el('div');
+      box.id = 'sb-sponsorship';
+      box.innerHTML =
+        '<div class="sb-sponsor-head">' + esc(conf.heading || 'Sponsorship Opportunities') + '</div>' +
+        (conf.blurb ? '<p class="sb-sponsor-blurb">' + esc(conf.blurb) + '</p>' : '') +
+        '<div class="sb-sponsor-list" role="radiogroup" aria-label="' + esc(conf.heading || 'Sponsorship Opportunities') + '">' +
+        conf.tiers.map(function (t) {
+          // note: never write dollar-before-quote ("$'") in this file — naive
+          // String.replace-based injectors treat it as a replacement pattern
+          return '<button type="button" class="sb-tier" role="radio" aria-checked="false" data-amount="' + Number(t.amount) + '">' +
+            '<span class="sb-amt">' + ('$') + Number(t.amount).toLocaleString('en-US') + '</span>' +
+            '<span class="sb-name">' + esc(t.label) + '</span></button>';
+        }).join('') +
+        '</div>';
+
+      box.addEventListener('click', function (event) {
+        var tier = event.target.closest ? event.target.closest('.sb-tier') : null;
+        if (tier) choose(Number(tier.getAttribute('data-amount')));
+      });
+
+      anchor.parentNode.insertBefore(box, anchor);
+      field.addEventListener('input', syncFromField);
+      field.addEventListener('change', syncFromField);
+
+      var preset = presetFromURL();
+      if (preset) choose(preset);
+      else syncFromField();
+      return true;
+    }
+
+    // The Summary step can be re-rendered by the Event App — re-insert if lost.
+    build();
+    var queued = false;
+    var mo = new MutationObserver(function () {
+      if (queued) return;
+      queued = true;
+      requestAnimationFrame(function () {
+        queued = false;
+        if (!root() || !root().isConnected) build();
+      });
+    });
+    mo.observe(document.body, { childList: true, subtree: true });
+  }
+
   /* ---------------- init ---------------- */
 
   function init() {
@@ -719,6 +851,7 @@
 
     safe('footer', buildFooter);
     safe('feedback-bar', relocateFeedbackBar);
+    safe('sponsor-tiers', initSponsorTiers);
   }
 
   // Footer code box loads after the DOM, but guard anyway.

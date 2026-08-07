@@ -1654,7 +1654,58 @@ body.cco_body .form-textarea:focus { border-color: var(--sb-accent-300); outline
 
 /* --------------------------------------------------------------------------
    16. EVENT REGISTRATION PAGES (/tools/events/register_cdo/...)
+   The chabad.org form-redesign theme (loaded in the header block) restyles
+   the reservation flow into per-attendee rows; its palette is driven by
+   CSS variables designed to be overridden — mapped to ours here.
    -------------------------------------------------------------------------- */
+:root {
+  --primary-form-color: #C08A2E;      /* switches the redesign on; gold accents */
+  --contrast-form-color: #0E464B;     /* teal-700: headings/labels contrast */
+  --accent-form-color: #17656B;       /* teal: links, highlights */
+  --accent-form-light: #F8EDD6;       /* row hover / light fills */
+  --accent-form-medium: #F3E8D3;      /* table-header strip */
+  --border-form-color: rgba(23, 35, 46, .14);
+  --text-form-dark: #17232E;
+  --text-form-muted: rgba(23, 35, 46, .65);
+  --font-form-main: "Figtree", system-ui, sans-serif;
+}
+
+/* Sponsorship tiers (built by the footer JS per SPONSOR_TIERS config) */
+#sb-sponsorship { margin: 8px 0 26px; }
+.sb-sponsor-head {
+  font-size: 12px;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--sb-accent-700);
+  font-family: var(--sb-font-body);
+  font-weight: 500;
+  margin: 0 0 6px;
+}
+.sb-sponsor-blurb {
+  font-size: 16px;
+  color: rgba(23, 35, 46, .75);
+  margin: 0 0 14px;
+}
+.sb-sponsor-list { display: flex; flex-wrap: wrap; gap: 10px; }
+.sb-tier {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 10px 18px;
+  border: 1px solid var(--sb-accent-300);
+  border-radius: 999px;
+  background: var(--sb-bg);
+  color: var(--sb-text);
+  font-family: var(--sb-font-body);
+  font-size: 15.5px;
+  cursor: pointer;
+  transition: background 160ms ease, color 160ms ease, border-color 160ms ease;
+}
+.sb-tier .sb-amt { font-weight: 700; }
+.sb-tier .sb-name { color: rgba(23, 35, 46, .6); }
+.sb-tier:hover { background: var(--sb-accent-100); }
+.sb-tier.sb-on { background: var(--sb-accent); border-color: var(--sb-accent); color: #fff; }
+.sb-tier.sb-on .sb-name { color: rgba(255, 255, 255, .85); }
 #RegisterSinglePage.container {
   background: var(--sb-bg);
   border: 1px solid var(--sb-divider);

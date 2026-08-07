@@ -94,9 +94,13 @@ function build() {
     '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>',
     `<link rel="stylesheet" href="${GOOGLE_FONTS}">`,
     `<link rel="stylesheet" href="${SWIPER_CSS}">`,
+    // chabad.org's official event-form redesign (same assets the Venetian site
+    // uses); recolored to our palette via the --*-form-* variables in style.css
+    '<link rel="stylesheet" href="https://w2.chabad.org/images/Shluchim/minisites/themes/form-redesign/form-style.css?v=7/17/2026">',
     '<style id="sb-theme">',
     minifyCss(css),
     '</style>',
+    '<script src="https://w2.chabad.org/images/Shluchim/minisites/themes/form-redesign/form-script.js?v=7/17/2026"></script>',
     ''
   ].join('\n');
 
