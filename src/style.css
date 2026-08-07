@@ -1482,7 +1482,14 @@ body.cco_body .master-content-wrapper {
   border-bottom: none;
   padding: 0;
 }
-/* no white card behind the page title, on any article template */
+/* no white card behind the page title, on any article template.
+   The theme paints it with a double-ID !important selector — match it. */
+#BodyContainer .no-hero-image #co_content_container .master-content-wrapper.master-content-wrapper {
+  background: none !important;
+  border-bottom: none !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
 .article-header { margin: 0 0 26px; background: none; }
 body.cco_body .article-header,
 body.cco_body .master-content-wrapper,
@@ -1653,6 +1660,237 @@ body.cco_body .form-textarea:focus { border-color: var(--sb-accent-300); outline
 /* blue utility text classes the register form leans on → theme ink */
 #RegisterSinglePage .blue, #RegisterSinglePage .blue a { color: var(--sb-teal-700); }
 #RegisterSinglePage.shaded { background: var(--sb-bg); }
+
+/* --------------------------------------------------------------------------
+   16b. LIVE-THEME COUNTER-OVERRIDES
+   The production default-theme.css (v=14E1E195, saved in test/livecss/) is
+   newer than the copy this layer was first written against and styles the
+   homepage widgets aggressively (gold uppercase centered headings, gradient
+   subscribe band, absolute-overlay program cards, collapsed photo tiles).
+   Everything here is verified against that exact file.
+   -------------------------------------------------------------------------- */
+
+/* rows: the theme pads every row 100px and paints the first one grey */
+.hp-row { padding: 0; background: none; }
+.hp-table { background: none !important; }
+.hp-table .hp-row { background: none; }
+.hp-table .hp-row:has(.widget-4.message) { background: var(--sb-surface) !important; }
+.hp-table .hp-row-first { background: var(--sb-teal-900) !important; padding: 0 !important; }
+.hp-table .hp_subscribe { background: none !important; } /* the rainbow gradient */
+.hp_content_wrapper { background: none !important; text-align: left !important; }
+.hp_content_wrapper > div { background: none !important; }
+/* …except the full-bleed dark This-Shabbat band, which is one of those divs */
+.hp_content_wrapper > .rightColumn:has(.candlelighting) { background: var(--sb-teal-900) !important; }
+.widget-4.facebook_likebox { background: none !important; }
+.widget-4.upcoming_events { background: none !important; }
+
+/* widget headings: theme uses .widget_header.widget_header h5 (gold, 36px,
+   uppercase, centered) — match its doubled-class trick and out-order it */
+.sneak-peek-container .header-title,
+.chabad_updates .widget_header.widget_header h5,
+[class*="widget-"] .widget_header.widget_header h5 {
+  font-family: var(--sb-font-heading) !important;
+  font-weight: 400 !important;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+  text-align: left !important;
+  color: var(--sb-text) !important;
+}
+/* re-assert per-section sizes the blanket above would otherwise flatten */
+.sneak-peek-container .header-title {
+  font-size: clamp(32px, 3.5vw, 46px) !important;
+  margin: 0 0 46px !important;
+}
+.widget-4.candlelighting .widget_header.widget_header h5 { font-size: 0 !important; margin: 0 !important; }
+body.cco_body:not(.sb-js) .widget-4.candlelighting .widget_header.widget_header h5 {
+  font-size: 28px !important;
+  color: var(--sb-bg) !important;
+  margin-bottom: 16px !important;
+}
+.widget-4.facebook_likebox .widget_header.widget_header h5 { font-size: 24px !important; margin: 0 0 14px !important; }
+.widget-4.subscribe .widget_header.widget_header h5 {
+  font-size: clamp(28px, 2.8vw, 38px) !important;
+  margin: 0 0 12px !important;
+  color: var(--sb-text) !important;
+}
+body.sb-js .widget-4.latest_photos .widget_header.widget_header h5 { display: none !important; }
+.widget-4.message .widget_header.widget_header h5 { font-size: 34px !important; margin: 0 0 18px !important; }
+
+/* our small-caps links: the theme dresses .readMore as yellow-bordered boxes */
+a.sb-link-caps, a.sb-link-caps:hover,
+.upcoming_events .readMore, .upcoming_events .readMore:hover,
+.message .wrapper .widget_content .readMore,
+.message .wrapper .widget_content .readMore:hover {
+  border: none !important;
+  padding: 0 !important;
+  background: none !important;
+  text-shadow: none !important;
+  font-size: 15.5px !important;
+  letter-spacing: .06em !important;
+  text-transform: uppercase !important;
+  font-family: var(--sb-font-body) !important;
+  font-weight: 500 !important;
+  color: var(--sb-accent-700) !important;
+  margin-top: 0 !important;
+}
+.sb-shabbat-col a.sb-link-caps { color: var(--sb-accent-300) !important; }
+
+/* welcome / mission: theme centers the whole widget */
+.widget-4.message > .wrapper {
+  max-width: var(--sb-max) !important;
+  padding: 88px var(--sb-gutter) !important;
+  margin: 0 auto !important;
+  text-align: left !important;
+}
+
+/* hero copy: arm against generic theme typography */
+body.cco_body .sb-hero-copy h1 {
+  font-size: clamp(36px, 4.6vw, 62px) !important;
+  color: var(--sb-bg) !important;
+  text-transform: none !important;
+  text-align: left !important;
+  font-family: var(--sb-font-heading) !important;
+}
+.sb-hero-copy p {
+  display: block !important;
+  color: rgba(251, 245, 233, .88) !important;
+  font-size: clamp(17px, 1.5vw, 20px) !important;
+  text-align: left !important;
+  max-width: 520px !important;
+  margin: 0 0 32px !important;
+}
+.sb-hero-copy { text-align: left !important; }
+
+/* programs: theme turns cards into absolute overlays (white uppercase title
+   centered over a grey-multiplied thumbnail) and hides the description */
+.hp-row:has(.sneak-peek-container) { padding: 96px var(--sb-gutter) 20px; }
+.sneak-peek-container { max-width: none !important; text-align: left !important; }
+.sneak-peek-item .widget_content,
+.sneak-peek-container .sneak_peek .widget_content {
+  display: flex !important;
+  overflow: hidden !important;
+  text-align: left !important;
+}
+.sneak-peek-container .sneak_peek .widget_content p {
+  display: block !important;
+  padding: 4px 28px 30px !important;
+  margin: 0 !important;
+}
+.sneak-peek-container .sneak_peek .widget_content h6 {
+  position: static !important;
+  display: block !important;
+  width: auto !important;
+  height: auto !important;
+  padding: 26px 28px 6px !important;
+  margin: 0 !important;
+  background: none !important;
+}
+.sneak-peek-container .sneak_peek .widget_content h6:hover { background: none !important; }
+.sneak-peek-container .sneak_peek .widget_content h6 a {
+  position: static !important;
+  display: block !important;
+  width: auto !important;
+  height: auto !important;
+  padding: 0 !important;
+  color: var(--sb-text) !important;
+  font-size: 26px !important;
+  font-family: var(--sb-font-heading) !important;
+  text-transform: none !important;
+  text-align: left !important;
+  justify-content: flex-start !important;
+}
+.sneak-peek-container .sneak_peek .thumbnail {
+  position: relative !important;
+  top: auto !important;
+  left: auto !important;
+  height: 220px !important;
+  order: -1;
+}
+.sneak-peek-container .sneak_peek .thumbnail img {
+  mix-blend-mode: normal !important;
+  will-change: auto !important;
+  opacity: 1 !important;
+}
+.sneak-peek-container .sneak_peek .thumbnail:after { display: none !important; content: none !important; }
+
+/* subscribe form: theme uses #formContainer (an ID) for translucent 20%-wide
+   inline inputs on the gradient — match the ID and restore the design card */
+.hp_subscribe .wrapper { max-width: var(--sb-max) !important; text-align: left !important; margin: 0 auto !important; }
+.hp_subscribe .wrapper #formContainer fieldset input,
+.hp_subscribe .wrapper #formContainer fieldset input#Fname,
+.hp_subscribe .wrapper #formContainer fieldset input#Lname,
+.hp_subscribe .wrapper #formContainer fieldset input#Email {
+  display: block !important;
+  width: 100% !important;
+  height: 54px !important;
+  background: var(--sb-bg) !important;
+  border: 1px solid var(--sb-divider) !important;
+  border-radius: var(--sb-radius-md) !important;
+  color: var(--sb-text) !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+  margin: 0 !important;
+  padding: 0 16px !important;
+  font-size: 17px !important;
+  font-family: var(--sb-font-body) !important;
+}
+.hp_subscribe .wrapper #formContainer fieldset input::placeholder {
+  color: rgba(23, 35, 46, .45) !important;
+  font-family: var(--sb-font-body) !important;
+}
+.hp_subscribe .wrapper #formContainer fieldset input[type="submit"] {
+  background: var(--sb-accent) !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: 999px !important;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+  font-weight: 500 !important;
+  font-size: 16.5px !important;
+  padding: 0 30px !important;
+}
+.hp_subscribe .wrapper #formContainer fieldset input[type="submit"]:hover { background: var(--sb-accent-600) !important; }
+.hp_subscribe .wrapper #formContainer fieldset label { display: block !important; text-align: left !important; }
+
+/* latest photos: theme collapses tiles to height:0 + padding-top ratios */
+.latest_photos .wrapper { max-width: none !important; text-align: left !important; }
+.latest_photos .widget_content > ul { margin: 0 !important; padding: 0 !important; }
+.latest_photos .widget_content > ul li,
+.latest_photos .widget_content > ul li:first-child {
+  height: auto !important;
+  width: auto !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  display: block !important;
+  float: none !important;
+  position: relative !important;
+}
+.latest_photos .widget_content > ul li a,
+.latest_photos .widget_content > ul li:first-child a {
+  position: absolute !important;
+  width: 100% !important;
+  height: 100% !important;
+  top: 0 !important;
+  left: 0 !important;
+}
+/* JS moved the link into the section header — hide the theme's boxed copy */
+body.sb-js .latest_photos .widget_content .readMore { display: none !important; }
+/* the mosaic shows six photos (must out-rank the display:block revival above) */
+body .latest_photos .widget_content > ul li:nth-child(n+7) { display: none !important; }
+
+/* dark shabbat band: arm text colors against theme typography */
+body.cco_body .sb-shabbat-col h3,
+body.cco_body .sb-shabbat-col h3 a { color: var(--sb-bg) !important; }
+.sb-shabbat-col p { color: rgba(251, 245, 233, .82) !important; }
+.sb-time-label { color: rgba(251, 245, 233, .78) !important; }
+.sb-time-big { color: var(--sb-bg) !important; }
+.sb-shabbat-col .sb-eyebrow { color: var(--sb-accent-300) !important; }
+
+/* events + facebook: kill any leftover panel backgrounds */
+.widget-4.upcoming_events > .wrapper { background: none !important; text-align: left !important; padding: 0 !important; }
+.widget-4.facebook_likebox > .wrapper { text-align: left !important; }
 
 /* --------------------------------------------------------------------------
    17. RESPONSIVE

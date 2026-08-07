@@ -9,13 +9,12 @@
  *   test/preview-home.html       (homepage)
  *   test/preview-register.html   (event registration page)
  *
- * Saved page sources live in test/pages/. To refresh them, save the live
- * page source from a browser (Ctrl+U → save) into that folder as
- * home.html / register.html — or keep using the Wayback Machine copies.
- *
- * Root-relative asset URLs (/css/..., /scripts/...) are rewritten to the
- * Wayback Machine so the stock CMS styles/scripts load locally exactly the
- * way they do in production, without fighting Cloudflare.
+ * Saved page sources live in test/pages/ (refresh via browser Ctrl+U → save).
+ * The CMS's own stylesheets are served from test/livecss/ — the EXACT current
+ * files downloaded from the live site (static css is not Cloudflare-blocked):
+ *   curl -A "<browser UA>" https://www.chabadinsouthbeach.com/css/<path>
+ * Root-relative CSS links are rewritten to those local copies; any other
+ * root-relative asset falls back to the Wayback Machine.
  */
 'use strict';
 
@@ -26,7 +25,20 @@ const ROOT = path.join(__dirname, '..');
 const DIST = path.join(ROOT, 'dist');
 const PAGES = path.join(__dirname, 'pages');
 
-// Wayback snapshot timestamps the saved pages came from
+// live css files present in test/livecss/, keyed by their /css/ path prefix
+const LIVE_CSS = {
+  'css/fonts/font-awesome/font-awesome-5.css': 'font-awesome-5.css',
+  'css/DefaultGrid.css': 'DefaultGrid.css',
+  'css/Elements.css': 'Elements.css',
+  'css/vendor/ds/tokens/sites.css': 'sites.css',
+  'css/new/main.css': 'main.css',
+  'css/global.css': 'global.css',
+  'css/cco/home/widget-styles.css': 'widget-styles.css',
+  'css/sites6/default-theme.css': 'default-theme.css',
+  'css/old/global.css': 'old-global.css',
+  'css/cco/home/default/prettyPhoto.min.css': 'prettyPhoto.min.css',
+};
+
 const PAGE_SET = [
   { src: 'home.html', out: 'preview-home.html', snapshot: '20251013120914' },
   { src: 'register.html', out: 'preview-register.html', snapshot: '20250317040018' },
@@ -43,12 +55,12 @@ for (const page of PAGE_SET) {
   }
   let html = fs.readFileSync(srcPath, 'utf8');
 
-  // Rewrite root-relative subresource URLs to the archived origin.
   const archived = `https://web.archive.org/web/${page.snapshot}`;
-  html = html.replace(
-    /(href|src)="(\/[^"/][^"]*)"/g,
-    (m, attr, url) => `${attr}="${archived}/https://www.chabadinsouthbeach.com${url}"`
-  );
+  html = html.replace(/(href|src)="(\/[^"/][^"]*)"/g, (m, attr, url) => {
+    const clean = url.replace(/^\//, '').split('?')[0];
+    if (LIVE_CSS[clean]) return `${attr}="livecss/${LIVE_CSS[clean]}"`;
+    return `${attr}="${archived}/https://www.chabadinsouthbeach.com${url}"`;
+  });
 
   // Inject the header block right before </head> (after the gtag block,
   // exactly where ChabadOne places Custom Header Code).
