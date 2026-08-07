@@ -1966,6 +1966,8 @@ body.cco_body .form-textarea:focus { border-color: var(--sb-accent-300); outline
 body.cco_body .row:has(a[href*="eventid"]),
 body.cco_body .row:has(a[href*="register"]),
 body.cco_body .item:has(a[href*="eventid"]),
+body.cco_body .event:has(a[href*="eventid"]),
+#cco_body .event,
 #cco_body .row,
 .co_body .content .row {
   background: var(--sb-event-soft, var(--sb-surface)) !important;
@@ -1977,14 +1979,33 @@ body.cco_body .item:has(a[href*="eventid"]),
 }
 body.cco_body .row:has(a[href*="eventid"]) .button,
 body.cco_body .item:has(a[href*="eventid"]) .button,
+#cco_body .event .button,
 #cco_body .row .button,
 #cco_body .row input[type="submit"],
 #cco_body .row .buttonStyle1 {
   background: var(--sb-event-accent, var(--sb-accent)) !important;
 }
 body.cco_body .row:has(a[href*="eventid"]) .button:hover,
+#cco_body .event .button:hover,
 #cco_body .row .button:hover {
   background: var(--sb-event-accent-dark, var(--sb-accent-600)) !important;
+}
+/* listing internals: flyer thumb, title, date line */
+#cco_body .event .event__image img {
+  width: 100%;
+  max-width: 100px;
+  height: auto;
+  border-radius: var(--sb-radius-md);
+  box-shadow: var(--sb-shadow-sm);
+}
+#cco_body .event h2 a {
+  font-family: var(--sb-font-heading);
+  font-size: 26px;
+  color: var(--sb-text);
+}
+#cco_body .event .performance__date {
+  color: var(--sb-event-accent-dark, var(--sb-accent-700));
+  font-weight: 600;
 }
 
 /* --------------------------------------------------------------------------
@@ -2360,10 +2381,20 @@ div#confirm-wrapper::after { content: none !important; display: none !important;
   border-radius: 999px;
   box-shadow: none;
 }
+/* their slider is a 52%-wide, 70px-tall white panel clipped by the box —
+   recolored gold it reads as a lopsided blob. Shrink it to an inset pill
+   that sits exactly under each 50% label column. */
 .frequency-toggle-wrapper .frequency-toggle::before {
   background-color: var(--sb-accent);
   border-radius: 999px;
   box-shadow: none;
+  width: calc(50% - 8px);
+  height: calc(100% - 8px);
+  top: 4px;
+  margin-left: 4px;
+}
+.frequency-toggle-wrapper .frequency-toggle:has(.monthly input:checked)::before {
+  margin-left: calc(50% + 4px);
 }
 .frequency-toggle-wrapper .frequency-toggle label {
   font-family: var(--sb-font-body);

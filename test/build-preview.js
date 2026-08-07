@@ -45,6 +45,13 @@ const LIVE_CSS = {
 const PAGE_SET = [
   { src: 'home.html', out: 'preview-home.html', snapshot: '20251013120914' },
   { src: 'donate.html', out: 'preview-donate.html', snapshot: '20251013120914' },
+  // events LISTING page (file:// path can't contain /tools/events, so force it)
+  {
+    src: 'events-listing.html',
+    out: 'preview-events-listing.html',
+    snapshot: '20251013120914',
+    preFooter: '<script>window.SB_FORCE_LISTING = true;</scr' + 'ipt>',
+  },
   { src: 'register.html', out: 'preview-register.html', snapshot: '20250317040018' },
   // open-event form page; demo sponsorship config is harness-only
   {

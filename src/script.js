@@ -830,8 +830,9 @@
   /* ---------------- event listing: tint each row with its event's theme ---------------- */
 
   function themeEventListing() {
-    if (window.location.pathname.toLowerCase().indexOf('/tools/events') === -1) return;
-    $all('.row, .item').forEach(function (row) {
+    if (!window.SB_FORCE_LISTING &&
+        window.location.pathname.toLowerCase().indexOf('/tools/events') === -1) return;
+    $all('.event, .row, .item').forEach(function (row) {
       var link = row.querySelector('a[href*="eventid"]');
       if (!link) return;
       var m = /eventid[=\/](\d+)/i.exec(link.getAttribute('href') || '');
