@@ -49,6 +49,10 @@ const PAGE_SET = [
     snapshot: '20251013120914',
     preFooter: `<script>
 window.SB_EVENT_ID = '23333';
+// demo flyer theme: sage green + blush from the Gathering artwork
+window.SB_PAGE_THEMES = {
+  'register-open': { accent: '#4E6B54', accentDark: '#3A523F', band: '#31463A', soft: '#F6ECE6' }
+};
 window.SB_SPONSOR_TIERS = {
   '23333': {
     heading: 'Sponsorship Opportunities',

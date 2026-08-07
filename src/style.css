@@ -1703,17 +1703,104 @@ body.cco_body .form-textarea:focus { border-color: var(--sb-accent-300); outline
 }
 .sb-tier .sb-amt { font-weight: 700; }
 .sb-tier .sb-name { color: rgba(23, 35, 46, .6); }
-.sb-tier:hover { background: var(--sb-accent-100); }
-.sb-tier.sb-on { background: var(--sb-accent); border-color: var(--sb-accent); color: #fff; }
+.sb-tier:hover { background: var(--sb-event-soft, var(--sb-accent-100)); }
+.sb-tier.sb-on {
+  background: var(--sb-event-accent, var(--sb-accent));
+  border-color: var(--sb-event-accent, var(--sb-accent));
+  color: #fff;
+}
 .sb-tier.sb-on .sb-name { color: rgba(255, 255, 255, .85); }
-#RegisterSinglePage.container {
-  background: var(--sb-bg);
-  border: 1px solid var(--sb-divider);
-  border-radius: var(--sb-radius-lg);
-  box-shadow: var(--sb-shadow-sm);
-  padding: 34px 38px;
+.sb-sponsor-head { color: var(--sb-event-accent-dark, var(--sb-accent-700)); }
+/* seamless, card-less registration flow (per-event colors via --sb-event-*) */
+#RegisterSinglePage.container,
+#RegisterSinglePage.container.shaded {
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
   color: var(--sb-text);
   font-size: 17px;
+}
+.sb-event-hero {
+  border-radius: var(--sb-radius-lg);
+  overflow: hidden;
+  margin: 0 0 30px;
+  box-shadow: var(--sb-shadow-sm);
+}
+.sb-event-hero img { width: 100%; height: auto; display: block; }
+#RegisterHeader .column1 { float: none !important; width: 100% !important; }
+#RegisterHeader .event_name.sb-event-name { display: none; } /* the page h1 already says it */
+#RegisterHeader .event_description.sb-event-desc {
+  float: none;
+  text-align: center;
+  max-width: 720px;
+  margin: 0 auto 30px;
+  font-size: 18px !important;
+  line-height: 1.65;
+  color: var(--sb-text);
+}
+.sb-event-band {
+  background: var(--sb-event-band, var(--sb-teal-900));
+  color: var(--sb-bg);
+  border-radius: var(--sb-radius-lg);
+  padding: 28px 36px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px 72px;
+  justify-content: center;
+  text-align: center;
+  margin: 0 0 18px;
+}
+.sb-band-cell .sb-eyebrow { color: var(--sb-accent-300); margin-bottom: 8px; font-size: 11.5px; }
+.sb-band-cell a { color: var(--sb-bg) !important; font-size: 16.5px; line-height: 1.55; }
+.sb-band-cell a:hover { color: var(--sb-accent-300) !important; }
+.sb-band-cell .float_left, .sb-band-cell .float_right { float: none !important; }
+
+/* form sections: labels above inputs, roomy two-column grid */
+#RegisterSinglePage .label,
+#RegisterSinglePage #Summary .label {
+  float: none !important;
+  width: auto !important;
+  display: block;
+  font-size: 12.5px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--sb-event-accent-dark, var(--sb-accent-700));
+  font-weight: 600 !important;
+  margin: 0 0 6px !important;
+}
+#ReserversInformation .float_left.left_margin,
+#Payment .float_left.left_margin,
+#Summary .float_left.left_margin {
+  float: none !important;
+  margin-left: 0 !important;
+  width: 100%;
+}
+#ReserversInformation input.co_form_input,
+#ReserversInformation select.co_form_input,
+#Payment input.co_form_input,
+#Payment select.co_form_input,
+#Payment textarea.co_form_input {
+  width: min(420px, 100%);
+  box-sizing: border-box;
+}
+#ReserversInformation .large_top_padding > .clearfix {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px 40px;
+  align-items: start;
+}
+#ReserversInformation .large_top_padding > .clearfix > .clearfix { min-width: 0; }
+@media (max-width: 767px) {
+  #ReserversInformation .large_top_padding > .clearfix { grid-template-columns: 1fr; }
+}
+#RegisterBody .title .bold { font-weight: 400 !important; }
+#RegisterSinglePage .co_global_button .button,
+#RegisterSinglePage input[type="submit"] {
+  background: var(--sb-event-accent, var(--sb-accent));
+}
+#RegisterSinglePage .co_global_button .button:hover {
+  background: var(--sb-event-accent-dark, var(--sb-accent-600));
 }
 #RegisterSinglePage .banner_image img { width: 100%; height: auto; border-radius: var(--sb-radius-md); }
 #RegisterSinglePage .event_name,
@@ -1739,7 +1826,7 @@ body.cco_body .form-textarea:focus { border-color: var(--sb-accent-300); outline
 #RegisterSinglePage .co_form_input,
 #RegisterSinglePage .co_global_button .button { font-size: 16.5px; font-family: var(--sb-font-body); }
 #RegisterSinglePage .performance {
-  background: var(--sb-surface);
+  background: var(--sb-event-soft, var(--sb-surface));
   border: 1px solid var(--sb-divider);
   border-radius: var(--sb-radius-md);
   padding: 18px 20px;

@@ -19,6 +19,32 @@ var CHEVRON_RIGHT =
 '<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>';
 var PAGE_RULES = [];
 var SPONSOR_TIERS = window.SB_SPONSOR_TIERS || {};
+var PAGE_THEMES = window.SB_PAGE_THEMES || {};
+function applyPageTheme() {
+var href = window.location.href;
+for (var key in PAGE_THEMES) {
+if (href.indexOf(key) === -1) continue;
+var t = PAGE_THEMES[key];
+var r = document.documentElement.style;
+if (t.accent) {
+r.setProperty('--sb-event-accent', t.accent);
+r.setProperty('--primary-form-color', t.accent);
+r.setProperty('--accent-form-color', t.accent);
+}
+if (t.accentDark) {
+r.setProperty('--sb-event-accent-dark', t.accentDark);
+r.setProperty('--contrast-form-color', t.accentDark);
+}
+if (t.band) r.setProperty('--sb-event-band', t.band);
+if (t.soft) {
+r.setProperty('--sb-event-soft', t.soft);
+r.setProperty('--accent-form-medium', t.soft);
+r.setProperty('--accent-form-light', t.soft);
+}
+document.body.classList.add('sb-themed-page');
+break;
+}
+}
 function $(sel, ctx) { return (ctx || document).querySelector(sel); }
 function $all(sel, ctx) { return Array.prototype.slice.call((ctx || document).querySelectorAll(sel)); }
 function el(tag, cls, html) {
@@ -546,6 +572,51 @@ container.innerHTML = '';
 container.appendChild(grid);
 footer.appendChild(bottom);
 }
+function buildEventHero() {
+var form = $('#RegisterSinglePage');
+if (!form || $('.sb-event-hero') || $('.sb-event-band')) return;
+var header = $('#RegisterHeader', form);
+if (!header) return;
+var bannerWrap = header.querySelector('.banner_image');
+var bannerImg = bannerWrap && bannerWrap.querySelector('img');
+if (bannerImg && bannerImg.getAttribute('src')) {
+var hero = el('div', 'sb-event-hero');
+hero.appendChild(bannerImg);
+form.insertBefore(hero, form.firstChild);
+bannerWrap.style.display = 'none';
+}
+var desc = header.querySelector('.event_description');
+if (desc && txt(desc)) desc.classList.add('sb-event-desc');
+var name = header.querySelector('.event_name');
+if (name) name.classList.add('sb-event-name');
+var col2 = header.querySelector('.column2');
+if (col2) {
+var cells = [];
+var loc = col2.querySelector('.map_link a');
+if (loc) {
+var locInner = loc.querySelector('div');
+cells.push(
+'<div class="sb-band-cell"><div class="sb-eyebrow">Location</div>' +
+'<a href="' + esc(loc.getAttribute('href') || '#') + '" target="_blank" rel="noopener">' +
+(locInner ? locInner.innerHTML : esc(txt(loc))) + '</a></div>'
+);
+}
+var ical = col2.querySelector('.ical_link a');
+if (ical) {
+var dateText = txt(ical.querySelector('div') || ical);
+cells.push(
+'<div class="sb-band-cell"><div class="sb-eyebrow">Date</div>' +
+'<a href="' + esc(ical.getAttribute('href') || '#') + '" title="Download iCal">' +
+esc(dateText) + '</a></div>'
+);
+}
+if (cells.length) {
+var band = el('div', 'sb-event-band', cells.join(''));
+header.parentNode.insertBefore(band, header.nextSibling);
+col2.style.display = 'none';
+}
+}
+}
 function initSponsorTiers() {
 var idMatch = /\/eventid\/(\d+)/i.exec(window.location.pathname) ||
 /[?&]eventid=(\d+)/i.exec(window.location.search);
@@ -642,6 +713,7 @@ document.body.classList.remove('sb-nojs');
 document.body.classList.add('sb-js');
 if (isHome()) document.body.classList.add('sb-home');
 safe('page-rules', runPageRules);
+safe('page-theme', applyPageTheme);
 safe('nav-labels', normalizeNavLabels);
 safe('branding', enhanceBranding);
 safe('mobile-menu', initMobileMenu);
@@ -666,6 +738,7 @@ safe('subscribe', enhanceSubscribe);
 }
 safe('footer', buildFooter);
 safe('feedback-bar', relocateFeedbackBar);
+safe('event-hero', buildEventHero);
 safe('sponsor-tiers', initSponsorTiers);
 }
 if (document.readyState !== 'loading') {

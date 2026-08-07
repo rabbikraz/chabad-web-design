@@ -63,6 +63,45 @@
      ------------------------------------------------------------------ */
   var SPONSOR_TIERS = window.SB_SPONSOR_TIERS || {};
 
+  /* ------------------------------------------------------------------
+     PER-PAGE THEMES — recolor an event/program page to match its flyer.
+     Keys are matched anywhere in the URL (event id, article aid, or a
+     slug). Colors: accent (buttons/pills/links), accentDark (hover),
+     band (dark info band), soft (light fills / table header strip).
+
+       '23338': { accent: '#4E6B54', accentDark: '#3D5643',
+                  band: '#2F4436', soft: '#F5EEE3' }
+
+     Anything not set falls back to the site palette.
+     ------------------------------------------------------------------ */
+  var PAGE_THEMES = window.SB_PAGE_THEMES || {};
+
+  function applyPageTheme() {
+    var href = window.location.href;
+    for (var key in PAGE_THEMES) {
+      if (href.indexOf(key) === -1) continue;
+      var t = PAGE_THEMES[key];
+      var r = document.documentElement.style;
+      if (t.accent) {
+        r.setProperty('--sb-event-accent', t.accent);
+        r.setProperty('--primary-form-color', t.accent);
+        r.setProperty('--accent-form-color', t.accent);
+      }
+      if (t.accentDark) {
+        r.setProperty('--sb-event-accent-dark', t.accentDark);
+        r.setProperty('--contrast-form-color', t.accentDark);
+      }
+      if (t.band) r.setProperty('--sb-event-band', t.band);
+      if (t.soft) {
+        r.setProperty('--sb-event-soft', t.soft);
+        r.setProperty('--accent-form-medium', t.soft);
+        r.setProperty('--accent-form-light', t.soft);
+      }
+      document.body.classList.add('sb-themed-page');
+      break;
+    }
+  }
+
   /* ---------------- helpers ---------------- */
 
   function $(sel, ctx) { return (ctx || document).querySelector(sel); }
@@ -703,6 +742,60 @@
     footer.appendChild(bottom);
   }
 
+  /* ---------------- event page hero + info band ----------------
+     Rebuild the top of the registration form: flyer as a wide banner,
+     centered description, and a dark Location/Date band built from the
+     CMS's own column2 data (map + iCal links preserved). */
+
+  function buildEventHero() {
+    var form = $('#RegisterSinglePage');
+    if (!form || $('.sb-event-hero') || $('.sb-event-band')) return;
+    var header = $('#RegisterHeader', form);
+    if (!header) return;
+
+    var bannerWrap = header.querySelector('.banner_image');
+    var bannerImg = bannerWrap && bannerWrap.querySelector('img');
+    if (bannerImg && bannerImg.getAttribute('src')) {
+      var hero = el('div', 'sb-event-hero');
+      hero.appendChild(bannerImg);
+      form.insertBefore(hero, form.firstChild);
+      bannerWrap.style.display = 'none';
+    }
+
+    var desc = header.querySelector('.event_description');
+    if (desc && txt(desc)) desc.classList.add('sb-event-desc');
+    var name = header.querySelector('.event_name');
+    if (name) name.classList.add('sb-event-name');
+
+    var col2 = header.querySelector('.column2');
+    if (col2) {
+      var cells = [];
+      var loc = col2.querySelector('.map_link a');
+      if (loc) {
+        var locInner = loc.querySelector('div');
+        cells.push(
+          '<div class="sb-band-cell"><div class="sb-eyebrow">Location</div>' +
+          '<a href="' + esc(loc.getAttribute('href') || '#') + '" target="_blank" rel="noopener">' +
+          (locInner ? locInner.innerHTML : esc(txt(loc))) + '</a></div>'
+        );
+      }
+      var ical = col2.querySelector('.ical_link a');
+      if (ical) {
+        var dateText = txt(ical.querySelector('div') || ical);
+        cells.push(
+          '<div class="sb-band-cell"><div class="sb-eyebrow">Date</div>' +
+          '<a href="' + esc(ical.getAttribute('href') || '#') + '" title="Download iCal">' +
+          esc(dateText) + '</a></div>'
+        );
+      }
+      if (cells.length) {
+        var band = el('div', 'sb-event-band', cells.join(''));
+        header.parentNode.insertBefore(band, header.nextSibling);
+        col2.style.display = 'none';
+      }
+    }
+  }
+
   /* ---------------- sponsorship tiers (event registration pages) ---------------- */
 
   function initSponsorTiers() {
@@ -822,6 +915,7 @@
     if (isHome()) document.body.classList.add('sb-home');
 
     safe('page-rules', runPageRules);
+    safe('page-theme', applyPageTheme);
     safe('nav-labels', normalizeNavLabels);
     safe('branding', enhanceBranding);
     safe('mobile-menu', initMobileMenu);
@@ -851,6 +945,7 @@
 
     safe('footer', buildFooter);
     safe('feedback-bar', relocateFeedbackBar);
+    safe('event-hero', buildEventHero);
     safe('sponsor-tiers', initSponsorTiers);
   }
 
