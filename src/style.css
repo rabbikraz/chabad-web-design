@@ -201,12 +201,12 @@ body.cco_body #header_container.header_container {
   letter-spacing: .01em;
 }
 #header_container .links {
-  max-width: var(--sb-max);
+  max-width: 1380px;
   margin: 0 auto;
   padding: 8px var(--sb-gutter);
   display: flex;
   align-items: center;
-  gap: 22px;
+  gap: 16px;
 }
 #header_container .links:after { display: none; }
 #header_container .links .baruch_hashem { display: none; }
@@ -227,6 +227,7 @@ body.cco_body #header_container.header_container {
   padding: 0;
   border: none;
   text-transform: none;
+  white-space: nowrap;
 }
 #header_container .links .topBarLink a:hover,
 #header_container .links .topBarLink:hover { color: var(--sb-accent-300); text-decoration: none; }
@@ -292,9 +293,12 @@ body.cco_body #header .header-wrapper {
   position: static;
   background: transparent;
 }
-/* header_container (utility bar) takes its own full-bleed row inside the flex header */
+/* utility bar full width: JS lifts it out of the max-width wrapper to be a
+   direct child of #header; the zoom-fragile 100vw hack stays as the no-JS
+   fallback only */
 body.cco_body #header .header-wrapper { flex-wrap: wrap; }
-body.cco_body #header .header-wrapper > #header_container {
+body.cco_body #header > #header_container { width: 100%; }
+body.cco_body:not(.sb-js) #header .header-wrapper > #header_container {
   width: 100vw;
   margin-left: calc(50% - 50vw);
   flex: 1 0 100%;
@@ -356,33 +360,66 @@ a.site_title {
   transition: font-size 260ms ease;
 }
 #header.on-scroll a.site_title { font-size: 20px; }
-.site_subtitle {
-  display: block;
+/* the theme hides the subtitle with a 4-class selector — out-rank it */
+.site_subtitle,
+.branding-search #header_branding .site_title .site_subtitle {
+  display: block !important;
   font-family: var(--sb-font-body);
-  font-size: 11.5px;
+  font-size: 11.5px !important;
   letter-spacing: .2em;
   text-transform: uppercase;
   color: var(--sb-accent-700);
   margin-top: 5px;
+  padding-top: 0 !important;
+  line-height: 1.4 !important;
   white-space: nowrap;
 }
 
 /* Search: JS relocates it into the utility bar; these are the shared styles */
 .cco_search_header { float: none; width: auto; margin-left: auto; order: 2; position: static; }
-/* once inside the dark utility bar */
-#header_container .cco_search_header { order: 4; margin-left: 18px; }
-#header_container .co_search_form input.co_search {
-  height: 32px;
-  font-size: 14px;
-  background: rgba(251, 245, 233, .1);
-  border-color: rgba(251, 245, 233, .28);
-  color: var(--sb-cream-ink);
+/* once inside the dark utility bar (flex: none — it collapsed to 0 width) */
+#header_container .cco_search_header {
+  order: 4;
+  margin-left: 18px !important;
+  flex: none !important;
+  width: auto !important;
+  min-width: 186px;
+  display: block !important;
 }
-#header_container .co_search_form input.co_search::placeholder { color: rgba(234, 241, 240, .6); }
+#header_container .co_search_form input.co_search,
+#header_container .co_search_form input.co_search.active,
+#header_container #MainSearchForm input.co_search {
+  height: 32px !important;
+  width: 100% !important;
+  font-size: 14px !important;
+  background: rgba(251, 245, 233, .1) !important;
+  border: 1px solid rgba(251, 245, 233, .28) !important;
+  border-radius: 999px !important;
+  color: var(--sb-cream-ink) !important;
+  box-shadow: none !important;
+  padding: 0 34px 0 14px !important;
+  margin: 0 !important;
+}
+#header_container .co_search_form input.co_search::placeholder { color: rgba(234, 241, 240, .6) !important; }
+#header_container .co_search_form,
+#header_container .co_search_form form,
+#header_container .co_search_form form.active,
+#header_container .co_search_form .co_global_input_container {
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  height: auto !important;
+  min-height: 0 !important;
+}
+#header_container .co_search_form .co_global_input_container { width: 140px !important; }
 #header_container .co_search_form .co_global_submit .button {
-  width: 26px;
-  height: 26px;
-  background-color: transparent;
+  width: 26px !important;
+  height: 26px !important;
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
 }
 #header_container .co_search_form .co_global_submit .button:before {
   color: var(--sb-accent-300);
@@ -507,11 +544,11 @@ body.sites-article #header #tabContentMain .co_menu_item span.parent a {
   border-radius: 999px;
   white-space: nowrap;
   color: var(--sb-text);
-  font-family: var(--sb-font-body);
-  font-size: 16px;
-  font-weight: 400;
-  text-transform: none;
-  letter-spacing: 0;
+  font-family: var(--sb-font-body) !important;
+  font-size: 16px !important;
+  font-weight: 400 !important;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
   background: none;
   height: auto;
   line-height: 1.2;
@@ -738,8 +775,9 @@ body.cco_body #tabContentMain .co_menu_item.donate_link span.parent a:hover {
   #tabContentMain .co_menu_item.home a { padding: 16px 0; }
   body.cco_body #tabContentMain .co_menu_item span.parent a,
   body.cco_body #tabContentMain .co_menu_item.hover span.parent a {
-    font-family: var(--sb-font-heading);
-    font-size: 25px;
+    font-family: var(--sb-font-heading) !important;
+    font-size: 25px !important;
+    font-weight: 400 !important;
     color: var(--sb-bg);
     padding: 16px 0;
     border-radius: 0;
@@ -1389,6 +1427,14 @@ body.cco_body #footer {
   margin-bottom: 26px;
 }
 .sb-footer-brand-row { display: flex; align-items: center; gap: 14px; margin-bottom: 22px; }
+.sb-footer-brand-row img {
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+  border-radius: 999px;
+  background: #fff;
+  flex: none;
+}
 .sb-footer-brand-row .sb-logo-mark {
   width: 44px;
   height: 44px;
@@ -1958,6 +2004,7 @@ body.cco_body .sb-shabbat-col h3 a { color: var(--sb-bg) !important; }
 @media (max-width: 460px) {
   a.site_title { font-size: 19px; white-space: normal; }
   #header.on-scroll a.site_title { font-size: 17px; }
-  .site_subtitle { display: none; }
+  .site_subtitle,
+  .branding-search #header_branding .site_title .site_subtitle { display: none !important; }
   .latest_photos .widget_content ul li:nth-child(3) { grid-column: span 1; }
 }

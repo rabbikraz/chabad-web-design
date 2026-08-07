@@ -20,7 +20,7 @@
              from the design file.
      false = keep the current uploaded logo image, restyled by CSS.
      ------------------------------------------------------------------ */
-  var USE_MONOGRAM_LOGO = true;
+  var USE_MONOGRAM_LOGO = false;
   var LOGO_SVG =
     '<span class="sb-logo-mark" aria-hidden="true">' +
     '<svg width="20" height="26" viewBox="0 0 20 26" fill="none" stroke="#E2C179" stroke-width="1.6" stroke-linecap="round">' +
@@ -184,6 +184,16 @@
         }
       });
     });
+  }
+
+  /* ---------------- header: utility bar to full width ----------------
+     The bar lives inside the max-width header wrapper; a 100vw margin hack
+     is zoom-fragile, so lift it out to be a direct child of #header. */
+
+  function relocateUtilityBar() {
+    var bar = $('#header .header-wrapper > #header_container');
+    var header = $('#header');
+    if (bar && header) header.insertBefore(bar, header.firstChild);
   }
 
   /* ---------------- header: relocate search into the utility bar ---------------- */
@@ -642,7 +652,12 @@
     var grid = el('div', 'sb-footer-grid');
     var col1 = el('div', 'sb-footer-col sb-footer-col-brand');
     var brandRow = el('div', 'sb-footer-brand-row');
-    brandRow.innerHTML = LOGO_SVG;
+    if (USE_MONOGRAM_LOGO) {
+      brandRow.innerHTML = LOGO_SVG;
+    } else {
+      var siteLogo = $('#header_branding .site-logo-wrapper img');
+      if (siteLogo) brandRow.appendChild(siteLogo.cloneNode(false));
+    }
     var titleSpan = brandBlock.querySelector('.footer-title');
     if (titleSpan) brandRow.appendChild(titleSpan);
     col1.appendChild(brandRow);
@@ -729,6 +744,7 @@
     if (isHome()) document.body.classList.add('sb-home');
 
     safe('page-rules', runPageRules);
+    safe('utility-bar-width', relocateUtilityBar);
     safe('branding', enhanceBranding);
     safe('mobile-menu', initMobileMenu);
     safe('search', relocateSearch);
