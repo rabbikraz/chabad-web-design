@@ -37,6 +37,7 @@ const LIVE_CSS = {
   'css/sites6/default-theme.css': 'default-theme.css',
   'css/old/global.css': 'old-global.css',
   'css/cco/home/default/prettyPhoto.min.css': 'prettyPhoto.min.css',
+  'css/sections/events/events.css': 'events.css',
 };
 
 const PAGE_SET = [

@@ -1670,47 +1670,65 @@ body.cco_body .form-textarea:focus { border-color: var(--sb-accent-300); outline
   --font-form-main: "Figtree", system-ui, sans-serif;
 }
 
-/* Sponsorship tiers (built by the footer JS per SPONSOR_TIERS config) */
-#sb-sponsorship { margin: 8px 0 26px; }
+/* Sponsorship tiers (built by the footer JS per SPONSOR_TIERS config).
+   Deliberately loud: a tinted panel + heavy pills so donors can't miss it. */
+#sb-sponsorship {
+  margin: 10px 0 32px;
+  padding: 24px 26px 26px;
+  background: var(--sb-event-soft, var(--sb-accent-100));
+  border-radius: var(--sb-radius-lg);
+  border: 1px solid rgba(23, 35, 46, .08);
+}
 .sb-sponsor-head {
-  font-size: 12px;
-  letter-spacing: .22em;
+  font-size: 15px;
+  letter-spacing: .18em;
   text-transform: uppercase;
-  color: var(--sb-accent-700);
+  color: var(--sb-event-accent-dark, var(--sb-accent-700));
   font-family: var(--sb-font-body);
-  font-weight: 500;
+  font-weight: 700;
   margin: 0 0 6px;
 }
 .sb-sponsor-blurb {
-  font-size: 16px;
-  color: rgba(23, 35, 46, .75);
-  margin: 0 0 14px;
+  font-size: 16.5px;
+  color: rgba(23, 35, 46, .8);
+  margin: 0 0 16px;
 }
-.sb-sponsor-list { display: flex; flex-wrap: wrap; gap: 10px; }
+.sb-sponsor-list { display: flex; flex-wrap: wrap; gap: 12px; }
 .sb-tier {
   display: inline-flex;
   align-items: baseline;
-  gap: 8px;
-  padding: 10px 18px;
-  border: 1px solid var(--sb-accent-300);
+  gap: 9px;
+  padding: 13px 22px;
+  border: 2px solid var(--sb-event-accent, var(--sb-accent));
   border-radius: 999px;
-  background: var(--sb-bg);
+  background: #fff;
   color: var(--sb-text);
   font-family: var(--sb-font-body);
-  font-size: 15.5px;
+  font-size: 16.5px;
   cursor: pointer;
-  transition: background 160ms ease, color 160ms ease, border-color 160ms ease;
+  box-shadow: 0 2px 8px rgba(23, 35, 46, .08);
+  transition: background 160ms ease, color 160ms ease, border-color 160ms ease, transform 160ms ease;
 }
-.sb-tier .sb-amt { font-weight: 700; }
-.sb-tier .sb-name { color: rgba(23, 35, 46, .6); }
-.sb-tier:hover { background: var(--sb-event-soft, var(--sb-accent-100)); }
-.sb-tier.sb-on {
+.sb-tier .sb-amt {
+  font-weight: 800;
+  font-size: 17.5px;
+  color: var(--sb-event-accent-dark, var(--sb-accent-700));
+}
+.sb-tier .sb-name { color: rgba(23, 35, 46, .75); font-weight: 500; }
+.sb-tier:hover {
   background: var(--sb-event-accent, var(--sb-accent));
   border-color: var(--sb-event-accent, var(--sb-accent));
-  color: #fff;
+  transform: translateY(-1px);
 }
-.sb-tier.sb-on .sb-name { color: rgba(255, 255, 255, .85); }
-.sb-sponsor-head { color: var(--sb-event-accent-dark, var(--sb-accent-700)); }
+.sb-tier:hover .sb-amt, .sb-tier:hover .sb-name { color: #fff; }
+.sb-tier.sb-on {
+  background: var(--sb-event-accent, var(--sb-accent));
+  border-color: var(--sb-event-accent-dark, var(--sb-accent-600));
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(23, 35, 46, .22);
+}
+.sb-tier.sb-on .sb-amt { color: #fff; }
+.sb-tier.sb-on .sb-name { color: rgba(255, 255, 255, .9); }
 /* seamless, card-less registration flow (per-event colors via --sb-event-*) */
 #RegisterSinglePage.container,
 #RegisterSinglePage.container.shaded {
@@ -1805,7 +1823,14 @@ body.cco_body .form-textarea:focus { border-color: var(--sb-accent-300); outline
 #RegisterSinglePage .banner_image img { width: 100%; height: auto; border-radius: var(--sb-radius-md); }
 #RegisterSinglePage .event_name,
 #RegisterSinglePage .event_name .bold { font-family: var(--sb-font-heading); font-size: 24px; color: var(--sb-text); font-weight: 400; }
-#RegisterHeader { border-bottom: 1px solid var(--sb-divider); padding-bottom: 22px; }
+/* events.css paints this panel white — the description sits on the page bg */
+#RegisterSinglePage #RegisterHeader,
+#RegisterHeader {
+  background: none !important;
+  background-color: transparent !important;
+  border-bottom: none !important;
+  padding-bottom: 8px;
+}
 #RegisterHeader .column2 .heading {
   font-size: 12px;
   letter-spacing: .22em;
