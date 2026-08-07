@@ -664,8 +664,9 @@ return (
 (s.title ? '<h1>' + esc(s.title) + '</h1>' : '') +
 (s.body ? '<p>' + esc(s.body) + '</p>' : '') +
 '<div class="sb-hero-ctas">' +
-(s.ctaHref ? '<a class="sb-btn sb-btn-primary" href="' + esc(s.ctaHref) + '">' + esc(s.ctaText || 'Read More') + '</a>' : '') +
-'<a class="sb-btn sb-btn-ghost" href="' + esc(s.href) + '">Learn more</a>' +
+(s.ctaHref
+? '<a class="sb-btn sb-btn-primary" href="' + esc(s.ctaHref) + '">' + esc(s.ctaText || 'Read More') + '</a>'
+: '<a class="sb-btn sb-btn-primary" href="' + esc(s.href) + '">Learn more</a>') +
 '</div></div></div></div></div></div>'
 );
 }).join('') +
