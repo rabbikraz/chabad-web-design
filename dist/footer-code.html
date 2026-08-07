@@ -120,6 +120,17 @@ if (img) img.style.display = 'none';
 if (!wrap.querySelector('.sb-logo-mark')) wrap.insertAdjacentHTML('beforeend', LOGO_SVG);
 }
 var title = $('a.site_title');
+if (title && !title.querySelector('.sb-title-full')) {
+var textNode = title.firstChild;
+if (textNode && textNode.nodeType === 3 && txt(textNode)) {
+var full = el('span', 'sb-title-full');
+full.textContent = txt(textNode);
+var shortName = el('span', 'sb-title-short');
+shortName.textContent = 'Chabad SoBe';
+title.replaceChild(full, textNode);
+title.insertBefore(shortName, full.nextSibling);
+}
+}
 var sub = title && title.querySelector('.site_subtitle');
 var street = txt($('#footer .footer-street')).replace(/,\s*$/, '');
 if (sub && !txt(sub) && street) {
@@ -634,6 +645,19 @@ col2.style.display = 'none';
 }
 }
 }
+function themeEventListing() {
+if (window.location.pathname.toLowerCase().indexOf('/tools/events') === -1) return;
+$all('#cco_body .row, .co_body .content .row').forEach(function (row) {
+var link = row.querySelector('a[href*="eventid"]');
+if (!link) return;
+var m = /eventid[=\/](\d+)/i.exec(link.getAttribute('href') || '');
+var t = m && PAGE_THEMES[m[1]];
+if (!t) return;
+if (t.soft) row.style.setProperty('--sb-event-soft', t.soft);
+if (t.accent) row.style.setProperty('--sb-event-accent', t.accent);
+if (t.accentDark) row.style.setProperty('--sb-event-accent-dark', t.accentDark);
+});
+}
 function initSponsorTiers() {
 var idMatch = /\/eventid\/(\d+)/i.exec(window.location.pathname) ||
 /[?&]eventid=(\d+)/i.exec(window.location.search);
@@ -757,6 +781,7 @@ safe('footer', buildFooter);
 safe('feedback-bar', relocateFeedbackBar);
 safe('event-hero', buildEventHero);
 safe('sponsor-tiers', initSponsorTiers);
+safe('event-listing', themeEventListing);
 }
 if (document.readyState !== 'loading') {
 init();

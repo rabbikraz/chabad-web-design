@@ -196,8 +196,19 @@
       if (img) img.style.display = 'none';
       if (!wrap.querySelector('.sb-logo-mark')) wrap.insertAdjacentHTML('beforeend', LOGO_SVG);
     }
-    // Subtitle line under the wordmark, built from the CMS footer address.
+    // Wordmark: full name / short "Chabad SoBe" on small screens (CSS toggles)
     var title = $('a.site_title');
+    if (title && !title.querySelector('.sb-title-full')) {
+      var textNode = title.firstChild;
+      if (textNode && textNode.nodeType === 3 && txt(textNode)) {
+        var full = el('span', 'sb-title-full');
+        full.textContent = txt(textNode);
+        var shortName = el('span', 'sb-title-short');
+        shortName.textContent = 'Chabad SoBe';
+        title.replaceChild(full, textNode);
+        title.insertBefore(shortName, full.nextSibling);
+      }
+    }
     var sub = title && title.querySelector('.site_subtitle');
     var street = txt($('#footer .footer-street')).replace(/,\s*$/, '');
     if (sub && !txt(sub) && street) {
@@ -816,6 +827,22 @@
     }
   }
 
+  /* ---------------- event listing: tint each row with its event's theme ---------------- */
+
+  function themeEventListing() {
+    if (window.location.pathname.toLowerCase().indexOf('/tools/events') === -1) return;
+    $all('#cco_body .row, .co_body .content .row').forEach(function (row) {
+      var link = row.querySelector('a[href*="eventid"]');
+      if (!link) return;
+      var m = /eventid[=\/](\d+)/i.exec(link.getAttribute('href') || '');
+      var t = m && PAGE_THEMES[m[1]];
+      if (!t) return;
+      if (t.soft) row.style.setProperty('--sb-event-soft', t.soft);
+      if (t.accent) row.style.setProperty('--sb-event-accent', t.accent);
+      if (t.accentDark) row.style.setProperty('--sb-event-accent-dark', t.accentDark);
+    });
+  }
+
   /* ---------------- sponsorship tiers (event registration pages) ---------------- */
 
   function initSponsorTiers() {
@@ -967,6 +994,7 @@
     safe('feedback-bar', relocateFeedbackBar);
     safe('event-hero', buildEventHero);
     safe('sponsor-tiers', initSponsorTiers);
+    safe('event-listing', themeEventListing);
   }
 
   // Footer code box loads after the DOM, but guard anyway.

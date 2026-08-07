@@ -376,6 +376,13 @@ a.site_title {
   transition: font-size 260ms ease;
 }
 #header.on-scroll a.site_title { font-size: 20px; }
+/* wordmark: full name on desktop, "Chabad SoBe" ≤600px (JS builds the spans) */
+.sb-title-short { display: none; }
+@media (max-width: 600px) {
+  .sb-title-full { display: none; }
+  .sb-title-short { display: inline; }
+}
+
 /* the theme hides the subtitle with a 4-class selector — out-rank it */
 .site_subtitle,
 .branding-search #header_branding .site_title .site_subtitle {
@@ -642,9 +649,10 @@ body.cco_body #tabContentMain .co_menu_item.donate_link span.parent a:hover {
     color: var(--sb-text) !important;
     font-family: var(--sb-font-body) !important;
     font-size: 16.5px !important;
+    line-height: 1.45 !important;
     background: none !important;
     border: none !important;
-    white-space: nowrap;
+    white-space: normal !important; /* long labels wrap instead of spilling out */
     text-transform: none !important;
     letter-spacing: 0 !important;
   }
@@ -1588,11 +1596,11 @@ body.cco_body .content_title_container,
   border: none;
   padding-left: 0;
 }
+/* breadcrumb (parent-section link above page titles) — removed per owner */
 body.cco_body .article-header .breadcrumbs,
-body.cco_body .article-header .breadcrumbs a {
-  color: var(--sb-teal-700) !important;
-  font-size: 14.5px;
-  font-family: var(--sb-font-body);
+body.cco_body .breadcrumbs,
+.custom-breadcrumb {
+  display: none !important;
 }
 body.cco_body .article-header__title,
 body.cco_body .article-header h1,
@@ -1908,6 +1916,26 @@ body.cco_body .form-textarea:focus { border-color: var(--sb-accent-300); outline
 /* blue utility text classes the register form leans on → theme ink */
 #RegisterSinglePage .blue, #RegisterSinglePage .blue a { color: var(--sb-teal-700); }
 #RegisterSinglePage.shaded { background: var(--sb-bg); }
+
+/* events LISTING page: events.css paints each .row white — card them in the
+   theme surface instead; rows whose event has a PAGE_THEMES entry get their
+   own colors (JS sets --sb-event-* per row) */
+#cco_body .row,
+.co_body .content .row {
+  background: var(--sb-event-soft, var(--sb-surface)) !important;
+  border: none !important;
+  border-radius: var(--sb-radius-lg);
+  padding: 24px 28px !important;
+  margin: 0 0 20px !important;
+}
+#cco_body .row .button,
+#cco_body .row input[type="submit"],
+#cco_body .row .buttonStyle1 {
+  background: var(--sb-event-accent, var(--sb-accent)) !important;
+}
+#cco_body .row .button:hover {
+  background: var(--sb-event-accent-dark, var(--sb-accent-600)) !important;
+}
 
 /* --------------------------------------------------------------------------
    16b. LIVE-THEME COUNTER-OVERRIDES
