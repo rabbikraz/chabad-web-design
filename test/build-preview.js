@@ -48,24 +48,11 @@ const PAGE_SET = [
     out: 'preview-register-open.html',
     snapshot: '20251013120914',
     preFooter: `<script>
-window.SB_EVENT_ID = '23333';
-// demo flyer theme: sage green + blush from the Gathering artwork
+// exercise the REAL baked config for event 23338 (file:// URL cannot carry
+// the event id, so only the id and the theme URL-match are shimmed)
+window.SB_EVENT_ID = '23338';
 window.SB_PAGE_THEMES = {
-  'register-open': { accent: '#4E6B54', accentDark: '#3A523F', band: '#31463A', soft: '#F6ECE6' }
-};
-window.SB_SPONSOR_TIERS = {
-  '23333': {
-    heading: 'Sponsorship Opportunities',
-    blurb: "Sponsors help cover the evening's program.",
-    tiers: [
-      { label: 'Presenting Sponsor', amount: 5000 },
-      { label: 'Diamond Sponsor', amount: 2500 },
-      { label: 'Gold Sponsor', amount: 1800 },
-      { label: 'Silver Sponsor', amount: 500 },
-      { label: 'Community Sponsor', amount: 360 },
-      { label: 'Friend of The Gathering', amount: 180 }
-    ]
-  }
+  'register-open': { accent: '#4A6752', accentDark: '#39503F', band: '#35493B', soft: '#F6ECE6' }
 };
 // show the Summary step (normally revealed after choosing a category)
 window.addEventListener('load', function () {

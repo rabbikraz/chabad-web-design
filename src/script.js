@@ -61,7 +61,21 @@
      order total updates); clicking again clears it. ?sponsor=1800 in a
      link pre-selects a tier. window.SB_SPONSOR_TIERS overrides all.
      ------------------------------------------------------------------ */
-  var SPONSOR_TIERS = window.SB_SPONSOR_TIERS || {};
+  var SPONSOR_TIERS = window.SB_SPONSOR_TIERS || {
+    // The Gathering — Unity Challah Bake (Sep 1, 2026)
+    '23338': {
+      heading: 'Sponsorship Opportunities',
+      blurb: "Sponsors help cover the evening's program.",
+      tiers: [
+        { label: 'Presenting Sponsor', amount: 5000 },
+        { label: 'Diamond Sponsor', amount: 2500 },
+        { label: 'Gold Sponsor', amount: 1800 },
+        { label: 'Silver Sponsor', amount: 500 },
+        { label: 'Community Sponsor', amount: 360 },
+        { label: 'Friend of The Gathering', amount: 180 }
+      ]
+    }
+  };
 
   /* ------------------------------------------------------------------
      PER-PAGE THEMES — recolor an event/program page to match its flyer.
@@ -74,7 +88,12 @@
 
      Anything not set falls back to the site palette.
      ------------------------------------------------------------------ */
-  var PAGE_THEMES = window.SB_PAGE_THEMES || {};
+  var PAGE_THEMES = window.SB_PAGE_THEMES || {
+    // The Gathering — sage green + blush cream, sampled from the flyer
+    '23338': { accent: '#4A6752', accentDark: '#39503F', band: '#35493B', soft: '#F6ECE6' },
+    // Wisdom and Whiskey (SoBe Men's Club) — sage-grey + dusty rose
+    '23305': { accent: '#A96F68', accentDark: '#8A5751', band: '#6E7768', soft: '#EFE4E0' }
+  };
 
   function applyPageTheme() {
     var href = window.location.href;
