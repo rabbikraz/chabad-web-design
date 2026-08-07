@@ -57,16 +57,20 @@
 /* --------------------------------------------------------------------------
    1. BASE TYPOGRAPHY & GENERIC CHABADONE CLEANUP
    -------------------------------------------------------------------------- */
-html { overflow-x: hidden; scroll-behavior: smooth; }
+html { overflow-x: hidden; scroll-behavior: smooth; background: var(--sb-bg); }
 
+/* the CMS gives body a fixed width on article templates — full-bleed everywhere */
 body.cco_body {
   background: var(--sb-bg) !important;
   color: var(--sb-text);
   font-family: var(--sb-font-body);
   font-size: 17px;
   line-height: 1.6;
-  padding: 0;
-  margin: 0;
+  padding: 0 !important;
+  margin: 0 !important;
+  width: auto !important;
+  min-width: 0 !important;
+  max-width: none !important;
 }
 
 /* Body copy minimum 17px across CMS text containers */
@@ -550,38 +554,58 @@ body.cco_body #tabContentMain .co_menu_item.donate_link span.parent a:hover {
   color: #fff;
 }
 
-/* Dropdown panels (CMS toggles .co_submenu_container inline display) */
+/* Dropdown panels (CMS toggles .co_submenu_container inline display).
+   Hardened desktop-only: the live CMS theme is newer than our reference copy
+   and out-specced the soft version of these rules (panel rendered white with
+   hairline item borders). Scoped to min-width so the drawer styles still win
+   on mobile. */
 #tabContentMain .co_menu_content { position: absolute; top: 100%; left: -8px; z-index: 70; }
-#tabContentMain .co_menu_item .co_submenu_container {
-  background: var(--sb-bg);
-  border: 1px solid var(--sb-divider);
-  border-top: 2px solid var(--sb-accent);
-  border-radius: 0 0 var(--sb-radius-md) var(--sb-radius-md);
-  box-shadow: 0 18px 40px rgba(23, 35, 46, .16);
-  min-width: 250px;
-  padding: 14px 26px 18px;
-}
-#tabContentMain .co_submenu_container .wrapper { width: auto; padding: 0; }
-#tabContentMain .co_submenu_container .co_column { width: auto; float: none; }
-#tabContentMain .co_menu_item.arrow .co_submenu_container a.item {
-  display: block;
-  padding: 9px 0;
-  color: var(--sb-text);
-  font-family: var(--sb-font-body);
-  font-size: 16.5px;
-  background: none;
-  white-space: nowrap;
-}
-#tabContentMain .co_menu_item.arrow .co_submenu_container a.item span {
-  color: inherit;
-  font-family: inherit;
-  font-size: inherit;
-  padding: 0;
-}
-#tabContentMain .co_menu_item.arrow .co_submenu_container a.item:hover,
-#tabContentMain .co_menu_item.arrow .co_submenu_container a.item:hover span {
-  color: var(--sb-accent-700);
-  background: none;
+@media (min-width: 1025px) {
+  #header #tabContentMain .co_menu_item .co_submenu_container {
+    background: var(--sb-bg) !important;
+    border: 1px solid var(--sb-divider) !important;
+    border-top: 2px solid var(--sb-accent) !important;
+    border-radius: 0 0 var(--sb-radius-md) var(--sb-radius-md);
+    box-shadow: 0 18px 40px rgba(23, 35, 46, .16) !important;
+    min-width: 250px;
+    width: auto !important;
+    padding: 14px 26px 18px !important;
+    margin: 0 !important;
+  }
+  #header #tabContentMain .co_submenu_container .wrapper,
+  #header #tabContentMain .co_submenu_container .column_wrapper,
+  #header #tabContentMain .co_submenu_container .co_column {
+    width: auto !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    background: none !important;
+    border: none !important;
+    float: none;
+  }
+  #header #tabContentMain .co_menu_item .co_submenu_container a.item {
+    display: block !important;
+    padding: 9px 0 !important;
+    margin: 0 !important;
+    color: var(--sb-text) !important;
+    font-family: var(--sb-font-body) !important;
+    font-size: 16.5px !important;
+    background: none !important;
+    border: none !important;
+    white-space: nowrap;
+    text-transform: none !important;
+    letter-spacing: 0 !important;
+  }
+  #header #tabContentMain .co_menu_item .co_submenu_container a.item span {
+    color: inherit !important;
+    font-family: inherit !important;
+    font-size: inherit !important;
+    padding: 0 !important;
+  }
+  #header #tabContentMain .co_menu_item .co_submenu_container a.item:hover,
+  #header #tabContentMain .co_menu_item .co_submenu_container a.item:hover span {
+    color: var(--sb-accent-700) !important;
+    background: none !important;
+  }
 }
 #tabContentMain .co_submenu_container a.item img.arrow { display: none; }
 #tabContentMain .co_submenu_container .menu_child { display: none; } /* empty 3rd-level shells */
@@ -1458,13 +1482,25 @@ body.cco_body .master-content-wrapper {
   border-bottom: none;
   padding: 0;
 }
+/* no white card behind the page title, on any article template */
 .article-header { margin: 0 0 26px; background: none; }
+body.cco_body .article-header,
+body.cco_body .master-content-wrapper,
+body.cco_body .content_title_container,
 #BodyContainer #co_content_container .article-header,
 #BodyContainer #co_content_container > .clearfix > .g960:not(.categorized) .article-header,
-#BodyContainer #co_content_container > .clearfix > .master-content-wrapper .article-header {
+#BodyContainer #co_content_container > .clearfix > .master-content-wrapper .article-header,
+#chabad_body_content, #chabad_body_page {
   background: none !important;
-  padding-left: 0;
+  box-shadow: none;
   border: none;
+  padding-left: 0;
+}
+body.cco_body .article-header .breadcrumbs,
+body.cco_body .article-header .breadcrumbs a {
+  color: var(--sb-teal-700) !important;
+  font-size: 14.5px;
+  font-family: var(--sb-font-body);
 }
 body.cco_body .article-header__title,
 body.cco_body .article-header h1,

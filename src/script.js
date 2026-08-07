@@ -57,10 +57,18 @@
     return n;
   }
   function txt(node) { return node ? node.textContent.replace(/\s+/g, ' ').trim() : ''; }
+  // NOTE: no HTML entity may appear literally in this file — the ChabadOne
+  // admin decodes entities when saving the code box, which corrupts the
+  // script (e.g. an encoded apostrophe becomes ''' — a syntax error).
+  // Entities are therefore assembled at runtime from an amp constant.
+  var AMP = String.fromCharCode(38);
   function esc(s) {
-    return String(s).replace(/[&<>"']/g, function (c) {
-      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
-    });
+    return String(s)
+      .replace(/&/g, AMP + 'amp;')
+      .replace(/</g, AMP + 'lt;')
+      .replace(/>/g, AMP + 'gt;')
+      .replace(/"/g, AMP + 'quot;')
+      .replace(/'/g, AMP + '#39;');
   }
   // Each feature is isolated: one broken widget never takes down the rest.
   function safe(name, fn) {

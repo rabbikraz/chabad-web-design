@@ -118,6 +118,27 @@ function build() {
   fs.writeFileSync(headerPath, header);
   fs.writeFileSync(footerPath, footer);
 
+  // GUARD: the ChabadOne admin decodes HTML entities inside the code boxes
+  // when saving, silently corrupting the payload (a literal '&#39;' in the JS
+  // became ''' on the live site and killed the whole script). Refuse to build
+  // anything containing a literal entity outside of tag-level markup.
+  for (const p of [headerPath, footerPath]) {
+    const body = fs.readFileSync(p, 'utf8')
+      // tag attributes (href="...&display=swap") are fine — check only
+      // the inline <style>/<script> payloads the CMS re-encodes
+      .split(/<\/(?:style|script)>/)
+      .filter((chunk) => /<(?:style|script)[^>]*>/.test(chunk))
+      .map((chunk) => chunk.replace(/^[\s\S]*?<(?:style|script)[^>]*>/, ''))
+      .join('\n');
+    const hit = body.match(/&(?:[a-zA-Z]{2,8}|#\d{1,6});/);
+    if (hit) {
+      throw new Error(
+        `HTML entity "${hit[0]}" found inside a <style>/<script> payload of ` +
+        `${path.basename(p)} — the CMS admin will decode it and corrupt the block.`
+      );
+    }
+  }
+
   const report = (p) => {
     const chars = fs.readFileSync(p, 'utf8').length;
     console.log(

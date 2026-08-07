@@ -30,10 +30,14 @@ if (html != null) n.innerHTML = html;
 return n;
 }
 function txt(node) { return node ? node.textContent.replace(/\s+/g, ' ').trim() : ''; }
+var AMP = String.fromCharCode(38);
 function esc(s) {
-return String(s).replace(/[&<>"']/g, function (c) {
-return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
-});
+return String(s)
+.replace(/&/g, AMP + 'amp;')
+.replace(/</g, AMP + 'lt;')
+.replace(/>/g, AMP + 'gt;')
+.replace(/"/g, AMP + 'quot;')
+.replace(/'/g, AMP + '#39;');
 }
 function safe(name, fn) {
 try { fn(); } catch (e) {
