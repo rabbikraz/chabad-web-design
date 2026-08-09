@@ -882,6 +882,30 @@
     });
   }
 
+  function initEventDescriptionClamp() {
+    if (!window.SB_FORCE_LISTING &&
+        window.location.pathname.toLowerCase().indexOf('/tools/events') === -1) return;
+    $all('.event .bottom_padding').forEach(function (desc) {
+      if (desc.dataset.sbReadmore) return;
+      desc.dataset.sbReadmore = '1';
+      desc.classList.add('sb-clamp-3');
+      // only add the toggle if the text actually overflows 3 lines —
+      // short descriptions get no dangling "Read more" link
+      if (desc.scrollHeight <= desc.clientHeight + 2) {
+        desc.classList.remove('sb-clamp-3');
+        return;
+      }
+      var btn = el('button', 'sb-readmore-toggle');
+      btn.type = 'button';
+      btn.textContent = 'Read more';
+      btn.addEventListener('click', function () {
+        var expanded = desc.classList.toggle('sb-expanded');
+        btn.textContent = expanded ? 'Read less' : 'Read more';
+      });
+      desc.insertAdjacentElement('afterend', btn);
+    });
+  }
+
   /* ---------------- sponsorship tiers (event registration pages) ---------------- */
 
   function initSponsorTiers() {
@@ -1034,6 +1058,7 @@
     safe('event-hero', buildEventHero);
     safe('sponsor-tiers', initSponsorTiers);
     safe('event-listing', themeEventListing);
+    safe('event-description-clamp', initEventDescriptionClamp);
   }
 
   // Footer code box loads after the DOM, but guard anyway.

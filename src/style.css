@@ -2158,10 +2158,32 @@ body.cco_body input[type="radio"] { accent-color: var(--sb-accent); }
   border-color: var(--sb-event-accent, var(--sb-accent-300)) !important;
   outline: none !important;
 }
-/* per-reservation name cells (built dynamically by the Event App).
-   The row template puts headers and inputs in the SAME fixed grid cells
-   (g120/g140 + small_right_padding) and events.css sizes inputs 100% of
-   the cell — geometry is already correct. Skin only; never size these. */
+/* per-reservation name cells (built dynamically by the Event App). The row
+   template puts headers and inputs in the SAME fixed CMS grid cells
+   (.g120 first name / .g140 last name), each ~120-125px — correctly
+   aligned (never override THAT), but too cramped to type a name into.
+   Widen the CELLS (scoped to .reservation/the price-header row only —
+   .g120/.g140 are reused elsewhere, e.g. form label columns, so this
+   must never leak outside this specific row context) and let the input,
+   already width:100% of its cell via events.css, grow along with it. */
+#RegisterSinglePage .reservation .clearfix.medium_vertical_padding,
+#RegisterSinglePage .clearfix.medium_top_margin:has(.price-header) {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+#RegisterSinglePage .reservation .g120:not(.ml140),
+#RegisterSinglePage .clearfix.medium_top_margin:has(.price-header) .g120:not(.ml140) {
+  width: auto !important;
+  flex: 1 1 150px;
+  min-width: 130px;
+}
+#RegisterSinglePage .reservation .g140:not(.ml140),
+#RegisterSinglePage .clearfix.medium_top_margin:has(.price-header) .g140:not(.ml140) {
+  width: auto !important;
+  flex: 1 1 160px;
+  min-width: 140px;
+}
 #RegisterSinglePage .reservations input,
 #RegisterSinglePage .reservation input {
   min-width: 0;
@@ -2175,6 +2197,13 @@ body.cco_body input[type="radio"] { accent-color: var(--sb-accent); }
   font-weight: 600;
   color: var(--sb-event-accent-dark, var(--sb-accent-700));
   margin-bottom: 6px !important;
+}
+/* the "Reservations" quantity <select> ships with NO width class at all
+   (unlike the category picker, which gets 220px from events.css) — empty
+   of options until a category is chosen, it collapses to the browser's
+   bare minimum. IDs are per-event (performance_<id>_quantityOfAttendees). */
+#RegisterSinglePage select[id$="_quantityOfAttendees"] {
+  min-width: 90px !important;
 }
 #RegisterSinglePage .co_global_button .button,
 #RegisterFooter .button {
@@ -2232,6 +2261,44 @@ body.cco_body .row:has(a[href*="eventid"]) .button:hover,
 #cco_body .event .performance__date {
   color: var(--sb-event-accent-dark, var(--sb-accent-700));
   font-weight: 600;
+}
+/* event listing description: collapsed to ~3 lines with a "Read more"
+   toggle (JS adds .sb-clamp-3 only when the text actually overflows).
+   A height cap (not -webkit-line-clamp) — event text is freeform CMS
+   HTML with manual <br><br> paragraph breaks, and line-clamp counts
+   blank wrapped lines toward its budget, clipping real text too early. */
+#cco_body .event .bottom_padding.sb-clamp-3 {
+  max-height: 4.85em;
+  overflow: hidden;
+  position: relative;
+}
+#cco_body .event .bottom_padding.sb-clamp-3:after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 1.6em;
+  background: linear-gradient(to bottom, transparent, var(--sb-event-soft, var(--sb-surface)) 75%);
+  pointer-events: none;
+}
+#cco_body .event .bottom_padding.sb-clamp-3.sb-expanded {
+  max-height: none;
+  overflow: visible;
+}
+#cco_body .event .bottom_padding.sb-clamp-3.sb-expanded:after { display: none; }
+#cco_body .event .sb-readmore-toggle {
+  display: inline-block;
+  margin-top: 8px;
+  font-family: var(--sb-font-body);
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--sb-event-accent-dark, var(--sb-accent-700));
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+#cco_body .event .sb-readmore-toggle:hover {
+  color: var(--sb-event-accent, var(--sb-accent));
 }
 
 /* --------------------------------------------------------------------------

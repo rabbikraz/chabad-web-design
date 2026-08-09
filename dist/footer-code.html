@@ -687,6 +687,27 @@ if (t.accent) row.style.setProperty('--sb-event-accent', t.accent);
 if (t.accentDark) row.style.setProperty('--sb-event-accent-dark', t.accentDark);
 });
 }
+function initEventDescriptionClamp() {
+if (!window.SB_FORCE_LISTING &&
+window.location.pathname.toLowerCase().indexOf('/tools/events') === -1) return;
+$all('.event .bottom_padding').forEach(function (desc) {
+if (desc.dataset.sbReadmore) return;
+desc.dataset.sbReadmore = '1';
+desc.classList.add('sb-clamp-3');
+if (desc.scrollHeight <= desc.clientHeight + 2) {
+desc.classList.remove('sb-clamp-3');
+return;
+}
+var btn = el('button', 'sb-readmore-toggle');
+btn.type = 'button';
+btn.textContent = 'Read more';
+btn.addEventListener('click', function () {
+var expanded = desc.classList.toggle('sb-expanded');
+btn.textContent = expanded ? 'Read less' : 'Read more';
+});
+desc.insertAdjacentElement('afterend', btn);
+});
+}
 function initSponsorTiers() {
 var idMatch = /\/eventid\/(\d+)/i.exec(window.location.pathname) ||
 /[?&]eventid=(\d+)/i.exec(window.location.search);
@@ -811,6 +832,7 @@ safe('feedback-bar', relocateFeedbackBar);
 safe('event-hero', buildEventHero);
 safe('sponsor-tiers', initSponsorTiers);
 safe('event-listing', themeEventListing);
+safe('event-description-clamp', initEventDescriptionClamp);
 }
 if (document.readyState !== 'loading') {
 init();
