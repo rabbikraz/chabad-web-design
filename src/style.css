@@ -383,11 +383,26 @@ a.site_title {
   transition: font-size 260ms ease;
 }
 #header.on-scroll a.site_title { font-size: 20px; }
-/* wordmark: full name on desktop, "Chabad SoBe" ≤600px (JS builds the spans) */
+/* wordmark: full name on desktop, "Chabad SoBe" ≤600px. Pure CSS — the raw
+   title text collapses via font-size:0 and a pseudo-element supplies the
+   short name, so it's right on first paint (the old JS span swap flashed
+   the long name until the footer script ran). */
 .sb-title-short { display: none; }
 @media (max-width: 600px) {
-  .sb-title-full { display: none; }
-  .sb-title-short { display: inline; }
+  body.cco_body #header a.site_title,
+  a.site_title { font-size: 0 !important; }
+  /* must out-rank the #header pseudo-element nuker (content:none !important) */
+  #header .branding-search a.site_title::before,
+  a.site_title::before {
+    content: "Chabad SoBe" !important;
+    display: block;
+    font-family: var(--sb-font-heading);
+    font-size: 20px;
+    line-height: 1.05;
+    color: var(--sb-text);
+  }
+  #header.on-scroll .branding-search a.site_title::before { font-size: 18px; }
+  .sb-title-full, .sb-title-short { display: none !important; }
 }
 
 /* the theme hides the subtitle with a 4-class selector — out-rank it */
@@ -714,20 +729,10 @@ body.cco_body #tabContentMain .co_menu_item.donate_link span.parent a:hover {
   .branding-search { flex: 1 1 0; min-width: 0; max-width: calc(100% - 64px); }
   #header_branding.logo { min-width: 0; }
   a.site_title { white-space: normal; }
-  /* CMS submenu toggle: invisible tap target over the row's chevron */
-  .cs-menu-item-toggle {
-    display: block;
-    position: absolute;
-    right: 0;
-    top: 8px;
-    width: 52px;
-    height: 52px;
-    opacity: 0;
-    z-index: 2;
-    border: none;
-    background: none;
-    cursor: pointer;
-  }
+  /* CMS submenu toggle: kill it entirely. Tapping it slid the CMS into a
+     submenu-panel state we don't style (dead dark screen with one label) —
+     submenus are always expanded in the drawer instead, so it has no job. */
+  .cs-menu-item-toggle { display: none !important; }
   #header .cs-mobile-menu-open {
     display: flex !important;
     flex-direction: column;
@@ -831,15 +836,63 @@ body.cco_body #tabContentMain .co_menu_item.donate_link span.parent a:hover {
   body.cco_body #tabContentMain .co_menu_item.multi_level span.parent a:after {
     border-color: var(--sb-accent-300);
   }
-  /* submenus roll out inline under the parent */
+  /* drawer items must survive any CMS slide-panel state the runtime JS
+     toggles (it hid every item but the tapped one). Flex column puts the
+     parent label above its submenu (source order is reversed). */
+  body.cco_body #tabContentMain .co_menu_item {
+    display: flex !important;
+    flex-direction: column;
+    position: static !important;
+    left: auto !important;
+    transform: none !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    height: auto !important;
+  }
+  body.cco_body #tabContentMain .co_menu_item span.parent { order: 1; }
+  body.cco_body #tabContentMain .co_menu_item .co_menu_content { order: 2; }
+  /* submenus: always expanded inline under the parent (!important beats the
+     CMS's inline display:none, so no toggle is ever needed) */
   #tabContentMain .co_menu_content { position: static; }
-  #tabContentMain .co_menu_item .co_submenu_container {
-    background: none;
-    border: none;
-    box-shadow: none;
-    padding: 0 0 12px 14px;
+  #header #tabContentMain .co_menu_item .co_submenu_container {
+    display: block !important;
+    position: static !important;
+    width: auto !important;
+    height: auto !important;
+    clip: auto !important;
+    overflow: visible !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    background: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 0 12px 14px !important;
+    margin: 0 !important;
     min-width: 0;
   }
+  #header #tabContentMain .co_submenu_container .wrapper,
+  #header #tabContentMain .co_submenu_container .column_wrapper,
+  #header #tabContentMain .co_submenu_container .co_column {
+    display: block !important;
+    width: auto !important;
+    height: auto !important;
+    min-height: 0 !important;
+    float: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    background: none !important;
+    border: none !important;
+  }
+  #header #tabContentMain .co_submenu_container a.item {
+    display: block !important;
+    padding: 8px 0 !important;
+    white-space: normal !important;
+    background: none !important;
+  }
+  #header #tabContentMain .co_submenu_container .menu_child,
+  #header #tabContentMain .co_submenu_container .break_floats { display: none !important; }
+  /* items without children render an empty rolled-out container — no gap */
+  #tabContentMain .co_menu_item:not(.multi_level) .co_submenu_container { display: none !important; }
   #tabContentMain .co_menu_item.arrow .co_submenu_container a.item { color: rgba(251, 245, 233, .85); font-size: 17px; }
   #tabContentMain .co_menu_item.arrow .co_submenu_container a.item:hover,
   #tabContentMain .co_menu_item.arrow .co_submenu_container a.item:hover span { color: var(--sb-accent-300); }
@@ -861,6 +914,8 @@ body.cco_body #tabContentMain .co_menu_item.donate_link span.parent a:hover {
   }
   .mobile-menu-bottom-links a { color: rgba(251, 245, 233, .75) !important; }
   .mobile-menu-bottom-links a:hover { color: var(--sb-accent-300) !important; }
+  .mobile-menu-bottom-links a[href="/search"],
+  .mobile-menu-bottom-links a[href*="/search/"] { display: none !important; }
 }
 
 /* --------------------------------------------------------------------------
@@ -1565,7 +1620,17 @@ body.cco_body:not(.sb-js) #footer a { color: var(--sb-accent-300); }
 /* --------------------------------------------------------------------------
    15. INTERIOR / ARTICLE PAGES (clean simple treatment)
    -------------------------------------------------------------------------- */
-body.sites-article #content { background: var(--sb-bg); }
+/* default-theme pushes #content down 130px (50px mobile) to clear its old
+   transparent hero header — ours is opaque and sticky, so reclaim it */
+body.sites-article #content { background: var(--sb-bg); margin-top: 0 !important; }
+/* the CMS's floating ב"ה badge: keep it, but as quiet text instead of a
+   black chip hovering over the page */
+#BodyContainer > .body_wrapper::before {
+  background: none !important;
+  color: var(--sb-accent-700) !important;
+  font-size: 13px !important;
+  padding: 6px 2px !important;
+}
 .co_content_container {
   max-width: var(--sb-max);
   margin: 0 auto;
@@ -1688,6 +1753,37 @@ body.cco_body .form-textarea {
 body.cco_body input.co_global_input:focus,
 body.cco_body .form-textbox:focus,
 body.cco_body .form-textarea:focus { border-color: var(--sb-accent-300); outline: none; }
+/* catch-all for CMS tool forms (feedback/contact etc.) whose fields carry
+   none of the classes above — scoped to the content area so the header
+   search and the donate template (styled in section 18) are untouched */
+#content input[type="text"],
+#content input[type="email"],
+#content input[type="tel"],
+#content input[type="number"],
+#content input[type="password"],
+#content select,
+#content textarea {
+  font-family: var(--sb-font-body);
+  font-size: 16px;
+  color: var(--sb-text);
+  background: #fff;
+  border: 1px solid rgba(23, 35, 46, .18);
+  border-radius: 10px;
+  padding: 10px 14px;
+  box-sizing: border-box;
+  min-height: 44px;
+}
+#content input[type="text"]:focus,
+#content input[type="email"]:focus,
+#content input[type="tel"]:focus,
+#content select:focus,
+#content textarea:focus { border-color: var(--sb-accent-300); outline: none; }
+body.cco_body input[type="checkbox"],
+body.cco_body input[type="radio"] { accent-color: var(--sb-accent); }
+/* feedback form: labels come through CMS-yellow — use the theme gold */
+#content .co_global_label,
+#content label.co_global_label,
+#content .form_label { color: var(--sb-accent-700); }
 
 /* --------------------------------------------------------------------------
    16. EVENT REGISTRATION PAGES (/tools/events/register_cdo/...)
@@ -2483,3 +2579,28 @@ div#confirm-wrapper::after { content: none !important; display: none !important;
 #donate-wrapper .footnotes a { color: var(--sb-teal-700); }
 #donate-wrapper .footnotes .disclaimer { color: rgba(23, 35, 46, .75); }
 #donate-wrapper .footnotes .note { color: rgba(23, 35, 46, .6); }
+
+/* the template mixes percentage widths with percentage padding assuming
+   content-box — cumulative overflow at phone widths, and its viewport tag
+   locks zoom (user-scalable=0) so the browser can't compensate. Border-box
+   only ever makes boxes narrower, never wider. */
+#donate-wrapper, #donate-wrapper *, #donate-wrapper *::before, #donate-wrapper *::after,
+#confirm-wrapper, #confirm-wrapper *, #confirm-wrapper *::before, #confirm-wrapper *::after {
+  box-sizing: border-box;
+}
+
+/* donate on phones: tighter card, calmer type */
+@media (max-width: 700px) {
+  #donate-wrapper #donate, #confirm-wrapper #confirm {
+    margin: 8px 12px 40px;
+    border-radius: var(--sb-radius-md);
+    box-shadow: var(--sb-shadow-sm) !important;
+  }
+  #donate-wrapper main.donate-content { padding: 22px 5%; }
+  #donate-wrapper main h1 { font-size: 24px; margin: 4px 0 14px; }
+  #donate-wrapper .intro-wrapper p.description { font-size: 15.5px; }
+  #donate-wrapper main .amounts button { font-size: 16px; padding: 12px 8px; width: 47%; margin-bottom: 10px; }
+  .frequency-toggle-wrapper .frequency-toggle { width: 100%; max-width: 320px; }
+  .frequency-toggle-wrapper .frequency-toggle label { font-size: 15.5px; padding: 12px 0; }
+  #donate-wrapper #donate .monthly-note { font-size: 14.5px; padding: 10px 0 2px; }
+}

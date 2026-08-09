@@ -229,6 +229,9 @@
       for (var i = 0; i < 3; i++) btn.appendChild(el('span', 'bar'));
     }
     btn.setAttribute('aria-label', 'Menu');
+    $all('.mobile-menu-bottom-links a', drawer).forEach(function (a) {
+      if (/^search$/i.test(txt(a))) a.remove();
+    });
 
     var mq = window.matchMedia('(max-width: 1024px)');
 
