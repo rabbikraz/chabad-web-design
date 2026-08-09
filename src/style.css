@@ -57,7 +57,18 @@
 /* --------------------------------------------------------------------------
    1. BASE TYPOGRAPHY & GENERIC CHABADONE CLEANUP
    -------------------------------------------------------------------------- */
-html { overflow-x: hidden; scroll-behavior: smooth; background: var(--sb-bg); }
+/* overflow-x uses clip (with hidden as legacy fallback): global.css sets
+   html,body{height:100%} and the theme sets body{overflow-x:hidden} — that
+   combination turned BODY into a viewport-height internal scroll container,
+   which killed window scrolling on mobile (scrollY stuck at 0). clip cuts
+   sideways overflow WITHOUT creating a scroll box, and the heights unlock. */
+html {
+  overflow-x: hidden;
+  overflow-x: clip;
+  height: auto !important;
+  scroll-behavior: smooth;
+  background: var(--sb-bg);
+}
 
 /* the CMS gives body a fixed width on article templates — full-bleed everywhere */
 body.cco_body {
@@ -71,6 +82,9 @@ body.cco_body {
   width: auto !important;
   min-width: 0 !important;
   max-width: none !important;
+  height: auto !important;
+  overflow-x: clip !important;
+  overflow-y: visible !important;
 }
 
 /* Body copy minimum 17px across CMS text containers */
@@ -706,6 +720,7 @@ body.cco_body #tabContentMain .co_menu_item.donate_link span.parent a:hover {
 .cs-mobile-menu-close,
 .cs-mobile-menu-close-back { display: none !important; }
 .cs-menu-item-toggle { display: none; }
+.sb-sub-toggle { display: none; } /* mobile-only; shown in the drawer media block */
 
 /* Hamburger hidden on desktop */
 .cs-mobile-menu-open { display: none !important; }
@@ -842,7 +857,7 @@ body.cco_body #tabContentMain .co_menu_item.donate_link span.parent a:hover {
   body.cco_body #tabContentMain .co_menu_item {
     display: flex !important;
     flex-direction: column;
-    position: static !important;
+    position: relative !important;
     left: auto !important;
     transform: none !important;
     visibility: visible !important;
@@ -851,11 +866,30 @@ body.cco_body #tabContentMain .co_menu_item.donate_link span.parent a:hover {
   }
   body.cco_body #tabContentMain .co_menu_item span.parent { order: 1; }
   body.cco_body #tabContentMain .co_menu_item .co_menu_content { order: 2; }
-  /* submenus: always expanded inline under the parent (!important beats the
-     CMS's inline display:none, so no toggle is ever needed) */
+  /* our own accordion toggle: transparent tap target over the row's chevron
+     (the CMS one was removed — it slid into unstyled panel states) */
+  #header .sb-sub-toggle {
+    display: block;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 64px;
+    height: 62px;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    z-index: 3;
+  }
+  body.cco_body #tabContentMain .co_menu_item.sb-open.multi_level span.parent a:after {
+    transform: rotate(225deg) translateY(2px);
+  }
+  /* submenus: collapsed by default, rolled out inline by .sb-open (our
+     accordion). !important beats the CMS's inline display toggling. */
   #tabContentMain .co_menu_content { position: static; }
+  #header #tabContentMain .co_menu_item.sb-open .co_submenu_container { display: block !important; }
   #header #tabContentMain .co_menu_item .co_submenu_container {
-    display: block !important;
+    display: none !important;
     position: static !important;
     width: auto !important;
     height: auto !important;
@@ -2523,6 +2557,18 @@ div#confirm-wrapper::after { content: none !important; display: none !important;
 }
 #donate-wrapper main .custom-amount-wrapper input.custom-amount,
 #donate-wrapper main .custom-amount-wrapper .currency-insert { font-family: var(--sb-font-body); }
+/* the input is flex:3 with min-width:auto — its intrinsic size overflowed the
+   card on phones (and the generic #content input rule must not touch it) */
+#content #donate-wrapper main .custom-amount-wrapper input.custom-amount {
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  padding: 0;
+  min-height: 0;
+  min-width: 0;
+  width: auto;
+}
+#donate-wrapper main form .content-box { max-width: 100%; }
 #donate-wrapper .field-wrapper .donate-text-input,
 #donate-wrapper .field-wrapper input:not([type=checkbox]),
 #donate-wrapper main form .content-box .row .col .field-wrapper select,
@@ -2591,6 +2637,14 @@ div#confirm-wrapper::after { content: none !important; display: none !important;
 
 /* donate on phones: tighter card, calmer type */
 @media (max-width: 700px) {
+  /* the theme's .co_body flex layout sizes the column shrink-to-fit, which
+     let the card outgrow the viewport — block layout + hard clamps */
+  .body_wrapper.co_body:has(#donate-wrapper) { display: block !important; }
+  #co_body_container, #ContentBody, .content-area-parent,
+  #donate-wrapper, #donate-wrapper #donate, #donate-wrapper main.donate-content {
+    max-width: 100% !important;
+    min-width: 0 !important;
+  }
   #donate-wrapper #donate, #confirm-wrapper #confirm {
     margin: 8px 12px 40px;
     border-radius: var(--sb-radius-md);

@@ -232,6 +232,18 @@
     $all('.mobile-menu-bottom-links a', drawer).forEach(function (a) {
       if (/^search$/i.test(txt(a))) a.remove();
     });
+    $all('#tabContentMain .co_menu_item.multi_level', drawer).forEach(function (item) {
+      if (item.querySelector('.sb-sub-toggle')) return;
+      var t = el('button', 'sb-sub-toggle');
+      t.type = 'button';
+      t.setAttribute('aria-label', 'Toggle submenu');
+      t.addEventListener('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        item.classList.toggle('sb-open');
+      });
+      item.appendChild(t);
+    });
 
     var mq = window.matchMedia('(max-width: 1024px)');
 
