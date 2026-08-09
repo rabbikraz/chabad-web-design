@@ -2081,11 +2081,14 @@ body.cco_body input[type="radio"] { accent-color: var(--sb-accent); }
   border-color: var(--sb-event-accent, var(--sb-accent-300)) !important;
   outline: none !important;
 }
-/* per-reservation name cells (built dynamically by the Event App) */
+/* per-reservation name cells (built dynamically by the Event App).
+   events.css sizes these width:100% of their cell — forcing a min-width
+   made them outgrow the cells and overlap. Fit the cell, leave a gutter. */
 #RegisterSinglePage .reservations input,
 #RegisterSinglePage .reservation input {
-  min-width: 130px;
-  margin: 4px 8px 4px 0 !important;
+  min-width: 0;
+  width: calc(100% - 10px) !important;
+  margin: 3px 10px 3px 0 !important;
 }
 /* the category picker labels ("Select a category" / "Reservations") */
 #RegisterSinglePage .toggle_options .inline_block > div:first-child {
