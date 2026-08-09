@@ -177,14 +177,127 @@ body.cco_body .body_wrapper:has(.hp-table) .main {
 /* Form builder generic fixes (modeled on cdo-normalize, written fresh) */
 .co_body .content .form-all li.form-input-wide,
 .form-line,
-.co_body .content .form-all .form-line { padding: 12px; }
+.co_body .content .form-all .form-line { padding: 5px 12px; }
 .form-line:after { content: ""; display: block; clear: both; }
 .form-header-group { margin-left: 0; margin-right: 0; }
 img.form-image { max-width: 100%; width: 100%; height: auto; border-radius: var(--sb-radius-md); }
 .form-line .form-html ul { margin-bottom: 16px; }
 .form-input .form-error-message,
 .form-input-wide .form-error-message { z-index: 99; }
+/* Tighten the embedded form: the builder ships generous stock spacing that
+   reads as dead air once our type sizes are applied. !important because the
+   builder's own stylesheet is served from a host we can't inspect, so we
+   can't rely on out-specifying rules we can't see. */
+.co_body .content .form-all li.form-input-wide,
+.form-line,
+.co_body .content .form-all .form-line { padding-top: 5px !important; padding-bottom: 5px !important; }
+.form-all .form-label,
+.co_body .content .form-all .form-label { margin-bottom: 4px !important; }
+.form-all .form-sub-label-container { margin-bottom: 0 !important; }
+.form-all .form-sub-label { margin-top: 2px !important; }
+.form-all .form-radio-item,
+.form-all .form-checkbox-item { margin-bottom: 4px !important; }
+.form-all .form-section,
+.form-all .form-collapse-table { margin-bottom: 0 !important; }
+.form-all .form-header-group { padding-bottom: 4px !important; }
+
+/* Native <select> popup: the option list is drawn by the OS, but Chrome and
+   Edge do honour these, so the highlighted row is gold instead of system
+   blue. (Safari/Firefox ignore it — their popup stays native.) */
+#content select option,
+.form-all select option {
+  background-color: var(--sb-bg);
+  color: var(--sb-text);
+}
+#content select option:checked,
+#content select option:hover,
+.form-all select option:checked,
+.form-all select option:hover {
+  /* the gradient is the trick that makes Chromium accept a custom
+     highlight colour on the selected row */
+  background: var(--sb-accent) linear-gradient(0deg, var(--sb-accent) 0%, var(--sb-accent) 100%);
+  color: #fff;
+}
+
+/* ---- date picker (Dynarch jscalendar, used by the form builder) ----
+   Its ‹ « Today » › navigation is built from <td class="button"> cells, which
+   the generic gold-pill .button rule above turned into solid gold blocks that
+   swallowed the arrows and the Today label. Give the widget its own skin. */
 div.calendar.popup { font-family: inherit; }
+body.cco_body div.calendar {
+  background: var(--sb-bg);
+  border: 1px solid var(--sb-divider);
+  border-radius: var(--sb-radius-md);
+  box-shadow: var(--sb-shadow-md);
+  font-family: var(--sb-font-body);
+  color: var(--sb-text);
+  padding: 4px;
+}
+body.cco_body div.calendar .title,
+body.cco_body div.calendar tr.title td {
+  background: transparent;
+  color: var(--sb-text);
+  font-family: var(--sb-font-heading);
+  font-size: 16px;
+  font-weight: 400;
+  border: none;
+  padding: 8px 4px;
+}
+/* the navigation row: transparent cells, teal glyphs */
+body.cco_body div.calendar td.button,
+body.cco_body div.calendar .button {
+  background: transparent !important;
+  background-image: none !important;
+  color: var(--sb-teal-700) !important;
+  border: none !important;
+  border-radius: var(--sb-radius-sm) !important;
+  font-family: var(--sb-font-body) !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  padding: 6px 4px !important;
+  text-align: center;
+  white-space: nowrap;
+}
+body.cco_body div.calendar td.button:hover,
+body.cco_body div.calendar td.button.hilite {
+  background: var(--sb-accent-100) !important;
+  color: var(--sb-accent-700) !important;
+}
+body.cco_body div.calendar thead .name,
+body.cco_body div.calendar td.name {
+  background: transparent;
+  color: var(--sb-accent-700);
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  border: none;
+  padding: 6px 0;
+}
+body.cco_body div.calendar td.day {
+  background: transparent;
+  color: var(--sb-text);
+  border-radius: var(--sb-radius-sm);
+  padding: 6px;
+  text-align: center;
+}
+body.cco_body div.calendar td.day.oth { color: rgba(23, 35, 46, .35); }
+body.cco_body div.calendar td.day.hilite,
+body.cco_body div.calendar td.day:hover { background: var(--sb-accent-100); color: var(--sb-accent-700); }
+body.cco_body div.calendar td.day.today { color: var(--sb-accent-700); font-weight: 700; }
+body.cco_body div.calendar td.day.selected {
+  background: var(--sb-accent);
+  color: #fff;
+  font-weight: 600;
+}
+body.cco_body div.calendar tfoot .ttip,
+body.cco_body div.calendar td.ttip {
+  background: transparent;
+  color: rgba(23, 35, 46, .6);
+  border: none;
+  font-size: 12.5px;
+  padding: 6px;
+}
 @media screen and (max-width: 610px) {
   body .form-label-left { width: 100% !important; }
 }
