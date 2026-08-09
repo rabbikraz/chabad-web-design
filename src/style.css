@@ -2024,6 +2024,14 @@ body.cco_body input[type="radio"] { accent-color: var(--sb-accent); }
   padding: 18px 20px;
   margin-top: 14px;
 }
+/* events.css paints the reservation rows and add-ons bar plain white */
+#RegisterSinglePage .reservation,
+#RegisterSinglePage .additionals_toggle {
+  background: var(--sb-bg);
+  border: 1px solid var(--sb-divider);
+  border-radius: var(--sb-radius-md);
+}
+#RegisterSinglePage .reservation { padding: 14px 16px; }
 #RegisterSinglePage .notice {
   border-radius: var(--sb-radius-md);
   background: var(--sb-teal-100);

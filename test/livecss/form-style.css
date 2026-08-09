@@ -1,0 +1,1486 @@
+body.dir_rtl {
+	direction: rtl;
+}
+
+/* ==========================================================================
+   Theme palettes
+   ==========================================================================
+   Each site skin maps to one set of form colours. Setting --primary-form-color
+   is what switches the restyle on: everything below is wrapped in
+   `@container style(--primary-form-color)`, so a skin we do not recognise gets
+   no --primary-form-color, the container query fails, and the form keeps its
+   original appearance rather than being half-restyled with the wrong colours.
+
+   :where() keeps all of this at zero specificity, so a page is free to override
+   any of it with a plain declaration.
+
+   Only what actually differs between skins is listed per skin; the values every
+   skin shares are set once, below. */
+
+:where(html:has(link[href*="/css/sites6/"], link[href*="/template5/skins/"])) {
+	--border-form-color: #dddddd;
+	--text-form-dark: #343333;
+	--text-form-muted: #666666;
+}
+
+:where(html:has(link[href*="/css/sites6/"])) {
+	--font-form-main: "Muli", sans-serif;
+}
+
+:where(html:has(link[href*="/template5/skins/"])) {
+	--font-form-main: Arial, Helvetica, sans-serif;
+}
+
+/* Hebrew: Muli has no Hebrew glyphs, so the browser would fall back per-character. */
+:where(html:has(link[href^="/css/sites6/"]) body.dir_rtl) {
+	--font-form-main: "Heebo", sans-serif;
+}
+
+/* --- sites6 themes --- */
+
+:where(html:has(link[href*="/css/sites6/blue-theme.css"])) {
+	--primary-form-color: #0f6cb8;
+	--contrast-form-color: #0f6cb8;
+	--accent-form-color: #2fd3c2;
+	--accent-form-light: #eafbf9;
+	--accent-form-medium: #d5f6f3;
+}
+
+:where(html:has(link[href*="/css/sites6/default-theme.css"])) {
+	--primary-form-color: #ffb400;
+	--contrast-form-color: #4c56b7;
+	--accent-form-color: #317cb8;
+	--accent-form-light: #eaf2f8;
+	--accent-form-medium: #d6e5f1;
+}
+
+:where(html:has(link[href*="/css/sites6/green-theme.css"])) {
+	--primary-form-color: #257071;
+	--contrast-form-color: #257071;
+	--accent-form-color: #41bb80;
+	--accent-form-light: #ecf8f2;
+	--accent-form-medium: #daf1e6;
+}
+
+:where(html:has(link[href*="/css/sites6/pink-theme.css"])) {
+	--primary-form-color: #ffb400;
+	--contrast-form-color: #670822;
+	--accent-form-color: #fe7350;
+	--accent-form-light: #fff1ed;
+	--accent-form-medium: #ffe3dc;
+}
+
+:where(html:has(link[href*="/css/sites6/purple-theme.css"])) {
+	--primary-form-color: #f47721;
+	--contrast-form-color: #891738;
+	--accent-form-color: #891738;
+	--accent-form-light: #f3e8eb;
+	--accent-form-medium: #e7d1d7;
+}
+
+:where(html:has(link[href*="/css/sites6/red-theme.css"])) {
+	--primary-form-color: #f58c28;
+	--contrast-form-color: #680020;
+	--accent-form-color: #680020;
+	--accent-form-light: #f0e5e9;
+	--accent-form-medium: #e1ccd2;
+}
+
+/* --- template5 skins --- */
+
+:where(html:has(link[href*="/template5/skins/default.css"])) {
+	--primary-form-color: #0a3459;
+	--contrast-form-color: #0a3459;
+	--accent-form-color: #d9a441;
+	--accent-form-light: #fff9ed;
+	--accent-form-medium: #fff4de;
+}
+
+:where(html:has(link[href*="/template5/skins/grey.css"])) {
+	--primary-form-color: #1a7297;
+	--contrast-form-color: #0a3459;
+	--accent-form-color: #6bc3e7;
+	--accent-form-light: #eef8fc;
+	--accent-form-medium: #d7f0fa;
+}
+
+:where(html:has(link[href*="/template5/skins/beige.css"])) {
+	--primary-form-color: #25364a;
+	--contrast-form-color: #25364a;
+	--accent-form-color: #deaa6b;
+	--accent-form-light: #fbf6f0;
+	--accent-form-medium: #f3e5d4;
+}
+
+:where(html:has(link[href*="/template5/skins/grey_green.css"])) {
+	--primary-form-color: #277505;
+	--contrast-form-color: #31810b;
+	--accent-form-color: #41a317;
+	--accent-form-light: #f2faeb;
+	--accent-form-medium: #e3f3d6;
+}
+
+:where(html:has(link[href*="/template5/skins/navy.css"])) {
+	--primary-form-color: #0a3459;
+	--contrast-form-color: #0a3459;
+	--accent-form-color: #c6a26b;
+	--accent-form-light: #f8f1e8;
+	--accent-form-medium: #ead8c2;
+}
+
+:where(html:has(link[href*="/template5/skins/orange.css"])) {
+	--primary-form-color: #8f0222;
+	--contrast-form-color: #680020;
+	--accent-form-color: #ffcc67;
+	--accent-form-light: #fff8e9;
+	--accent-form-medium: #ffe8b5;
+}
+
+:where(html:has(link[href*="/template5/skins/purple.css"])) {
+	--primary-form-color: #731559;
+	--contrast-form-color: #5a104a;
+	--accent-form-color: #efae8c;
+	--accent-form-light: #fff4ed;
+	--accent-form-medium: #f5ddce;
+}
+
+:where(html:has(link[href*="/template5/skins/red.css"])) {
+	--primary-form-color: #610d01;
+	--contrast-form-color: #610d01;
+	--accent-form-color: #e7b252;
+	--accent-form-light: #fff6dd;
+	--accent-form-medium: #f4dfad;
+}
+
+html:has(#RegisterSinglePage) {
+	--primary-form-color: unset;
+}
+
+:root {
+	--date-separator: "/";
+}
+
+html[lang="de"],
+html[lang="fi"],
+html[lang="ru"],
+html[lang="sk"],
+html[lang="hu"],
+html[lang="tr"],
+html[lang="pl"],
+html[lang="bg"],
+html[lang="et"],
+html[lang="cs"],
+html[lang="sv"],
+html[lang="uk"] {
+	--date-separator: ".";
+}
+
+/* ==========================================================================
+   Everything below is scoped to a form page we are restyling
+   ==========================================================================
+   The wrapper contributes (0,2,2) of specificity to every rule nested in it, so
+   a rule written as `.form-all .form-textbox` effectively weighs (0,4,2). The
+   strongest rival in the system is `.co_body .content .form-all .form-line` at
+   (0,4,0), and `:not(:has(#sublabel_area, ...))` pulls an ID into the count.
+   That is why almost nothing here needs `!important` to win.
+
+   NEVER put `!important` on `display` or `visibility`.
+   ------------------------------------------------------
+   `!important` is the only thing in CSS that can beat an inline style, and the
+   form system hides fields with inline styles in three different places:
+
+     - build_source.js emits a conditional field as `<li class="form-line"
+       style="display:none;">`, with no class to key off
+     - userform.js hides `#cid_<qid>` at runtime with element.hide()
+     - JotForm bakes `style="display: none"` onto disabled address rows
+
+   So `display: flex !important` on a row does not just override a stylesheet,
+   it overrides the author's decision to disable the field, and it renders
+   something that was meant to be invisible. That was the Address-Line-2 bug.
+   A plain declaration is enough: an inline hide then wins, as it should, and we
+   still beat every rival stylesheet on specificity.
+
+   The same trap in reverse applies to `display: none` — an `!important` there
+   would stop userform.js from ever showing the field. */
+
+@container style(--primary-form-color) {
+	html:has(script[src*="form-redesign/form-script.js"]):not(:has(.ct-container, #footer-links)) {
+
+		:is(.co_body, #co_body_container, #chabad_main_content, div.chabad_left_column):has(.form-all),
+		#formContainer,
+		.form-all {
+			font-family: var(--font-form-main);
+			color: var(--text-form-dark);
+			box-sizing: border-box;
+		}
+
+		body.mobile div#chabad_body_content:has(.form-all) {
+			padding: 0;
+		}
+
+		.form-all {
+			max-width: 850px;
+			margin: 0 auto;
+			padding: 40px 20px 100px;
+		}
+
+		.form-all .form-line:not(.form-field-hidden, .always-hidden) {
+			display: flex;
+			flex-direction: column;
+			gap: 5px;
+			padding: 20px 0;
+			width: 100%;
+			box-sizing: border-box;
+		}
+
+		.form-line[style="z-index: 10000;"] {
+			z-index: 99 !important;
+		}
+
+		.form-html {
+			width: 100%;
+		}
+
+		/* .form-input and .form-input-wide are the SAME wrapper. build_source.js picks between
+		   them purely by label alignment - `cname = 'form-input-wide'` when the label is on top,
+		   `'form-input'` otherwise - so a rule keyed on only one silently stops applying the moment
+		   a form author sets Label Align to Top. That is what made top-aligned labels look broken:
+		   on such a form every `.form-input > …` rule of ours matched nothing (0 .form-input vs 25
+		   .form-input-wide). Always name both; `:is()` takes the specificity of its most specific
+		   argument - one class here - so pairing them changes no cascade decision. */
+		.form-all .form-input:not(.form-field-hidden, .always-hidden),
+		.form-all .form-input-wide:not(.form-field-hidden, .always-hidden) {
+			display: flex;
+			flex-direction: row;
+			flex-wrap: wrap;
+			gap: 15px;
+			width: 100%;
+			max-width: 100%;
+		}
+
+		.form-all :is(.form-input, .form-input-wide):has(> magen-file-drop-zone) {
+			width: 100%;
+			max-width: 100%;
+			flex: 1 1 100%;
+		}
+
+		.form-all .form-header-group {
+			background: none;
+			border: none;
+			padding: 0;
+			margin: 0;
+			width: 100%;
+			height: auto;
+			display: block;
+			text-align: start;
+		}
+
+		.form-all .form-header {
+			font-family: var(--font-form-main);
+			font-weight: 800;
+			font-size: var(--font-size-form-header, 27px);
+			color: var(--contrast-form-color, var(--primary-form-color));
+			text-align: start;
+			margin: 0;
+		}
+
+		.form-all .form-subHeader {
+			font-family: var(--font-form-main);
+			font-size: 16px;
+			font-weight: 300;
+			color: var(--text-form-muted);
+		}
+
+		.form-all .form-label,
+		.form-all .form-label-left,
+		.form-all .form-label-right,
+		.form-all .form-label-top {
+			font-family: var(--font-form-main);
+			font-weight: 700;
+			font-size: var(--font-size-form-main, 17px);
+			color: #555555;
+			width: 100% !important;
+			display: block;
+			margin-bottom: 0;
+			float: none;
+			text-align: start;
+			white-space: normal;
+		}
+
+		/* Label Align, honoured logically so it reads correctly in every language.
+		   `start`/`end` rather than `left`/`right` because the class names are physical but the
+		   author's intent is not: the Form Builder UI is LTR-centric, yet a Hebrew form defaults
+		   to Align Right (verified - all 16 labels on the Hebrew sample are .form-label-right).
+
+		   The RTL override is not our invention; it mirrors what formCss2 already does for
+		   `.form-all.dir_rtl :is(.form-label-left, .form-label-right)`, which forces BOTH to
+		   `text-align: right` - i.e. in RTL the physical name is ignored
+		   and everything aligns to the reading start. Mapping right -> `end` without this would
+		   put every Hebrew label on the left, contradicting both the system and the author. */
+		.form-all .form-label-right {
+			text-align: end;
+		}
+
+		:is(body.dir_rtl .form-all, .form-all.dir_rtl) :is(.form-label-left, .form-label-right) {
+			text-align: start;
+		}
+
+		/* Top is the one choice that carries no meaning in this design - every label is already
+		   above its field - so it is free to mean "centred". */
+		.form-all .form-label-top {
+			text-align: center;
+		}
+
+
+		/* THE EXCEPTIONS ARE EXCLUDED HERE, NOT OVERRIDDEN BELOW.
+		   A date segment and an "other" free-text box both carry `.form-textbox`, so this block
+		   used to style them and then be undone by a narrower rule further down. That is what kept
+		   `!important` alive across most of this stylesheet: the declarations here have to keep it
+		   to beat the inline `width="60"`/`font-size:14px` JotForm bakes into its markup, and an
+		   inline-beating !important can only be outranked by ANOTHER !important - so every narrower
+		   rule that overrode one of these properties was forced to carry !important too, and so was
+		   anything competing with those. Not matching them in the first place breaks the chain.
+
+		   `:not(:where(...))` and not `:not(...)`: :not() takes the specificity of its argument, so
+		   a plain :not() would push this branch to (0,3,1) and it would start beating the
+		   `:not(textarea, select)` height/padding rule below. :where() is always zero, so the
+		   branch stays exactly (0,2,0) and every existing balance is preserved.
+
+		   The block is SPLIT rather than simply narrowed. The exceptions override only some of
+		   what this block sets - a date segment gets its own border, padding, height and width, but
+		   nothing of ours ever gives it `box-sizing`, `border-radius`, `transition` or `max-width`.
+		   Excluding them from the whole block would silently take those four away, which the
+		   equivalence check would have caught but only after the fact. So: everything they DO
+		   inherit stays in a shared block, and only the properties they override are scoped. */
+		.form-all .form-textbox,
+		.form-all .form-textarea,
+		.form-all .form-dropdown {
+			box-sizing: border-box;
+			border-radius: 8px;
+			font-family: var(--font-form-main);
+			outline: none;
+			transition: all 0.3s ease;
+			box-shadow: none;
+			max-width: 100%;
+		}
+
+		.form-all .form-textbox:not(:where(.form-radio-other-input, .form-checkbox-other-input, .date-fields input)),
+		.form-all .form-textarea,
+		.form-all .form-dropdown {
+			width: 100% !important;
+			padding: 14px 15px !important;
+			border: 1px solid var(--border-form-color) !important;
+			background-color: #ffffff !important;
+			font-size: 16px !important;
+		}
+
+		.form-all .form-textbox::placeholder,
+		.form-all .form-textarea::placeholder {
+			color: #aaa;
+			opacity: 1;
+		}
+
+		/* `select` is excluded from the .form-textbox branch, not merely added to the other one.
+		   A <select class="form-textbox"> matches BOTH branches, and `:not(textarea)` pulls a type
+		   selector in that makes that branch (0,2,1) - more specific than the (0,2,0) dropdown block
+		   below, so its `padding: 0 15px !important` shorthand beat our `padding-inline-end: 40px`
+		   longhand and the arrow had nothing to sit in. Excluding selects here lets the dropdown
+		   block own their padding, without resorting to a specificity hack. */
+		/* NO exclusion here, deliberately, and it is worth knowing why before adding one.
+		   This rule is (0,2,1). The other-input rule below is (0,2,0), so THIS is what actually
+		   gives `#input_7` and `#input_22` their 50px height and 15px side padding - their own
+		   `height: 100% !important; padding: 0 !important` loses to it and is dead code for them.
+		   It is live only for `#input_partial`, which carries an ID and weighs (1,1,0).
+		   Excluding them here therefore does not free a declaration, it hands them the dead
+		   values: measured, 50px -> 30px and 15px -> 0px on six elements.
+		   Date segments need no exclusion either - `.form-all .date-fields input` is also (0,2,1)
+		   and comes later, so it already wins on source order. */
+		.form-all .form-textbox:not(textarea, select),
+		.form-all :is(.form-dropdown, select) {
+			height: 50px !important;
+			padding: 0 15px !important;
+		}
+
+		.form-all .form-textarea {
+			padding: 15px !important;
+		}
+
+		.form-all .form-textbox:focus,
+		.form-all .form-textarea:focus,
+		.form-all .form-dropdown:focus {
+			border-color: var(--accent-form-color) !important;
+		}
+
+		/* `select`, not just `.form-dropdown`. The generator does not give every <select> that class:
+		   the credit-card expiry month and year come out as `<select class="form-textbox">`, so they
+		   were picking up the text-input styling and keeping the browser's NATIVE arrow, with 15px
+		   padding on both sides and no room reserved for it. 92 selects across all 46 forms are in
+		   that state - two per form - so this was never Hebrew-specific, just most visible in RTL.
+
+		   `:is()` takes the specificity of its most specific argument, `.form-dropdown` at (0,1,0),
+		   so the weight is exactly what it was and no existing dropdown changes. There are no
+		   `select[multiple]` or `.form-list` elements on any form, so every <select> here really is
+		   a single-line dropdown that wants this treatment. */
+		.form-all :is(.form-dropdown, select) {
+			-webkit-appearance: none;
+			appearance: none;
+			background-image: url('data:image/svg+xml;utf8,<svg width="12" height="8" viewBox="0 0 12 8" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1.5L6 6.5L11 1.5" stroke="%23333333" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+			background-repeat: no-repeat;
+			background-position: right 15px center;
+			background-size: 12px 8px;
+			padding-inline-end: 40px !important;
+		}
+
+		/* RTL and LTR markers coexist on the same page, so neither can be taken at face value.
+		   Two separate faults made this rule dead everywhere:
+
+		   1. RTL is marked in two different places. On a fully RTL site it is `body.dir_rtl`; on an
+		      RTL form embedded in an LTR page - which is what the Hebrew sample is - the body reads
+		      `lang_en dir_ltr` and only the form carries `dir="rtl" class="form-all dir_rtl"`.
+		      Keying on the body alone missed that case entirely.
+		   2. The `.dir_ltr` exclusion has to be scoped INSIDE the form. That same body carries
+		      `dir_ltr`, so a bare `.dir_ltr *` matches every one of the 1198 elements in the
+		      document and the rule can never fire, whatever the root says.
+
+		   `:dir(rtl)` is not usable here: the inner containers carry classes, not `dir` attributes,
+		   so all 9 dropdowns report `:dir(rtl)` while only 3 compute `direction: rtl`.
+
+		   `:where()` keeps the exclusion at zero specificity, so the whole selector stays at
+		   (0,3,1) - exactly what `body.dir_rtl .form-all .form-dropdown` weighed. */
+		:is(body.dir_rtl .form-all, .form-all.dir_rtl) :is(.form-dropdown, select):not(:where(.dir_ltr, .form-all .dir_ltr *)) {
+			background-position: left 15px center;
+		}
+
+		.form-all .form-sub-label-container:not(:has(#sublabel_area, #sublabel_phone)) {
+			display: flex;
+			flex-direction: column;
+			flex: 1;
+			min-width: 0;
+		}
+
+		.form-all :is(.form-input, .form-input-wide)>.form-sub-label-container:not(:has(#sublabel_area, #sublabel_phone)) {
+			flex: 1 1 calc(50% - 20px);
+			min-width: calc(50% - 20px);
+		}
+
+		.form-all :is(.form-input, .form-input-wide)>.form-sub-label-container:not(:has(#sublabel_area, #sublabel_phone)):has(input[id*="prefix"], input[name*="prefix"], input[id*="suffix"], input[name*="suffix"]) {
+			flex: 0 1 92px;
+			min-width: 84px;
+		}
+
+		.form-all :is(.form-input, .form-input-wide)>.form-sub-label-container:not(:has(#sublabel_area, #sublabel_phone)):has(input[id*="first"], input[name*="first"], input[id*="middle"], input[name*="middle"], input[id*="last"], input[name*="last"]) {
+			flex: 1 1 150px;
+			min-width: 140px;
+		}
+
+		.form-all .form-sub-label-container input,
+		.form-all .form-sub-label-container select {
+			order: 1;
+
+			+button.qty-btn.plus {
+				order: 1;
+			}
+		}
+
+		.form-all .form-sub-label-container label.form-sub-label {
+			order: 2;
+			margin-top: 5px;
+			font-weight: 300;
+			font-family: var(--font-form-main);
+			font-size: 14px;
+			color: #555555;
+		}
+
+		.form-all :is(.form-input, .form-input-wide)> :is(.dir_ltr, .dir_rtl),
+		.form-all .time-fields,
+		.form-all .datetime-fields {
+			display: flex;
+			flex-direction: row;
+			flex-wrap: nowrap;
+			align-items: flex-start;
+			gap: 15px;
+			width: 100%;
+		}
+
+		.form-all :is(.form-input, .form-input-wide)> :is(.dir_ltr, .dir_rtl)>.form-sub-label-container,
+		.form-all .time-fields>.form-sub-label-container {
+			flex: 1;
+			min-width: 0;
+		}
+
+		.form-all .time-fields>.form-sub-label-container:not(:has(#sublabel_area, #sublabel_phone)):has(.at-label) {
+			display: none;
+		}
+
+		.form-all .time-fields .at-label {
+			display: none;
+		}
+
+		.form-all .date-fields {
+			display: flex;
+			flex-direction: row;
+			align-items: center;
+			gap: 10px;
+			width: 100%;
+			flex: 1 1 100%;
+			max-width: 100%;
+			background: #ffffff;
+			border: 1px solid var(--border-form-color);
+			border-radius: 8px;
+			padding: 10px;
+			height: 50px;
+			margin-top: 0;
+		}
+
+		/* We draw the separator with ::after on each segment instead. userform.js stopped
+		   emitting .date-separate and now hides any it finds, so this only matters for forms
+		   saved before that change. */
+		.form-all .date-fields>span.date-separate {
+			display: none;
+		}
+
+		/* Sized to their content rather than a third of the card each, so the date reads as
+		   one group instead of three numbers stranded across the full width. width: auto is
+		   required: the site themes set .form-sub-label-container to width:100% under 600px,
+		   which a flex-basis of auto would otherwise defer to. */
+		.form-all .date-fields .form-sub-label-container:not(:has(#sublabel_area, #sublabel_phone)) {
+			margin: 0;
+			min-width: 0;
+			width: auto;
+			flex: 0 0 auto;
+			position: relative;
+		}
+
+		.form-all .datetime-fields>.date-fields>.form-sub-label-container:not(:has(#sublabel_area, #sublabel_phone)),
+		.form-all :is(.form-input, .form-input-wide)>.date-fields>.form-sub-label-container:not(:has(#sublabel_area, #sublabel_phone)) {
+			min-width: 0;
+			width: auto;
+			flex: 0 0 auto;
+		}
+
+		/* Picker sits at the far end of the card, away from the date group. */
+		.form-all .date-fields .form-sub-label-container:not(:has(#sublabel_area, #sublabel_phone)):has(img),
+		.form-all .datetime-fields>.date-fields>.form-sub-label-container:not(:has(#sublabel_area, #sublabel_phone)):has(img),
+		.form-all :is(.form-input, .form-input-wide)>.date-fields>.form-sub-label-container:not(:has(#sublabel_area, #sublabel_phone)):has(img) {
+			width: auto;
+			flex: 0 0 auto;
+			margin-inline-start: auto;
+		}
+
+		.form-all .date-fields .form-sub-label-container:last-child,
+		.form-all .date-fields .form-sub-label-container:nth-last-child(2):has(img) {
+			margin-inline-end: 0;
+		}
+
+		/* ch keeps these in step with the font: room for the digits and nothing more.
+
+		   `font-size` is declared HERE rather than inherited from the .form-textbox block, because
+		   these inputs are now excluded from that block. It has to keep !important for the original
+		   reason that block did: JotForm bakes `font-size: 14px` inline onto the date segments, and
+		   only !important beats an inline style. Dropping it silently took the segments to 14px,
+		   and since the width is `2.75ch` they shrank with it and every height above them moved -
+		   5944 computed-style diffs, which is how this was caught. */
+		.form-all .date-fields input {
+			font-size: 16px;
+			border: none !important;
+			box-shadow: none;
+			padding: 0 !important;
+			height: 100% !important;
+			width: 2.75ch !important;
+			min-width: 0;
+			max-width: none;
+			text-align: center;
+			font-family: var(--font-form-main);
+			background: transparent;
+		}
+
+		.form-all .date-fields input[id*="year"],
+		.form-all .date-fields input[name*="year"] {
+			width: 4.75ch !important;
+		}
+
+		.form-all .date-fields .form-sub-label-container:nth-child(1)::after,
+		.form-all .date-fields .form-sub-label-container:nth-child(2)::after {
+			content: var(--date-separator);
+			position: absolute;
+			inset-inline-end: -7px;
+			top: 50%;
+			transform: translateY(-50%);
+			color: #d9d9d9;
+			pointer-events: none;
+		}
+
+		.form-all .date-fields .form-sub-label {
+			display: none;
+		}
+
+		.form-all .date-fields img {
+			margin-inline-start: 5px;
+			cursor: pointer;
+			max-width: 25px;
+			flex-shrink: 0;
+		}
+
+		/* jscalendar appends the picker to <body>, so these rules are deliberately not
+		   scoped to .form-all. It still inherits the theme custom properties. */
+		div.calendar {
+			font-family: var(--font-form-main);
+			color: var(--text-form-dark);
+			border-radius: 12px;
+			box-shadow: 0 10px 28px rgba(0, 0, 0, 0.16);
+			overflow: hidden;
+		}
+
+		/* jscalendar drops the popup 100px below the picker icon, which is what formCss2.css
+		   is cancelling with -100px — except that lands it back on top of the field. The
+		   icon sits 17px above the bottom of the 50px card, so -77px clears the card by 6px
+		   and the popup hangs below it like a normal dropdown. */
+		div.calendar.popup {
+			margin: -77px 0 0 -24px;
+			z-index: 100000;
+		}
+
+		div.calendar table {
+			background-color: #ffffff;
+			border: 1px solid var(--border-form-color);
+			border-radius: 12px;
+			border-collapse: separate;
+			border-spacing: 2px;
+			padding: 8px;
+		}
+
+		div.calendar thead {
+			background-color: transparent;
+		}
+
+		div.calendar td,
+		div.calendar th {
+			font-size: 13px;
+			padding: 7px 6px;
+			border: none;
+			text-align: center;
+		}
+
+		div.calendar td.title {
+			font-weight: 700;
+			font-size: 15px;
+			color: var(--text-form-dark);
+			padding: 6px 6px 10px;
+		}
+
+		div.calendar td.button {
+			color: var(--primary-form-color);
+			font-weight: 600;
+			border-radius: 6px;
+			cursor: pointer;
+		}
+
+		div.calendar th,
+		div.calendar th.weekend {
+			background: transparent;
+			border: none;
+			color: var(--text-form-muted);
+			font-weight: 600;
+			font-size: 11px;
+			letter-spacing: 0.04em;
+		}
+
+		/* The stock theme paints weekends solid blue; a tint of nothing reads better. */
+		div.calendar td.weekend {
+			background: transparent !important;
+		}
+
+		div.calendar tr.days td {
+			width: 2.2em;
+			color: var(--text-form-dark);
+			border-radius: 8px;
+			cursor: pointer;
+			transition: background-color 0.15s ease;
+		}
+
+		div.calendar tr.days td.otherDay {
+			color: #c9c9c9;
+		}
+
+		div.calendar td.button:hover,
+		div.calendar tr.days td:hover {
+			background-color: var(--accent-form-light) !important;
+		}
+
+		/* Today is outlined, the chosen day is filled; when they are the same day the fill
+		   wins because it comes last. */
+		div.calendar tr.days td.today {
+			background-color: var(--accent-form-light) !important;
+			color: var(--accent-form-color);
+			font-weight: 700;
+			box-shadow: inset 0 0 0 1px var(--accent-form-color);
+		}
+
+		div.calendar tr.days td.selected {
+			background-color: var(--accent-form-color) !important;
+			color: #ffffff;
+			font-weight: 700;
+			box-shadow: none;
+		}
+
+		.form-all .form-address-table {
+			width: 100%;
+		}
+
+		.form-all .form-address-table tbody,
+		.form-all .form-address-table tr {
+			display: flex;
+			flex-wrap: wrap;
+			width: 100%;
+			gap: 15px;
+		}
+
+		.form-all .form-address-table td {
+			display: block;
+			width: 100%;
+			padding: 0;
+			flex: 1;
+			min-width: calc(50% - 20px);
+		}
+
+		.form-all .form-address-table tr:first-child td,
+		.form-all .form-address-table tr:nth-child(2) td {
+			min-width: 100%;
+		}
+
+		#formContainer .form-all .form-address-table tr.hide,
+		#formContainer .form-all .hide {
+			display: none;
+		}
+
+		.form-all .form-single-column {
+			display: flex;
+			flex-direction: column;
+			gap: 5px;
+			width: 100%;
+		}
+
+		.form-all .form-multiple-column {
+			display: flex;
+			flex-direction: row;
+			flex-wrap: wrap;
+			gap: 15px;
+			width: 100%;
+
+			span.clearfix:empty {
+				display: none;
+			}
+		}
+
+		/* .field-no-label is added by form-redesign.js. A label the form author left blank is
+		   still needed by screen readers, so it is visually hidden rather than removed, and the
+		   required marker moves onto the first choice instead. */
+		.form-all .form-line.field-no-label {
+			gap: 0 !important;
+		}
+
+		.form-all .form-line.field-no-label>.form-label-top {
+			position: absolute;
+			width: 1px !important;
+			height: 1px;
+			overflow: hidden;
+			clip: rect(0 0 0 0);
+			clip-path: inset(50%);
+			white-space: nowrap;
+		}
+
+		.form-all .form-line.field-no-label :is(.form-checkbox-item, .form-radio-item) label::after {
+			content: " *";
+			color: #ff0000;
+			font-weight: 700;
+		}
+
+		.form-all .form-radio-item,
+		.form-all .form-checkbox-item {
+			display: flex;
+			flex-direction: row;
+			align-items: center;
+			justify-content: flex-start;
+			gap: 15px;
+			padding: 16px 20px !important;
+			border-radius: 8px;
+			background-color: #ffffff;
+			border: 1px solid var(--border-form-color);
+			cursor: pointer;
+			transition: all 0.2s ease;
+			margin: 0;
+			box-sizing: border-box;
+		}
+
+		/* width: auto resets the hardcoded 180px from formCss2.css; flex-shrink: 0 keeps a
+		   long option from being squeezed into wrapping just to fit a neighbour. */
+		.form-all .form-multiple-column :is(.form-radio-item, .form-checkbox-item) {
+			flex: 1 0 max-content;
+			width: auto;
+			min-width: 0;
+			max-width: 100%;
+			white-space: normal;
+		}
+
+		/* Rules below are same-specificity, so source order decides: equalized and
+		   measuring override the base, and the other-field row overrides both. */
+		.form-all .form-multiple-column.choices-equalized :is(.form-radio-item, .form-checkbox-item) {
+			flex: 0 0 var(--choice-basis);
+		}
+
+		/* max-width: none keeps the measured width intrinsic instead of clamped to the
+		   probe, so it stays valid at any container width and can be cached. */
+		.form-all .form-multiple-column.measuring-choices :is(.form-radio-item, .form-checkbox-item) {
+			flex: 0 0 max-content;
+			max-width: none;
+		}
+
+		/* The other-field takes its own row unless the script worked out that it fits beside
+		   the options. Excluded while measuring so the probe reports its intrinsic width. */
+		.form-all .form-multiple-column:not(.choices-other-inline, .measuring-choices) :is(.form-radio-item, .form-checkbox-item):has(:is(.form-radio-other-input, .form-checkbox-other-input, #input_partial)) {
+			flex: 1 0 100%;
+		}
+
+		/* Inline: a zero basis keeps it on the options' last row, then grow hands it exactly
+		   the slots they left empty. */
+		.form-all .form-multiple-column.choices-other-inline :is(.form-radio-item, .form-checkbox-item):has(:is(.form-radio-other-input, .form-checkbox-other-input, #input_partial)) {
+			flex: 1 0 0%;
+		}
+
+		/* A single column stacks vertically, so the shared other-field rule's flex-basis of
+		   100% would land on the height and fight the card's own height. */
+		.form-all .form-single-column :is(.form-radio-item, .form-checkbox-item):has(:is(.form-radio-other-input, .form-checkbox-other-input, #input_partial)) {
+			flex: 0 0 auto;
+		}
+
+		.form-all .form-radio-item:hover,
+		.form-all .form-checkbox-item:hover {
+			border-color: var(--accent-form-color);
+		}
+
+		.form-all .form-radio-item.active-option,
+		.form-all .form-checkbox-item.active-option {
+			background-color: var(--accent-form-light);
+			border-color: var(--accent-form-color);
+		}
+
+		.form-all input[type="radio"].form-radio,
+		.form-all input[type="checkbox"].form-checkbox,
+		.form-all input[type="radio"].form-other,
+		.form-all #other_partial {
+			-webkit-appearance: none;
+			appearance: none;
+			background-color: #ffffff;
+			border: 2px solid var(--border-form-color) !important;
+			width: 22px;
+			height: 22px;
+			min-width: 22px !important;
+			display: inline-block;
+			position: relative;
+			cursor: pointer;
+			margin: 0;
+			flex-shrink: 0;
+			min-height: unset;
+		}
+
+		.form-all input[type="radio"] {
+			border-radius: 50%;
+		}
+
+		.form-all input[type="checkbox"] {
+			border-radius: 4px;
+		}
+
+		.form-all input[type="radio"]:checked {
+			border-color: var(--accent-form-color) !important;
+			background-color: #ffffff;
+		}
+
+		.form-all input[type="radio"]:checked::after {
+			content: '';
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			width: 10px;
+			height: 10px;
+			border-radius: 50%;
+			background-color: var(--accent-form-color);
+		}
+
+		.form-all input[type="checkbox"]:checked {
+			background-color: var(--accent-form-color);
+			border-color: var(--accent-form-color) !important;
+		}
+
+		.form-all input[type="checkbox"]:checked::after {
+			content: '';
+			position: absolute;
+			top: 3px;
+			left: 7px;
+			width: 5px;
+			height: 10px;
+			border: solid #ffffff;
+			border-width: 0 2px 2px 0;
+			transform: rotate(45deg);
+		}
+
+		.form-all .form-radio-item label,
+		.form-all .form-checkbox-item label {
+			font-size: 16px;
+			font-family: var(--font-form-main);
+			color: var(--text-form-dark);
+			cursor: pointer;
+			margin: 0;
+			float: none;
+			font-weight: 400;
+			width: auto;
+			flex: 1;
+			min-width: 0;
+			white-space: normal;
+		}
+
+		.form-all .form-payment-wrapper,
+		.form-all .payment-form-table,
+		.form-all table.form-address-table[summary=""],
+		.form-all table.form-address-table {
+			max-width: unset;
+			background: transparent;
+			border: none;
+			box-shadow: none;
+			padding: 0;
+			border-radius: 0;
+			display: flex;
+			flex-direction: column;
+			gap: 15px;
+			width: 100%;
+		}
+
+		.form-all td.form-payment-methods {
+			background: transparent;
+			border: none;
+			padding: 0;
+			display: flex;
+			flex-direction: row;
+			flex-wrap: wrap;
+			gap: 15px;
+			width: 100%;
+		}
+
+		.form-all table.form-address-table tr.credit_card>td>table {
+			background: #ffffff;
+			border: 1px solid var(--border-form-color);
+			border-radius: 8px;
+			padding: 30px;
+			box-sizing: border-box;
+			display: flex;
+			flex-direction: column;
+			gap: 15px;
+			width: 100%;
+			margin-top: 10px;
+		}
+
+		.form-all tr.credit_card th,
+		.form-all tr.billing_address th {
+			text-align: start;
+			font-family: var(--font-form-main);
+			font-size: 20px;
+			font-weight: 700;
+			color: var(--contrast-form-color, var(--primary-form-color));
+			padding: 10px 0 0;
+			min-width: 0;
+			white-space: normal;
+			display: block;
+			width: 100%;
+		}
+
+
+
+		/* The whole card is the hit target, so the radio itself is not shown. .form-product-item
+		   is JotForm's payment-products markup: userform.js still reads it, but no current
+		   emitter produces it, so this only reaches forms saved long ago. */
+
+		.form-all .form-radio-item label:has(.form-radio-other-input),
+		.form-all .form-radio-item label:has(#input_partial) {
+			display: flex;
+			flex-direction: row;
+			align-items: center;
+			width: 100%;
+			gap: 8px;
+		}
+
+		.form-all .form-radio-item:has(.form-radio-other-input),
+		.form-all .form-checkbox-item:has(.form-checkbox-other-input),
+		.form-all .form-radio-item:has(#input_partial) {
+			flex: 1 1 100%;
+			background: #ffffff;
+			border: 1px solid var(--border-form-color);
+			border-radius: 8px;
+			padding: 0 15px !important;
+			display: flex;
+			flex-direction: row;
+			align-items: center;
+			height: 60px;
+			position: relative;
+			box-sizing: border-box;
+			cursor: pointer;
+		}
+
+		.form-all .form-radio-item.active-option:has(.form-radio-other-input),
+		.form-all .form-checkbox-item.active-option:has(.form-checkbox-other-input),
+		.form-all .form-radio-item.active-option:has(#input_partial) {
+			background-color: var(--accent-form-light);
+			border-color: var(--accent-form-color) !important;
+		}
+
+
+
+
+		.form-all .form-radio-item label:has(.form-radio-other-input) input[type="radio"],
+		.form-all .form-radio-item label:has(#input_partial) input[type="radio"] {
+			display: inline-block;
+			opacity: 1;
+			position: relative;
+			pointer-events: auto;
+		}
+
+
+		/* formCss2.css pins the other-input to 115px and the span JotForm wraps it in won't
+		   grow, so the box only filled a fraction of its card. #input_partial is not listed
+		   because it sits in a label that already stretches. */
+		.form-all :is(.form-radio-item, .form-checkbox-item) > span:has(> :is(.form-radio-other-input, .form-checkbox-other-input)) {
+			flex: 1 1 auto;
+			min-width: 0;
+		}
+
+		/* Stray <br> is a flex item; it only contributes an extra trailing gap. */
+		.form-all :is(.form-radio-item, .form-checkbox-item) > br {
+			display: none;
+		}
+
+		/* An other-input carries BOTH .form-radio-other-input and .form-textbox, so this rule
+		   competes with the .form-textbox rule above. That one has to keep `font-size:
+		   16px !important` to beat JotForm's inline font-size, and an inline-beating !important
+		   can only be outranked by another !important - so this one needs it too. The
+		   #payformWrapper variant below does not: an extra ID already outranks .form-textbox. */
+		.form-all .form-radio-other-input,
+		.form-all .form-checkbox-other-input,
+		.form-all #input_partial {
+			font-family: var(--font-form-main);
+			border: none !important;
+			background: transparent;
+			box-shadow: none;
+			height: 100% !important;
+			width: 100%;
+			padding: 0 !important;
+			margin: 0;
+			font-size: 18px !important;
+			font-weight: 600;
+			color: var(--text-form-dark);
+			position: relative;
+			z-index: 1;
+			pointer-events: auto;
+			outline: none;
+			line-height: 1;
+			display: flex;
+			align-items: center;
+			flex: 1;
+			min-width: 80px;
+		}
+
+		/* display not !important, so JotForm's inline display:none still hides this when no
+		   payment is due. The old [style*="none"] child rule that used to patch that is gone:
+		   it also matched unrelated inline values like `border: none`.
+
+		   The consequence, measured: userform.js writes the inline display in BOTH directions -
+		   `display: none` to hide the block (13 forms) and `display: block` to show it (29) - and
+		   an inline style beats any declaration that is not !important. So on every form where
+		   this block is actually visible, `display: flex` loses and the box is a block box. A
+		   flex `gap` here would therefore never once apply, which is why the spacing between the
+		   options is a sibling margin below instead: margins behave the same in block and in flex
+		   layout, so they never need to outrank the inline style, and nothing has to risk
+		   re-opening the un-hide bug to get the layout right. */
+		.form-all #payformWrapper {
+			display: flex;
+			flex-direction: column;
+			padding-top: 15px;
+			width: 100%;
+		}
+
+		/* !important only to outrank OUR OWN `.form-all .form-radio-item { margin: 0 !important }`
+		   above, which exists to clear formCss2's `margin-bottom: 6px`. Nothing outside competes
+		   here; with both marked, the higher specificity - (1,3,0) against (0,2,0) - decides. */
+		.form-all #payformWrapper .form-radio-item+.form-radio-item {
+			margin-top: 10px;
+		}
+
+		.form-all #payformWrapper>label.form-header {
+			font-family: var(--font-form-main);
+			font-size: 18px;
+			font-weight: 700;
+			color: var(--text-form-dark);
+			margin-bottom: 5px;
+			padding: 0;
+			border: none;
+			background: none;
+		}
+
+		.form-all #payformWrapper .form-radio-item {
+			padding: 14px 20px !important;
+			width: 100%;
+		}
+
+		.form-all #payformWrapper .form-radio-item label {
+			font-family: var(--font-form-main);
+			display: flex;
+			align-items: center;
+			gap: 10px;
+			width: 100%;
+		}
+
+		.form-all #payformWrapper .form-radio-item label input[type="radio"] {
+			display: inline-block;
+			margin: 0;
+			margin-inline-end: 10px;
+		}
+
+		/* Borderless like every other other-field; the shared rule above supplies the rest. */
+		.form-all #payformWrapper .form-radio-other-input {
+			border: none !important;
+			border-radius: 0;
+			padding: 0 !important;
+			height: 100% !important;
+			font-size: 18px;
+			flex: 1;
+			margin-inline-start: 5px;
+			pointer-events: auto;
+		}
+
+		.form-radio-item:has(.paymentMethod.form-radio[disabled]),
+		.form-radio-item:has(.paymentMethod.form-radio[disabled]) * {
+			filter: contrast(0.9);
+			cursor: not-allowed;
+		}
+
+		.form-all magen-file-drop-zone {
+			display: block;
+			width: 100%;
+			max-width: 100%;
+			min-width: 0;
+			height: auto;
+			padding: 0;
+			box-sizing: border-box;
+		}
+
+		.form-all magen-file-drop-zone::part(dropzone-base),
+		.form-all magen-file-drop-zone::part(dropzone),
+		.form-all magen-file-drop-zone::part(files) {
+			width: 100%;
+			max-width: 100%;
+			box-sizing: border-box;
+		}
+
+		.form-all magen-file-drop-zone::part(dropzone) {
+			background-image: none;
+			border: 2px dashed #babfc3;
+			border-radius: 8px;
+		}
+
+		.form-all magen-file-drop-zone::part(dropzone-button) {
+			--x-button-background-color-hover: var(--form-upload-button-background-hover, #333333);
+			--x-button-background-color-pressed: var(--form-upload-button-background-pressed, #333333);
+			--x-button-background-color: var(--contrast-form-color, var(--primary-form-color));
+			--x-button-color: #ffffff;
+			--x-button-color-hover: #ffffff;
+			--x-button-color-pressed: #ffffff;
+			--x-button-font: 600 14px/20px var(--font-form-main);
+			--x-button-radius: 999px;
+			--x-button-vertical-padding: 12px;
+			--x-button-horizontal-padding: 24px;
+		}
+
+		.form-all .custom-number-wrapper {
+			display: flex;
+			align-items: center;
+			width: fit-content;
+			min-width: 142px !important;
+			height: 50px;
+			background: #ffffff;
+			border: 1px solid var(--border-form-color);
+			border-radius: 8px;
+			overflow: hidden;
+			box-sizing: border-box;
+		}
+
+		.form-all .custom-number-wrapper input.form-textbox,
+		.form-all .custom-number-wrapper .form-spinner-input {
+			flex: 1;
+			text-align: center !important;
+			border: none !important;
+			height: 100% !important;
+			padding: 0 !important;
+			margin: 0 !important;
+			outline: none;
+			-webkit-box-shadow: none;
+			box-shadow: none;
+			-moz-appearance: textfield;
+			appearance: textfield;
+			width: 100% !important;
+			font-family: var(--font-form-main);
+			font-size: 16px !important;
+			background-color: transparent !important;
+			border-radius: 0;
+		}
+
+		.form-all .custom-number-wrapper>input.form-textbox {
+			width: 60px !important;
+			flex: 0 0 60px;
+		}
+
+		.form-all .custom-number-wrapper input::-webkit-outer-spin-button,
+		.form-all .custom-number-wrapper input::-webkit-inner-spin-button {
+			-webkit-appearance: none;
+			margin: 0;
+		}
+
+		.form-all .custom-number-wrapper .qty-btn {
+			width: 40px;
+			height: 100%;
+			background: var(--accent-form-medium);
+			color: var(--text-form-dark);
+			border: none !important;
+			appearance: none;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-family: var(--font-form-main);
+			font-size: 24px;
+			font-weight: 300;
+			cursor: pointer;
+			-webkit-user-select: none;
+			user-select: none;
+			transition: filter 0.2s;
+			flex-shrink: 0;
+			z-index: 2;
+		}
+
+		.form-all .custom-number-wrapper .qty-btn:hover {
+			filter: brightness(0.95);
+		}
+
+		.form-all .custom-number-wrapper .qty-btn:focus-visible {
+			outline: 2px solid var(--accent-form-color) !important;
+			outline-offset: -2px;
+		}
+
+		.form-all table.form-spinner,
+		.form-all table.form-spinner tbody,
+		.form-all table.form-spinner tr,
+		.form-all table.form-spinner td,
+		.form-all .form-spinner-input-td {
+			border: none !important;
+			background: transparent !important;
+			padding: 0 !important;
+			margin: 0;
+			box-shadow: none;
+		}
+
+		.form-all .form-spinner-up,
+		.form-all .form-spinner-down {
+			display: none;
+			pointer-events: none;
+		}
+
+		/* .form-payment-total has no emitter; userform.js only ever reads it, on the
+		   coupon/discount path. Kept so older saved forms still get the styling. */
+
+		/* NO container styling on the Total Amount row. It was tried, on
+		   `.form-line:has(#total_amount)`, and reverted: `#total_amount` is not alone in its
+		   `<li>`. When Partial Payments is enabled the same row also holds the whole
+		   "I would like to pay today" block - the full/minimum/other radios and the
+		   processing-fee checkbox - so the card wrapped all of it and `space-between` stranded
+		   the "Total" label in the middle of a tall empty column.
+
+		   Anything keyed on the ROW is therefore wrong by construction: the row is not the total,
+		   it is the payment section. Style `#total_amount` itself, below, and leave the <li>
+		   to the ordinary form-line rules. */
+
+		.form-all #total_amount {
+			font-family: var(--font-form-main);
+			float: none;
+			font-size: 24px;
+			font-weight: 800;
+			color: var(--accent-form-color);
+		}
+
+		.form-all .form-buttons-wrapper,
+		.co_body .content .form-all .form-input-wide .form-buttons-wrapper {
+			grid-column: 1 / -1;
+			grid-column-start: auto;
+			text-indent: 0 !important;
+			display: flex;
+			align-items: center;
+			flex-wrap: wrap;
+			font-size: 0;
+			gap: 12px;
+			justify-content: center;
+			width: 100%;
+			margin: 40px 0 0 !important;
+			padding: 0;
+		}
+
+		.form-all .form-submit-button {
+			background-color: var(--contrast-form-color, var(--primary-form-color));
+			color: #ffffff;
+			width: min(100%, var(--form-submit-button-max-width, 350px));
+			min-height: 58px;
+			flex: 1 1 280px;
+			max-width: var(--form-submit-button-max-width, 350px);
+			padding: 18px;
+			border-radius: 8px;
+			text-align: center;
+			font-family: var(--font-form-main);
+			font-weight: 600;
+			font-size: 18px;
+			text-shadow: none;
+			box-shadow: none;
+			cursor: pointer;
+			transition: transform 0.2s ease, filter 0.3s ease;
+			margin: 0;
+			border: none;
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+		}
+
+		.form-all .form-submit-button:hover {
+			filter: brightness(1.2);
+			transform: translateY(-2px);
+		}
+
+		.form-all .form-submit-reset,
+		.form-all .form-submit-print {
+			appearance: none;
+			background: #f7fafb;
+			border: 1px solid var(--border-form-color);
+			border-radius: 8px;
+			box-shadow: none;
+			color: var(--text-form-dark);
+			cursor: pointer;
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			gap: 8px;
+			min-height: 50px;
+			padding: 13px 18px;
+			margin: 0 !important;
+			font-family: var(--font-form-main);
+			font-size: 15px;
+			font-weight: 600;
+			line-height: 1.2;
+			text-align: center;
+			text-indent: 0;
+			text-shadow: none;
+			transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+			width: auto;
+		}
+
+		.form-all .form-submit-reset:hover,
+		.form-all .form-submit-print:hover {
+			background: var(--accent-form-light) !important;
+			border-color: var(--accent-form-color) !important;
+			color: var(--contrast-form-color, var(--accent-form-color));
+			transform: translateY(-1px);
+		}
+
+		.form-all .form-submit-button:focus-visible,
+		.form-all .form-submit-reset:focus-visible,
+		.form-all .form-submit-print:focus-visible {
+			outline: 2px solid var(--accent-form-color) !important;
+			outline-offset: 3px;
+		}
+
+		.form-all .form-submit-print img {
+			display: block;
+			width: 18px;
+			height: 18px;
+			margin: 0;
+			object-fit: contain;
+		}
+
+		.form-all :is(.form-input, .form-input-wide)>.form-error-message {
+			flex: 1 0 100%;
+			width: 100%;
+			max-width: 100%;
+			order: 99;
+			box-sizing: border-box;
+		}
+
+		.form-all .form-line.form-line-error {
+			margin-left: -20px;
+			margin-right: -20px;
+		}
+
+		.form-all .form-line.form-line-error:not(.form-field-hidden, .always-hidden) {
+			width: calc(100% + 40px);
+			padding-left: 20px;
+			padding-right: 20px;
+		}
+
+		.form-all .form-line-error input:not(#coupon-input):not(.no-validation),
+		.form-all .form-line-error select:not(.no-validation),
+		.form-all .form-line-error textarea:not(.no-validation),
+		.form-all .form-validation-error,
+		.form-all .form-validation-error.form-textbox {
+			border: 1px solid red !important;
+			box-shadow: red 0 0 2px;
+		}
+
+		@media (max-width: 768px) {
+			.form-all .form-header {
+				font-size: 26px;
+			}
+
+			.form-all .form-radio-item label {
+				font-size: 18px;
+			}
+
+			.form-all .form-label,
+			.form-all .form-label-left,
+			.form-all .form-label-right,
+			.form-all .form-label-top {
+				font-size: 15px;
+			}
+
+			.form-all .datetime-fields {
+				flex-direction: column;
+				align-items: stretch;
+			}
+
+			.form-all .date-fields {
+				width: 100%;
+				justify-content: center;
+			}
+
+			.form-all :is(.form-input, .form-input-wide)> :is(.dir_ltr, .dir_rtl),
+			.form-all .time-fields,
+			.form-all .datetime-fields .time-fields {
+				flex-direction: row;
+				flex-wrap: nowrap;
+				width: 100%;
+				justify-content: space-between;
+			}
+
+			.form-all .custom-number-wrapper {
+				width: fit-content;
+				min-width: 142px !important;
+			}
+		}
+
+		.form-all .form-radio-other-input:disabled,
+		.form-all .form-checkbox-other-input:disabled,
+		.form-all #input_partial:disabled {
+			pointer-events: none;
+		}
+	}
+}
