@@ -2082,13 +2082,13 @@ body.cco_body input[type="radio"] { accent-color: var(--sb-accent); }
   outline: none !important;
 }
 /* per-reservation name cells (built dynamically by the Event App).
-   events.css sizes these width:100% of their cell — forcing a min-width
-   made them outgrow the cells and overlap. Fit the cell, leave a gutter. */
+   The row template puts headers and inputs in the SAME fixed grid cells
+   (g120/g140 + small_right_padding) and events.css sizes inputs 100% of
+   the cell — geometry is already correct. Skin only; never size these. */
 #RegisterSinglePage .reservations input,
 #RegisterSinglePage .reservation input {
   min-width: 0;
-  width: calc(100% - 10px) !important;
-  margin: 3px 10px 3px 0 !important;
+  margin: 3px 0 !important;
 }
 /* the category picker labels ("Select a category" / "Reservations") */
 #RegisterSinglePage .toggle_options .inline_block > div:first-child {
