@@ -1795,6 +1795,7 @@ body.cco_body .form-textarea:focus { border-color: var(--sb-accent-300); outline
 #content input[type="tel"],
 #content input[type="number"],
 #content input[type="password"],
+#content input:not([type]),
 #content select,
 #content textarea {
   font-family: var(--sb-font-body);
@@ -1810,6 +1811,7 @@ body.cco_body .form-textarea:focus { border-color: var(--sb-accent-300); outline
 #content input[type="text"]:focus,
 #content input[type="email"]:focus,
 #content input[type="tel"]:focus,
+#content input:not([type]):focus,
 #content select:focus,
 #content textarea:focus { border-color: var(--sb-accent-300); outline: none; }
 body.cco_body input[type="checkbox"],
@@ -2054,6 +2056,12 @@ body.cco_body input[type="radio"] { accent-color: var(--sb-accent); }
 #RegisterSinglePage input[type="email"],
 #RegisterSinglePage input[type="tel"],
 #RegisterSinglePage input[type="number"],
+/* the events script emits inputs with NO type attribute (attendee-row names,
+   #TotalDonation) — [type="text"] never matches those */
+#RegisterSinglePage input:not([type]),
+#RegisterSinglePage input.reservation_input_text,
+#RegisterSinglePage input.reservation_input_text2,
+#RegisterSinglePage input.co_form_input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]),
 #RegisterSinglePage select,
 #RegisterSinglePage textarea {
   font-family: var(--sb-font-body) !important;
