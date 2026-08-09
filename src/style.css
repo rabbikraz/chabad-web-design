@@ -1963,6 +1963,34 @@ body.cco_body input[type="radio"] { accent-color: var(--sb-accent); }
   margin-left: 0 !important;
   width: 100%;
 }
+/* two footer rows (required-field note, opt-in checkbox) have no real
+   label — just an empty placeholder div carrying the CMS's fixed
+   label-column float+width+margin. It has no .label class, so the fix
+   above never reached it, and it kept shoving its unfloated sibling
+   sideways inside the (now much narrower) 2-col field grid. Drop it. */
+#RegisterSinglePage .clearfix.small_vertical_padding > .g140.ml140:not(.label) {
+  display: none;
+}
+#RegisterSinglePage .small.small_top_margin {
+  font-size: 13.5px;
+  color: rgba(23, 35, 46, .6);
+}
+/* opt-in checkbox + its label: float the checkbox, let the label's own
+   block-formatting-context (overflow:hidden) wrap cleanly beside/under it
+   instead of the two divs stacking on separate misaligned lines */
+#RegisterSinglePage .optin_checkbox {
+  float: left;
+  margin: 3px 10px 0 0;
+}
+#RegisterSinglePage .optin_message_text {
+  overflow: hidden;
+}
+#RegisterSinglePage .optin_message_text label {
+  font-family: var(--sb-font-body);
+  font-size: 15px;
+  color: var(--sb-text);
+  line-height: 1.5;
+}
 #ReserversInformation input.co_form_input,
 #ReserversInformation select.co_form_input,
 #Payment input.co_form_input,
