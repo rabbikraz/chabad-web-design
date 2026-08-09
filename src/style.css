@@ -2189,6 +2189,40 @@ body.cco_body input[type="radio"] { accent-color: var(--sb-accent); }
   min-width: 0;
   margin: 3px 0 !important;
 }
+/* events.js picks its layout with Co.BrowserInfo.IsMobileDevice(), which
+   returns undefined on current phones — so the CMS serves its WIDE desktop
+   attendee table (fixed .g120/.g140/.g100 columns) even on a 375px screen
+   and it runs off the edge. Its own mobile template is never reached, so
+   make the desktop one wrap instead. */
+@media (max-width: 767px) {
+  #RegisterSinglePage .clearfix.medium_top_margin:has(.price-header) { display: none !important; }
+  #RegisterSinglePage .reservation .clearfix.medium_vertical_padding {
+    flex-wrap: wrap;
+    align-items: baseline;
+    row-gap: 4px;
+  }
+  #RegisterSinglePage .reservation .g120:not(.ml140),
+  #RegisterSinglePage .reservation .g140:not(.ml140) {
+    flex: 1 1 100%;
+    min-width: 0;
+  }
+  /* the desktop template's inputs carry no placeholder (only the unused
+     mobile one does) and the header band is hidden here — label them */
+  #RegisterSinglePage .reservation .g120:not(.ml140):before { content: "First Name"; }
+  #RegisterSinglePage .reservation .g140:not(.ml140):before { content: "Last Name"; }
+  #RegisterSinglePage .reservation .g120:not(.ml140):before,
+  #RegisterSinglePage .reservation .g140:not(.ml140):before {
+    display: block;
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: .07em;
+    text-transform: uppercase;
+    color: var(--sb-event-accent-dark, var(--sb-accent-700));
+    margin-bottom: 2px;
+  }
+  #RegisterSinglePage .reservation .g100 { flex: 0 1 auto; }
+  #RegisterSinglePage .reservation .price-display { margin-left: auto; }
+}
 /* the category picker labels ("Select a category" / "Reservations") */
 #RegisterSinglePage .toggle_options .inline_block > div:first-child {
   font-size: 12px;
