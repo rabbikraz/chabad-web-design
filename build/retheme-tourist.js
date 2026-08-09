@@ -40,6 +40,13 @@ const COLORS = [
   ['#2b6cb0', 'var(--sb-teal, #17656B)'],
   ['#3182ce', 'var(--sb-teal, #17656B)'],
   ['#4299e1', 'var(--sb-teal-300, #7CAFAF)'],
+  ['#1e40af', 'var(--sb-teal-600, #12565C)'],
+  ['#1d4ed8', 'var(--sb-teal-600, #12565C)'],
+  ['#2563eb', 'var(--sb-teal, #17656B)'],
+  ['#3b82f6', 'var(--sb-teal-300, #7CAFAF)'],
+  ['#60a5fa', 'var(--sb-teal-300, #7CAFAF)'],
+  ['#eff6ff', 'var(--sb-teal-100, #DDEAE9)'],
+  ['#dbeafe', 'var(--sb-teal-100, #DDEAE9)'],
   ['#ebf8ff', 'var(--sb-teal-100, #DDEAE9)'],
   ['#bee3f8', 'var(--sb-teal-200, #B4D1D0)'],
   // golds -> our accent
@@ -48,6 +55,7 @@ const COLORS = [
   ['#b7791f', 'var(--sb-accent-600, #A97620)'],
   ['#d69e2e', 'var(--sb-accent, #C08A2E)'],
   ['#f6e05e', 'var(--sb-accent-300, #E2C179)'],
+  ['#d4af37', 'var(--sb-accent-300, #E2C179)'],   // metallic-gold gradient stop
   ['#fffaf0', 'var(--sb-accent-100, #F8EDD6)'],
   ['#fefcbf', 'var(--sb-accent-100, #F8EDD6)'],
   // neutrals -> cream surfaces + ink
@@ -78,6 +86,14 @@ const SURFACES = [
   [/background-color:\s*#ffffff\b/gi, 'background-color: var(--sb-surface, #F3E8D3)'],
   [/background-color:\s*#fff\b/gi, 'background-color: var(--sb-surface, #F3E8D3)'],
   [/background-color:\s*white\b/gi, 'background-color: var(--sb-surface, #F3E8D3)'],
+];
+
+/* rgba() forms of the old brand blues (used for shadows/tints) */
+const RGBA = [
+  [/rgba\(\s*30,\s*58,\s*138\s*,/g, 'rgba(23, 35, 46,'],   // #1e3a8a
+  [/rgba\(\s*15,\s*23,\s*42\s*,/g, 'rgba(23, 35, 46,'],    // #0f172a
+  [/rgba\(\s*26,\s*54,\s*93\s*,/g, 'rgba(23, 35, 46,'],    // #1a365d
+  [/rgba\(\s*201,\s*162,\s*39\s*,/g, 'rgba(192, 138, 46,'], // #c9a227
 ];
 
 const FONTS = [
@@ -132,13 +148,52 @@ function cardifyHeaders(src) {
 /* the wrappers set width:100% and full-bleed the hero; give the fragment
    a little breathing room so the rounded band reads as a card */
 function padWrappers(src) {
+  // idempotent: skip any wrapper block that already carries the padding
   return src.replace(
-    /(\.(?:kosher|attractions|mikvah-eruv|minyan-schedule|tourist|hotels)-wrapper \{)/g,
-    '$1\n            padding: 0 clamp(0px, 2vw, 24px);'
+    /(\.(?:kosher|attractions|mikvah-eruv|minyan-schedule|tourist|hotels)-wrapper \{)([\s\S]*?)\}/g,
+    (whole, open, body) =>
+      body.indexOf('clamp(0px, 2vw, 24px)') !== -1
+        ? whole
+        : open + '\n            padding: 0 clamp(0px, 2vw, 24px);' + body + '}'
   );
 }
 
+/* every hex the SoBe palette legitimately uses (as var() fallbacks), plus
+   plain white/black which are fine for text on the dark hero bands */
+const ALLOWED = new Set([
+  '#fbf5e9', '#f3e8d3', '#17232e', '#c08a2e', '#f8edd6', '#efdaae',
+  '#e2c179', '#a97620', '#8a5f16', '#17656b', '#ddeae9', '#b4d1d0',
+  '#7cafaf', '#12565c', '#0e464b', '#0b383d', '#072026', '#eaf1f0',
+  '#ffffff', '#fff', '#000000', '#000',
+  /* semantic status colours — deliberately NOT rebranded: an error has to
+     read as an error. Success green / error red / warning amber, plus the
+     tints they sit on. */
+  '#e53e3e', '#c53030', '#fed7d7', '#fff5f5', '#feb2b2',
+  '#38a169', '#68d391', '#c6f6d5', '#22543d',
+  '#feebc8', '#744210',
+]);
+
+/** report any colour that is neither ours nor obviously neutral */
+function auditColors(file, src) {
+  const found = new Map();
+  for (const m of src.matchAll(/#[0-9a-fA-F]{3,6}\b/g)) {
+    const hex = m[0].toLowerCase();
+    if (ALLOWED.has(hex)) continue;
+    // greys (r==g==b) are harmless neutrals
+    if (/^#([0-9a-f])\1\1$/.test(hex)) continue;
+    if (hex.length === 7 && hex[1] === hex[3] && hex[3] === hex[5] &&
+        hex[2] === hex[4] && hex[4] === hex[6]) continue;
+    found.set(hex, (found.get(hex) || 0) + 1);
+  }
+  if (found.size) {
+    const list = [...found.entries()].map(([h, n]) => `${h} x${n}`).join(', ');
+    console.log(`   ! unmapped colour(s) in ${file}: ${list}`);
+  }
+  return found.size;
+}
+
 let changed = 0;
+let leftovers = 0;
 for (const file of fs.readdirSync(DIR).filter((f) => f.endsWith('.html'))) {
   const full = path.join(DIR, file);
   const before = fs.readFileSync(full, 'utf8');
@@ -146,6 +201,7 @@ for (const file of fs.readdirSync(DIR).filter((f) => f.endsWith('.html'))) {
 
   for (const [from, to] of URI_COLORS) src = src.split(from).join(to);
   for (const [from, to] of FONT_URLS) src = src.replace(from, to);
+  for (const [from, to] of RGBA) src = src.replace(from, to);
   for (const [from, to] of FONTS) src = src.replace(from, to);
   for (const [from, to] of SURFACES) src = src.replace(from, to);
   for (const [from, to] of COLORS) {
@@ -157,9 +213,13 @@ for (const file of fs.readdirSync(DIR).filter((f) => f.endsWith('.html'))) {
   if (src !== before) {
     fs.writeFileSync(full, src);
     changed++;
-    console.log(`themed  ${file}  (${before.length} -> ${src.length} chars)`);
+    console.log(`themed     ${file}  (${before.length} -> ${src.length} chars)`);
   } else {
-    console.log(`no change  ${file}`);
+    console.log(`unchanged  ${file}`);
   }
+  leftovers += auditColors(file, src);
 }
 console.log(`\n${changed} file(s) updated`);
+console.log(leftovers
+  ? `${leftovers} unmapped colour(s) above — add them to COLORS and re-run.`
+  : 'No unmapped colours remain.');

@@ -199,7 +199,7 @@
                 border: 1px solid var(--sb-divider, rgba(23,35,46,.14)) !important;
                 border-radius: 12px !important;
                 padding: 0.75rem !important;
-                box-shadow: 0 8px 22px rgba(26,54,93,0.14) !important;
+                box-shadow: 0 8px 22px rgba(23, 35, 46,0.14) !important;
             }
             #bulkAddLocalsBtn { flex: 1 1 100% !important; width: 100% !important; }
             #localsSelectedCount { font-size: 0.85rem !important; color: rgba(23,35,46,.6) !important; }
@@ -239,7 +239,7 @@
 <p style="color: rgba(23,35,46,.6); margin: 0 0 2rem 0;">Chabad in South Beach</p>
 
 <div id="adminLoginError" style="color: #e53e3e; margin-bottom: 1rem; display: none;">Invalid credentials</div>
-<input autocomplete="username" id="adminUsername" placeholder="Username" style="width: 100%; padding: 1rem 1.25rem; border: 2px solid var(--sb-divider, rgba(23,35,46,.14)); border-radius: 10px; font-size: 1rem; margin-bottom: 1rem; box-sizing: border-box;" type="text" /><input autocomplete="current-password" id="adminPassword" placeholder="Password" style="width: 100%; padding: 1rem 1.25rem; border: 2px solid var(--sb-divider, rgba(23,35,46,.14)); border-radius: 10px; font-size: 1rem; margin-bottom: 1rem; box-sizing: border-box;" type="password" /><button id="adminLoginBtn" style="width: 100%; padding: 1rem; background: linear-gradient(135deg, var(--sb-accent, #C08A2E), #d4af37); color: white; border: none; border-radius: 10px; font-size: 1.1rem; font-weight: 600; cursor: pointer;">Sign In</button></div>
+<input autocomplete="username" id="adminUsername" placeholder="Username" style="width: 100%; padding: 1rem 1.25rem; border: 2px solid var(--sb-divider, rgba(23,35,46,.14)); border-radius: 10px; font-size: 1rem; margin-bottom: 1rem; box-sizing: border-box;" type="text" /><input autocomplete="current-password" id="adminPassword" placeholder="Password" style="width: 100%; padding: 1rem 1.25rem; border: 2px solid var(--sb-divider, rgba(23,35,46,.14)); border-radius: 10px; font-size: 1rem; margin-bottom: 1rem; box-sizing: border-box;" type="password" /><button id="adminLoginBtn" style="width: 100%; padding: 1rem; background: linear-gradient(135deg, var(--sb-accent, #C08A2E), var(--sb-accent-300, #E2C179)); color: white; border: none; border-radius: 10px; font-size: 1.1rem; font-weight: 600; cursor: pointer;">Sign In</button></div>
 </div>
 <!-- Dashboard -->
 
@@ -261,7 +261,7 @@
 
 <div id="addWeekPreview" style="display: none; margin-top: 0.85rem; padding: 0.85rem 1rem; background: var(--sb-bg, #FBF5E9); border-radius: 10px; font-size: 0.9rem; color: rgba(23,35,46,.72);">&nbsp;</div>
 
-<div style="margin-top: 0.85rem; display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;"><button disabled="disabled" id="createWeekBtn" style="padding: 0.7rem 1.4rem; background: linear-gradient(135deg, var(--sb-accent, #C08A2E), #d4af37); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.95rem; opacity: 0.6;" type="button">Create Week</button>
+<div style="margin-top: 0.85rem; display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;"><button disabled="disabled" id="createWeekBtn" style="padding: 0.7rem 1.4rem; background: linear-gradient(135deg, var(--sb-accent, #C08A2E), var(--sb-accent-300, #E2C179)); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.95rem; opacity: 0.6;" type="button">Create Week</button>
 
 <div id="addWeekMsg" style="display: none; font-weight: 500; font-size: 0.9rem;">&nbsp;</div>
 </div>
@@ -277,7 +277,7 @@
 <div id="addGuestSection" style="background: var(--sb-surface, #F3E8D3); border-radius: 16px; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); display: none;">
 <div id="addGuestTopBar" style="display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap;">
 <div style="font-weight: 600; color: var(--sb-teal-900, #072026); font-size: 1.1rem;">Add Guests</div>
-<button id="toggleAddGuestBtn" style="padding: 0.7rem 1.25rem; background: linear-gradient(135deg, var(--sb-accent, #C08A2E), #d4af37); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.95rem;" type="button">+ Add Guests</button></div>
+<button id="toggleAddGuestBtn" style="padding: 0.7rem 1.25rem; background: linear-gradient(135deg, var(--sb-accent, #C08A2E), var(--sb-accent-300, #E2C179)); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.95rem;" type="button">+ Add Guests</button></div>
 
 <div id="addGuestBody" style="display: none; margin-top: 1rem;">
 <div id="addGuestHeader" style="display: grid; grid-template-columns: 2fr 1fr 1fr 2fr 2fr 40px; gap: 0.5rem; margin-bottom: 0.5rem;">&nbsp;</div>
@@ -285,7 +285,7 @@
 <div id="guestRowsContainer">&nbsp;</div>
 <!-- Buttons -->
 
-<div style="margin-top: 1rem; display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;"><button id="addAnotherBtn" style="padding: 0.6rem 1.25rem; background: var(--sb-surface, #F3E8D3); color: var(--sb-teal-900, #072026); border: 2px dashed var(--sb-accent-200, #EFDAAE); border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.95rem;">+ Add Another</button><button id="submitAllBtn" style="padding: 0.75rem 1.5rem; background: linear-gradient(135deg, var(--sb-accent, #C08A2E), #d4af37); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 1rem;">Submit All</button>
+<div style="margin-top: 1rem; display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;"><button id="addAnotherBtn" style="padding: 0.6rem 1.25rem; background: var(--sb-surface, #F3E8D3); color: var(--sb-teal-900, #072026); border: 2px dashed var(--sb-accent-200, #EFDAAE); border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.95rem;">+ Add Another</button><button id="submitAllBtn" style="padding: 0.75rem 1.5rem; background: linear-gradient(135deg, var(--sb-accent, #C08A2E), var(--sb-accent-300, #E2C179)); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 1rem;">Submit All</button>
 
 <div id="addGuestMsg" style="color: #22543d; display: none; font-weight: 500;">&nbsp;</div>
 </div>
@@ -318,7 +318,7 @@
 <div><label style="display: block; font-size: 0.8rem; color: rgba(23,35,46,.72); font-weight: 600; margin-bottom: 0.25rem;">Headcount</label> <input id="newLocalHeadcount" min="0" placeholder="1" style="width: 100%; padding: 0.6rem; border: 2px solid var(--sb-divider, rgba(23,35,46,.14)); border-radius: 8px; font-size: 0.95rem; box-sizing: border-box;" type="number" value="1" /></div>
 
 <div><label style="display: block; font-size: 0.8rem; color: rgba(23,35,46,.72); font-weight: 600; margin-bottom: 0.25rem;">Notes</label> <input id="newLocalNotes" placeholder="optional" style="width: 100%; padding: 0.6rem; border: 2px solid var(--sb-divider, rgba(23,35,46,.14)); border-radius: 8px; font-size: 0.95rem; box-sizing: border-box;" type="text" /></div>
-<button id="addLocalBtn" style="padding: 0.65rem 1rem; background: linear-gradient(135deg, var(--sb-accent, #C08A2E), #d4af37); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.95rem;" type="button">+ Save</button></div>
+<button id="addLocalBtn" style="padding: 0.65rem 1rem; background: linear-gradient(135deg, var(--sb-accent, #C08A2E), var(--sb-accent-300, #E2C179)); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.95rem;" type="button">+ Save</button></div>
 
 <div id="addLocalMsg" style="display: none; font-size: 0.85rem; margin-bottom: 0.75rem;">&nbsp;</div>
 
@@ -343,7 +343,7 @@
 <div><label style="display: block; font-size: 0.8rem; color: rgba(23,35,46,.72); font-weight: 600; margin-bottom: 0.25rem;" title="Blank = unlimited">Max Uses</label> <input id="newCodeMax" min="0" placeholder="∞" style="width: 100%; padding: 0.6rem; border: 2px solid var(--sb-divider, rgba(23,35,46,.14)); border-radius: 8px; font-size: 0.95rem; box-sizing: border-box;" type="number" /></div>
 
 <div><label style="display: block; font-size: 0.8rem; color: rgba(23,35,46,.72); font-weight: 600; margin-bottom: 0.25rem;">Notes</label> <input id="newCodeNotes" placeholder="optional" style="width: 100%; padding: 0.6rem; border: 2px solid var(--sb-divider, rgba(23,35,46,.14)); border-radius: 8px; font-size: 0.95rem; box-sizing: border-box;" type="text" /></div>
-<button id="addCodeBtn" style="padding: 0.65rem 1rem; background: linear-gradient(135deg, var(--sb-accent, #C08A2E), #d4af37); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.95rem;" type="button">+ Add</button></div>
+<button id="addCodeBtn" style="padding: 0.65rem 1rem; background: linear-gradient(135deg, var(--sb-accent, #C08A2E), var(--sb-accent-300, #E2C179)); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.95rem;" type="button">+ Add</button></div>
 
 <div id="addCodeMsg" style="display: none; font-size: 0.85rem; margin-bottom: 0.75rem;">&nbsp;</div>
 
@@ -378,7 +378,7 @@
 <div style="grid-column: 1 / -1;"><label style="display: block; font-size: 0.85rem; color: rgba(23,35,46,.72); margin-bottom: 0.25rem;">Notes</label> <input id="editGuestNotes" placeholder="Optional notes" style="width: 100%; padding: 0.75rem; border: 2px solid var(--sb-divider, rgba(23,35,46,.14)); border-radius: 8px; font-size: 1rem; box-sizing: border-box;" type="text" /></div>
 </div>
 
-<div style="margin-top: 1.5rem; display: flex; gap: 1rem; align-items: center;"><button id="editGuestSaveBtn" style="flex: 1; padding: 0.85rem; background: linear-gradient(135deg, var(--sb-accent, #C08A2E), #d4af37); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 1rem;">Save Changes</button><button id="editModalCancelBtn" style="padding: 0.85rem 1.5rem; background: var(--sb-divider, rgba(23,35,46,.14)); color: rgba(23,35,46,.72); border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 1rem;">Cancel</button></div>
+<div style="margin-top: 1.5rem; display: flex; gap: 1rem; align-items: center;"><button id="editGuestSaveBtn" style="flex: 1; padding: 0.85rem; background: linear-gradient(135deg, var(--sb-accent, #C08A2E), var(--sb-accent-300, #E2C179)); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 1rem;">Save Changes</button><button id="editModalCancelBtn" style="padding: 0.85rem 1.5rem; background: var(--sb-divider, rgba(23,35,46,.14)); color: rgba(23,35,46,.72); border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 1rem;">Cancel</button></div>
 
 <div id="editGuestMsg" style="margin-top: 0.75rem; display: none;">&nbsp;</div>
 </div>
@@ -404,7 +404,7 @@
 <div style="grid-column: 1 / -1;"><label style="display: block; font-size: 0.85rem; color: rgba(23,35,46,.72); margin-bottom: 0.25rem;">Notes</label> <input id="editLocalNotes" placeholder="Optional notes" style="width: 100%; padding: 0.75rem; border: 2px solid var(--sb-divider, rgba(23,35,46,.14)); border-radius: 8px; font-size: 1rem; box-sizing: border-box;" type="text" /></div>
 </div>
 
-<div style="margin-top: 1.5rem; display: flex; gap: 1rem; align-items: center;"><button id="editLocalSaveBtn" style="flex: 1; padding: 0.85rem; background: linear-gradient(135deg, var(--sb-accent, #C08A2E), #d4af37); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 1rem;">Save Changes</button><button id="editLocalCancelBtn" style="padding: 0.85rem 1.5rem; background: var(--sb-divider, rgba(23,35,46,.14)); color: rgba(23,35,46,.72); border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 1rem;">Cancel</button></div>
+<div style="margin-top: 1.5rem; display: flex; gap: 1rem; align-items: center;"><button id="editLocalSaveBtn" style="flex: 1; padding: 0.85rem; background: linear-gradient(135deg, var(--sb-accent, #C08A2E), var(--sb-accent-300, #E2C179)); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 1rem;">Save Changes</button><button id="editLocalCancelBtn" style="padding: 0.85rem 1.5rem; background: var(--sb-divider, rgba(23,35,46,.14)); color: rgba(23,35,46,.72); border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 1rem;">Cancel</button></div>
 
 <div id="editLocalMsg" style="margin-top: 0.75rem; display: none;">&nbsp;</div>
 </div>
@@ -420,7 +420,7 @@
 <p id="moveGuestWho" style="color: rgba(23,35,46,.72); font-size: 0.95rem; margin: 0 0 1rem 0;">&nbsp;</p>
 <label for="moveGuestWeekSelect" style="display: block; font-size: 0.85rem; color: rgba(23,35,46,.72); font-weight: 600; margin-bottom: 0.25rem;">Move to</label> <select id="moveGuestWeekSelect" style="width: 100%; padding: 0.85rem; border: 2px solid var(--sb-divider, rgba(23,35,46,.14)); border-radius: 10px; font-size: 1rem; background: var(--sb-surface, #F3E8D3); cursor: pointer; box-sizing: border-box;"><option value="">Select a week...</option></select>
 
-<div style="margin-top: 1.5rem; display: flex; gap: 1rem; align-items: center;"><button id="moveGuestConfirmBtn" style="flex: 1; padding: 0.85rem; background: linear-gradient(135deg, var(--sb-accent, #C08A2E), #d4af37); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 1rem;">Move</button><button id="moveModalCancelBtn" style="padding: 0.85rem 1.5rem; background: var(--sb-divider, rgba(23,35,46,.14)); color: rgba(23,35,46,.72); border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 1rem;">Cancel</button></div>
+<div style="margin-top: 1.5rem; display: flex; gap: 1rem; align-items: center;"><button id="moveGuestConfirmBtn" style="flex: 1; padding: 0.85rem; background: linear-gradient(135deg, var(--sb-accent, #C08A2E), var(--sb-accent-300, #E2C179)); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 1rem;">Move</button><button id="moveModalCancelBtn" style="padding: 0.85rem 1.5rem; background: var(--sb-divider, rgba(23,35,46,.14)); color: rgba(23,35,46,.72); border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 1rem;">Cancel</button></div>
 
 <div id="moveGuestMsg" style="margin-top: 0.75rem; display: none;">&nbsp;</div>
 </div>
@@ -1545,7 +1545,7 @@
         function renderStatsGrid(summary) {
             var grid = document.getElementById('statsGrid');
             var cardWhite = 'background: var(--sb-surface, #F3E8D3); border-radius: 16px; padding: 1.5rem; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); text-align: center;';
-            var cardGold  = 'background: linear-gradient(135deg, var(--sb-accent, #C08A2E), #d4af37); border-radius: 16px; padding: 1.5rem; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); text-align: center;';
+            var cardGold  = 'background: linear-gradient(135deg, var(--sb-accent, #C08A2E), var(--sb-accent-300, #E2C179)); border-radius: 16px; padding: 1.5rem; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); text-align: center;';
             var numNavy   = 'font-size: 2.2rem; font-weight: 700; color: var(--sb-teal-900, #072026); margin-bottom: 0.25rem;';
             var numWhite  = 'font-size: 2.2rem; font-weight: 700; color: white; margin-bottom: 0.25rem;';
             var labelMute = 'color: rgba(23,35,46,.6); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px;';
@@ -1935,7 +1935,7 @@
                       +     '<input id="localsSelectAll" type="checkbox" onclick="toggleSelectAllLocals(this.checked)" style="width: 16px; height: 16px;"> Select all'
                       +   '</label>'
                       +   '<span id="localsSelectedCount">0 selected</span>'
-                      +   '<button id="bulkAddLocalsBtn" onclick="addSelectedLocalsToWeek()" style="padding: 0.55rem 1.25rem; background: linear-gradient(135deg, var(--sb-accent, #C08A2E), #d4af37); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.95rem;">+ Add Selected to Week</button>'
+                      +   '<button id="bulkAddLocalsBtn" onclick="addSelectedLocalsToWeek()" style="padding: 0.55rem 1.25rem; background: linear-gradient(135deg, var(--sb-accent, #C08A2E), var(--sb-accent-300, #E2C179)); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.95rem;">+ Add Selected to Week</button>'
                       + '</div>';
             }
 
@@ -2109,8 +2109,20 @@
         };
 
         function escapeHtmlSafe(s) {
+            // Entities are assembled at runtime from their char codes. Written
+            // out literally ("&amp;" etc.) the CMS decodes them back to raw
+            // characters when the page is saved, which had collapsed the last
+            // entry to ''' — a syntax error that killed this whole script.
+            var AMP = String.fromCharCode(38);
+            var map = {
+                '&': AMP + 'amp;',
+                '<': AMP + 'lt;',
+                '>': AMP + 'gt;',
+                '"': AMP + 'quot;',
+                "'": AMP + '#39;'
+            };
             return String(s || '').replace(/[&<>"']/g, function (c) {
-                return { '&': '&', '<': '<', '>': '>', '"': '"', "'": ''' }[c];
+                return map[c];
             });
         }
 

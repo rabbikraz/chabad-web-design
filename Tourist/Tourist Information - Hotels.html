@@ -1,231 +1,325 @@
-<!-- Tourist Info Fragment --><!-- Attempting to load fonts via Link tag as fallback for Import -->
-<link href="https://fonts.googleapis.com" rel="preconnect" />
-<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
-<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700&amp;family=Marcellus&amp;display=swap" rel="stylesheet" />
-<div class="tib-wrapper">
-<style type="text/css">/* Scoped Styles */
-        .tib-wrapper {
+<!-- Nearby Hotels Fragment -->
+<div class="hotels-wrapper">
+<style type="text/css">@import url('https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700&family=Marcellus&display=swap');
+
+        .hotels-wrapper {
             padding: 0 clamp(0px, 2vw, 24px);
-            font-family: var(--sb-font-body, 'Figtree', sans-serif) !important;
+            font-family: var(--sb-font-body, 'Figtree', sans-serif);
             background-color: var(--sb-bg, #FBF5E9);
             color: var(--sb-text, #17232E);
-            width: 100% !important;
-            max-width: 100% !important;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 60vh;
-            /* Reduced strict height */
-            margin: 0;
-            padding: 0;
-            overflow-x: hidden;
-            box-sizing: border-box;
-        }
-
-        .tib-wrapper * {
-            box-sizing: border-box;
-        }
-
-        /* Hero Section */
-        .tib-hero {
-            background-color: var(--sb-teal, #17656B) !important;
-            background: linear-gradient(135deg, var(--sb-teal-900, #072026) 0%, var(--sb-teal, #17656B) 100%) !important;
-            width: 100% !important;
-            padding: 5rem 1.5rem 6rem !important;
-            /* Increased Padding */
-            text-align: center !important;
-            color: #ffffff !important;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            border-radius: var(--sb-radius-lg, 18px) !important;
-            box-shadow: var(--sb-shadow-md, 0 10px 28px rgba(23,35,46,.12)) !important;
-        }
-
-        .tib-hero h1 {
-            font-family: 'Marcellus', 'Georgia', 'Times New Roman', serif !important;
-            font-size: 5rem !important;
-            /* Increased to 5rem */
-            font-weight: 700;
-            margin: 0 0 1rem 0 !important;
-            line-height: 1.1;
-            color: #ffffff !important;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-        }
-
-        .tib-hero p {
-            font-size: 1.75rem !important;
-            /* Increased to 1.75rem */
-            color: rgba(255, 255, 255, 0.95) !important;
-            font-weight: 300;
-            margin: 0 !important;
-            letter-spacing: 0.5px;
-        }
-
-        /* Cards Container - 2x2 Grid */
-        .tib-container {
-            max-width: 1100px !important;
-            width: 95% !important;
-            margin: -4rem auto 4rem auto !important;
-            /* Adjusted overlap */
-            position: relative;
-            z-index: 10;
-            display: grid;
-            grid-template-columns: repeat(2, 1fr) !important;
-            gap: 2rem;
-            /* Increased gap */
-            padding: 0 1rem;
-        }
-
-        /* Card Styles */
-        .tib-card {
-            background: var(--sb-surface, #F3E8D3) !important;
-            border-radius: 16px !important;
-            overflow: hidden;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-            display: flex;
-            flex-direction: column !important;
-            text-decoration: none !important;
-            color: inherit !important;
-            border: 1px solid rgba(255, 255, 255, 0.8);
-            height: 100% !important;
             width: 100%;
-        }
-
-        .tib-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 15px 35px rgba(30, 58, 138, 0.12);
-        }
-
-        .tib-card-content {
-            width: 100% !important;
-            padding: 3rem 2.5rem;
-            /* Increased Padding */
             display: flex;
             flex-direction: column;
-            justify-content: space-between !important;
-            align-items: center !important;
+            align-items: center;
+        }
+
+        .hotels-wrapper * {
+            box-sizing: border-box;
+        }
+
+        /* HEADER */
+        .hotels-wrapper .header-section {
+            background: linear-gradient(135deg, var(--sb-teal-900, #072026) 0%, var(--sb-teal, #17656B) 100%);
+            width: 100%;
+            padding: 5rem 1.5rem 6rem;
             text-align: center;
-            height: 100% !important;
+            color: #ffffff;
+        
+            border-radius: var(--sb-radius-lg, 18px);
+            box-shadow: var(--sb-shadow-md, 0 10px 28px rgba(23,35,46,.12));
         }
 
-        /* Group Title and Text together so they stay close */
-        .tib-card-top-group {
+        .hotels-wrapper .header-section h1 {
+            font-family: var(--sb-font-heading, 'Marcellus', serif);
+            font-size: 4rem;
+            font-weight: 700;
+            margin: 0 0 1rem 0;
+            line-height: 1.1;
+            color: #ffffff !important;
+        }
+
+        .hotels-wrapper .header-section .subtitle {
+            font-size: 1.5rem;
+            color: #ffffff;
+            font-weight: 300;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* CONTAINER */
+        .hotels-wrapper .content-container {
+            max-width: 1100px;
+            width: 95%;
+            margin-top: -4rem;
+            margin-bottom: 4rem;
+            padding: 0 1.5rem;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            width: 100%;
+            gap: 1.5rem;
         }
 
-        .tib-card-title {
-            font-family: 'Marcellus', 'Georgia', serif !important;
-            font-size: 3rem !important;
-            /* Increased to 3rem */
-            font-weight: 700;
-            color: var(--sb-teal, #17656B) !important;
-            margin: 0 0 1.5rem 0 !important;
-            line-height: 1.1;
+        /* GRID */
+        .hotels-wrapper .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-top: 1rem;
         }
 
-        .tib-card-text {
-            font-family: 'Figtree', 'Verdana', sans-serif !important;
-            font-size: 1.5rem !important;
-            /* Increased to 1.5rem */
-            line-height: 1.5 !important;
-            color: rgba(23,35,46,.6) !important;
-            margin-bottom: 0 !important;
-        }
-
-        .tib-card-cta {
-            font-family: 'Figtree', 'Verdana', sans-serif !important;
-            font-weight: 600;
-            color: var(--sb-accent, #C08A2E) !important;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-size: 1.1rem !important;
-            /* Increased to 1.1rem */
+        /* CARD */
+        .hotels-wrapper .hotel-card {
+            background: var(--sb-surface, #F3E8D3);
+            border-radius: 16px;
+            padding: 2rem;
             display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-top: 2.5rem !important;
-            /* Increased margin */
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--sb-divider, rgba(23,35,46,.14));
+            transition: transform 0.2s, box-shadow 0.2s;
+            position: relative;
+            overflow: hidden;
         }
 
-        /* Responsive */
-        @media (max-width: 900px) {
-            .tib-container {
-                grid-template-columns: 1fr !important;
-                max-width: 600px !important;
+        .hotels-wrapper .hotel-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            border-color: var(--sb-accent-200, #EFDAAE);
+        }
+
+        .hotels-wrapper .hotel-name {
+            font-family: var(--sb-font-heading, 'Marcellus', serif);
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--sb-teal, #17656B);
+            margin-bottom: 0.5rem;
+            line-height: 1.2;
+        }
+
+        /* Distance Badge */
+        .hotels-wrapper .distance-badge {
+            display: inline-block;
+            background-color: var(--sb-teal-100, #DDEAE9);
+            color: var(--sb-teal-600, #12565C);
+            font-weight: 600;
+            font-size: 0.9rem;
+            padding: 0.4rem 0.8rem;
+            border-radius: 50px;
+            margin-bottom: 1rem;
+            align-self: flex-start;
+        }
+
+        .hotels-wrapper .hotel-detail {
+            font-size: 1.05rem;
+            color: rgba(23,35,46,.7);
+            margin-bottom: 0.8rem;
+            line-height: 1.5;
+        }
+
+        .hotels-wrapper .hotel-detail strong {
+            color: var(--sb-text, #17232E);
+            font-weight: 600;
+            margin-right: 0.3rem;
+        }
+
+        .hotels-wrapper .hotel-detail a {
+            color: var(--sb-teal, #17656B);
+            text-decoration: none;
+            border-bottom: 1px dotted var(--sb-teal, #17656B);
+        }
+
+        .hotels-wrapper .action-btn {
+            display: block;
+            width: 100%;
+            background: var(--sb-teal, #17656B);
+            color: #ffffff;
+            text-align: center;
+            padding: 1rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 1.5rem;
+            transition: background 0.2s;
+        }
+
+        .hotels-wrapper .action-btn:hover {
+            background: var(--sb-teal-900, #072026);
+        }
+
+        @media (max-width: 768px) {
+            .hotels-wrapper .header-section h1 {
+                font-size: 2.8rem;
+            }
+
+            .hotels-wrapper .hotel-name {
+                font-size: 1.5rem;
             }
         }
 </style>
-<div class="tib-hero"><!-- Optional: Explicit font loading check/fallback in style attribute -->
-<h1 style="font-family: 'Marcellus', 'Georgia', serif !important;">Tourist Information</h1>
+<div class="header-section">
+<h1>Nearby Hotels</h1>
 
-<p>Your complete guide to Jewish life in South Beach.</p>
+<div class="subtitle">Walking Distance from 320 Meridian</div>
 </div>
 
-<div class="tib-container"><!-- Shabbat Meals --><a class="tib-card" href="https://chabadsobe.com/shabbatmeals">
-<div class="tib-card-content">
-<div class="tib-card-top-group">
-<h2 class="tib-card-title">Shabbat Meals</h2>
+<div class="content-container">
+<div class="cards-grid"><!-- 1. ART DECO MARELA -->
+<div class="hotel-card">
+<div class="distance-badge">Next Door (0 min)</div>
 
-<p class="tib-card-text">Join us for a warm, traditional Shabbat dinner and lunch in a beautiful community setting.</p>
-</div>
+<div class="hotel-name">Art Deco Marela Boutique</div>
 
-<div class="tib-card-cta">Reserve Now &rarr;</div>
-</div>
-</a><!-- Kosher Guide --> <a class="tib-card" href="https://www.chabadinsouthbeach.com/templates/articlecco_cdo/aid/7224263/jewish/Untitled.htm">
-<div class="tib-card-content">
-<div class="tib-card-top-group">
-<h2 class="tib-card-title">Kosher Guide</h2>
+<div class="hotel-detail"><strong>Price:</strong> $$</div>
 
-<p class="tib-card-text">Explore our curated list of kosher restaurants, supermarkets, and catering options.</p>
-</div>
+<div class="hotel-detail"><strong>Address:</strong> <a href="https://maps.app.goo.gl/oJnoAqsyi9VUZJU2A" target="_blank">310 Meridian Ave</a></div>
 
-<div class="tib-card-cta">View Guide &rarr;</div>
-</div>
-</a><!-- Mikvah & Eruv --> <a class="tib-card" href="https://www.chabadinsouthbeach.com/templates/articlecco_cdo/aid/7224206/jewish/Untitled.htm">
-<div class="tib-card-content">
-<div class="tib-card-top-group">
-<h2 class="tib-card-title">Mikvah &amp; Eruv</h2>
+<div class="hotel-detail" style="font-size: 0.9rem; background: var(--sb-teal-100, #DDEAE9); padding: 0.8rem; border-radius: 8px; border: 1px solid var(--sb-teal-100, #DDEAE9); margin-bottom: 1rem;"><strong>Special Rates:</strong><br />
+Email <a href="mailto:guestinfo@marelahotel.com?subject=We'd Like To Book - Chabad Rates Please">guestinfo@marelahotel.com</a><br />
+Subject: &quot;We&#39;d Like To Book - Chabad Rates Please&quot;</div>
+<a class="action-btn" href="https://decomarela.com/" target="_blank">View Hotel</a></div>
+<!-- 1.5. JASPER (New Request) -->
 
-<p class="tib-card-text">Find map boundaries for the Eruv and key information for Mikvah appointments.</p>
-</div>
+<div class="hotel-card">
+<div class="distance-badge">~1 Min Walk (0.05 mi)</div>
 
-<div class="tib-card-cta">View Maps &rarr;</div>
-</div>
-</a><!-- Minyan Schedule --> <a class="tib-card" href="https://www.chabadinsouthbeach.com/templates/articlecco_cdo/aid/7223919/jewish/Daily-Minyan.htm">
-<div class="tib-card-content">
-<div class="tib-card-top-group">
-<h2 class="tib-card-title">Minyan Schedule</h2>
+<div class="hotel-name">Jasper Miami</div>
 
-<p class="tib-card-text">Daily Shacharis, Mincha, and Maariv prayer times throughout the week.</p>
-</div>
+<div class="hotel-detail"><strong>Price:</strong> $$$</div>
 
-<div class="tib-card-cta">View Schedule &rarr;</div>
-</div>
-</a><!-- Nearby Hotels --> <a class="tib-card" href="https://www.chabadinsouthbeach.com/templates/articlecco_cdo/aid/7232040/jewish/Hotels.htm">
-<div class="tib-card-content">
-<div class="tib-card-top-group">
-<h2 class="tib-card-title">Nearby Hotels</h2>
+<div class="hotel-detail"><strong>Address:</strong> <a href="https://maps.app.goo.gl/5u8nEUaiNcPsmZL67" target="_blank">701 &amp; 747 4th St</a></div>
+<a class="action-btn" href="https://www.jasper.miami/" target="_blank">View Hotel</a></div>
+<!-- 2. THE MERIDIAN (Formerly Urbanica) -->
 
-<p class="tib-card-text">Find recommended accommodations within walking distance of the Chabad House.</p>
-</div>
+<div class="hotel-card">
+<div class="distance-badge">~1 Min Walk (0.05 mi)</div>
 
-<div class="tib-card-cta">View Hotels &rarr;</div>
-</div>
-</a><!-- Local Attractions --> <a class="tib-card" href="https://www.chabadinsouthbeach.com/templates/articlecco_cdo/aid/7232029/jewish/Attractions.htm">
-<div class="tib-card-content">
-<div class="tib-card-top-group">
-<h2 class="tib-card-title">Local Attractions</h2>
+<div class="hotel-name">The Meridian Hotel</div>
 
-<p class="tib-card-text">Discover popular sights and activities to explore during your stay in South Beach.</p>
-</div>
+<div class="hotel-detail"><strong>Price:</strong> $$$</div>
 
-<div class="tib-card-cta">Explore &rarr;</div>
+<div class="hotel-detail"><strong>Address:</strong> <a href="https://maps.app.goo.gl/viUTn7KRNXyJPQ166" target="_blank">418 Meridian Ave</a></div>
+<a class="action-btn" href="https://hotels.cloudbeds.com/en/reservation/CD33DF?currency=usd" target="_blank">View Hotel</a></div>
+<!-- 2.3. CASA SOFI (New Request) -->
+
+<div class="hotel-card">
+<div class="distance-badge">~2 Min Walk (0.1 mi)</div>
+
+<div class="hotel-name">Casa Sofi</div>
+
+<div class="hotel-detail"><strong>Price:</strong> $$</div>
+
+<div class="hotel-detail"><strong>Address:</strong> <a href="https://maps.app.goo.gl/kxatUboCoWDQxb7V7" target="_blank">735 2nd St</a></div>
+<a class="action-btn" href="https://casahotelsgroup.com/book-now/casa-sofi/?room_type=CK" target="_blank">View Hotel</a></div>
+<!-- 2.5 Villa Italia (354 Washington) -->
+
+<div class="hotel-card">
+<div class="distance-badge">~2 Min Walk (0.1 mi)</div>
+
+<div class="hotel-name">Villa Italia</div>
+
+<div class="hotel-detail"><strong>Price:</strong> $$</div>
+
+<div class="hotel-detail"><strong>Address:</strong> <a href="https://maps.app.goo.gl/oUxMhbF224STUsoP7" target="_blank">354 Washington Ave</a></div>
+<a class="action-btn" href="https://hotels.cloudbeds.com/en/reservation/3sFuIT?currency=usd" target="_blank">View Hotel</a></div>
+<!-- 2.6 Colaretta (355 Washington) -->
+
+<div class="hotel-card">
+<div class="distance-badge">~2 Min Walk (0.1 mi)</div>
+
+<div class="hotel-name">Colaretta</div>
+
+<div class="hotel-detail"><strong>Price:</strong> $$</div>
+
+<div class="hotel-detail"><strong>Address:</strong> <a href="https://maps.app.goo.gl/2zvsfQoZZUqgwuHc8" target="_blank">355 Washington Ave</a></div>
+<a class="action-btn" href="https://hotels.cloudbeds.com/en/reservation/Xit4ya?currency=usd" target="_blank">View Hotel</a></div>
+<!-- 3. Hotel St. Augustine -->
+
+<div class="hotel-card">
+<div class="distance-badge">~3 Min Walk (0.1 mi)</div>
+
+<div class="hotel-name">Hotel St. Augustine</div>
+
+<div class="hotel-detail"><strong>Price:</strong> $$</div>
+
+<div class="hotel-detail"><strong>Address:</strong> <a href="https://maps.app.goo.gl/2TBAbypgZWxnyDVbA" target="_blank">347 Washington Ave</a></div>
+<a class="action-btn" href="https://maps.google.com/?q=Hotel+St+Augustine+Miami+Beach" target="_blank">View Hotel</a></div>
+<!-- 4. THE MARCH HOTEL (Formerly Euclid) -->
+
+<div class="hotel-card">
+<div class="distance-badge">~4 Min Walk (0.15 mi)</div>
+
+<div class="hotel-name">The March Hotel</div>
+
+<div class="hotel-detail"><strong>Price:</strong> $$$</div>
+
+<div class="hotel-detail"><strong>Address:</strong> <a href="https://maps.app.goo.gl/sYbDpyXWddfK68N96" target="_blank">426 Euclid Ave</a></div>
+<a class="action-btn" href="https://themarchhotel.com/" target="_blank">View Hotel</a></div>
+<!-- 5. Sense Beach House -->
+
+<div class="hotel-card">
+<div class="distance-badge">~6 Min Walk (0.3 mi)</div>
+
+<div class="hotel-name">Sense Beach House</div>
+
+<div class="hotel-detail"><strong>Price:</strong> $$$</div>
+
+<div class="hotel-detail"><strong>Address:</strong> <a href="https://maps.app.goo.gl/xrmgpAA4bXaCvUFG7" target="_blank">400 Ocean Dr</a></div>
+<a class="action-btn" href="https://sensebeachhouse.com/" target="_blank">View Hotel</a></div>
+<!-- 6. The Savoy Hotel -->
+
+<div class="hotel-card">
+<div class="distance-badge">~6 Min Walk (0.3 mi)</div>
+
+<div class="hotel-name">The Savoy Hotel &amp; Beach Club</div>
+
+<div class="hotel-detail"><strong>Price:</strong> $$$$</div>
+
+<div class="hotel-detail"><strong>Address:</strong> <a href="https://maps.app.goo.gl/jKPW75MzutuLoPrT6" target="_blank">425 Ocean Dr</a></div>
+<a class="action-btn" href="https://www.savoymiami.com/" target="_blank">View Hotel</a></div>
+<!-- 7. Marriott Stanton -->
+
+<div class="hotel-card">
+<div class="distance-badge">~7 Min Walk (0.35 mi)</div>
+
+<div class="hotel-name">Marriott Stanton South Beach</div>
+
+<div class="hotel-detail"><strong>Price:</strong> $$$$</div>
+
+<div class="hotel-detail"><strong>Address:</strong> <a href="https://maps.app.goo.gl/xghLUXethZ7mtDZV8" target="_blank">161 Ocean Dr</a></div>
+<a class="action-btn" href="https://www.marriott.com/" target="_blank">View Hotel</a></div>
+<!-- 8. The Goodtime Hotel -->
+
+<div class="hotel-card">
+<div class="distance-badge">~8 Min Walk (0.4 mi)</div>
+
+<div class="hotel-name">The Goodtime Hotel</div>
+
+<div class="hotel-detail"><strong>Price:</strong> $$$</div>
+
+<div class="hotel-detail"><strong>Address:</strong> <a href="https://maps.app.goo.gl/YrN4fHqnHav23KLt8" target="_blank">601 Washington Ave</a></div>
+<a class="action-btn" href="https://www.thegoodtimehotel.com/" target="_blank">View Hotel</a></div>
+<!-- 9. Hilton Bentley -->
+
+<div class="hotel-card">
+<div class="distance-badge">~8 Min Walk (0.4 mi)</div>
+
+<div class="hotel-name">Hilton Bentley South Beach</div>
+
+<div class="hotel-detail"><strong>Price:</strong> $$$$</div>
+
+<div class="hotel-detail"><strong>Address:</strong> <a href="https://maps.app.goo.gl/Ef5kndRPB4bD8KLp8" target="_blank">101 Ocean Dr</a></div>
+<a class="action-btn" href="https://www.hilton.com/en/hotels/miabxhf-hilton-bentley-miami-south-beach/" target="_blank">View Hotel</a></div>
+<!-- 10. Prime Hotel -->
+
+<div class="hotel-card">
+<div class="distance-badge">~8 Min Walk (0.4 mi)</div>
+
+<div class="hotel-name">Prime Hotel Miami</div>
+
+<div class="hotel-detail"><strong>Price:</strong> $$$</div>
+
+<div class="hotel-detail"><strong>Address:</strong> <a href="https://maps.app.goo.gl/yke4m1u7owCzVJrX9" target="_blank">100 Ocean Dr</a>&nbsp;</div>
+<a class="action-btn" href="https://myprimehotel.com/" target="_blank">View Hotel</a></div>
 </div>
-</a></div>
+</div>
 </div>

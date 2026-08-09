@@ -313,22 +313,26 @@
 <div class="accordion-body">
 <style type="text/css">.appointment-card-btn {
                         display: block;
-                        background: linear-gradient(135deg, var(--sb-teal, #17656B) 0%, #1e40af 100%);
-                        color: #ffffff;
+                        background: linear-gradient(135deg, var(--sb-teal, #17656B) 0%, var(--sb-teal-600, #12565C) 100%);
+                        /* !important: the site theme's `body.cco_body a` rule is
+                           more specific than this class, so without it the label
+                           inherits the dark teal link colour and disappears
+                           against the button. */
+                        color: #ffffff !important;
                         text-align: center;
                         padding: 1rem;
                         border-radius: 8px;
                         font-weight: 600;
                         text-decoration: none;
                         margin-top: 1.5rem;
-                        box-shadow: 0 4px 6px rgba(30, 58, 138, 0.1);
+                        box-shadow: 0 4px 6px rgba(23, 35, 46, 0.1);
                         transition: transform 0.2s, box-shadow 0.2s;
                     }
 
                     .appointment-card-btn:hover {
                         transform: translateY(-2px);
-                        box-shadow: 0 6px 12px rgba(30, 58, 138, 0.2);
-                        color: #ffffff;
+                        box-shadow: 0 6px 12px rgba(23, 35, 46, 0.2);
+                        color: #ffffff !important;
                     }
 </style>
 <div style="height: 2rem;">&nbsp;</div>
