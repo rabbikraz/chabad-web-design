@@ -744,10 +744,15 @@ body.cco_body #tabContentMain .co_menu_item.donate_link span.parent a:hover {
   .branding-search { flex: 1 1 0; min-width: 0; max-width: calc(100% - 64px); }
   #header_branding.logo { min-width: 0; }
   a.site_title { white-space: normal; }
-  /* CMS submenu toggle: kill it entirely. Tapping it slid the CMS into a
-     submenu-panel state we don't style (dead dark screen with one label) —
-     submenus are always expanded in the drawer instead, so it has no job. */
-  .cs-menu-item-toggle { display: none !important; }
+  /* CMS submenu toggle(s): kill entirely. sites6.js appends its OWN button
+     (.js-menu-item-toggle, sharing this class) with a live click handler
+     that adds .item-open — a hidden element can't be tapped, but pointer-
+     events:none is a second lock in case display ever gets beaten. */
+  .cs-menu-item-toggle,
+  .js-menu-item-toggle {
+    display: none !important;
+    pointer-events: none !important;
+  }
   #header .cs-mobile-menu-open {
     display: flex !important;
     flex-direction: column;
@@ -794,6 +799,7 @@ body.cco_body #tabContentMain .co_menu_item.donate_link span.parent a:hover {
     overflow-y: auto;
     opacity: 0;
     visibility: hidden;
+    pointer-events: none;
     transition: opacity 220ms ease, visibility 220ms;
     order: initial;
     margin: 0;
@@ -805,6 +811,14 @@ body.cco_body #tabContentMain .co_menu_item.donate_link span.parent a:hover {
   html body.menu-open #header .site-nav-wrapper.site-nav-wrapper {
     opacity: 1 !important;
     visibility: visible !important;
+    pointer-events: auto !important;
+  }
+  /* belt-and-suspenders for the specific bug report: taps landing on
+     drawer links "through" a page that looks closed. Whatever visibility
+     state anything ends up in, only .menu-open may ever be interactive. */
+  html body:not(.menu-open) #header .site-nav-wrapper.site-nav-wrapper,
+  html body:not(.menu-open) #header .site-nav-wrapper.site-nav-wrapper * {
+    pointer-events: none !important;
   }
   /* CMS paints a dimming overlay + open-state chrome when the menu is open */
   html body.menu-open #header:before,
@@ -885,8 +899,14 @@ body.cco_body #tabContentMain .co_menu_item.donate_link span.parent a:hover {
     transform: rotate(225deg) translateY(2px);
   }
   /* submenus: collapsed by default, rolled out inline by .sb-open (our
-     accordion). !important beats the CMS's inline display toggling. */
+     accordion). !important beats the CMS's inline display toggling.
+     sites6.js ALSO appends its own hidden toggle button (.js-menu-item-
+     toggle / shares .cs-menu-item-toggle) that adds .item-open, and
+     default-theme.css has display:block!important keyed off THAT class —
+     block it explicitly rather than trust a specificity race, and make
+     sure OUR .sb-open still wins if both classes ever end up present. */
   #tabContentMain .co_menu_content { position: static; }
+  body.cco_body #header #tabContentMain .co_menu_item.item-open .co_submenu_container { display: none !important; }
   #header #tabContentMain .co_menu_item.sb-open .co_submenu_container { display: block !important; }
   #header #tabContentMain .co_menu_item .co_submenu_container {
     display: none !important;
@@ -2054,12 +2074,41 @@ body.cco_body input[type="radio"] { accent-color: var(--sb-accent); }
   padding: 18px 20px;
   margin-top: 14px;
 }
-/* events.css paints the reservation rows and add-ons bar plain white */
+/* attendee list: header band (First Name/Last Name/Category/Price), then
+   flat-edged reservation rows, then the "add another" bar — read as one
+   continuous card. events.js's header row has no id/class of its own;
+   scoped safely via its unique .price-header cell. */
+#RegisterSinglePage .clearfix.medium_top_margin:has(.price-header) {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--sb-event-soft, var(--sb-surface));
+  border: 1px solid var(--sb-divider);
+  border-bottom: none;
+  border-radius: var(--sb-radius-md) var(--sb-radius-md) 0 0;
+  padding: 12px 16px;
+  margin: 14px 0 0 !important;
+}
+#RegisterSinglePage .clearfix.medium_top_margin:has(.price-header) > div {
+  color: var(--sb-event-accent-dark, var(--sb-accent-700));
+  font-family: var(--sb-font-body);
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+}
 #RegisterSinglePage .reservation,
 #RegisterSinglePage .additionals_toggle {
   background: var(--sb-bg);
   border: 1px solid var(--sb-divider);
-  border-radius: var(--sb-radius-md);
+  border-top: none;
+}
+#RegisterSinglePage .clearfix.medium_top_margin:has(.price-header) + .reservation,
+#RegisterSinglePage .reservation:first-of-type {
+  border-top: 1px solid var(--sb-divider);
+}
+#RegisterSinglePage .additionals_toggle {
+  border-radius: 0 0 var(--sb-radius-md) var(--sb-radius-md);
 }
 #RegisterSinglePage .reservation { padding: 14px 16px; }
 #RegisterSinglePage .notice {

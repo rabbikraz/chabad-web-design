@@ -170,12 +170,25 @@ btn.classList.toggle('active', open);
 if (mq.matches) {
 drawer.style.setProperty('opacity', open ? '1' : '0', 'important');
 drawer.style.setProperty('visibility', open ? 'visible' : 'hidden', 'important');
+drawer.style.setProperty('pointer-events', open ? 'auto' : 'none', 'important');
+}
+if (!open) {
+$all('#tabContentMain .co_menu_item.sb-open, #tabContentMain .co_menu_item.item-open, #tabContentMain .co_menu_item.hover', drawer).forEach(function (it) {
+it.classList.remove('sb-open', 'item-open', 'hover');
+});
 }
 }
 function clearInline() {
 drawer.style.removeProperty('opacity');
 drawer.style.removeProperty('visibility');
+drawer.style.removeProperty('pointer-events');
 }
+document.addEventListener('click', function (e) {
+if (!mq.matches) return;
+var item = e.target.closest && e.target.closest('#tabContentMain .co_menu_item');
+if (!item || e.target.closest('.sb-sub-toggle')) return;
+e.stopPropagation();
+}, true);
 btn.addEventListener('click', function () {
 var open = !btn.classList.contains('active');
 setOpen(open);

@@ -255,12 +255,35 @@
       if (mq.matches) {
         drawer.style.setProperty('opacity', open ? '1' : '0', 'important');
         drawer.style.setProperty('visibility', open ? 'visible' : 'hidden', 'important');
+        drawer.style.setProperty('pointer-events', open ? 'auto' : 'none', 'important');
+      }
+      if (!open) {
+        // sites6.js's own toggle (hidden, but belt-and-suspenders) or the
+        // CMS's hover-tracking can leave a submenu flagged open — closing
+        // the drawer always starts the next open from a clean slate.
+        $all('#tabContentMain .co_menu_item.sb-open, #tabContentMain .co_menu_item.item-open, #tabContentMain .co_menu_item.hover', drawer).forEach(function (it) {
+          it.classList.remove('sb-open', 'item-open', 'hover');
+        });
       }
     }
     function clearInline() {
       drawer.style.removeProperty('opacity');
       drawer.style.removeProperty('visibility');
+      drawer.style.removeProperty('pointer-events');
     }
+    // Any click inside a mobile-drawer menu item ALSO bubbles to the CMS's
+    // own delegated click handler (bound directly on .co_menu_item), which
+    // calls Co.MainNavigation.Show() — harmless on its own (CSS keeps the
+    // submenu closed) but an unnecessary side effect that other CMS scripts
+    // could react to. Stop it at the item boundary for anything except our
+    // own toggle, which manages its own propagation already. Real links
+    // (real <a href>) still navigate — stopPropagation never blocks that.
+    document.addEventListener('click', function (e) {
+      if (!mq.matches) return;
+      var item = e.target.closest && e.target.closest('#tabContentMain .co_menu_item');
+      if (!item || e.target.closest('.sb-sub-toggle')) return;
+      e.stopPropagation();
+    }, true);
 
     btn.addEventListener('click', function () {
       var open = !btn.classList.contains('active');
