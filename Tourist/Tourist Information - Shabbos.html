@@ -1,0 +1,1585 @@
+<!-- ==========================================
+     SHABBAT & HOLIDAY RESERVATIONS - INLINE STYLED VERSION
+     For CMS systems that strip <style> tags
+
+     Static 4-meal-slot layout. JS only updates innerText and
+     style.display — no innerHTML with HTML strings — so the
+     CMS doesn't choke on dynamic markup.
+     ========================================== --><!-- FONTS -->
+<link href="https://fonts.googleapis.com" rel="preconnect" />
+<link href="https://fonts.googleapis.com/css2?family=Marcellus&amp;family=Figtree:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet" /><!-- CONTAINER -->
+<div id="shabbatFormContainer" style="font-family: var(--sb-font-body, 'Figtree', sans-serif); color: var(--sb-text, #17232E); line-height: 1.7; max-width: 640px; margin: 0 auto; padding: 2rem 1rem; font-size: 1.4rem;"><!-- Header -->
+<div style="text-align: center; margin-bottom: 2.5rem;">
+<p style="color: rgba(23,35,46,.6); font-size: 1.2rem; margin: 0;">Online reservations close 2:30pm before each Shabbat/Yom Tov</p>
+</div>
+<!-- Auto-closed message (shown while Shabbat or Yom Tov is in progress). -->
+
+<div id="formClosedMessage" style="display: none; background: var(--sb-surface, #F3E8D3); border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); padding: 3rem 2rem; text-align: center; margin-bottom: 1.5rem;">
+<div style="width: 72px; height: 72px; background: var(--sb-teal-900, #072026); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.25rem; font-size: 2rem; color: var(--sb-accent, #C08A2E);">☀</div>
+
+<h2 id="formClosedTitle" style="font-family: var(--sb-font-heading, 'Marcellus', serif); color: var(--sb-teal-900, #072026); margin: 0 0 0.75rem 0; font-size: 1.6rem;">This form is closed for Shabbat</h2>
+
+<p id="formClosedBody" style="margin: 0; color: rgba(23,35,46,.72); font-size: 1.05rem;">Online reservations will reopen after Shabbat ends. We can&#39;t wait to see you!</p>
+</div>
+<!-- Main Form -->
+
+<form id="reservationForm"><!-- Step 1: Select Shabbos -->
+<div style="background: var(--sb-surface, #F3E8D3); border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); padding: 2rem; margin-bottom: 1.5rem;">
+<h2 style="font-family: var(--sb-font-heading, 'Marcellus', serif); font-size: 1.6rem; font-weight: 600; color: var(--sb-teal-900, #072026); margin: 0 0 1.25rem 0; display: flex; align-items: center; gap: 0.5rem;"><span style="display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; background: var(--sb-accent, #C08A2E); color: white; border-radius: 50%; font-family: var(--sb-font-body, 'Figtree', sans-serif); font-size: 0.875rem; font-weight: 600;">1</span> Choose Shabbos or Holiday</h2>
+<select id="shabbosDate" required="" style="width: 100%; padding: 1.2rem; border: 2px solid var(--sb-divider, rgba(23,35,46,.14)); border-radius: 12px; font-size: 1.4rem; color: var(--sb-text, #17232E); background: var(--sb-surface, #F3E8D3); cursor: pointer; appearance: none; background-image: url('data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2724%27 height=%2724%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27%238A5F16%27 stroke-width=%272%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3E%3Cpolyline points=%276 9 12 15 18 9%27%3E%3C/polyline%3E%3C/svg%3E'); background-repeat: no-repeat; background-position: right 1rem center;"><option value="">Select a date...</option> </select>
+
+<div id="cutoffNotice" style="display: none; background: #fff5f5; border: 1px solid #feb2b2; border-radius: 8px; padding: 0.75rem 1rem; margin-top: 1rem; color: #e53e3e; font-size: 0.9rem;">Online reservations are closed for this Shabbat/Yom Tov. Please call to reserve.</div>
+
+<div id="pesachNotice" style="display: none; margin-top: 1.25rem; padding: 1.5rem; background: var(--sb-accent-100, #F8EDD6); border: 2px solid var(--sb-accent, #C08A2E); border-radius: 12px; text-align: center;">
+<div style="font-family: var(--sb-font-heading, 'Marcellus', serif); font-size: 1.3rem; color: var(--sb-teal-900, #072026); margin-bottom: 0.5rem; font-weight: 600;">Passover meals have their own page</div>
+
+<div style="color: rgba(23,35,46,.72); font-size: 1rem; margin-bottom: 1rem;">Please reserve all Pesach meals (including Shabbat on Passover) on our dedicated Passover page.</div>
+<a href="https://chabadsobe.com/passovermeals" id="pesachLink" style="display: inline-block; padding: 0.875rem 1.75rem; background: var(--sb-accent, #C08A2E); color: white; text-decoration: none; border-radius: 10px; font-weight: 600; font-size: 1.05rem;">Reserve Passover Meals</a></div>
+</div>
+<!-- Step 2: Select Meals -->
+
+<div class="bookingSection" style="background: var(--sb-surface, #F3E8D3); border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); padding: 2rem; margin-bottom: 1.5rem;">
+<h2 style="font-family: var(--sb-font-heading, 'Marcellus', serif); font-size: 1.6rem; font-weight: 600; color: var(--sb-teal-900, #072026); margin: 0 0 1.25rem 0; display: flex; align-items: center; gap: 0.5rem;"><span style="display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; background: var(--sb-accent, #C08A2E); color: white; border-radius: 50%; font-family: var(--sb-font-body, 'Figtree', sans-serif); font-size: 0.875rem; font-weight: 600;">2</span> Select Meals</h2>
+
+<div id="mealsEmptyHint" style="padding: 1rem; background: var(--sb-bg, #FBF5E9); border-radius: 12px; color: rgba(23,35,46,.6); text-align: center; font-size: 1rem;">Choose a date above to see available meals.</div>
+<button id="allMealsBtn" style="display: none; width: 100%; padding: 0.75rem 1rem; background: var(--sb-accent-100, #F8EDD6); border: 2px dashed var(--sb-accent, #C08A2E); border-radius: 10px; color: var(--sb-accent, #C08A2E); cursor: pointer; font-weight: 600; font-size: 1rem; margin-bottom: 1rem;" type="button">Select both meals (one ticket for everything)</button><!-- All-Meals (single-ticket) card. Shown when user clicks "Select all meals". -->
+
+<div id="slotAllCard" style="display: none; margin-bottom: 1.5rem;">
+<div id="slotAllToggle" style="position: relative; padding: 1.25rem; border: 2px solid var(--sb-accent, #C08A2E); border-radius: 12px; background: linear-gradient(135deg, rgba(201, 162, 39, 0.08), rgba(201, 162, 39, 0.02)); text-align: center; margin-bottom: 1rem;"><input checked="checked" id="slotAllCheck" style="display: none;" type="checkbox" /><button aria-label="Back to individual meals" id="slotAllCloseBtn" style="position: absolute; top: 0.5rem; right: 0.5rem; width: 32px; height: 32px; border: 1px solid rgba(201, 162, 39, 0.4); background: var(--sb-surface, #F3E8D3); color: var(--sb-teal-900, #072026); border-radius: 50%; cursor: pointer; font-size: 1.25rem; line-height: 1; padding: 0; display: flex; align-items: center; justify-content: center;" title="Back to individual meals" type="button">&times;</button>
+
+<div id="slotAllMainLabel" style="font-weight: 600; color: var(--sb-teal-900, #072026); font-size: 1.25rem;">Both Meals</div>
+
+<div id="slotAllSubLabel" style="font-size: 0.95rem; color: rgba(23,35,46,.72); margin-top: 0.35rem;">Same headcount for every meal</div>
+</div>
+
+<div id="slotAllPricing" style="padding: 1rem; background: var(--sb-bg, #FBF5E9); border-radius: 12px; margin-bottom: 0.75rem;">
+<div id="slotAllPriceHeader" style="font-weight: 600; color: var(--sb-teal-900, #072026); margin-bottom: 0.75rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--sb-divider, rgba(23,35,46,.14));">Per Person &mdash; covers every meal of this Shabbos</div>
+
+<div style="display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid var(--sb-divider, rgba(23,35,46,.14));">
+<div style="display: flex; flex-direction: column;"><span style="font-weight: 500; color: var(--sb-text, #17232E); font-size: 1.15rem;">Adult</span> <span id="slotAllAdultPrice" style="font-size: 1rem; color: rgba(23,35,46,.6);">$0 per person</span></div>
+
+<div style="display: flex; align-items: center; gap: 0.5rem;"><button onclick="updateQty('slotAllA', -1)" style="width: 32px; height: 32px; border: 2px solid var(--sb-divider, rgba(23,35,46,.14)); border-radius: 50%; background: var(--sb-surface, #F3E8D3); color: var(--sb-teal-900, #072026); font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center;" type="button">&minus;</button><span id="slotAllA" style="font-size: 1.125rem; font-weight: 600; min-width: 24px; text-align: center;">0</span><button onclick="updateQty('slotAllA', 1)" style="width: 32px; height: 32px; border: 2px solid var(--sb-divider, rgba(23,35,46,.14)); border-radius: 50%; background: var(--sb-surface, #F3E8D3); color: var(--sb-teal-900, #072026); font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center;" type="button">+</button></div>
+</div>
+
+<div style="display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid var(--sb-divider, rgba(23,35,46,.14));">
+<div style="display: flex; flex-direction: column;"><span style="font-weight: 500; color: var(--sb-text, #17232E); font-size: 1.15rem;">Adult (Subsidized)</span> <span id="slotAllSubPrice" style="font-size: 1rem; color: rgba(23,35,46,.6);">$0 per person</span></div>
+
+<div style="display: flex; align-items: center; gap: 0.5rem;"><button onclick="updateQty('slotAllS', -1)" style="width: 32px; height: 32px; border: 2px solid var(--sb-divider, rgba(23,35,46,.14)); border-radius: 50%; background: var(--sb-surface, #F3E8D3); color: var(--sb-teal-900, #072026); font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center;" type="button">&minus;</button><span id="slotAllS" style="font-size: 1.125rem; font-weight: 600; min-width: 24px; text-align: center;">0</span><button onclick="updateQty('slotAllS', 1)" style="width: 32px; height: 32px; border: 2px solid var(--sb-divider, rgba(23,35,46,.14)); border-radius: 50%; background: var(--sb-surface, #F3E8D3); color: var(--sb-teal-900, #072026); font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center;" type="button">+</button></div>
+</div>
+
+<div style="display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 0;">
+<div style="display: flex; flex-direction: column;"><span style="font-weight: 500; color: var(--sb-text, #17232E); font-size: 1.15rem;">Child</span> <span id="slotAllChildPrice" style="font-size: 1rem; color: rgba(23,35,46,.6);">$0 per child</span></div>
+
+<div style="display: flex; align-items: center; gap: 0.5rem;"><button onclick="updateQty('slotAllC', -1)" style="width: 32px; height: 32px; border: 2px solid var(--sb-divider, rgba(23,35,46,.14)); border-radius: 50%; background: var(--sb-surface, #F3E8D3); color: var(--sb-teal-900, #072026); font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center;" type="button">&minus;</button><span id="slotAllC" style="font-size: 1.125rem; font-weight: 600; min-width: 24px; text-align: center;">0</span><button onclick="updateQty('slotAllC', 1)" style="width: 32px; height: 32px; border: 2px solid var(--sb-divider, rgba(23,35,46,.14)); border-radius: 50%; background: var(--sb-surface, #F3E8D3); color: var(--sb-teal-900, #072026); font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center;" type="button">+</button></div>
+</div>
+</div>
+<button id="backToPerMealBtn" style="width: 100%; padding: 0.85rem 1rem; background: var(--sb-surface, #F3E8D3); border: 2px solid var(--sb-accent-200, #EFDAAE); border-radius: 10px; color: var(--sb-teal-900, #072026); cursor: pointer; font-weight: 600; font-size: 1rem;" type="button">&larr; Back to individual meals</button></div>
+
+<div id="mealsTogglesRow" style="display: none; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;">
+<div id="slot1Toggle" style="display: none; flex: 1 1 calc(50% - 0.5rem); min-width: 200px; padding: 1rem; border: 2px solid var(--sb-divider, rgba(23,35,46,.14)); border-radius: 12px; background: var(--sb-surface, #F3E8D3); cursor: pointer; text-align: center; transition: all 0.2s ease;"><input id="slot1Check" style="display: none;" type="checkbox" />
+<div id="slot1Label" style="font-weight: 600; color: var(--sb-teal-900, #072026); margin-bottom: 0.25rem; font-size: 1.2rem;">Friday Night</div>
+
+<div id="slot1Sub" style="font-size: 1rem; color: rgba(23,35,46,.6);">Dinner</div>
+
+<div id="slot1Date" style="font-size: 0.85rem; color: rgba(23,35,46,.45); margin-top: 0.35rem;">&nbsp;</div>
+</div>
+
+<div id="slot2Toggle" style="display: none; flex: 1 1 calc(50% - 0.5rem); min-width: 200px; padding: 1rem; border: 2px solid var(--sb-divider, rgba(23,35,46,.14)); border-radius: 12px; background: var(--sb-surface, #F3E8D3); cursor: pointer; text-align: center; transition: all 0.2s ease;"><input id="slot2Check" style="display: none;" type="checkbox" />
+<div id="slot2Label" style="font-weight: 600; color: var(--sb-teal-900, #072026); margin-bottom: 0.25rem; font-size: 1.2rem;">Shabbat Day</div>
+
+<div id="slot2Sub" style="font-size: 1rem; color: rgba(23,35,46,.6);">Lunch</div>
+
+<div id="slot2Date" style="font-size: 0.85rem; color: rgba(23,35,46,.45); margin-top: 0.35rem;">&nbsp;</div>
+</div>
+
+<div id="slot3Toggle" style="display: none; flex: 1 1 calc(50% - 0.5rem); min-width: 200px; padding: 1rem; border: 2px solid var(--sb-divider, rgba(23,35,46,.14)); border-radius: 12px; background: var(--sb-surface, #F3E8D3); cursor: pointer; text-align: center; transition: all 0.2s ease;"><input id="slot3Check" style="display: none;" type="checkbox" />
+<div id="slot3Label" style="font-weight: 600; color: var(--sb-teal-900, #072026); margin-bottom: 0.25rem; font-size: 1.2rem;">Day 2 Eve</div>
+
+<div id="slot3Sub" style="font-size: 1rem; color: rgba(23,35,46,.6);">Dinner</div>
+
+<div id="slot3Date" style="font-size: 0.85rem; color: rgba(23,35,46,.45); margin-top: 0.35rem;">&nbsp;</div>
+</div>
+
+<div id="slot4Toggle" style="display: none; flex: 1 1 calc(50% - 0.5rem); min-width: 200px; padding: 1rem; border: 2px solid var(--sb-divider, rgba(23,35,46,.14)); border-radius: 12px; background: var(--sb-surface, #F3E8D3); cursor: pointer; text-align: center; transition: all 0.2s ease;"><input id="slot4Check" style="display: none;" type="checkbox" />
+<div id="slot4Label" style="font-weight: 600; color: var(--sb-teal-900, #072026); margin-bottom: 0.25rem; font-size: 1.2rem;">Day 2</div>
+
+<div id="slot4Sub" style="font-size: 1rem; color: rgba(23,35,46,.6);">Lunch</div>
+
+<div id="slot4Date" style="font-size: 0.85rem; color: rgba(23,35,46,.45); margin-top: 0.35rem;">&nbsp;</div>
+</div>
+
+<div id="slot5Toggle" style="display: none; flex: 1 1 calc(50% - 0.5rem); min-width: 200px; padding: 1rem; border: 2px solid var(--sb-divider, rgba(23,35,46,.14)); border-radius: 12px; background: var(--sb-surface, #F3E8D3); cursor: pointer; text-align: center; transition: all 0.2s ease;"><input id="slot5Check" style="display: none;" type="checkbox" />
+<div id="slot5Label" style="font-weight: 600; color: var(--sb-teal-900, #072026); margin-bottom: 0.25rem; font-size: 1.2rem;">Day 3 Eve</div>
+
+<div id="slot5Sub" style="font-size: 1rem; color: rgba(23,35,46,.6);">Dinner</div>
+
+<div id="slot5Date" style="font-size: 0.85rem; color: rgba(23,35,46,.45); margin-top: 0.35rem;">&nbsp;</div>
+</div>
+
+<div id="slot6Toggle" style="display: none; flex: 1 1 calc(50% - 0.5rem); min-width: 200px; padding: 1rem; border: 2px solid var(--sb-divider, rgba(23,35,46,.14)); border-radius: 12px; background: var(--sb-surface, #F3E8D3); cursor: pointer; text-align: center; transition: all 0.2s ease;"><input id="slot6Check" style="display: none;" type="checkbox" />
+<div id="slot6Label" style="font-weight: 600; color: var(--sb-teal-900, #072026); margin-bottom: 0.25rem; font-size: 1.2rem;">Day 3</div>
+
+<div id="slot6Sub" style="font-size: 1rem; color: rgba(23,35,46,.6);">Lunch</div>
+
+<div id="slot6Date" style="font-size: 0.85rem; color: rgba(23,35,46,.45); margin-top: 0.35rem;">&nbsp;</div>
+</div>
+
+<div id="slot7Toggle" style="display: none; flex: 1 1 calc(50% - 0.5rem); min-width: 200px; padding: 1rem; border: 2px solid var(--sb-divider, rgba(23,35,46,.14)); border-radius: 12px; background: var(--sb-surface, #F3E8D3); cursor: pointer; text-align: center; transition: all 0.2s ease;"><input id="slot7Check" style="display: none;" type="checkbox" />
+<div id="slot7Label" style="font-weight: 600; color: var(--sb-teal-900, #072026); margin-bottom: 0.25rem; font-size: 1.2rem;">Day 4 Eve</div>
+
+<div id="slot7Sub" style="font-size: 1rem; color: rgba(23,35,46,.6);">Dinner</div>
+
+<div id="slot7Date" style="font-size: 0.85rem; color: rgba(23,35,46,.45); margin-top: 0.35rem;">&nbsp;</div>
+</div>
+
+<div id="slot8Toggle" style="display: none; flex: 1 1 calc(50% - 0.5rem); min-width: 200px; padding: 1rem; border: 2px solid var(--sb-divider, rgba(23,35,46,.14)); border-radius: 12px; background: var(--sb-surface, #F3E8D3); cursor: pointer; text-align: center; transition: all 0.2s ease;"><input id="slot8Check" style="display: none;" type="checkbox" />
+<div id="slot8Label" style="font-weight: 600; color: var(--sb-teal-900, #072026); margin-bottom: 0.25rem; font-size: 1.2rem;">Day 4</div>
+
+<div id="slot8Sub" style="font-size: 1rem; color: rgba(23,35,46,.6);">Lunch</div>
+
+<div id="slot8Date" style="font-size: 0.85rem; color: rgba(23,35,46,.45); margin-top: 0.35rem;">&nbsp;</div>
+</div>
+</div>
+<!-- Slot 1 Pricing (Dinner tier) -->
+
+<div id="slot1Pricing" style="display: none; padding: 1rem; background: var(--sb-bg, #FBF5E9); border-radius: 12px; margin-bottom: 1rem;">
+<div id="slot1PriceTitle" style="font-weight: 600; color: var(--sb-teal-900, #072026); margin-bottom: 0.75rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--sb-divider, rgba(23,35,46,.14));">Friday Night Dinner</div>
+
+<div style="display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid var(--sb-divider, rgba(23,35,46,.14));">
+<div style="display: flex; flex-direction: column;"><span style="font-weight: 500; color: var(--sb-text, #17232E); font-size: 1.15rem;">Adult</span> <span style="font-size: 1rem; color: rgba(23,35,46,.6);">$85 per person</span></div>
+
+<div style="display: flex; align-items: center; gap: 0.5rem;"><button onclick="updateQty('slot1A', -1)" style="width: 32px; height: 32px; border: 2px solid var(--sb-divider, rgba(23,35,46,.14)); border-radius: 50%; background: var(--sb-surface, #F3E8D3); color: var(--sb-teal-900, #072026); font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center;" type="button">&minus;</button><span id="slot1A" style="font-size: 1.125rem; font-weight: 600; min-width: 24px; text-align: center;">0</span><button onclick="updateQty('slot1A', 1)" style="width: 32px; height: 32px; border: 2px solid var(--sb-divider, rgba(23,35,46,.14)); border-radius: 50%; background: var(--sb-surface, #F3E8D3); color: var(--sb-teal-900, #072026); font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center;" type="button">+</button></div>
+</div>
+
+<div style="display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid var(--sb-divider, rgba(23,35,46,.14));">
+<div style="display: flex; flex-direction: column;"><span style="font-weight: 500; color: var(--sb-text, #17232E); font-size: 1.15rem;">Adult (Subsidized)</span> <span style="font-size: 1rem; color: rgba(23,35,46,.6);">$54 per person</span></div>
+
+<div style="display: flex; align-items: center; gap: 0.5rem;"><button onclick="updateQty('slot1S', -1)" style="width: 32px; height: 32px; border: 2px solid var(--sb-divider, rgba(23,35,46,.14)); border-radius: 50%; background: var(--sb-surface, #F3E8D3); color: var(--sb-teal-900, #072026); font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center;" type="button">&minus;</button><span id="slot1S" style="font-size: 1.125rem; font-weight: 600; min-width: 24px; text-align: center;">0</span><button onclick="updateQty('slot1S', 1)" style="width: 32px; height: 32px; border: 2px solid var(--sb-divider, rgba(23,35,46,.14)); border-radius: 50%; background: var(--sb-surface, #F3E8D3); color: var(--sb-teal-900, #072026); font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center;" type="button">+</button></div>
+</div>
+
+<div style="display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 0;">
+<div style="display: flex; flex-direction: column;"><span style="font-weight: 500; color: var(--sb-text, #17232E); font-size: 1.15rem;">Child</span> <span style="font-size: 1rem; color: rgba(23,35,46,.6);">$36 per child</span></div>
+
+<div style="display: flex; align-items: center; gap: 0.5rem;"><button onclick="updateQty('slot1C', -1)" style="width: 32px; height: 32px; border: 2px solid var(--sb-divider, rgba(23,35,46,.14)); border-radius: 50%; background: var(--sb-surface, #F3E8D3); color: var(--sb-teal-900, #072026); font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center;" type="button">&minus;</button><span id="slot1C" style="font-size: 1.125rem; font-weight: 600; min-width: 24px; text-align: center;">0</span><button onclick="updateQty('slot1C', 1)" style="width: 32px; height: 32px; border: 2px solid var(--sb-divider, rgba(23,35,46,.14)); border-radius: 50%; background: var(--sb-surface, #F3E8D3); color: var(--sb-teal-900, #072026); font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center;" type="button">+</button></div>
+</div>
+</div>
+<!-- Slot 2 Pricing (Lunch tier) -->
+
+<div id="slot2Pricing" style="display: none; padding: 1rem; background: var(--sb-bg, #FBF5E9); border-radius: 12px; margin-bottom: 1rem;">
+<div id="slot2PriceTitle" style="font-weight: 600; color: var(--sb-teal-900, #072026); margin-bottom: 0.75rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--sb-divider, rgba(23,35,46,.14));">Shabbat Day Lunch</div>
+
+<div style="display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid var(--sb-divider, rgba(23,35,46,.14));">
+<div style="display: flex; flex-direction: column;"><span style="font-weight: 500; color: var(--sb-text, #17232E); font-size: 1.15rem;">Adult</span> <span style="font-size: 1rem; color: rgba(23,35,46,.6);">$54 per person</span></div>
+
+<div style="display: flex; align-items: center; gap: 0.5rem;"><button onclick="updateQty('slot2A', -1)" style="width: 32px; height: 32px; border: 2px solid var(--sb-divider, rgba(23,35,46,.14)); border-radius: 50%; background: var(--sb-surface, #F3E8D3); color: var(--sb-teal-900, #072026); font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center;" type="button">&minus;</button><span id="slot2A" style="font-size: 1.125rem; font-weight: 600; min-width: 24px; text-align: center;">0</span><button onclick="updateQty('slot2A', 1)" style="width: 32px; height: 32px; border: 2px solid var(--sb-divider, rgba(23,35,46,.14)); border-radius: 50%; background: var(--sb-surface, #F3E8D3); color: var(--sb-teal-900, #072026); font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center;" type="button">+</button></div>
+</div>
+
+<div style="display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid var(--sb-divider, rgba(23,35,46,.14));">
+<div style="display: flex; flex-direction: column;"><span style="font-weight: 500; color: var(--sb-text, #17232E); font-size: 1.15rem;">Adult (Subsidized)</span> <span style="font-size: 1rem; color: rgba(23,35,46,.6);">$36 per person</span></div>
+
+<div style="display: flex; align-items: center; gap: 0.5rem;"><button onclick="updateQty('slot2S', -1)" style="width: 32px; height: 32px; border: 2px solid var(--sb-divider, rgba(23,35,46,.14)); border-radius: 50%; background: var(--sb-surface, #F3E8D3); color: var(--sb-teal-900, #072026); font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center;" type="button">&minus;</button><span id="slot2S" style="font-size: 1.125rem; font-weight: 600; min-width: 24px; text-align: center;">0</span><button onclick="updateQty('slot2S', 1)" style="width: 32px; height: 32px; border: 2px solid var(--sb-divider, rgba(23,35,46,.14)); border-radius: 50%; background: var(--sb-surface, #F3E8D3); color: var(--sb-teal-900, #072026); font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center;" type="button">+</button></div>
+</div>
+
+<div style="display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 0;">
+<div style="display: flex; flex-direction: column;"><span style="font-weight: 500; color: var(--sb-text, #17232E); font-size: 1.15rem;">Child</span> <span style="font-size: 1rem; color: rgba(23,35,46,.6);">$18 per child</span></div>
+
+<div style="display: flex; align-items: center; gap: 0.5rem;"><button onclick="updateQty('slot2C', -1)" style="width: 32px; height: 32px; border: 2px solid var(--sb-divider, rgba(23,35,46,.14)); border-radius: 50%; background: var(--sb-surface, #F3E8D3); color: var(--sb-teal-900, #072026); font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center;" type="button">&minus;</button><span id="slot2C" style="font-size: 1.125rem; font-weight: 600; min-width: 24px; text-align: center;">0</span><button onclick="updateQty('slot2C', 1)" style="width: 32px; height: 32px; border: 2px solid var(--sb-divider, rgba(23,35,46,.14)); border-radius: 50%; background: var(--sb-surface, #F3E8D3); color: var(--sb-teal-900, #072026); font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center;" type="button">+</button></div>
+</div>
+</div>
+<!-- Slot 3 Pricing (Dinner tier) -->
+
+<div id="slot3Pricing" style="display: none; padding: 1rem; background: var(--sb-bg, #FBF5E9); border-radius: 12px; margin-bottom: 1rem;">
+<div id="slot3PriceTitle" style="font-weight: 600; color: var(--sb-teal-900, #072026); margin-bottom: 0.75rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--sb-divider, rgba(23,35,46,.14));">Day 2 Eve Dinner</div>
+
+<div style="display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid var(--sb-divider, rgba(23,35,46,.14));">
+<div style="display: flex; flex-direction: column;"><span style="font-weight: 500; color: var(--sb-text, #17232E); font-size: 1.15rem;">Adult</span> <span style="font-size: 1rem; color: rgba(23,35,46,.6);">$85 per person</span></div>
+
+<div style="display: flex; align-items: center; gap: 0.5rem;"><button onclick="updateQty('slot3A', -1)" style="width: 32px; height: 32px; border: 2px solid var(--sb-divider, rgba(23,35,46,.14)); border-radius: 50%; background: var(--sb-surface, #F3E8D3); color: var(--sb-teal-900, #072026); font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center;" type="button">&minus;</button><span id="slot3A" style="font-size: 1.125rem; font-weight: 600; min-width: 24px; text-align: center;">0</span><button onclick="updateQty('slot3A', 1)" style="width: 32px; height: 32px; border: 2px solid var(--sb-divider, rgba(23,35,46,.14)); border-radius: 50%; background: var(--sb-surface, #F3E8D3); color: var(--sb-teal-900, #072026); font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center;" type="button">+</button></div>
+</div>
+
+<div style="display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid var(--sb-divider, rgba(23,35,46,.14));">
+<div style="display: flex; flex-direction: column;"><span style="font-weight: 500; color: var(--sb-text, #17232E); font-size: 1.15rem;">Adult (Subsidized)</span> <span style="font-size: 1rem; color: rgba(23,35,46,.6);">$54 per person</span></div>
+
+<div style="display: flex; align-items: center; gap: 0.5rem;"><button onclick="updateQty('slot3S', -1)" style="width: 32px; height: 32px; border: 2px solid var(--sb-divider, rgba(23,35,46,.14)); border-radius: 50%; background: var(--sb-surface, #F3E8D3); color: var(--sb-teal-900, #072026); font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center;" type="button">&minus;</button><span id="slot3S" style="font-size: 1.125rem; font-weight: 600; min-width: 24px; text-align: center;">0</span><button onclick="updateQty('slot3S', 1)" style="width: 32px; height: 32px; border: 2px solid var(--sb-divider, rgba(23,35,46,.14)); border-radius: 50%; background: var(--sb-surface, #F3E8D3); color: var(--sb-teal-900, #072026); font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center;" type="button">+</button></div>
+</div>
+
+<div style="display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 0;">
+<div style="display: flex; flex-direction: column;"><span style="font-weight: 500; color: var(--sb-text, #17232E); font-size: 1.15rem;">Child</span> <span style="font-size: 1rem; color: rgba(23,35,46,.6);">$36 per child</span></div>
+
+<div style="display: flex; align-items: center; gap: 0.5rem;"><button onclick="updateQty('slot3C', -1)" style="width: 32px; height: 32px; border: 2px solid var(--sb-divider, rgba(23,35,46,.14)); border-radius: 50%; background: var(--sb-surface, #F3E8D3); color: var(--sb-teal-900, #072026); font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center;" type="button">&minus;</button><span id="slot3C" style="font-size: 1.125rem; font-weight: 600; min-width: 24px; text-align: center;">0</span><button onclick="updateQty('slot3C', 1)" style="width: 32px; height: 32px; border: 2px solid var(--sb-divider, rgba(23,35,46,.14)); border-radius: 50%; background: var(--sb-surface, #F3E8D3); color: var(--sb-teal-900, #072026); font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center;" type="button">+</button></div>
+</div>
+</div>
+<!-- Slot 4 Pricing (Lunch tier) -->
+
+<div id="slot4Pricing" style="display: none; padding: 1rem; background: var(--sb-bg, #FBF5E9); border-radius: 12px; margin-bottom: 1rem;">
+<div id="slot4PriceTitle" style="font-weight: 600; color: var(--sb-teal-900, #072026); margin-bottom: 0.75rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--sb-divider, rgba(23,35,46,.14));">Day 2 Lunch</div>
+
+<div style="display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid var(--sb-divider, rgba(23,35,46,.14));">
+<div style="display: flex; flex-direction: column;"><span style="font-weight: 500; color: var(--sb-text, #17232E); font-size: 1.15rem;">Adult</span> <span style="font-size: 1rem; color: rgba(23,35,46,.6);">$54 per person</span></div>
+
+<div style="display: flex; align-items: center; gap: 0.5rem;"><button onclick="updateQty('slot4A', -1)" style="width: 32px; height: 32px; border: 2px solid var(--sb-divider, rgba(23,35,46,.14)); border-radius: 50%; background: var(--sb-surface, #F3E8D3); color: var(--sb-teal-900, #072026); font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center;" type="button">&minus;</button><span id="slot4A" style="font-size: 1.125rem; font-weight: 600; min-width: 24px; text-align: center;">0</span><button onclick="updateQty('slot4A', 1)" style="width: 32px; height: 32px; border: 2px solid var(--sb-divider, rgba(23,35,46,.14)); border-radius: 50%; background: var(--sb-surface, #F3E8D3); color: var(--sb-teal-900, #072026); font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center;" type="button">+</button></div>
+</div>
+
+<div style="display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid var(--sb-divider, rgba(23,35,46,.14));">
+<div style="display: flex; flex-direction: column;"><span style="font-weight: 500; color: var(--sb-text, #17232E); font-size: 1.15rem;">Adult (Subsidized)</span> <span style="font-size: 1rem; color: rgba(23,35,46,.6);">$36 per person</span></div>
+
+<div style="display: flex; align-items: center; gap: 0.5rem;"><button onclick="updateQty('slot4S', -1)" style="width: 32px; height: 32px; border: 2px solid var(--sb-divider, rgba(23,35,46,.14)); border-radius: 50%; background: var(--sb-surface, #F3E8D3); color: var(--sb-teal-900, #072026); font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center;" type="button">&minus;</button><span id="slot4S" style="font-size: 1.125rem; font-weight: 600; min-width: 24px; text-align: center;">0</span><button onclick="updateQty('slot4S', 1)" style="width: 32px; height: 32px; border: 2px solid var(--sb-divider, rgba(23,35,46,.14)); border-radius: 50%; background: var(--sb-surface, #F3E8D3); color: var(--sb-teal-900, #072026); font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center;" type="button">+</button></div>
+</div>
+
+<div style="display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 0;">
+<div style="display: flex; flex-direction: column;"><span style="font-weight: 500; color: var(--sb-text, #17232E); font-size: 1.15rem;">Child</span> <span style="font-size: 1rem; color: rgba(23,35,46,.6);">$18 per child</span></div>
+
+<div style="display: flex; align-items: center; gap: 0.5rem;"><button onclick="updateQty('slot4C', -1)" style="width: 32px; height: 32px; border: 2px solid var(--sb-divider, rgba(23,35,46,.14)); border-radius: 50%; background: var(--sb-surface, #F3E8D3); color: var(--sb-teal-900, #072026); font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center;" type="button">&minus;</button><span id="slot4C" style="font-size: 1.125rem; font-weight: 600; min-width: 24px; text-align: center;">0</span><button onclick="updateQty('slot4C', 1)" style="width: 32px; height: 32px; border: 2px solid var(--sb-divider, rgba(23,35,46,.14)); border-radius: 50%; background: var(--sb-surface, #F3E8D3); color: var(--sb-teal-900, #072026); font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center;" type="button">+</button></div>
+</div>
+</div>
+<!-- Slot 5 Pricing (Dinner tier) -->
+
+<div id="slot5Pricing" style="display: none; padding: 1rem; background: var(--sb-bg, #FBF5E9); border-radius: 12px; margin-bottom: 1rem;">
+<div id="slot5PriceTitle" style="font-weight: 600; color: var(--sb-teal-900, #072026); margin-bottom: 0.75rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--sb-divider, rgba(23,35,46,.14));">Day 3 Eve Dinner</div>
+
+<div style="display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid var(--sb-divider, rgba(23,35,46,.14));">
+<div style="display: flex; flex-direction: column;"><span style="font-weight: 500; color: var(--sb-text, #17232E); font-size: 1.15rem;">Adult</span> <span style="font-size: 1rem; color: rgba(23,35,46,.6);">$85 per person</span></div>
+
+<div style="display: flex; align-items: center; gap: 0.5rem;"><button onclick="updateQty('slot5A', -1)" style="width: 32px; height: 32px; border: 2px solid var(--sb-divider, rgba(23,35,46,.14)); border-radius: 50%; background: var(--sb-surface, #F3E8D3); color: var(--sb-teal-900, #072026); font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center;" type="button">&minus;</button><span id="slot5A" style="font-size: 1.125rem; font-weight: 600; min-width: 24px; text-align: center;">0</span><button onclick="updateQty('slot5A', 1)" style="width: 32px; height: 32px; border: 2px solid var(--sb-divider, rgba(23,35,46,.14)); border-radius: 50%; background: var(--sb-surface, #F3E8D3); color: var(--sb-teal-900, #072026); font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center;" type="button">+</button></div>
+</div>
+
+<div style="display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid var(--sb-divider, rgba(23,35,46,.14));">
+<div style="display: flex; flex-direction: column;"><span style="font-weight: 500; color: var(--sb-text, #17232E); font-size: 1.15rem;">Adult (Subsidized)</span> <span style="font-size: 1rem; color: rgba(23,35,46,.6);">$54 per person</span></div>
+
+<div style="display: flex; align-items: center; gap: 0.5rem;"><button onclick="updateQty('slot5S', -1)" style="width: 32px; height: 32px; border: 2px solid var(--sb-divider, rgba(23,35,46,.14)); border-radius: 50%; background: var(--sb-surface, #F3E8D3); color: var(--sb-teal-900, #072026); font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center;" type="button">&minus;</button><span id="slot5S" style="font-size: 1.125rem; font-weight: 600; min-width: 24px; text-align: center;">0</span><button onclick="updateQty('slot5S', 1)" style="width: 32px; height: 32px; border: 2px solid var(--sb-divider, rgba(23,35,46,.14)); border-radius: 50%; background: var(--sb-surface, #F3E8D3); color: var(--sb-teal-900, #072026); font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center;" type="button">+</button></div>
+</div>
+
+<div style="display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 0;">
+<div style="display: flex; flex-direction: column;"><span style="font-weight: 500; color: var(--sb-text, #17232E); font-size: 1.15rem;">Child</span> <span style="font-size: 1rem; color: rgba(23,35,46,.6);">$36 per child</span></div>
+
+<div style="display: flex; align-items: center; gap: 0.5rem;"><button onclick="updateQty('slot5C', -1)" style="width: 32px; height: 32px; border: 2px solid var(--sb-divider, rgba(23,35,46,.14)); border-radius: 50%; background: var(--sb-surface, #F3E8D3); color: var(--sb-teal-900, #072026); font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center;" type="button">&minus;</button><span id="slot5C" style="font-size: 1.125rem; font-weight: 600; min-width: 24px; text-align: center;">0</span><button onclick="updateQty('slot5C', 1)" style="width: 32px; height: 32px; border: 2px solid var(--sb-divider, rgba(23,35,46,.14)); border-radius: 50%; background: var(--sb-surface, #F3E8D3); color: var(--sb-teal-900, #072026); font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center;" type="button">+</button></div>
+</div>
+</div>
+<!-- Slot 6 Pricing (Lunch tier) -->
+
+<div id="slot6Pricing" style="display: none; padding: 1rem; background: var(--sb-bg, #FBF5E9); border-radius: 12px; margin-bottom: 1rem;">
+<div id="slot6PriceTitle" style="font-weight: 600; color: var(--sb-teal-900, #072026); margin-bottom: 0.75rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--sb-divider, rgba(23,35,46,.14));">Day 3 Lunch</div>
+
+<div style="display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid var(--sb-divider, rgba(23,35,46,.14));">
+<div style="display: flex; flex-direction: column;"><span style="font-weight: 500; color: var(--sb-text, #17232E); font-size: 1.15rem;">Adult</span> <span style="font-size: 1rem; color: rgba(23,35,46,.6);">$54 per person</span></div>
+
+<div style="display: flex; align-items: center; gap: 0.5rem;"><button onclick="updateQty('slot6A', -1)" style="width: 32px; height: 32px; border: 2px solid var(--sb-divider, rgba(23,35,46,.14)); border-radius: 50%; background: var(--sb-surface, #F3E8D3); color: var(--sb-teal-900, #072026); font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center;" type="button">&minus;</button><span id="slot6A" style="font-size: 1.125rem; font-weight: 600; min-width: 24px; text-align: center;">0</span><button onclick="updateQty('slot6A', 1)" style="width: 32px; height: 32px; border: 2px solid var(--sb-divider, rgba(23,35,46,.14)); border-radius: 50%; background: var(--sb-surface, #F3E8D3); color: var(--sb-teal-900, #072026); font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center;" type="button">+</button></div>
+</div>
+
+<div style="display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid var(--sb-divider, rgba(23,35,46,.14));">
+<div style="display: flex; flex-direction: column;"><span style="font-weight: 500; color: var(--sb-text, #17232E); font-size: 1.15rem;">Adult (Subsidized)</span> <span style="font-size: 1rem; color: rgba(23,35,46,.6);">$36 per person</span></div>
+
+<div style="display: flex; align-items: center; gap: 0.5rem;"><button onclick="updateQty('slot6S', -1)" style="width: 32px; height: 32px; border: 2px solid var(--sb-divider, rgba(23,35,46,.14)); border-radius: 50%; background: var(--sb-surface, #F3E8D3); color: var(--sb-teal-900, #072026); font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center;" type="button">&minus;</button><span id="slot6S" style="font-size: 1.125rem; font-weight: 600; min-width: 24px; text-align: center;">0</span><button onclick="updateQty('slot6S', 1)" style="width: 32px; height: 32px; border: 2px solid var(--sb-divider, rgba(23,35,46,.14)); border-radius: 50%; background: var(--sb-surface, #F3E8D3); color: var(--sb-teal-900, #072026); font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center;" type="button">+</button></div>
+</div>
+
+<div style="display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 0;">
+<div style="display: flex; flex-direction: column;"><span style="font-weight: 500; color: var(--sb-text, #17232E); font-size: 1.15rem;">Child</span> <span style="font-size: 1rem; color: rgba(23,35,46,.6);">$18 per child</span></div>
+
+<div style="display: flex; align-items: center; gap: 0.5rem;"><button onclick="updateQty('slot6C', -1)" style="width: 32px; height: 32px; border: 2px solid var(--sb-divider, rgba(23,35,46,.14)); border-radius: 50%; background: var(--sb-surface, #F3E8D3); color: var(--sb-teal-900, #072026); font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center;" type="button">&minus;</button><span id="slot6C" style="font-size: 1.125rem; font-weight: 600; min-width: 24px; text-align: center;">0</span><button onclick="updateQty('slot6C', 1)" style="width: 32px; height: 32px; border: 2px solid var(--sb-divider, rgba(23,35,46,.14)); border-radius: 50%; background: var(--sb-surface, #F3E8D3); color: var(--sb-teal-900, #072026); font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center;" type="button">+</button></div>
+</div>
+</div>
+<!-- Slot 7 Pricing (Dinner tier) -->
+
+<div id="slot7Pricing" style="display: none; padding: 1rem; background: var(--sb-bg, #FBF5E9); border-radius: 12px; margin-bottom: 1rem;">
+<div id="slot7PriceTitle" style="font-weight: 600; color: var(--sb-teal-900, #072026); margin-bottom: 0.75rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--sb-divider, rgba(23,35,46,.14));">Day 4 Eve Dinner</div>
+
+<div style="display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid var(--sb-divider, rgba(23,35,46,.14));">
+<div style="display: flex; flex-direction: column;"><span style="font-weight: 500; color: var(--sb-text, #17232E); font-size: 1.15rem;">Adult</span> <span style="font-size: 1rem; color: rgba(23,35,46,.6);">$85 per person</span></div>
+
+<div style="display: flex; align-items: center; gap: 0.5rem;"><button onclick="updateQty('slot7A', -1)" style="width: 32px; height: 32px; border: 2px solid var(--sb-divider, rgba(23,35,46,.14)); border-radius: 50%; background: var(--sb-surface, #F3E8D3); color: var(--sb-teal-900, #072026); font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center;" type="button">&minus;</button><span id="slot7A" style="font-size: 1.125rem; font-weight: 600; min-width: 24px; text-align: center;">0</span><button onclick="updateQty('slot7A', 1)" style="width: 32px; height: 32px; border: 2px solid var(--sb-divider, rgba(23,35,46,.14)); border-radius: 50%; background: var(--sb-surface, #F3E8D3); color: var(--sb-teal-900, #072026); font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center;" type="button">+</button></div>
+</div>
+
+<div style="display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid var(--sb-divider, rgba(23,35,46,.14));">
+<div style="display: flex; flex-direction: column;"><span style="font-weight: 500; color: var(--sb-text, #17232E); font-size: 1.15rem;">Adult (Subsidized)</span> <span style="font-size: 1rem; color: rgba(23,35,46,.6);">$54 per person</span></div>
+
+<div style="display: flex; align-items: center; gap: 0.5rem;"><button onclick="updateQty('slot7S', -1)" style="width: 32px; height: 32px; border: 2px solid var(--sb-divider, rgba(23,35,46,.14)); border-radius: 50%; background: var(--sb-surface, #F3E8D3); color: var(--sb-teal-900, #072026); font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center;" type="button">&minus;</button><span id="slot7S" style="font-size: 1.125rem; font-weight: 600; min-width: 24px; text-align: center;">0</span><button onclick="updateQty('slot7S', 1)" style="width: 32px; height: 32px; border: 2px solid var(--sb-divider, rgba(23,35,46,.14)); border-radius: 50%; background: var(--sb-surface, #F3E8D3); color: var(--sb-teal-900, #072026); font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center;" type="button">+</button></div>
+</div>
+
+<div style="display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 0;">
+<div style="display: flex; flex-direction: column;"><span style="font-weight: 500; color: var(--sb-text, #17232E); font-size: 1.15rem;">Child</span> <span style="font-size: 1rem; color: rgba(23,35,46,.6);">$36 per child</span></div>
+
+<div style="display: flex; align-items: center; gap: 0.5rem;"><button onclick="updateQty('slot7C', -1)" style="width: 32px; height: 32px; border: 2px solid var(--sb-divider, rgba(23,35,46,.14)); border-radius: 50%; background: var(--sb-surface, #F3E8D3); color: var(--sb-teal-900, #072026); font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center;" type="button">&minus;</button><span id="slot7C" style="font-size: 1.125rem; font-weight: 600; min-width: 24px; text-align: center;">0</span><button onclick="updateQty('slot7C', 1)" style="width: 32px; height: 32px; border: 2px solid var(--sb-divider, rgba(23,35,46,.14)); border-radius: 50%; background: var(--sb-surface, #F3E8D3); color: var(--sb-teal-900, #072026); font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center;" type="button">+</button></div>
+</div>
+</div>
+<!-- Slot 8 Pricing (Lunch tier) -->
+
+<div id="slot8Pricing" style="display: none; padding: 1rem; background: var(--sb-bg, #FBF5E9); border-radius: 12px; margin-bottom: 1rem;">
+<div id="slot8PriceTitle" style="font-weight: 600; color: var(--sb-teal-900, #072026); margin-bottom: 0.75rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--sb-divider, rgba(23,35,46,.14));">Day 4 Lunch</div>
+
+<div style="display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid var(--sb-divider, rgba(23,35,46,.14));">
+<div style="display: flex; flex-direction: column;"><span style="font-weight: 500; color: var(--sb-text, #17232E); font-size: 1.15rem;">Adult</span> <span style="font-size: 1rem; color: rgba(23,35,46,.6);">$54 per person</span></div>
+
+<div style="display: flex; align-items: center; gap: 0.5rem;"><button onclick="updateQty('slot8A', -1)" style="width: 32px; height: 32px; border: 2px solid var(--sb-divider, rgba(23,35,46,.14)); border-radius: 50%; background: var(--sb-surface, #F3E8D3); color: var(--sb-teal-900, #072026); font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center;" type="button">&minus;</button><span id="slot8A" style="font-size: 1.125rem; font-weight: 600; min-width: 24px; text-align: center;">0</span><button onclick="updateQty('slot8A', 1)" style="width: 32px; height: 32px; border: 2px solid var(--sb-divider, rgba(23,35,46,.14)); border-radius: 50%; background: var(--sb-surface, #F3E8D3); color: var(--sb-teal-900, #072026); font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center;" type="button">+</button></div>
+</div>
+
+<div style="display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid var(--sb-divider, rgba(23,35,46,.14));">
+<div style="display: flex; flex-direction: column;"><span style="font-weight: 500; color: var(--sb-text, #17232E); font-size: 1.15rem;">Adult (Subsidized)</span> <span style="font-size: 1rem; color: rgba(23,35,46,.6);">$36 per person</span></div>
+
+<div style="display: flex; align-items: center; gap: 0.5rem;"><button onclick="updateQty('slot8S', -1)" style="width: 32px; height: 32px; border: 2px solid var(--sb-divider, rgba(23,35,46,.14)); border-radius: 50%; background: var(--sb-surface, #F3E8D3); color: var(--sb-teal-900, #072026); font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center;" type="button">&minus;</button><span id="slot8S" style="font-size: 1.125rem; font-weight: 600; min-width: 24px; text-align: center;">0</span><button onclick="updateQty('slot8S', 1)" style="width: 32px; height: 32px; border: 2px solid var(--sb-divider, rgba(23,35,46,.14)); border-radius: 50%; background: var(--sb-surface, #F3E8D3); color: var(--sb-teal-900, #072026); font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center;" type="button">+</button></div>
+</div>
+
+<div style="display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 0;">
+<div style="display: flex; flex-direction: column;"><span style="font-weight: 500; color: var(--sb-text, #17232E); font-size: 1.15rem;">Child</span> <span style="font-size: 1rem; color: rgba(23,35,46,.6);">$18 per child</span></div>
+
+<div style="display: flex; align-items: center; gap: 0.5rem;"><button onclick="updateQty('slot8C', -1)" style="width: 32px; height: 32px; border: 2px solid var(--sb-divider, rgba(23,35,46,.14)); border-radius: 50%; background: var(--sb-surface, #F3E8D3); color: var(--sb-teal-900, #072026); font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center;" type="button">&minus;</button><span id="slot8C" style="font-size: 1.125rem; font-weight: 600; min-width: 24px; text-align: center;">0</span><button onclick="updateQty('slot8C', 1)" style="width: 32px; height: 32px; border: 2px solid var(--sb-divider, rgba(23,35,46,.14)); border-radius: 50%; background: var(--sb-surface, #F3E8D3); color: var(--sb-teal-900, #072026); font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center;" type="button">+</button></div>
+</div>
+</div>
+</div>
+<!-- Step 3: Family Info -->
+
+<div class="bookingSection" style="background: var(--sb-surface, #F3E8D3); border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); padding: 2rem; margin-bottom: 1.5rem;">
+<h2 style="font-family: var(--sb-font-heading, 'Marcellus', serif); font-size: 1.6rem; font-weight: 600; color: var(--sb-teal-900, #072026); margin: 0 0 1.25rem 0; display: flex; align-items: center; gap: 0.5rem;"><span style="display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; background: var(--sb-accent, #C08A2E); color: white; border-radius: 50%; font-family: var(--sb-font-body, 'Figtree', sans-serif); font-size: 0.875rem; font-weight: 600;">3</span> Your Information</h2>
+
+<div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+<div style="flex: 1;"><label for="firstName" style="display: block; font-weight: 500; margin-bottom: 0.5rem; color: var(--sb-text, #17232E); font-size: 1.1rem;">First Name *</label> <input id="firstName" placeholder="First" required="" style="width: 100%; padding: 1.1rem 1.2rem; border: 2px solid var(--sb-divider, rgba(23,35,46,.14)); border-radius: 10px; font-size: 1.2rem; box-sizing: border-box; color: var(--sb-text, #17232E);" type="text" /></div>
+
+<div style="flex: 1;"><label for="lastName" style="display: block; font-weight: 500; margin-bottom: 0.5rem; color: var(--sb-text, #17232E); font-size: 1.1rem;">Last Name *</label> <input id="lastName" placeholder="Last" required="" style="width: 100%; padding: 1.1rem 1.2rem; border: 2px solid var(--sb-divider, rgba(23,35,46,.14)); border-radius: 10px; font-size: 1.2rem; box-sizing: border-box; color: var(--sb-text, #17232E);" type="text" /></div>
+</div>
+
+<div style="margin-bottom: 1rem;"><label for="email" style="display: block; font-weight: 500; margin-bottom: 0.5rem; color: var(--sb-text, #17232E); font-size: 1.1rem;">Email *</label> <input id="email" placeholder="your@email.com" required="" style="width: 100%; padding: 1.1rem 1.2rem; border: 2px solid var(--sb-divider, rgba(23,35,46,.14)); border-radius: 10px; font-size: 1.2rem; box-sizing: border-box; color: var(--sb-text, #17232E);" type="email" /></div>
+
+<div style="margin-bottom: 1rem;"><label for="phone" style="display: block; font-weight: 500; margin-bottom: 0.5rem; color: var(--sb-text, #17232E); font-size: 1.1rem;">Phone *</label> <input id="phone" placeholder="(555) 123-4567" required="" style="width: 100%; padding: 1.1rem 1.2rem; border: 2px solid var(--sb-divider, rgba(23,35,46,.14)); border-radius: 10px; font-size: 1.2rem; box-sizing: border-box; color: var(--sb-text, #17232E);" type="tel" /></div>
+
+<div style="margin-bottom: 1rem;"><label for="notes" style="display: block; font-weight: 500; margin-bottom: 0.5rem; color: var(--sb-text, #17232E); font-size: 1.1rem;">Special Notes (optional)</label> <input id="notes" placeholder="Allergies, dietary needs, etc." style="width: 100%; padding: 1.1rem 1.2rem; border: 2px solid var(--sb-divider, rgba(23,35,46,.14)); border-radius: 10px; font-size: 1.2rem; box-sizing: border-box; color: var(--sb-text, #17232E);" type="text" /></div>
+</div>
+<!-- Step 4: Donation -->
+
+<div class="bookingSection" style="background: var(--sb-surface, #F3E8D3); border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); padding: 2rem; margin-bottom: 1.5rem;">
+<h2 style="font-family: var(--sb-font-heading, 'Marcellus', serif); font-size: 1.6rem; font-weight: 600; color: var(--sb-teal-900, #072026); margin: 0 0 1.25rem 0; display: flex; align-items: center; gap: 0.5rem;"><span style="display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; background: var(--sb-accent, #C08A2E); color: white; border-radius: 50%; font-family: var(--sb-font-body, 'Figtree', sans-serif); font-size: 0.875rem; font-weight: 600;">4</span> Additional Donation (optional)</h2>
+
+<div style="display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap;"><button class="donBtn" onclick="setDonation(18)" style="padding: 0.625rem 1.25rem; border: 2px solid var(--sb-divider, rgba(23,35,46,.14)); border-radius: 8px; background: var(--sb-surface, #F3E8D3); color: var(--sb-text, #17232E); font-weight: 500; cursor: pointer;" type="button">$18</button><button class="donBtn" onclick="setDonation(36)" style="padding: 0.625rem 1.25rem; border: 2px solid var(--sb-divider, rgba(23,35,46,.14)); border-radius: 8px; background: var(--sb-surface, #F3E8D3); color: var(--sb-text, #17232E); font-weight: 500; cursor: pointer;" type="button">$36</button><button class="donBtn" onclick="setDonation(72)" style="padding: 0.625rem 1.25rem; border: 2px solid var(--sb-divider, rgba(23,35,46,.14)); border-radius: 8px; background: var(--sb-surface, #F3E8D3); color: var(--sb-text, #17232E); font-weight: 500; cursor: pointer;" type="button">$72</button><button class="donBtn" onclick="setDonation(180)" style="padding: 0.625rem 1.25rem; border: 2px solid var(--sb-divider, rgba(23,35,46,.14)); border-radius: 8px; background: var(--sb-surface, #F3E8D3); color: var(--sb-text, #17232E); font-weight: 500; cursor: pointer;" type="button">$180</button></div>
+
+<div style="margin-bottom: 1rem;"><label for="donation" style="display: block; font-weight: 500; margin-bottom: 0.5rem; color: var(--sb-text, #17232E);">Custom Amount</label> <input id="donation" min="0" oninput="updateTotals()" placeholder="Enter amount" step="1" style="width: 100%; padding: 1.1rem 1.2rem; border: 2px solid var(--sb-divider, rgba(23,35,46,.14)); border-radius: 10px; font-size: 1.2rem; box-sizing: border-box; color: var(--sb-text, #17232E);" type="number" /></div>
+</div>
+<!-- Step 5: Review & Pay -->
+
+<div class="bookingSection" style="background: var(--sb-surface, #F3E8D3); border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); padding: 2rem; margin-bottom: 1.5rem;">
+<h2 style="font-family: var(--sb-font-heading, 'Marcellus', serif); font-size: 1.6rem; font-weight: 600; color: var(--sb-teal-900, #072026); margin: 0 0 1.25rem 0; display: flex; align-items: center; gap: 0.5rem;"><span style="display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; background: var(--sb-accent, #C08A2E); color: white; border-radius: 50%; font-family: var(--sb-font-body, 'Figtree', sans-serif); font-size: 0.875rem; font-weight: 600;">5</span> Review &amp; Pay</h2>
+
+<div style="margin-bottom: 1.5rem;"><label for="discountCode" style="display: block; font-weight: 500; margin-bottom: 0.5rem; color: var(--sb-text, #17232E);">Discount Code</label>
+
+<div style="display: flex; gap: 10px;"><input id="discountCode" placeholder="Enter code" style="flex: 1; padding: 0.875rem 1rem; border: 2px solid var(--sb-divider, rgba(23,35,46,.14)); border-radius: 10px; font-size: 1.05rem; text-transform: uppercase; box-sizing: border-box; color: var(--sb-text, #17232E);" type="text" /><button id="applyBtn" style="padding: 0.875rem 1.5rem; border: 2px solid var(--sb-divider, rgba(23,35,46,.14)); border-radius: 8px; background: var(--sb-surface, #F3E8D3); color: var(--sb-text, #17232E); font-weight: 500; cursor: pointer;" type="button">Apply</button></div>
+
+<div id="discountMsg" style="font-size: 0.9rem; margin-top: 5px; min-height: 20px;">&nbsp;</div>
+</div>
+
+<div style="background: linear-gradient(135deg, var(--sb-teal-900, #072026) 0%, var(--sb-teal-600, #12565C) 100%); border-radius: 12px; padding: 1.5rem; color: white;">
+<div id="slotAllRow" style="display: none; justify-content: space-between; padding: 0.5rem 0; font-size: 1.2rem;"><span id="slotAllRowLabel">Both Meals</span> <span>$<span id="slotAllRowTotal">0</span></span></div>
+
+<div id="slot1Row" style="display: none; justify-content: space-between; padding: 0.5rem 0; font-size: 1.2rem;"><span id="slot1RowLabel">Friday Night</span> <span>$<span id="slot1Total">0</span></span></div>
+
+<div id="slot2Row" style="display: none; justify-content: space-between; padding: 0.5rem 0; font-size: 1.2rem;"><span id="slot2RowLabel">Shabbat Day</span> <span>$<span id="slot2Total">0</span></span></div>
+
+<div id="slot3Row" style="display: none; justify-content: space-between; padding: 0.5rem 0; font-size: 1.2rem;"><span id="slot3RowLabel">Day 2 Eve</span> <span>$<span id="slot3Total">0</span></span></div>
+
+<div id="slot4Row" style="display: none; justify-content: space-between; padding: 0.5rem 0; font-size: 1.2rem;"><span id="slot4RowLabel">Day 2 Lunch</span> <span>$<span id="slot4Total">0</span></span></div>
+
+<div id="slot5Row" style="display: none; justify-content: space-between; padding: 0.5rem 0; font-size: 1.2rem;"><span id="slot5RowLabel">Day 3 Eve</span> <span>$<span id="slot5Total">0</span></span></div>
+
+<div id="slot6Row" style="display: none; justify-content: space-between; padding: 0.5rem 0; font-size: 1.2rem;"><span id="slot6RowLabel">Day 3 Lunch</span> <span>$<span id="slot6Total">0</span></span></div>
+
+<div id="slot7Row" style="display: none; justify-content: space-between; padding: 0.5rem 0; font-size: 1.2rem;"><span id="slot7RowLabel">Day 4 Eve</span> <span>$<span id="slot7Total">0</span></span></div>
+
+<div id="slot8Row" style="display: none; justify-content: space-between; padding: 0.5rem 0; font-size: 1.2rem;"><span id="slot8RowLabel">Day 4 Lunch</span> <span>$<span id="slot8Total">0</span></span></div>
+
+<div style="display: flex; justify-content: space-between; padding: 0.5rem 0; font-size: 1.2rem;"><span>Donation</span> <span>$<span id="donTotal">0</span></span></div>
+
+<div id="discountRow" style="display: none; justify-content: space-between; padding: 0.5rem 0; font-size: 1.2rem; color: #68d391;"><span>Discount</span> <span>-$<span id="discountVal">0</span></span></div>
+
+<div style="display: flex; justify-content: space-between; border-top: 1px solid rgba(255, 255, 255, 0.2); margin-top: 0.5rem; padding-top: 1rem; font-size: 1.5rem; font-weight: 600;"><span>Total</span> <span>$<span id="grandTotal">0</span></span></div>
+</div>
+
+<div id="validationMsg" style="display: none; margin-top: 1rem; padding: 0.75rem 1rem; background: #fff5f5; border: 1px solid #feb2b2; border-radius: 8px; color: #c53030; font-size: 0.95rem; text-align: center;">&nbsp;</div>
+
+<div id="paypal-button-container" style="margin-top: 1.5rem; padding: 0.5rem 0.25rem; border-radius: 12px;">&nbsp;</div>
+<button id="manualSubmitBtn" style="display: none; width: 100%; background: #38a169; color: white; padding: 1rem; border: none; border-radius: 4px; font-weight: bold; font-size: 1.1rem; cursor: pointer; margin-top: 1rem;" type="button">Confirm Reservation (No Payment)</button></div>
+</form>
+<!-- Success Message -->
+
+<div id="successMessage" style="display: none; background: var(--sb-surface, #F3E8D3); border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); padding: 2rem; text-align: center;">
+<div style="width: 80px; height: 80px; background: #38a169; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; font-size: 2.5rem; color: white;">✓</div>
+
+<h2 style="font-family: var(--sb-font-heading, 'Marcellus', serif); color: var(--sb-teal-900, #072026); margin: 0 0 0.5rem 0;">Thank You!</h2>
+
+<p style="margin: 0;">Your reservation has been confirmed.<br />
+We can&#39;t wait to see you!</p>
+</div>
+</div>
+<!-- JAVASCRIPT --><script>
+    //<![CDATA[
+    (function () {
+        // ===== CONFIGURATION =====
+        var PAYPAL_CLIENT_ID = 'AQep8b0d5aOphyWo10ZQfAT-mwV0vWeHCjQLID21pSwnJyh4Fw5vNJANgqyTypi1PDiV3AKJ6fbarENP';
+        var GOOGLE_SHEET_WEBHOOK = 'https://script.google.com/macros/s/AKfycbzNnNNSbv6pUY_xoJDCz7xJl0DLAuXaeDajlwH1isdXw4gQBK0plUyOaThijLgOT6_9ag/exec';
+
+        // ===== DOM ELEMENTS =====
+        var shabbosDate     = document.getElementById('shabbosDate');
+        var cutoffNotice    = document.getElementById('cutoffNotice');
+        var pesachNotice    = document.getElementById('pesachNotice');
+        var donation        = document.getElementById('donation');
+        var mealsEmptyHint  = document.getElementById('mealsEmptyHint');
+        var mealsTogglesRow = document.getElementById('mealsTogglesRow');
+        var allMealsBtn     = document.getElementById('allMealsBtn');
+        var slotAllCard     = document.getElementById('slotAllCard');
+        var backToPerMealBtn = document.getElementById('backToPerMealBtn');
+        var donTotal        = document.getElementById('donTotal');
+        var grandTotal      = document.getElementById('grandTotal');
+
+        // True when the user opted into the "one ticket for everything" mode.
+        var allMealsMode = false;
+
+        var discountCodeInput = document.getElementById('discountCode');
+        var applyBtn          = document.getElementById('applyBtn');
+        var discountMsg       = document.getElementById('discountMsg');
+        var discountRow       = document.getElementById('discountRow');
+        var discountVal       = document.getElementById('discountVal');
+        var manualSubmitBtn   = document.getElementById('manualSubmitBtn');
+
+        var currentDiscount = 0;
+        var appliedCoupon = '';
+        // appliedCode keeps the structured discount info so updateTotals can
+        // recompute as the user edits quantities.  null when no code is active.
+        var appliedCode = null;   // { code, type, value }
+
+        // Discount codes fetched from Apps Script (or fallback if fetch fails).
+        var discountCodes = [
+            { code: 'FREEEE', type: 'percent',      value: 100 },
+            { code: 'CHAI',   type: 'cap_per_head', value: 18  }
+        ];
+
+        // Pricing per tier — slot kind (dinner/lunch) chooses which to use.
+        var PRICE = {
+            dinner: { A: 85, S: 54, C: 36 },
+            lunch:  { A: 54, S: 36, C: 18 }
+        };
+
+        // Odd slots are dinner-priced, even slots are lunch-priced
+        var SLOT_KIND = { '1': 'dinner', '2': 'lunch', '3': 'dinner', '4': 'lunch', '5': 'dinner', '6': 'lunch', '7': 'dinner', '8': 'lunch' };
+        var MAX_SLOTS = 8;
+
+        // Slot meta — populated by renderSlots() on event change
+        // { active: bool, label: str, kind: 'dinner'|'lunch', dateISO: str, isShabbat: bool, visible: bool }
+        var slotMeta = { '1': null, '2': null, '3': null, '4': null, '5': null, '6': null, '7': null, '8': null };
+
+        // Currently selected event (parsha or holiday)
+        var currentEvent = null;
+
+        // ===== SET GRAY PLACEHOLDER COLORS =====
+        var ph = document.createElement('style');
+        ph.textContent = 'input::placeholder, select::placeholder { color: rgba(23,35,46,.45) !important; opacity: 1; }';
+        document.head.appendChild(ph);
+
+        // ===== HELPERS =====
+        function $(id) { return document.getElementById(id); }
+        function qty(slot, tier) { return parseInt($('slot' + slot + tier).innerText, 10) || 0; }
+        function setQty(slot, tier, n) { $('slot' + slot + tier).innerText = String(n); }
+
+        function fmtNiceDate(iso) {
+            var d = new Date(iso + 'T12:00:00');
+            return d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+        }
+
+        // ===== MEAL TOGGLE LOGIC =====
+        function bindToggle(slot) {
+            var toggle = $('slot' + slot + 'Toggle');
+            var check  = $('slot' + slot + 'Check');
+            var price  = $('slot' + slot + 'Pricing');
+
+            toggle.addEventListener('click', function () {
+                check.checked = !check.checked;
+                if (check.checked) {
+                    toggle.style.borderColor = 'var(--sb-accent, #C08A2E)';
+                    toggle.style.background = 'linear-gradient(135deg, rgba(201, 162, 39, 0.08), rgba(201, 162, 39, 0.02))';
+                    price.style.display = 'block';
+                } else {
+                    toggle.style.borderColor = 'var(--sb-divider, rgba(23,35,46,.14))';
+                    toggle.style.background = '#ffffff';
+                    price.style.display = 'none';
+                    setQty(slot, 'A', 0);
+                    setQty(slot, 'S', 0);
+                    setQty(slot, 'C', 0);
+                }
+                updateTotals();
+            });
+        }
+
+        for (var bs = 1; bs <= MAX_SLOTS; bs++) bindToggle(String(bs));
+
+        // "Select all meals" — switches to single-ticket mode. The four
+        // per-meal cards collapse into one card whose Adult/Sub/Child counts
+        // apply to every meal of the event. 1 adult = 1 adult per meal.
+        function visibleMealCount() {
+            var n = 0;
+            for (var s = 1; s <= MAX_SLOTS; s++) {
+                if (slotMeta[String(s)] && slotMeta[String(s)].visible) n++;
+            }
+            return n;
+        }
+
+        function visibleMealKindCount() {
+            var d = 0, l = 0;
+            for (var s = 1; s <= MAX_SLOTS; s++) {
+                var meta = slotMeta[String(s)];
+                if (!meta || !meta.visible) continue;
+                if (meta.kind === 'lunch') l++;
+                else d++;
+            }
+            return { dinner: d, lunch: l };
+        }
+
+        function allMealsPerTier() {
+            // Returns total price across all visible meals for each tier.
+            var counts = visibleMealKindCount();
+            return {
+                A: counts.dinner * PRICE.dinner.A + counts.lunch * PRICE.lunch.A,
+                S: counts.dinner * PRICE.dinner.S + counts.lunch * PRICE.lunch.S,
+                C: counts.dinner * PRICE.dinner.C + counts.lunch * PRICE.lunch.C
+            };
+        }
+
+        function refreshAllMealsPrices() {
+            var prices = allMealsPerTier();
+            var counts = visibleMealKindCount();
+            var total = counts.dinner + counts.lunch;
+            $('slotAllAdultPrice').innerText = '$' + prices.A + ' per person';
+            $('slotAllSubPrice').innerText   = '$' + prices.S + ' per person';
+            $('slotAllChildPrice').innerText = '$' + prices.C + ' per child';
+            var scopeWord = total === 2 ? 'both meals' : 'all meals';
+            var breakdown = '(' + counts.dinner + ' dinner' + (counts.dinner === 1 ? '' : 's') + ' + ' + counts.lunch + ' lunch' + (counts.lunch === 1 ? '' : 'es') + ')';
+            $('slotAllSubLabel').innerText = 'Same headcount for ' + scopeWord + ' ' + breakdown;
+        }
+
+        function setAllMealsMode(on) {
+            allMealsMode = !!on;
+            if (allMealsMode) {
+                refreshAllMealsPrices();
+                slotAllCard.style.display = 'block';
+                mealsTogglesRow.style.display = 'none';
+                // Hide every individual pricing block; we don't use them in this mode.
+                for (var s = 1; s <= MAX_SLOTS; s++) {
+                    $('slot' + s + 'Pricing').style.display = 'none';
+                }
+                allMealsBtn.style.display = 'none';
+            } else {
+                slotAllCard.style.display = 'none';
+                // Reset all-meals counts so they don't linger
+                $('slotAllA').innerText = '0';
+                $('slotAllS').innerText = '0';
+                $('slotAllC').innerText = '0';
+                if (visibleMealCount() > 0) {
+                    mealsTogglesRow.style.display = 'flex';
+                }
+                if (visibleMealCount() >= 2) {
+                    allMealsBtn.style.display = 'block';
+                }
+            }
+            updateTotals();
+        }
+
+        allMealsBtn.addEventListener('click', function () {
+            setAllMealsMode(true);
+        });
+
+        backToPerMealBtn.addEventListener('click', function () {
+            setAllMealsMode(false);
+        });
+
+        // Small × on the All-Meals card header — same effect as the bottom button
+        var slotAllCloseBtn = document.getElementById('slotAllCloseBtn');
+        if (slotAllCloseBtn) {
+            slotAllCloseBtn.addEventListener('click', function () {
+                setAllMealsMode(false);
+            });
+        }
+
+        // ===== QUANTITY CONTROLS (global) =====
+        window.updateQty = function (id, delta) {
+            var el = $(id);
+            if (!el) return;
+            var val = parseInt(el.innerText, 10) + delta;
+            if (val < 0) val = 0;
+            el.innerText = String(val);
+            updateTotals();
+        };
+
+        // ===== DONATION PRESETS (global) =====
+        window.setDonation = function (amount) {
+            donation.value = amount;
+            var btns = document.querySelectorAll('.donBtn');
+            for (var i = 0; i < btns.length; i++) {
+                var b = btns[i];
+                if (b.innerText === '$' + amount) {
+                    b.style.background = 'var(--sb-accent, #C08A2E)';
+                    b.style.borderColor = 'var(--sb-accent, #C08A2E)';
+                    b.style.color = 'white';
+                } else {
+                    b.style.background = 'white';
+                    b.style.borderColor = 'var(--sb-divider, rgba(23,35,46,.14))';
+                    b.style.color = 'var(--sb-text, #17232E)';
+                }
+            }
+            updateTotals();
+        };
+
+        // ===== CALCULATE TOTALS =====
+        function slotCost(slot) {
+            var meta = slotMeta[slot];
+            if (!meta || !meta.visible) return 0;
+            if (!$('slot' + slot + 'Check').checked) return 0;
+            var p = PRICE[meta.kind];
+            return qty(slot, 'A') * p.A + qty(slot, 'S') * p.S + qty(slot, 'C') * p.C;
+        }
+
+        function slotHeads(slot) {
+            var meta = slotMeta[slot];
+            if (!meta || !meta.visible) return 0;
+            if (!$('slot' + slot + 'Check').checked) return 0;
+            return qty(slot, 'A') + qty(slot, 'S') + qty(slot, 'C');
+        }
+
+        function allMealsQty(tier) { return parseInt($('slotAll' + tier).innerText, 10) || 0; }
+
+        function allMealsCost() {
+            var prices = allMealsPerTier();
+            return allMealsQty('A') * prices.A + allMealsQty('S') * prices.S + allMealsQty('C') * prices.C;
+        }
+
+        function allMealsHeads() {
+            return allMealsQty('A') + allMealsQty('S') + allMealsQty('C');
+        }
+
+        window.updateTotals = function () {
+            // Any qty/toggle interaction clears a stale validation error.
+            var vBox = document.getElementById('validationMsg');
+            if (vBox && vBox.style.display !== 'none') vBox.style.display = 'none';
+
+            var grand = 0;
+            var heads = 0;
+
+            if (allMealsMode) {
+                grand = allMealsCost();
+                heads = allMealsHeads();
+                // Hide all per-meal rows in the review
+                for (var s = 1; s <= MAX_SLOTS; s++) {
+                    $('slot' + s + 'Row').style.display = 'none';
+                    $('slot' + s + 'Total').innerText = '0';
+                }
+                // Show a single "All Meals" line if active
+                var allRow = $('slotAllRow');
+                if (heads > 0) {
+                    allRow.style.display = 'flex';
+                    $('slotAllRowTotal').innerText = String(grand);
+                } else {
+                    allRow.style.display = 'none';
+                }
+            } else {
+                $('slotAllRow').style.display = 'none';
+                for (var s2 = 1; s2 <= MAX_SLOTS; s2++) {
+                    var key = String(s2);
+                    var cost = slotCost(key);
+                    grand += cost;
+                    heads += slotHeads(key);
+                    var row = $('slot' + s2 + 'Row');
+                    var total = $('slot' + s2 + 'Total');
+                    if (slotMeta[key] && slotMeta[key].visible && $('slot' + s2 + 'Check').checked) {
+                        row.style.display = 'flex';
+                        total.innerText = String(cost);
+                    } else {
+                        row.style.display = 'none';
+                        total.innerText = '0';
+                    }
+                }
+            }
+
+            var don = parseFloat(donation.value) || 0;
+
+            currentDiscount = computeDiscount(grand, heads, appliedCode);
+
+            var total = Math.max(0, (grand + don) - currentDiscount);
+            donTotal.innerText = String(don);
+
+            if (currentDiscount > 0) {
+                discountRow.style.display = 'flex';
+                discountVal.innerText = String(currentDiscount);
+            } else {
+                discountRow.style.display = 'none';
+            }
+
+            grandTotal.innerText = String(total);
+
+            var paypalBtn = $('paypal-button-container');
+            if (total <= 0) {
+                if (paypalBtn) paypalBtn.style.display = 'none';
+                manualSubmitBtn.style.display = 'block';
+            } else {
+                if (paypalBtn) paypalBtn.style.display = 'block';
+                manualSubmitBtn.style.display = 'none';
+            }
+        };
+
+        // ===== EVENTS CALENDAR (Hebcal) =====
+        var allEvents = [];
+        var eventPage = 0;
+        var EVENTS_PER_PAGE = 5;
+        // ISO-date (YYYY-MM-DD) → Date object (absolute moment, includes tz offset
+        // from Hebcal) for Candle Lighting and Havdalah items. Used by the
+        // Shabbat/Yom Tov lockout to compute the exact close window per week.
+        var candleByDate = {};
+        var havdalahByDate = {};
+
+        // Collapse Hebcal's per-day yom-tov items into a single event family.
+        // Plain string checks here — regex literals tripped the CMS sanitizer.
+        function classifyHoliday(title) {
+            if (!title) return null;
+            var t = String(title);
+            if (t.indexOf('Pesach') === 0)         return { key: 'pesach',       label: 'Pesach',                              isPesach: true };
+            if (t.indexOf('Rosh Hashana') === 0)   return { key: 'rosh_hashana', label: 'Rosh Hashana' };
+            if (t.indexOf('Yom Kippur') === 0)     return { key: 'yom_kippur',   label: 'Yom Kippur' };
+            if (t === 'Sukkot I' || t === 'Sukkot II') return { key: 'sukkot',  label: 'Sukkot' };
+            if (t.indexOf('Shmini Atzeret') === 0
+                || t.indexOf('Shemini Atzeret') === 0
+                || t.indexOf('Simchat Torah') === 0) return { key: 'shemini',   label: 'Shemini Atzeret / Simchat Torah' };
+            if (t.indexOf('Shavuot') === 0)        return { key: 'shavuot',     label: 'Shavuot' };
+            return null;
+        }
+
+        function fmtShort(iso) {
+            return new Date(iso + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        }
+        function fmtYearShort(iso) {
+            return "'" + String(new Date(iso + 'T12:00:00').getFullYear()).slice(-2);
+        }
+
+        function buildHolidayLabel(name, startISO, endISO) {
+            if (startISO === endISO) {
+                return name + ' – ' + fmtShort(startISO) + ', ' + fmtYearShort(startISO);
+            }
+            // Multi-day yom tov starts the night before with the eve dinner —
+            // shift displayed start back one day so the range covers all meals.
+            startISO = addDaysISO(startISO, -1);
+            var sParts = startISO.split('-');
+            var eParts = endISO.split('-');
+            if (sParts[1] === eParts[1]) {
+                var sd = new Date(startISO + 'T12:00:00');
+                var ed = new Date(endISO + 'T12:00:00');
+                var mn = sd.toLocaleDateString('en-US', { month: 'short' });
+                return name + ' – ' + mn + ' ' + sd.getDate() + '-' + ed.getDate() + ', ' + fmtYearShort(endISO);
+            }
+            return name + ' – ' + fmtShort(startISO) + ' - ' + fmtShort(endISO) + ', ' + fmtYearShort(endISO);
+        }
+
+        function loadEventsCalendar() {
+            var today = new Date();
+            var start = today.toISOString().split('T')[0];
+            var endDate = new Date();
+            endDate.setFullYear(endDate.getFullYear() + 10);
+            var end = endDate.toISOString().split('T')[0];
+
+            var amp = String.fromCharCode(38);
+            // c=on adds Candle Lighting + Havdalah items so the auto-close window
+            // matches the exact Shabbat/Yom Tov times for our location.
+            var api = 'https://www.hebcal.com/hebcal?v=1' + amp + 'cfg=json' + amp + 'start=' + start + amp + 'end=' + end + amp + 's=on' + amp + 'maj=on' + amp + 'c=on' + amp + 'lg=en' + amp + 'geo=zip' + amp + 'zip=33139' + amp + 'tzid=America/New_York';
+
+            fetch(api)
+                .then(function (r) { return r.json(); })
+                .then(function (data) {
+                    var todayMid = new Date();
+                    todayMid.setHours(0, 0, 0, 0);
+
+                    var events = [];
+                    var groups = {};
+
+                    var items = data.items || [];
+                    candleByDate = {};
+                    havdalahByDate = {};
+                    for (var i = 0; i < items.length; i++) {
+                        var item = items[i];
+                        if (!item || !item.date) continue;
+                        if (item.category === 'parashat') {
+                            var d = new Date(item.date + 'T12:00:00');
+                            if (d < todayMid) continue;
+                            events.push({
+                                type: 'parsha',
+                                startDate: item.date,
+                                endDate: item.date,
+                                title: item.title,
+                                label: item.title + ' – ' + fmtShort(item.date) + ', ' + fmtYearShort(item.date)
+                            });
+                        } else if (item.category === 'holiday' && item.yomtov === true) {
+                            var fam = classifyHoliday(item.title);
+                            if (!fam) continue;
+                            var year = parseInt(item.date.split('-')[0], 10);
+                            var k = fam.key + '_' + year;
+                            if (!groups[k]) groups[k] = { family: fam, dates: [] };
+                            groups[k].dates.push(item.date);
+                        } else if (item.category === 'candles') {
+                            // item.date looks like "2026-05-21T19:44:00-04:00"
+                            var cDay = String(item.date).split('T')[0];
+                            candleByDate[cDay] = new Date(item.date);
+                        } else if (item.category === 'havdalah') {
+                            var hDay = String(item.date).split('T')[0];
+                            havdalahByDate[hDay] = new Date(item.date);
+                        }
+                    }
+
+                    var keys = Object.keys(groups);
+                    for (var gi = 0; gi < keys.length; gi++) {
+                        var g = groups[keys[gi]];
+                        g.dates.sort();
+                        var sISO = g.dates[0];
+                        var eISO = g.dates[g.dates.length - 1];
+                        var endObj = new Date(eISO + 'T23:59:59');
+                        if (endObj < todayMid) continue;
+                        events.push({
+                            type: g.family.isPesach ? 'pesach' : 'holiday',
+                            family: g.family.key,
+                            startDate: sISO,
+                            endDate: eISO,
+                            yomTovDates: g.dates.slice(),
+                            title: g.family.label,
+                            label: buildHolidayLabel(g.family.label, sISO, eISO)
+                        });
+                    }
+
+                    events.sort(function (a, b) {
+                        return a.startDate < b.startDate ? -1 : (a.startDate > b.startDate ? 1 : 0);
+                    });
+
+                    // Merge a holiday with an adjacent Shabbat into one
+                    // continuous event — e.g. Sukkot Day 1+2 ending Friday +
+                    // Shabbat Chol Hamoed on Saturday → one 3-day event
+                    // covering 6 meals instead of two separate ones. Hebcal
+                    // doesn't return a "parashat" for Shabbat Chol Hamoed
+                    // (special readings), so we always extend; if a parsha
+                    // event happens to live on that Saturday we also remove it.
+                    var parshaByDate = {};
+                    for (var pi = 0; pi < events.length; pi++) {
+                        if (events[pi].type === 'parsha') parshaByDate[events[pi].startDate] = pi;
+                    }
+                    var removeIdx = {};
+                    for (var mi = 0; mi < events.length; mi++) {
+                        var ev = events[mi];
+                        if (ev.type !== 'holiday') continue;
+                        if (isoDayOfWeek(ev.endDate) === 5) {
+                            var nextSat = addDaysISO(ev.endDate, 1);
+                            ev.endDate = nextSat;
+                            ev.label = buildHolidayLabel(ev.title, ev.startDate, ev.endDate);
+                            if (parshaByDate[nextSat] !== undefined) removeIdx[parshaByDate[nextSat]] = true;
+                        }
+                        if (isoDayOfWeek(ev.startDate) === 0) {
+                            var prevSat = addDaysISO(ev.startDate, -1);
+                            ev.startDate = prevSat;
+                            ev.label = buildHolidayLabel(ev.title, ev.startDate, ev.endDate);
+                            if (parshaByDate[prevSat] !== undefined) removeIdx[parshaByDate[prevSat]] = true;
+                        }
+                    }
+                    if (Object.keys(removeIdx).length > 0) {
+                        events = events.filter(function (e, idx) { return !removeIdx[idx]; });
+                    }
+
+                    var now = new Date();
+                    for (var ei = 0; ei < events.length; ei++) {
+                        var e = events[ei];
+                        if (e.type === 'pesach') { e.isClosed = false; continue; }
+                        var startObj = new Date(e.startDate + 'T12:00:00');
+                        var endObj2  = new Date(e.endDate + 'T23:59:59');
+                        var cutoff = new Date(startObj);
+                        cutoff.setDate(cutoff.getDate() - 1);
+                        cutoff.setHours(14, 30, 0, 0);
+                        e.isClosed = (now > cutoff && now < endObj2);
+                        e.closedLabel = e.label + ' (CLOSED)';
+                    }
+
+                    allEvents = events;
+                    eventPage = 0;
+                    showNextEvents();
+                    applyShabbatYomTovLockout();
+                })
+                .catch(function (err) {
+                    console.error('Failed to load calendar:', err);
+                    var opt = document.createElement('option');
+                    opt.value = 'manual';
+                    opt.textContent = 'Please call to reserve';
+                    shabbosDate.appendChild(opt);
+                });
+        }
+
+        // Build the list of "closing blocks" for an event — each block is a run
+        // of consecutive closing dates (yom tov days or Shabbat), so chol hamoed
+        // gaps inside a holiday split into separate blocks. For each block we
+        // can look up the exact candle lighting (start) and havdalah (end).
+        function buildClosingBlocks(e) {
+            var dates = [];
+            if (e.type === 'parsha') {
+                dates = [e.startDate];
+            } else if (e.yomTovDates && e.yomTovDates.length > 0) {
+                dates = e.yomTovDates.slice();
+                // Merged YT+Shabbat: include the trailing/leading Saturday too.
+                var endP = e.endDate.split('-');
+                var endObj = new Date(parseInt(endP[0], 10), parseInt(endP[1], 10) - 1, parseInt(endP[2], 10));
+                if (endObj.getDay() === 6 && dates.indexOf(e.endDate) === -1) dates.push(e.endDate);
+                var startP = e.startDate.split('-');
+                var startObj = new Date(parseInt(startP[0], 10), parseInt(startP[1], 10) - 1, parseInt(startP[2], 10));
+                if (startObj.getDay() === 6 && dates.indexOf(e.startDate) === -1) dates.unshift(e.startDate);
+            }
+            dates.sort();
+            // Group into runs of consecutive days
+            var blocks = [];
+            for (var i = 0; i < dates.length; i++) {
+                if (blocks.length === 0) {
+                    blocks.push([dates[i]]);
+                    continue;
+                }
+                var last = blocks[blocks.length - 1];
+                if (addDaysISO(last[last.length - 1], 1) === dates[i]) last.push(dates[i]);
+                else blocks.push([dates[i]]);
+            }
+            return blocks;
+        }
+
+        // Lockout: hide the form when current time falls inside an active
+        // Shabbat or Yom Tov window. Start = candle lighting on eve (5 min
+        // early). End = havdalah on last day of block (5 min late). Chol hamoed
+        // days have no candle/havdalah so they don't trigger a block.
+        function applyShabbatYomTovLockout() {
+            var now = new Date();
+            var BUFFER_MS = 5 * 60 * 1000;  // 5 minutes
+            var match = null;
+
+            for (var i = 0; i < allEvents.length && !match; i++) {
+                var e = allEvents[i];
+                var blocks = buildClosingBlocks(e);
+                for (var b = 0; b < blocks.length; b++) {
+                    var block = blocks[b];
+                    var firstDate = block[0];
+                    var lastDate = block[block.length - 1];
+
+                    // Candle lighting is dated on the eve (one day before the first closing day).
+                    var candleKey = addDaysISO(firstDate, -1);
+                    var candleAt = candleByDate[candleKey] || candleByDate[firstDate];
+                    // Havdalah is dated on the last closing day itself.
+                    var havdalahAt = havdalahByDate[lastDate];
+
+                    // Fallback to 4pm/11pm if Hebcal didn't return precise times.
+                    var startBound, endBound;
+                    if (candleAt) {
+                        startBound = new Date(candleAt.getTime() - BUFFER_MS);
+                    } else {
+                        var sP = firstDate.split('-');
+                        startBound = new Date(parseInt(sP[0], 10), parseInt(sP[1], 10) - 1, parseInt(sP[2], 10));
+                        startBound.setDate(startBound.getDate() - 1);
+                        startBound.setHours(16, 0, 0, 0);
+                    }
+                    if (havdalahAt) {
+                        endBound = new Date(havdalahAt.getTime() + BUFFER_MS);
+                    } else {
+                        var eP = lastDate.split('-');
+                        endBound = new Date(parseInt(eP[0], 10), parseInt(eP[1], 10) - 1, parseInt(eP[2], 10));
+                        endBound.setHours(23, 0, 0, 0);
+                    }
+
+                    if (now >= startBound && now <= endBound) {
+                        match = e;
+                        break;
+                    }
+                }
+            }
+
+            var msg = document.getElementById('formClosedMessage');
+            var formEl = document.getElementById('reservationForm');
+            var titleEl = document.getElementById('formClosedTitle');
+            var bodyEl = document.getElementById('formClosedBody');
+
+            if (match) {
+                if (match.type === 'parsha') {
+                    titleEl.innerText = 'This form is closed for Shabbat';
+                    bodyEl.innerText = "We'll see you again after Shabbat ends.";
+                } else {
+                    var name = match.title || 'Yom Tov';
+                    titleEl.innerText = 'This form is closed for ' + name;
+                    bodyEl.innerText = "We'll see you again after " + name + " ends.";
+                }
+                formEl.style.display = 'none';
+                msg.style.display = 'block';
+            } else {
+                msg.style.display = 'none';
+                formEl.style.display = '';
+            }
+        }
+
+        function showNextEvents() {
+            var moreOpt = document.getElementById('showMoreOption');
+            if (moreOpt) moreOpt.remove();
+
+            var startIdx = eventPage * EVENTS_PER_PAGE;
+            var endIdx = Math.min(startIdx + EVENTS_PER_PAGE, allEvents.length);
+
+            for (var i = startIdx; i < endIdx; i++) {
+                var e = allEvents[i];
+                var opt = document.createElement('option');
+                opt.value = e.startDate;
+                opt.setAttribute('data-title', e.title);
+                opt.setAttribute('data-end', e.endDate);
+                opt.setAttribute('data-event-type', e.type);
+                opt.setAttribute('data-family', e.family || '');
+                opt.textContent = e.isClosed ? e.closedLabel : e.label;
+                if (e.isClosed) opt.disabled = true;
+                shabbosDate.appendChild(opt);
+            }
+
+            eventPage++;
+
+            if (endIdx < allEvents.length) {
+                var more = document.createElement('option');
+                more.id = 'showMoreOption';
+                more.value = '__more__';
+                more.textContent = '▼  More dates...';
+                more.style.color = 'var(--sb-accent, #C08A2E)';
+                more.style.fontWeight = '600';
+                shabbosDate.appendChild(more);
+            }
+        }
+
+        // ===== DERIVE MEALS FROM EVENT =====
+        function addDaysISO(iso, delta) {
+            var p = iso.split('-');
+            var d = new Date(parseInt(p[0], 10), parseInt(p[1], 10) - 1, parseInt(p[2], 10));
+            d.setDate(d.getDate() + delta);
+            var mm = String(d.getMonth() + 1);
+            if (mm.length < 2) mm = '0' + mm;
+            var dd = String(d.getDate());
+            if (dd.length < 2) dd = '0' + dd;
+            return d.getFullYear() + '-' + mm + '-' + dd;
+        }
+
+        function isoDayOfWeek(iso) {
+            var p = iso.split('-');
+            return new Date(parseInt(p[0], 10), parseInt(p[1], 10) - 1, parseInt(p[2], 10)).getDay();
+        }
+
+        // Returns an array of up to 4 meals, each: { label, kind, dateISO, isShabbat }
+        function deriveMeals(event) {
+            if (!event) return [];
+
+            if (event.type === 'parsha') {
+                var sat = event.startDate;
+                var fri = addDaysISO(sat, -1);
+                return [
+                    { label: 'Friday Night', sub: 'Dinner',  kind: 'dinner', dateISO: fri, isShabbat: false },
+                    { label: 'Shabbat Day',  sub: 'Lunch',   kind: 'lunch',  dateISO: sat, isShabbat: true }
+                ];
+            }
+
+            if (event.family === 'yom_kippur') {
+                return [
+                    { label: 'Seudat Hamafseket', sub: 'Pre-Fast Meal', kind: 'dinner', dateISO: addDaysISO(event.startDate, -1), isShabbat: false }
+                ];
+            }
+
+            // Holiday event — may have been merged with an adjacent Shabbat.
+            // event.yomTovDates lists which ISO dates within the range are actual
+            // yom tov; days in the range NOT in that list are pure Shabbat.
+            var ytSet = {};
+            if (event.yomTovDates) {
+                for (var yi = 0; yi < event.yomTovDates.length; yi++) ytSet[event.yomTovDates[yi]] = true;
+            }
+
+            var meals = [];
+            var startP = event.startDate.split('-');
+            var endP = event.endDate.split('-');
+            var firstD = new Date(parseInt(startP[0],10), parseInt(startP[1],10)-1, parseInt(startP[2],10));
+            var lastD  = new Date(parseInt(endP[0],10),   parseInt(endP[1],10)-1,   parseInt(endP[2],10));
+            var totalDays = Math.round((lastD - firstD) / 86400000) + 1;
+
+            for (var i = 0; i < totalDays; i++) {
+                var dayISO = addDaysISO(event.startDate, i);
+                var eveISO = addDaysISO(dayISO, -1);
+                var dow = isoDayOfWeek(dayISO);
+                var isShab = (dow === 6);
+                var isYT = event.yomTovDates ? !!ytSet[dayISO] : true;  // legacy: assume all days are YT
+                var daySuffix = totalDays > 1 ? ' (Day ' + (i + 1) + ')' : '';
+
+                var prefix;
+                if (isShab && isYT)       prefix = 'Shabbat / Yom Tov';
+                else if (isShab && !isYT) prefix = 'Shabbat';
+                else if (!isShab && isYT) prefix = 'Yom Tov';
+                else                      prefix = 'Chol Hamoed';
+
+                meals.push({ label: prefix + ' Eve' + daySuffix, sub: 'Dinner', kind: 'dinner', dateISO: eveISO, isShabbat: isShab });
+                meals.push({ label: prefix + ' Day' + daySuffix, sub: 'Lunch',  kind: 'lunch',  dateISO: dayISO, isShabbat: isShab });
+            }
+            // Cap at MAX_SLOTS static slots
+            if (meals.length > MAX_SLOTS) meals = meals.slice(0, MAX_SLOTS);
+            return meals;
+        }
+
+        // ===== RENDER SLOTS FOR SELECTED EVENT =====
+        function clearSlot(slot) {
+            slotMeta[slot] = null;
+            $('slot' + slot + 'Toggle').style.display = 'none';
+            $('slot' + slot + 'Pricing').style.display = 'none';
+            $('slot' + slot + 'Check').checked = false;
+            $('slot' + slot + 'Toggle').style.borderColor = 'var(--sb-divider, rgba(23,35,46,.14))';
+            $('slot' + slot + 'Toggle').style.background = '#ffffff';
+            setQty(slot, 'A', 0);
+            setQty(slot, 'S', 0);
+            setQty(slot, 'C', 0);
+        }
+
+        function applySlot(slot, meal) {
+            slotMeta[slot] = {
+                visible: true,
+                active: false,
+                label: meal.label,
+                sub: meal.sub,
+                kind: meal.kind,
+                dateISO: meal.dateISO,
+                isShabbat: !!meal.isShabbat
+            };
+            $('slot' + slot + 'Label').innerText = meal.label;
+            $('slot' + slot + 'Sub').innerText = meal.sub;
+            $('slot' + slot + 'Date').innerText = fmtNiceDate(meal.dateISO);
+            $('slot' + slot + 'PriceTitle').innerText = meal.label + ' ' + meal.sub;
+            $('slot' + slot + 'RowLabel').innerText = meal.label;
+            $('slot' + slot + 'Toggle').style.display = 'block';
+            // Pricing block stays hidden until the user toggles the slot on
+            $('slot' + slot + 'Pricing').style.display = 'none';
+        }
+
+        function renderSlots(event) {
+            // Reset all per-meal slots and the all-meals card
+            for (var s = 1; s <= MAX_SLOTS; s++) clearSlot(String(s));
+            allMealsMode = false;
+            slotAllCard.style.display = 'none';
+            $('slotAllA').innerText = '0';
+            $('slotAllS').innerText = '0';
+            $('slotAllC').innerText = '0';
+
+            var meals = deriveMeals(event);
+
+            if (meals.length === 0) {
+                mealsEmptyHint.style.display = 'block';
+                mealsTogglesRow.style.display = 'none';
+                allMealsBtn.style.display = 'none';
+                updateTotals();
+                return;
+            }
+
+            mealsEmptyHint.style.display = 'none';
+            mealsTogglesRow.style.display = 'flex';
+
+            for (var m = 0; m < meals.length; m++) {
+                applySlot(String(m + 1), meals[m]);
+            }
+
+            // Phrase the "single ticket" labels to match the event:
+            // Shabbos parsha (2 meals) → "Both Meals" + "Shabbos"
+            // Yom Tov / merged event (3+) → "All Meals" + "Yom Tov"
+            var isShabbosOnly = event.type === 'parsha';
+            var ticketWord = isShabbosOnly ? 'Both Meals' : 'All Meals';
+            var ticketVerb = isShabbosOnly ? 'Select both meals' : 'Select all meals';
+            var scopeWord  = isShabbosOnly ? 'both meals' : 'all meals';
+            var eventNoun  = isShabbosOnly ? 'Shabbos' : 'Yom Tov';
+            allMealsBtn.innerText = ticketVerb + ' (one ticket for everything)';
+            $('slotAllMainLabel').innerText = ticketWord;
+            $('slotAllRowLabel').innerText = ticketWord;
+            $('slotAllPriceHeader').innerText = 'Per Person — covers ' + scopeWord + ' of this ' + eventNoun;
+
+            // "Single ticket" shortcut is useful any time there are 2+ meals
+            // (Shabbos = Friday + Shabbat Day, or multi-day yom tov).
+            allMealsBtn.style.display = meals.length >= 2 ? 'block' : 'none';
+
+            updateTotals();
+        }
+
+        // ===== EVENT SELECTION =====
+        function setBookingSectionsVisible(visible) {
+            var nodes = document.querySelectorAll('.bookingSection');
+            for (var i = 0; i < nodes.length; i++) {
+                nodes[i].style.display = visible ? '' : 'none';
+            }
+        }
+
+        function findEventByOption(opt) {
+            if (!opt) return null;
+            var startDate = opt.value;
+            var endDate = opt.getAttribute('data-end') || startDate;
+            for (var i = 0; i < allEvents.length; i++) {
+                if (allEvents[i].startDate === startDate && allEvents[i].endDate === endDate) {
+                    return allEvents[i];
+                }
+            }
+            return null;
+        }
+
+        shabbosDate.addEventListener('change', function () {
+            var selectedValue = shabbosDate.value;
+
+            if (selectedValue === '__more__') {
+                shabbosDate.value = '';
+                showNextEvents();
+                return;
+            }
+
+            var paypalContainer = $('paypal-button-container');
+
+            if (!selectedValue || selectedValue === 'manual') {
+                pesachNotice.style.display = 'none';
+                setBookingSectionsVisible(true);
+                cutoffNotice.style.display = 'none';
+                currentEvent = null;
+                renderSlots(null);
+                return;
+            }
+
+            var opt = shabbosDate.options[shabbosDate.selectedIndex];
+            var eventType = opt.getAttribute('data-event-type') || 'parsha';
+            var endDateAttr = opt.getAttribute('data-end') || selectedValue;
+
+            if (eventType === 'pesach') {
+                pesachNotice.style.display = 'block';
+                setBookingSectionsVisible(false);
+                cutoffNotice.style.display = 'none';
+                currentEvent = null;
+                renderSlots(null);
+                return;
+            }
+
+            pesachNotice.style.display = 'none';
+            setBookingSectionsVisible(true);
+
+            currentEvent = findEventByOption(opt);
+            renderSlots(currentEvent);
+
+            // Cutoff: 2:30pm the day before the event start; closed window ends after the last day
+            var startObj = new Date(selectedValue + 'T12:00:00');
+            var endObj = new Date(endDateAttr + 'T23:59:59');
+            var cutoff = new Date(startObj);
+            cutoff.setDate(cutoff.getDate() - 1);
+            cutoff.setHours(14, 30, 0, 0);
+            var now = new Date();
+
+            if (now > cutoff && now < endObj) {
+                cutoffNotice.style.display = 'block';
+                paypalContainer.style.opacity = '0.5';
+                paypalContainer.style.pointerEvents = 'none';
+            } else {
+                cutoffNotice.style.display = 'none';
+                paypalContainer.style.opacity = '1';
+                paypalContainer.style.pointerEvents = 'auto';
+            }
+        });
+
+        // ===== DISCOUNT LOGIC =====
+        function loadDiscountCodes() {
+            var amp = String.fromCharCode(38);
+            var url = GOOGLE_SHEET_WEBHOOK + '?action=publicCodes';
+            fetch(url)
+                .then(function (r) { return r.json(); })
+                .then(function (data) {
+                    if (Array.isArray(data.codes) && data.codes.length > 0) {
+                        discountCodes = data.codes;
+                    }
+                })
+                .catch(function (err) { console.error('Could not load discount codes:', err); });
+        }
+
+        function findCodeDef(input) {
+            var needle = String(input || '').trim().toUpperCase();
+            if (!needle) return null;
+            for (var i = 0; i < discountCodes.length; i++) {
+                if (String(discountCodes[i].code).toUpperCase() === needle) return discountCodes[i];
+            }
+            return null;
+        }
+
+        function computeDiscount(grand, heads, codeDef) {
+            if (!codeDef || grand <= 0) return 0;
+            if (codeDef.type === 'percent') {
+                return Math.min(grand, Math.round(grand * (parseFloat(codeDef.value) || 0) / 100));
+            }
+            if (codeDef.type === 'fixed') {
+                return Math.min(grand, parseFloat(codeDef.value) || 0);
+            }
+            if (codeDef.type === 'cap_per_head') {
+                var cap = (parseFloat(codeDef.value) || 0) * heads;
+                return Math.max(0, grand - cap);
+            }
+            return 0;
+        }
+
+        applyBtn.addEventListener('click', checkDiscount);
+        discountCodeInput.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                checkDiscount();
+            }
+        });
+
+        function checkDiscount() {
+            var raw = discountCodeInput.value.trim();
+            discountMsg.innerText = '';
+            discountMsg.style.color = '#e53e3e';
+            appliedCode = null;
+            appliedCoupon = '';
+
+            var totalCost = 0;
+            var totalHeads = 0;
+            if (allMealsMode) {
+                totalCost = allMealsCost();
+                totalHeads = allMealsHeads();
+            } else {
+                for (var s = 1; s <= MAX_SLOTS; s++) {
+                    totalCost += slotCost(String(s));
+                    totalHeads += slotHeads(String(s));
+                }
+            }
+
+            if (!raw) {
+                updateTotals();
+                return;
+            }
+
+            var def = findCodeDef(raw);
+            if (!def) {
+                discountMsg.innerText = 'Invalid code.';
+                updateTotals();
+                return;
+            }
+
+            var discount = computeDiscount(totalCost, totalHeads, def);
+            if (discount <= 0) {
+                discountMsg.innerText = 'Code not applicable at this price.';
+                updateTotals();
+                return;
+            }
+
+            appliedCode = def;
+            appliedCoupon = String(def.code).toUpperCase();
+            discountMsg.style.color = '#38a169';
+            if (def.type === 'percent') {
+                discountMsg.innerText = 'Code applied: ' + def.value + '% off!';
+            } else if (def.type === 'fixed') {
+                discountMsg.innerText = 'Code applied: $' + def.value + ' off!';
+            } else if (def.type === 'cap_per_head') {
+                discountMsg.innerText = 'Code applied: $' + def.value + ' per person cap!';
+            } else {
+                discountMsg.innerText = 'Code applied!';
+            }
+
+            updateTotals();
+        }
+
+        // ===== MEAL VALIDATION =====
+        // Returns null if the form has valid meal selections, otherwise a user-facing message.
+        function validateMeals() {
+            if (!currentEvent) {
+                return 'Please choose a Shabbat or Yom Tov above before submitting.';
+            }
+            if (allMealsMode) {
+                if (allMealsHeads() === 0) {
+                    return 'Please enter at least 1 person on the All Meals card.';
+                }
+                return null;
+            }
+            var anyActive = false;
+            var anyEmpty = false;
+            for (var s = 1; s <= MAX_SLOTS; s++) {
+                var key = String(s);
+                var meta = slotMeta[key];
+                if (!meta || !meta.visible) continue;
+                if (!$('slot' + s + 'Check').checked) continue;
+                anyActive = true;
+                if (slotHeads(key) === 0) anyEmpty = true;
+            }
+            if (!anyActive) return 'Please select at least one meal.';
+            if (anyEmpty) return 'Each selected meal needs at least 1 person (Adult / Subsidized / Child).';
+            return null;
+        }
+
+        function showValidationError(msg) {
+            var box = $('validationMsg');
+            if (!box) { alert(msg); return; }
+            box.innerText = msg;
+            box.style.display = 'block';
+            box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        function clearValidationError() {
+            var box = $('validationMsg');
+            if (box) box.style.display = 'none';
+        }
+
+        manualSubmitBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            var form = document.getElementById('reservationForm');
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
+            var mealError = validateMeals();
+            if (mealError) {
+                showValidationError(mealError);
+                return;
+            }
+            clearValidationError();
+
+            manualSubmitBtn.innerText = 'Processing...';
+            manualSubmitBtn.disabled = true;
+
+            submitToGoogleSheets({ id: 'MANUAL_DISCOUNT' });
+
+            setTimeout(function () {
+                form.style.display = 'none';
+                document.getElementById('successMessage').style.display = 'block';
+            }, 1000);
+        });
+
+        // ===== GOOGLE SHEETS SUBMISSION =====
+        function submitToGoogleSheets(paymentDetails) {
+            var selectedOpt = shabbosDate.options[shabbosDate.selectedIndex];
+
+            // Build the meals array. In all-meals mode every visible slot gets
+            // the same Adult/Sub/Child count entered on the single-ticket card.
+            // In per-meal mode each slot uses its own counts.
+            var meals = [];
+            var dinnerA = 0, dinnerS = 0, dinnerC = 0;
+            var lunchA = 0, lunchS = 0, lunchC = 0;
+            var allA = allMealsQty('A'), allS = allMealsQty('S'), allC = allMealsQty('C');
+
+            for (var s = 1; s <= MAX_SLOTS; s++) {
+                var key = String(s);
+                var meta = slotMeta[key];
+                if (!meta || !meta.visible) continue;
+
+                var a, sb, c;
+                if (allMealsMode) {
+                    a = allA; sb = allS; c = allC;
+                } else {
+                    var active = $('slot' + s + 'Check').checked;
+                    a  = active ? qty(key, 'A') : 0;
+                    sb = active ? qty(key, 'S') : 0;
+                    c  = active ? qty(key, 'C') : 0;
+                }
+
+                meals.push({
+                    id:        'slot' + s,
+                    label:     meta.label + ' ' + meta.sub,
+                    date:      meta.dateISO,
+                    kind:      meta.kind,
+                    isShabbat: meta.isShabbat,
+                    adult:     a,
+                    sub:       sb,
+                    child:     c
+                });
+                if (meta.kind === 'dinner') { dinnerA += a; dinnerS += sb; dinnerC += c; }
+                else                        { lunchA  += a; lunchS  += sb; lunchC  += c; }
+            }
+
+            // Multi-day yom tov: shift the start back to the eve so the sheet
+            // tab name and confirmation email date range cover the eve dinner —
+            // matches the May 21-23 (not May 22-23) label the user picked.
+            var rawStartISO = selectedOpt.value;
+            var rawEndISO   = selectedOpt.getAttribute('data-end') || rawStartISO;
+            var submitType  = selectedOpt.getAttribute('data-event-type') || 'parsha';
+            var submitStart = (submitType === 'holiday' && rawStartISO !== rawEndISO)
+                                ? addDaysISO(rawStartISO, -1)
+                                : rawStartISO;
+
+            var data = {
+                shabbos: selectedOpt.text,
+                shabbosDateISO: submitStart,
+                shabbosEndDateISO: rawEndISO,
+                shabbosTitle: selectedOpt.getAttribute('data-title') || selectedOpt.text.split('–')[0].trim(),
+                eventType: submitType,
+                name: document.getElementById('firstName').value + ' ' + document.getElementById('lastName').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                notes: document.getElementById('notes').value,
+                meals: meals,
+                // Legacy compat — sum dinners into fri*, lunches into shab*
+                friAdult: dinnerA, friSub: dinnerS, friChild: dinnerC,
+                shabAdult: lunchA, shabSub: lunchS, shabChild: lunchC,
+                donation: donation.value || 0,
+                total: grandTotal.innerText,
+                discount: currentDiscount,
+                couponCode: appliedCoupon,
+                paymentId: paymentDetails.id,
+                payerEmail: paymentDetails.payer ? paymentDetails.payer.email_address : ''
+            };
+
+            fetch(GOOGLE_SHEET_WEBHOOK, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            }).catch(function (err) { console.error('Sheet submission failed:', err); });
+        }
+
+        // ===== PAYPAL SETUP =====
+        function initPayPal() {
+            var script = document.createElement('script');
+            script.src = 'https://www.paypal.com/sdk/js?client-id=' + PAYPAL_CLIENT_ID + String.fromCharCode(38) + 'currency=USD';
+            script.onload = function () {
+                paypal.Buttons({
+                    style: {
+                        layout: 'vertical',
+                        color: 'gold',        // closest match to the page gold (var(--sb-accent, #C08A2E))
+                        shape: 'rect',        // soft rounded corners — matches the page card aesthetic
+                        label: 'pay',
+                        height: 48,           // sits in line with other CTA buttons on the page
+                        tagline: false        // suppress PayPal's promo tagline for a cleaner look
+                    },
+                    createOrder: function (data, actions) {
+                        var total = parseFloat(grandTotal.innerText);
+
+                        var form = document.getElementById('reservationForm');
+                        if (!form.checkValidity()) {
+                            form.reportValidity();
+                            return;
+                        }
+
+                        var mealError = validateMeals();
+                        if (mealError) {
+                            showValidationError(mealError);
+                            return;
+                        }
+                        clearValidationError();
+
+                        if (total <= 0) {
+                            alert('Total is 0. Please use the Confirm button.');
+                            return;
+                        }
+
+                        return actions.order.create({
+                            purchase_units: [{
+                                description: 'Meal Reservation – Chabad in South Beach',
+                                amount: { value: total.toFixed(2) }
+                            }]
+                        });
+                    },
+                    onApprove: function (data, actions) {
+                        return actions.order.capture().then(function (details) {
+                            submitToGoogleSheets(details);
+                            document.getElementById('reservationForm').style.display = 'none';
+                            document.getElementById('successMessage').style.display = 'block';
+                        });
+                    },
+                    onError: function (err) {
+                        console.error('PayPal error:', err);
+                        alert('Payment failed. Please try again or call us to reserve.');
+                    }
+                }).render('#paypal-button-container');
+            };
+            document.head.appendChild(script);
+        }
+
+        // ===== INIT =====
+        loadEventsCalendar();
+        loadDiscountCodes();
+        if (PAYPAL_CLIENT_ID !== 'YOUR_CLIENT_ID') {
+            initPayPal();
+        }
+    })();
+    //]]>
+</script>

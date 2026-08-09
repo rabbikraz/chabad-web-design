@@ -1,0 +1,228 @@
+<!-- Tourist Info Fragment --><!-- Attempting to load fonts via Link tag as fallback for Import -->
+<link href="https://fonts.googleapis.com" rel="preconnect" />
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&amp;family=Playfair+Display:wght@400;600;700&amp;display=swap" rel="stylesheet" />
+<div class="tib-wrapper">
+<style type="text/css">/* Scoped Styles */
+        .tib-wrapper {
+            font-family: 'Outfit', 'Verdana', 'Helvetica', sans-serif !important;
+            background-color: #f8fafc;
+            color: #1e293b;
+            width: 100% !important;
+            max-width: 100% !important;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 60vh;
+            /* Reduced strict height */
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            box-sizing: border-box;
+        }
+
+        .tib-wrapper * {
+            box-sizing: border-box;
+        }
+
+        /* Hero Section */
+        .tib-hero {
+            background-color: #1e3a8a !important;
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%) !important;
+            width: 100% !important;
+            padding: 5rem 1.5rem 6rem !important;
+            /* Increased Padding */
+            text-align: center !important;
+            color: #ffffff !important;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .tib-hero h1 {
+            font-family: 'Playfair Display', 'Georgia', 'Times New Roman', serif !important;
+            font-size: 5rem !important;
+            /* Increased to 5rem */
+            font-weight: 700;
+            margin: 0 0 1rem 0 !important;
+            line-height: 1.1;
+            color: #ffffff !important;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .tib-hero p {
+            font-size: 1.75rem !important;
+            /* Increased to 1.75rem */
+            color: rgba(255, 255, 255, 0.95) !important;
+            font-weight: 300;
+            margin: 0 !important;
+            letter-spacing: 0.5px;
+        }
+
+        /* Cards Container - 2x2 Grid */
+        .tib-container {
+            max-width: 1100px !important;
+            width: 95% !important;
+            margin: -4rem auto 4rem auto !important;
+            /* Adjusted overlap */
+            position: relative;
+            z-index: 10;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr) !important;
+            gap: 2rem;
+            /* Increased gap */
+            padding: 0 1rem;
+        }
+
+        /* Card Styles */
+        .tib-card {
+            background: #ffffff !important;
+            border-radius: 16px !important;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            display: flex;
+            flex-direction: column !important;
+            text-decoration: none !important;
+            color: inherit !important;
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            height: 100% !important;
+            width: 100%;
+        }
+
+        .tib-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 35px rgba(30, 58, 138, 0.12);
+        }
+
+        .tib-card-content {
+            width: 100% !important;
+            padding: 3rem 2.5rem;
+            /* Increased Padding */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between !important;
+            align-items: center !important;
+            text-align: center;
+            height: 100% !important;
+        }
+
+        /* Group Title and Text together so they stay close */
+        .tib-card-top-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+
+        .tib-card-title {
+            font-family: 'Playfair Display', 'Georgia', serif !important;
+            font-size: 3rem !important;
+            /* Increased to 3rem */
+            font-weight: 700;
+            color: #1e3a8a !important;
+            margin: 0 0 1.5rem 0 !important;
+            line-height: 1.1;
+        }
+
+        .tib-card-text {
+            font-family: 'Outfit', 'Verdana', sans-serif !important;
+            font-size: 1.5rem !important;
+            /* Increased to 1.5rem */
+            line-height: 1.5 !important;
+            color: #64748b !important;
+            margin-bottom: 0 !important;
+        }
+
+        .tib-card-cta {
+            font-family: 'Outfit', 'Verdana', sans-serif !important;
+            font-weight: 600;
+            color: #c29d59 !important;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 1.1rem !important;
+            /* Increased to 1.1rem */
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 2.5rem !important;
+            /* Increased margin */
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .tib-container {
+                grid-template-columns: 1fr !important;
+                max-width: 600px !important;
+            }
+        }
+</style>
+<div class="tib-hero"><!-- Optional: Explicit font loading check/fallback in style attribute -->
+<h1 style="font-family: 'Playfair Display', 'Georgia', serif !important;">Tourist Information</h1>
+
+<p>Your complete guide to Jewish life in South Beach.</p>
+</div>
+
+<div class="tib-container"><!-- Shabbat Meals --><a class="tib-card" href="https://chabadsobe.com/shabbatmeals">
+<div class="tib-card-content">
+<div class="tib-card-top-group">
+<h2 class="tib-card-title">Shabbat Meals</h2>
+
+<p class="tib-card-text">Join us for a warm, traditional Shabbat dinner and lunch in a beautiful community setting.</p>
+</div>
+
+<div class="tib-card-cta">Reserve Now &rarr;</div>
+</div>
+</a><!-- Kosher Guide --> <a class="tib-card" href="https://www.chabadinsouthbeach.com/templates/articlecco_cdo/aid/7224263/jewish/Untitled.htm">
+<div class="tib-card-content">
+<div class="tib-card-top-group">
+<h2 class="tib-card-title">Kosher Guide</h2>
+
+<p class="tib-card-text">Explore our curated list of kosher restaurants, supermarkets, and catering options.</p>
+</div>
+
+<div class="tib-card-cta">View Guide &rarr;</div>
+</div>
+</a><!-- Mikvah & Eruv --> <a class="tib-card" href="https://www.chabadinsouthbeach.com/templates/articlecco_cdo/aid/7224206/jewish/Untitled.htm">
+<div class="tib-card-content">
+<div class="tib-card-top-group">
+<h2 class="tib-card-title">Mikvah &amp; Eruv</h2>
+
+<p class="tib-card-text">Find map boundaries for the Eruv and key information for Mikvah appointments.</p>
+</div>
+
+<div class="tib-card-cta">View Maps &rarr;</div>
+</div>
+</a><!-- Minyan Schedule --> <a class="tib-card" href="https://www.chabadinsouthbeach.com/templates/articlecco_cdo/aid/7223919/jewish/Daily-Minyan.htm">
+<div class="tib-card-content">
+<div class="tib-card-top-group">
+<h2 class="tib-card-title">Minyan Schedule</h2>
+
+<p class="tib-card-text">Daily Shacharis, Mincha, and Maariv prayer times throughout the week.</p>
+</div>
+
+<div class="tib-card-cta">View Schedule &rarr;</div>
+</div>
+</a><!-- Nearby Hotels --> <a class="tib-card" href="https://www.chabadinsouthbeach.com/templates/articlecco_cdo/aid/7232040/jewish/Hotels.htm">
+<div class="tib-card-content">
+<div class="tib-card-top-group">
+<h2 class="tib-card-title">Nearby Hotels</h2>
+
+<p class="tib-card-text">Find recommended accommodations within walking distance of the Chabad House.</p>
+</div>
+
+<div class="tib-card-cta">View Hotels &rarr;</div>
+</div>
+</a><!-- Local Attractions --> <a class="tib-card" href="https://www.chabadinsouthbeach.com/templates/articlecco_cdo/aid/7232029/jewish/Attractions.htm">
+<div class="tib-card-content">
+<div class="tib-card-top-group">
+<h2 class="tib-card-title">Local Attractions</h2>
+
+<p class="tib-card-text">Discover popular sights and activities to explore during your stay in South Beach.</p>
+</div>
+
+<div class="tib-card-cta">Explore &rarr;</div>
+</div>
+</a></div>
+</div>

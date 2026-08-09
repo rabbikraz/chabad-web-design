@@ -1,0 +1,498 @@
+<!-- Kosher Food Fragment -->
+<div class="kosher-wrapper">
+<style type="text/css">/* Import Fonts */
+        @import url('https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700&family=Marcellus&display=swap');
+
+        /* Scoped Styles */
+        .kosher-wrapper {
+            padding: 0 clamp(0px, 2vw, 24px);
+            font-family: var(--sb-font-body, 'Figtree', sans-serif);
+            background-color: var(--sb-bg, #FBF5E9);
+            color: var(--sb-text, #17232E);
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .kosher-wrapper * {
+            box-sizing: border-box;
+        }
+
+        /* HEADER */
+        .kosher-wrapper .header-section {
+            background: linear-gradient(135deg, var(--sb-teal-900, #072026) 0%, var(--sb-teal, #17656B) 100%);
+            width: 100%;
+            padding: 5rem 1.5rem 6rem;
+            text-align: center;
+            color: #ffffff !important;
+            position: relative;
+            z-index: 1;
+            border-radius: var(--sb-radius-lg, 18px);
+            box-shadow: var(--sb-shadow-md, 0 10px 28px rgba(23,35,46,.12));
+        }
+
+        .kosher-wrapper .header-section h1 {
+            font-family: var(--sb-font-heading, 'Marcellus', serif);
+            font-size: 5rem;
+            /* Increased to 5rem */
+            font-weight: 700;
+            margin: 0 0 1rem 0;
+            color: #ffffff !important;
+            line-height: 1.1;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .kosher-wrapper .header-section .subtitle {
+            font-size: 1.75rem;
+            /* Increased to 1.75rem */
+            color: rgba(255, 255, 255, 0.95);
+            font-weight: 300;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* MAIN CONTENT AREA */
+        .kosher-wrapper .content-container {
+            max-width: 1000px;
+            width: 95%;
+            margin-top: -4rem;
+            margin-bottom: 4rem;
+            padding: 0 1.5rem;
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        /* ACCORDION ITEMS */
+        .kosher-wrapper .accordion-item {
+            background: var(--sb-surface, #F3E8D3);
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            border: 1px solid var(--sb-divider, rgba(23,35,46,.14));
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .kosher-wrapper .accordion-header {
+            display: table;
+            width: 100%;
+            table-layout: fixed;
+            padding: 2.5rem 2rem;
+            /* Increased Padding */
+            background: var(--sb-surface, #F3E8D3);
+            cursor: pointer;
+            box-sizing: border-box;
+            user-select: none;
+            border-bottom: 1px solid transparent;
+        }
+
+        .kosher-wrapper .accordion-item.active .accordion-header {
+            border-bottom: 1px solid var(--sb-surface, #F3E8D3);
+        }
+
+        /* Title Cell */
+        .kosher-wrapper .accordion-title-cell {
+            display: table-cell;
+            vertical-align: middle;
+            text-align: left;
+            width: 85%;
+        }
+
+        .kosher-wrapper .accordion-title {
+            font-family: var(--sb-font-heading, 'Marcellus', serif);
+            font-size: 3rem;
+            /* Increased to 3rem */
+            font-weight: 700;
+            color: var(--sb-teal, #17656B);
+            margin: 0;
+            line-height: 1.1;
+        }
+
+        /* Icon Cell */
+        .kosher-wrapper .accordion-icon-cell {
+            display: table-cell;
+            vertical-align: middle;
+            text-align: right;
+            width: 15%;
+            padding-left: 1rem;
+        }
+
+        /* Chevron Icon */
+        .kosher-wrapper .chevron-icon {
+            display: inline-block;
+            width: 40px;
+            /* Increased */
+            height: 40px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23C08A2E' stroke-width='2.5'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7' /%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: contain;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .kosher-wrapper .accordion-item.active .chevron-icon {
+            transform: rotate(180deg);
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2317656B' stroke-width='2.5'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7' /%3E%3C/svg%3E");
+        }
+
+        /* CONTENT BODY */
+        .kosher-wrapper .accordion-body {
+            display: none;
+            padding: 0 2.5rem 3rem 2.5rem;
+            border-top: 1px solid var(--sb-divider, rgba(23,35,46,.14));
+        }
+
+        .kosher-wrapper .accordion-item.active .accordion-body {
+            display: block;
+        }
+
+        /* INNER LOCATION CARDS */
+        .kosher-wrapper .location-card {
+            background: var(--sb-bg, #FBF5E9);
+            border-radius: 12px;
+            padding: 2.5rem;
+            /* Increased */
+            margin-bottom: 2rem;
+            border-left: 6px solid var(--sb-teal, #17656B);
+        }
+
+        .kosher-wrapper .location-card.gold-border {
+            border-left-color: var(--sb-accent, #C08A2E);
+        }
+
+        .kosher-wrapper .location-name {
+            font-size: 2rem;
+            /* Increased to 2rem */
+            font-weight: 700;
+            color: var(--sb-teal, #17656B);
+            margin-bottom: 0.75rem;
+            font-family: var(--sb-font-heading, 'Marcellus', serif);
+        }
+
+        .kosher-wrapper .location-meta {
+            font-size: 1.25rem;
+            /* Increased */
+            color: rgba(23,35,46,.6);
+            margin-bottom: 1.25rem;
+            font-weight: 500;
+        }
+
+        /* Address Link Style */
+        .kosher-wrapper .address-link {
+            text-decoration: underline;
+            color: var(--sb-teal, #17656B) !important;
+            font-weight: 600;
+            transition: color 0.2s;
+        }
+
+        .kosher-wrapper .address-link:hover {
+            color: var(--sb-teal-900, #072026) !important;
+        }
+
+        .kosher-wrapper .location-desc {
+            font-size: 1.5rem;
+            /* Increased */
+            color: rgba(23,35,46,.82);
+            line-height: 1.6;
+        }
+
+        /* RESTAURANT BUTTONS */
+        .kosher-wrapper .btn-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .kosher-wrapper .action-link {
+            display: inline-block;
+            text-align: center;
+            background: var(--sb-teal, #17656B);
+            color: white;
+            padding: 0.8rem 1.8rem;
+            border-radius: 99px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background 0.3s;
+            font-size: 1.1rem;
+            /* Increased */
+        }
+
+        .kosher-wrapper .action-link:hover {
+            background: var(--sb-teal-900, #072026);
+        }
+
+        .kosher-wrapper .action-link.secondary {
+            background: var(--sb-surface, #F3E8D3);
+            color: var(--sb-teal, #17656B);
+            border: 2px solid var(--sb-teal, #17656B);
+        }
+
+        .kosher-wrapper .action-link.secondary:hover {
+            background: var(--sb-surface, #F3E8D3);
+        }
+
+        /* SUB-HEADERS inside Accordion */
+        .kosher-wrapper .section-divider {
+            display: flex;
+            align-items: center;
+            margin: 2.5rem 0 1.5rem 0;
+        }
+
+        .kosher-wrapper .section-divider:first-child {
+            margin-top: 1rem;
+        }
+
+        .kosher-wrapper .section-divider span {
+            font-family: var(--sb-font-heading, 'Marcellus', serif);
+            font-size: 1.75rem;
+            /* Increased */
+            font-weight: 700;
+            color: var(--sb-teal-900, #072026);
+            padding-right: 1rem;
+            white-space: nowrap;
+        }
+
+        .kosher-wrapper .section-divider .line {
+            height: 1px;
+            background: var(--sb-divider, rgba(23,35,46,.14));
+            width: 100%;
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .kosher-wrapper .header-section h1 {
+                font-size: 3rem;
+            }
+
+            .kosher-wrapper .accordion-title {
+                font-size: 1.6rem;
+            }
+
+            .kosher-wrapper .accordion-header {
+                padding: 1.5rem;
+            }
+
+            .kosher-wrapper .accordion-title-cell {
+                width: 80%;
+            }
+
+            .kosher-wrapper .accordion-icon-cell {
+                width: 20%;
+            }
+
+            .kosher-wrapper .accordion-body {
+                padding: 0 1.5rem 2rem 1.5rem;
+            }
+
+            .kosher-wrapper .btn-group {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .kosher-wrapper .action-link {
+                width: 100%;
+            }
+        }
+</style>
+<div class="header-section">
+<h1>Kosher Guide</h1>
+
+<div class="subtitle">Food &amp; Dining</div>
+</div>
+
+<div class="content-container"><!-- Accordion Item 1: Groceries -->
+<div class="accordion-item" id="acc-grocery">
+<div class="accordion-header" onclick="toggleAccordion('acc-grocery')">
+<div class="accordion-title-cell">
+<h2 class="accordion-title">Kosher Options</h2>
+</div>
+
+<div class="accordion-icon-cell">
+<div class="chevron-icon">&nbsp;</div>
+</div>
+</div>
+
+<div class="accordion-body">
+<div class="section-divider"><span>Kosher Aisles - South Beach (33139)</span>
+
+<div class="line">&nbsp;</div>
+</div>
+
+<div class="location-card">
+<div class="location-name">Publix</div>
+
+<div class="location-meta">
+<div style="margin-bottom:0.25rem;"><a class="address-link" href="https://maps.google.com/?q=1100+6th+St,+Miami+Beach,+FL+33139" target="_blank">1100 6th St (Fifth &amp; Alton)</a></div>
+
+<div style="margin-bottom:0.25rem;"><a class="address-link" href="https://maps.google.com/?q=1920+West+Ave,+Miami+Beach,+FL+33139" target="_blank">1920 West Ave (On the Bay)</a></div>
+
+<div><a class="address-link" href="https://maps.google.com/?q=1045+Dade+Blvd,+Miami+Beach,+FL+33139" target="_blank">1045 Dade Blvd</a></div>
+</div>
+
+<div class="location-desc">Features a robust kosher aisle with a dedicated fridge and freezer section properly stocked for your needs.</div>
+</div>
+
+<div class="location-card">
+<div class="location-name">Whole Foods Market</div>
+
+<div class="location-meta"><a class="address-link" href="https://maps.google.com/?q=1020+Alton+Rd,+Miami+Beach,+FL+33139" target="_blank">1020 Alton Rd</a></div>
+
+<div class="location-desc">Offers a dedicated kosher aisle with a variety of organic and natural kosher products.</div>
+</div>
+
+<div class="location-card">
+<div class="location-name">Trader Joe&#39;s</div>
+
+<div class="location-meta"><a class="address-link" href="https://maps.google.com/?q=1683+West+Ave,+Miami+Beach,+FL+33139" target="_blank">1683 West Ave</a></div>
+
+<div class="location-desc">Market offering a variety of known kosher products including poultry, wine, and pantry staples.</div>
+</div>
+
+<div class="location-card">
+<div class="location-name">Walgreens - 1011 Alton Rd</div>
+
+<div class="location-meta"><a class="address-link" href="https://maps.google.com/?q=1011+Alton+Rd,+Miami+Beach,+FL+33139" target="_blank">(Corner of 10th &amp; Alton)</a></div>
+
+<div class="location-desc">Conveniently located with a kosher aisle and a selection of refrigerated kosher items.</div>
+</div>
+<!-- Section: Dedicated Markets - Mid-Beach -->
+
+<div class="section-divider"><span>Dedicated Markets - Mid-Beach (41st St)</span>
+
+<div class="line">&nbsp;</div>
+</div>
+
+<div class="location-card gold-border">
+<div class="location-name">Yes Market</div>
+
+<div class="location-meta"><a class="address-link" href="https://maps.google.com/?q=555+Arthur+Godfrey+Rd,+Miami+Beach,+FL+33140" target="_blank">555 Arthur Godfrey Rd (Mid-Beach)</a></div>
+
+<div class="location-desc">Full-service kosher supermarket offering fresh produce, meats, bakery items, and imported goods.</div>
+
+<div class="btn-group"><a class="action-link secondary" href="https://yesmarketmiami.com/" target="_blank">Visit Website</a></div>
+</div>
+
+<div class="location-card gold-border">
+<div class="location-name">Kosher Price</div>
+
+<div class="location-meta"><a class="address-link" href="https://maps.google.com/?q=460+W+41st+St,+Miami+Beach,+FL+33140" target="_blank">460 W 41st St (Mid-Beach)</a></div>
+
+<div class="location-desc">Large kosher grocery store known for its wide selection and competitive prices.</div>
+
+<div class="btn-group"><a class="action-link secondary" href="https://www.kosherpricemiami.com/" target="_blank">Visit Website</a></div>
+</div>
+</div>
+</div>
+<!-- Accordion Item 2: Restaurants -->
+
+<div class="accordion-item" id="acc-restaurants">
+<div class="accordion-header" onclick="toggleAccordion('acc-restaurants')">
+<div class="accordion-title-cell">
+<h2 class="accordion-title">Kosher Restaurants</h2>
+</div>
+
+<div class="accordion-icon-cell">
+<div class="chevron-icon">&nbsp;</div>
+</div>
+</div>
+
+<div class="accordion-body"><!-- Section: South Beach -->
+<div class="section-divider"><span>South Beach</span>
+
+<div class="line">&nbsp;</div>
+</div>
+
+<div class="location-card" style="border-left: 5px solid var(--sb-accent, #C08A2E);">
+<div class="location-name">17 Restaurant and Sushi Bar</div>
+
+<div class="location-meta"><a class="address-link" href="https://maps.google.com/?q=1751+Alton+Rd,+Miami+Beach,+FL+33139" target="_blank">1751 Alton Rd</a></div>
+
+<div class="location-desc">The premier kosher Italian restaurant and sushi bar in South Beach. Offering a wide menu of handcrafted dishes in a modern setting.</div>
+
+<div class="btn-group"><a class="action-link" href="https://www.17restaurant.com/" target="_blank">Reserve a Seat</a> <a class="action-link secondary" href="https://www.17restaurant.com/order-online" target="_blank">Order Online</a></div>
+</div>
+<!-- Section: Mid-Beach -->
+
+<div class="section-divider"><span>Mid-Beach</span>
+
+<div class="line">&nbsp;</div>
+</div>
+
+<div class="location-card">
+<div class="location-name">Fleisch 41</div>
+
+<div class="location-meta"><a class="address-link" href="https://maps.google.com/?q=726+Arthur+Godfrey+Rd,+Miami+Beach,+FL+33140" target="_blank">726 Arthur Godfrey Rd</a></div>
+
+<div class="location-desc">Premium meat restaurant offering a sophisticated dining experience.</div>
+</div>
+
+<div class="location-card">
+<div class="location-name">Pita Loca</div>
+
+<div class="location-meta"><a class="address-link" href="https://maps.google.com/?q=4017+Prairie+Ave,+Miami+Beach,+FL+33140" target="_blank">4017 Prairie Ave</a></div>
+
+<div class="location-desc">Casual spot for falafel, shawarma, and Israeli classics.</div>
+
+<div class="btn-group"><a class="action-link secondary" href="https://www.pitalocacatering.com/" target="_blank">Order Online</a></div>
+</div>
+
+<div class="location-card">
+<div class="location-name">Pita Hut</div>
+
+<div class="location-meta"><a class="address-link" href="https://maps.google.com/?q=530+W+41st+St,+Miami+Beach,+FL+33140" target="_blank">530 W 41st St</a></div>
+
+<div class="location-desc">Popular shawarma and Middle Eastern cuisine.</div>
+
+<div class="btn-group"><a class="action-link secondary" href="https://www.ubereats.com/store/pita-hut/0P8v6k0wT4-h5e1vWeQ9Tm" target="_blank">Order Online</a></div>
+</div>
+
+<div class="location-card">
+<div class="location-name">Miri&#39;s Cafe (formerly Bagel Time)</div>
+
+<div class="location-meta"><a class="address-link" href="https://maps.google.com/?q=525+W+41st+St,+Miami+Beach,+FL+33140" target="_blank">525 W 41st St</a></div>
+
+<div class="location-desc">Popular kosher cafe offering bagels, breakfast, and lunch.</div>
+
+<div class="btn-group"><a class="action-link secondary" href="https://www.toasttab.com/miris-cafe-525-w-41st-st/v3/" target="_blank">Order Online</a></div>
+</div>
+
+<div class="location-card">
+<div class="location-name">Fialkoff&#39;s Express</div>
+
+<div class="location-meta"><a class="address-link" href="https://maps.google.com/?q=544+Arthur+Godfrey+Rd,+Miami+Beach,+FL+33140" target="_blank">544 Arthur Godfrey Rd</a></div>
+
+<div class="location-desc">Famous kosher pizza and dairy restaurant.</div>
+
+<div class="btn-group"><a class="action-link secondary" href="https://www.fialkoffsexpress.com/" target="_blank">Order Online</a></div>
+</div>
+
+<div class="location-card">
+<div class="location-name">41 Pizza</div>
+
+<div class="location-meta"><a class="address-link" href="https://maps.google.com/?q=451+W+41st+St,+Miami+Beach,+FL+33140" target="_blank">451 W 41st St</a></div>
+
+<div class="location-desc">Classic kosher pizzeria and bakery.</div>
+
+<div class="btn-group"><a class="action-link secondary" href="https://www.41pizzabakery.com/" target="_blank">Order Online</a></div>
+</div>
+</div>
+</div>
+</div>
+<script>
+        function toggleAccordion(id) {
+            // Get the element
+            var item = document.getElementById(id);
+
+            // Toggle active class
+            if (item.classList.contains('active')) {
+                item.classList.remove('active');
+            } else {
+                item.classList.add('active');
+            }
+        }
+    </script></div>

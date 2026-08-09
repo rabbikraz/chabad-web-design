@@ -1,0 +1,442 @@
+<!-- Mikvah & Eruv Fragment -->
+<div class="mikvah-eruv-wrapper">
+<style type="text/css">/* Import Fonts */
+        @import url('https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700&family=Marcellus&display=swap');
+
+        /* Scoped Styles */
+        .mikvah-eruv-wrapper {
+            padding: 0 clamp(0px, 2vw, 24px);
+            font-family: var(--sb-font-body, 'Figtree', sans-serif);
+            background-color: var(--sb-bg, #FBF5E9);
+            color: var(--sb-text, #17232E);
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .mikvah-eruv-wrapper * {
+            box-sizing: border-box;
+        }
+
+        /* HEADER */
+        .mikvah-eruv-wrapper .header-section {
+            background: linear-gradient(135deg, var(--sb-teal-900, #072026) 0%, var(--sb-teal, #17656B) 100%);
+            width: 100%;
+            padding: 5rem 1.5rem 6rem;
+            text-align: center;
+            color: #ffffff !important;
+            position: relative;
+            z-index: 1;
+        
+            border-radius: var(--sb-radius-lg, 18px);
+            box-shadow: var(--sb-shadow-md, 0 10px 28px rgba(23,35,46,.12));
+        }
+
+        .mikvah-eruv-wrapper .header-section h1 {
+            font-family: var(--sb-font-heading, 'Marcellus', serif);
+            font-size: 5rem;
+            font-weight: 700;
+            margin: 0 0 1rem 0;
+            color: #ffffff !important;
+            line-height: 1.1;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .mikvah-eruv-wrapper .header-section .subtitle {
+            font-size: 1.75rem;
+            /* Increased to 1.75rem */
+            color: rgba(255, 255, 255, 0.95);
+            font-weight: 300;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* MAIN CONTENT AREA */
+        .mikvah-eruv-wrapper .content-container {
+            max-width: 1000px;
+            width: 95%;
+            margin-top: -4rem;
+            margin-bottom: 4rem;
+            padding: 0 1.5rem;
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        /* ACCORDION ITEMS */
+        /* ACCORDION ITEMS - TABLE LAYOUT FOR ROBUSTNESS */
+        .mikvah-eruv-wrapper .accordion-item {
+            background: var(--sb-surface, #F3E8D3);
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            border: 1px solid var(--sb-divider, rgba(23,35,46,.14));
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .mikvah-eruv-wrapper .accordion-header {
+            display: table;
+            width: 100%;
+            table-layout: fixed;
+            padding: 2.5rem 2rem;
+            /* Increased Padding */
+            background: var(--sb-surface, #F3E8D3);
+            cursor: pointer;
+            box-sizing: border-box;
+            user-select: none;
+            border-bottom: 1px solid transparent;
+        }
+
+        .mikvah-eruv-wrapper .accordion-item.active .accordion-header {
+            border-bottom: 1px solid var(--sb-surface, #F3E8D3);
+        }
+
+        /* Title Cell */
+        .mikvah-eruv-wrapper .accordion-title-cell {
+            display: table-cell;
+            vertical-align: middle;
+            text-align: left;
+            width: 85%;
+        }
+
+        .mikvah-eruv-wrapper .accordion-title {
+            font-family: var(--sb-font-heading, 'Marcellus', serif);
+            font-size: 3rem;
+            /* Increased to 3rem from 2rem */
+            font-weight: 700;
+            color: var(--sb-teal, #17656B);
+            margin: 0;
+            line-height: 1.1;
+        }
+
+        /* Icon Cell */
+        .mikvah-eruv-wrapper .accordion-icon-cell {
+            display: table-cell;
+            vertical-align: middle;
+            text-align: right;
+            width: 15%;
+            padding-left: 1rem;
+        }
+
+        /* Chevron Icon */
+        .mikvah-eruv-wrapper .chevron-icon {
+            display: inline-block;
+            width: 40px;
+            /* Increased size */
+            height: 40px;
+            /* Gold Chevron */
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23C08A2E' stroke-width='2.5'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7' /%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: contain;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Active State */
+        .mikvah-eruv-wrapper .accordion-item.active .chevron-icon {
+            transform: rotate(180deg);
+            /* Blue Chevron on active */
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2317656B' stroke-width='2.5'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7' /%3E%3C/svg%3E");
+        }
+
+        /* CONTENT BODY (Hidden by default) */
+        .mikvah-eruv-wrapper .accordion-body {
+            display: none;
+            padding: 0 2.5rem 3rem 2.5rem;
+            border-top: 1px solid var(--sb-divider, rgba(23,35,46,.14));
+        }
+
+        .mikvah-eruv-wrapper .accordion-item.active .accordion-body {
+            display: block;
+        }
+
+        /* INNER MIKVAH CARDS */
+        .mikvah-eruv-wrapper .mikvah-location {
+            background: var(--sb-bg, #FBF5E9);
+            border-radius: 12px;
+            padding: 2.5rem;
+            /* Increased padding */
+            margin-bottom: 2rem;
+            border-left: 6px solid var(--sb-teal, #17656B);
+        }
+
+        .mikvah-eruv-wrapper .location-name {
+            font-size: 2rem;
+            /* Increased to 2rem */
+            font-weight: 700;
+            color: var(--sb-teal, #17656B);
+            margin-bottom: 1.5rem;
+            font-family: var(--sb-font-heading, 'Marcellus', serif);
+        }
+
+        .mikvah-eruv-wrapper .info-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+            /* Increased gap */
+        }
+
+        @media(min-width: 700px) {
+            .mikvah-eruv-wrapper .info-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .mikvah-eruv-wrapper .info-label {
+            font-weight: 600;
+            color: rgba(23,35,46,.6);
+            font-size: 1.1rem;
+            /* Increased to 1.1rem */
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .mikvah-eruv-wrapper .info-value {
+            font-size: 1.4rem;
+            /* Increased to 1.4rem */
+            color: var(--sb-teal-900, #072026);
+            font-weight: 500;
+        }
+
+        .mikvah-eruv-wrapper .full-list-link {
+            display: block;
+            text-align: center;
+            background: var(--sb-teal, #17656B);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 99px;
+            text-decoration: none;
+            font-weight: 700;
+            margin-top: 1rem;
+            transition: background 0.3s;
+        }
+
+        .mikvah-eruv-wrapper .full-list-link:hover {
+            background: var(--sb-teal-900, #072026);
+        }
+
+        /* Address Link Style */
+        .mikvah-eruv-wrapper .address-link {
+            text-decoration: underline;
+            color: var(--sb-teal, #17656B) !important;
+            font-weight: 600;
+            transition: color 0.2s;
+            cursor: pointer;
+        }
+
+        .mikvah-eruv-wrapper .address-link:hover {
+            color: var(--sb-teal-900, #072026) !important;
+        }
+
+        /* ERUV CONTENT */
+        .mikvah-eruv-wrapper .map-container {
+            width: 100%;
+            height: 600px;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--sb-divider, rgba(23,35,46,.14));
+            background: var(--sb-surface, #F3E8D3);
+        }
+
+        .mikvah-eruv-wrapper iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .mikvah-eruv-wrapper .header-section h1 {
+                font-size: 3rem;
+            }
+
+            .mikvah-eruv-wrapper .accordion-title {
+                font-size: 1.8rem;
+            }
+
+            .mikvah-eruv-wrapper .accordion-header {
+                padding: 1.5rem;
+            }
+
+            .mikvah-eruv-wrapper .accordion-body {
+                padding: 0 1.5rem 2rem 1.5rem;
+            }
+
+            .mikvah-eruv-wrapper .map-container {
+                height: 400px;
+            }
+        }
+</style>
+<div class="header-section">
+<h1>Mikvah &amp; Eruv</h1>
+
+<div class="subtitle">Community Resources</div>
+</div>
+
+<div class="content-container"><!-- Accordion Item 1: Eruv -->
+<div class="accordion-item" id="acc-eruv">
+<div class="accordion-header" onclick="toggleAccordion('acc-eruv')">
+<div class="accordion-title-cell">
+<h2 class="accordion-title">Eruv Map</h2>
+</div>
+
+<div class="accordion-icon-cell">
+<div class="chevron-icon">&nbsp;</div>
+</div>
+</div>
+
+<div class="accordion-body">
+<div style="height: 1rem;">&nbsp;</div>
+<a class="full-list-link" href="https://www.miamibeacheruv.org/" style="margin-bottom: 2rem; margin-top:0;" target="_blank">For more info and updates click here &rarr; </a>
+
+<div class="map-container"><iframe height="480" src="https://www.google.com/maps/d/embed?mid=1XhSNBTYm0pkAkbe7SfBZnTkULJ3G3r0U&amp;ehbc=2E312F&amp;z=15&amp;ll=25.777218017324753,-80.13460579382753" width="640"></iframe></div>
+</div>
+</div>
+
+<div class="accordion-item" id="acc-mikvah"><!-- Use DIV instead of BUTTON to safely avoid CMS styling interference -->
+<div class="accordion-header" onclick="toggleAccordion('acc-mikvah')">
+<div class="accordion-title-cell">
+<h2 class="accordion-title">Womens Mikvah</h2>
+</div>
+
+<div class="accordion-icon-cell">
+<div class="chevron-icon">&nbsp;</div>
+</div>
+</div>
+
+<div class="accordion-body">
+<style type="text/css">.appointment-card-btn {
+                        display: block;
+                        background: linear-gradient(135deg, var(--sb-teal, #17656B) 0%, #1e40af 100%);
+                        color: #ffffff;
+                        text-align: center;
+                        padding: 1rem;
+                        border-radius: 8px;
+                        font-weight: 600;
+                        text-decoration: none;
+                        margin-top: 1.5rem;
+                        box-shadow: 0 4px 6px rgba(30, 58, 138, 0.1);
+                        transition: transform 0.2s, box-shadow 0.2s;
+                    }
+
+                    .appointment-card-btn:hover {
+                        transform: translateY(-2px);
+                        box-shadow: 0 6px 12px rgba(30, 58, 138, 0.2);
+                        color: #ffffff;
+                    }
+</style>
+<div style="height: 2rem;">&nbsp;</div>
+<!-- Location 1: Daughters -->
+
+<div class="mikvah-location">
+<div class="location-name">Daughters of Israel Mikvah Center</div>
+
+<div class="info-grid">
+<div><span class="info-label">Address</span>
+
+<div class="info-value"><a class="address-link" href="https://maps.google.com/?q=2530+Pine+Tree+Drive,+Miami+Beach,+FL" target="_blank">2530 Pine Tree Drive</a></div>
+
+<div class="info-value" style="font-size:0.9rem; color:rgba(23,35,46,.6);">(Between 25th &amp; 26th Street)</div>
+</div>
+
+<div><span class="info-label">Contact</span>
+
+<div class="info-value"><a href="tel:7869928770" style="color:var(--sb-teal, #17656B); text-decoration:none;">786-992-8770</a></div>
+</div>
+
+<div><span class="info-label">Website</span>
+
+<div class="info-value"><a class="address-link" href="https://mikvahmiamibeach.com/" target="_blank">mikvahmiamibeach.com</a></div>
+</div>
+
+<div><span class="info-label">Type</span>
+
+<div class="info-value">Side by Side / Bor Al Gabai Bor</div>
+</div>
+</div>
+<a class="appointment-card-btn" href="https://mikvahmiamibeach.com/" target="_blank">Click Here to Make an Appointment</a>
+
+<div style="margin-top:1.5rem; padding-top:1rem; border-top:1px dashed var(--sb-accent-200, #EFDAAE);"><span class="info-label">Notes</span> <span class="info-value">Handicapped Accessible. Supervision: Rabbi Pinchas Aaron Weberman.</span></div>
+</div>
+<!-- Location 2: The Shul -->
+
+<div class="mikvah-location" style="border-left-color: var(--sb-accent, #C08A2E);">
+<div class="location-name">The Shul Mikvah</div>
+
+<div class="info-grid">
+<div><span class="info-label">Address</span>
+
+<div class="info-value"><a class="address-link" href="https://maps.google.com/?q=9540+Collins+Avenue,+Surfside,+FL" target="_blank">9540 Collins Avenue</a></div>
+
+<div class="info-value" style="font-size:0.9rem; color:rgba(23,35,46,.6);">(Between 95th &amp; 96th St.)</div>
+</div>
+
+<div><span class="info-label">Contact</span>
+
+<div class="info-value">Devorah Failer</div>
+
+<div class="info-value"><a href="tel:305-866-1492" style="color:var(--sb-teal, #17656B); text-decoration:none;">305-866-1492</a> / <a href="tel:305-323-2410" style="color:var(--sb-teal, #17656B); text-decoration:none;">305-323-2410</a></div>
+</div>
+
+<div><span class="info-label">Website</span>
+
+<div class="info-value"><a class="address-link" href="https://theshulmikvah.org/" target="_blank">theshulmikvah.org</a></div>
+</div>
+
+<div><span class="info-label">Type</span>
+
+<div class="info-value">Bor Al Gabai Bor (Below Immersion Pool)</div>
+</div>
+</div>
+<a class="appointment-card-btn" href="https://theshulmikvah.org/" target="_blank">Click Here to Make an Appointment</a>
+
+<div style="margin-top:1.5rem; padding-top:1rem; border-top:1px dashed var(--sb-accent-200, #EFDAAE);"><span class="info-label">Details</span> <span class="info-value">Shul Of Bal Harbor. Supervision: Rabbi Sholom Dovber Lipskar.</span></div>
+</div>
+<!-- Location 3: Jovita Cojab -->
+
+<div class="mikvah-location" style="border-left-color: var(--sb-teal, #17656B);">
+<div class="location-name">Mikveh Jovita Cojab of NMB</div>
+
+<div class="info-grid">
+<div><span class="info-label">Address</span>
+
+<div class="info-value"><a class="address-link" href="https://maps.google.com/?q=1054+N.E.+Miami+Gardens+Drive,+North+Miami+Beach,+FL" target="_blank">1054 N.E. Miami Gardens Drive</a></div>
+
+<div class="info-value" style="font-size:0.9rem; color:rgba(23,35,46,.6);">(Between N.E. 10th &amp; 11th Ave)</div>
+</div>
+
+<div><span class="info-label">Contact</span>
+
+<div class="info-value">Mrs. Judi Bidnick</div>
+
+<div class="info-value"><a href="tel:3059499650" style="color:var(--sb-teal, #17656B); text-decoration:none;">305-949-9650</a></div>
+</div>
+
+<div><span class="info-label">Website</span>
+
+<div class="info-value"><a class="address-link" href="https://mikvahnmb.org/" target="_blank">mikvahnmb.org</a></div>
+</div>
+</div>
+<a class="appointment-card-btn" href="https://mikvahnmb.org/" target="_blank">Click Here to Make an Appointment</a></div>
+<a class="full-list-link" href="https://www.mikvah.org/directory/florida" target="_blank">View Full List of Mikvahs in Florida &rarr;</a></div>
+</div>
+</div>
+<script>
+        function toggleAccordion(id) {
+            // Get the element
+            var item = document.getElementById(id);
+
+            // Toggle active class
+            if (item.classList.contains('active')) {
+                item.classList.remove('active');
+            } else {
+                item.classList.add('active');
+            }
+        }
+    </script></div>

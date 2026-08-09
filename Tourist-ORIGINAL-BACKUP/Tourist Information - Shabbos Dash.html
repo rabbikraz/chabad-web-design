@@ -1,0 +1,2307 @@
+<!-- Admin Dashboard for ChabadOne CMS -->
+<div id="chabadAdminRoot" style="font-family: 'Inter', -apple-system, sans-serif; background: #ffffff; min-height: 100vh; margin: -20px; padding: 20px;"><!-- Loading Overlay -->
+<div id="loadingOverlay" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(255, 255, 255, 0.95); z-index: 9999; justify-content: center; align-items: center; flex-direction: column;">
+<div style="width: 50px; height: 50px; border: 4px solid #e2e8f0; border-top-color: #c9a227; border-radius: 50%; animation: spin 1s linear infinite;">&nbsp;</div>
+
+<div id="loadingText" style="margin-top: 1rem; color: #1a365d; font-weight: 500;">Loading...</div>
+</div>
+<style type="text/css">@keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Per-row mobile labels — hidden on desktop, shown on phones. */
+        .mob-label { display: none; }
+        .mobile-details-toggle,
+        .mobile-local-details-toggle { display: none; }
+
+        /* ============================================
+           MOBILE OVERRIDES (phones)
+           ============================================ */
+        @media (max-width: 768px) {
+            /* Shrink outer wrapper so we recover viewport width */
+            #chabadAdminRoot { margin: -8px !important; padding: 8px !important; }
+
+            /* Login page */
+            #adminLoginPage { padding: 1rem !important; min-height: 70vh !important; }
+            #adminLoginPage > div { padding: 1.75rem 1.25rem !important; border-radius: 14px !important; }
+            #adminLoginPage h1 { font-size: 1.4rem !important; }
+
+            #adminDashboard { padding: 0 !important; }
+            #adminDashboard > div:first-child { flex-direction: column !important; align-items: flex-start !important; gap: 0.75rem !important; margin-bottom: 1rem !important; }
+            #adminDashboard h1 { font-size: 1.4rem !important; }
+
+            /* Section panels: tighter padding + rounder cards */
+            #adminDashboard > div { border-radius: 12px !important; }
+            #adminDashboard > div[style*="padding: 1.5rem"] { padding: 1rem !important; }
+            #localsBody, #codesBody { padding: 1rem !important; }
+            #reservationsHeader, #localsHeader, #codesHeader { padding: 0.9rem 1rem !important; font-size: 1rem !important; }
+            #adminTableContainer > div:first-child[style*="background: #1a365d"],
+            #adminDashboard > div > div[style*="background: #1a365d"] { padding: 0.9rem 1rem !important; font-size: 1rem !important; }
+
+            /* Stats: 2-col grid */
+            #statsGrid {
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 0.5rem !important;
+                margin-bottom: 1rem !important;
+            }
+            #statsGrid > div { padding: 1rem 0.5rem !important; border-radius: 12px !important; }
+            #statsGrid > div > div:first-child { font-size: 1.6rem !important; }
+            #statsGrid > div > div:last-child { font-size: 0.7rem !important; }
+
+            #addGuestTopBar {
+                align-items: stretch !important;
+                flex-direction: column !important;
+                gap: 0.75rem !important;
+            }
+            #toggleAddGuestBtn { width: 100% !important; }
+
+            /* Add Guests: hide header row + stack each row as a card */
+            #addGuestHeader { display: none !important; }
+            [id^="guestRow_"] {
+                display: flex !important;
+                flex-direction: column !important;
+                gap: 0.5rem !important;
+                padding: 1rem !important;
+                background: #f7fafc !important;
+                border-radius: 10px !important;
+                margin-bottom: 0.75rem !important;
+            }
+            [id^="guestRow_"] > .mob-row {
+                display: flex !important;
+                align-items: center !important;
+                justify-content: space-between !important;
+                gap: 0.5rem !important;
+                width: 100%;
+            }
+            [id^="guestRow_"] .mob-label {
+                display: inline-block !important;
+                font-size: 0.85rem;
+                color: #4a5568;
+                font-weight: 600;
+                flex-shrink: 0;
+            }
+            [id^="guestRow_"] input { font-size: 1rem !important; flex: 1; min-width: 0; }
+            [id^="guestRow_"] > button { align-self: stretch; margin-top: 0.25rem; }
+
+            /* Add Local + Add Code forms: collapse to single column */
+            #localsBody > div[style*="grid-template-columns"],
+            #codesBody > div[style*="grid-template-columns"] {
+                grid-template-columns: 1fr !important;
+                gap: 0.5rem !important;
+            }
+
+            /* TABLES → card layout. Hide thead, turn each <tr> into a card,
+               and let each <td> render its label via the data-label attribute. */
+            #adminTableContainer,
+            #localsTableContainer,
+            #codesTableContainer { overflow-x: visible !important; }
+
+            #adminTableContainer table,
+            #localsTableContainer table,
+            #codesTableContainer table { display: block !important; width: 100% !important; }
+
+            #adminTableContainer thead,
+            #localsTableContainer thead,
+            #codesTableContainer thead { display: none !important; }
+
+            #adminTableContainer tbody,
+            #localsTableContainer tbody,
+            #codesTableContainer tbody { display: block !important; }
+
+            #adminTableContainer tr,
+            #localsTableContainer tr,
+            #codesTableContainer tr {
+                display: block !important;
+                background: white !important;
+                border: 1px solid #e2e8f0 !important;
+                border-radius: 12px !important;
+                padding: 0.6rem 0.85rem !important;
+                margin-bottom: 0.75rem !important;
+                box-shadow: 0 1px 3px rgba(0,0,0,0.04) !important;
+            }
+
+            #adminTableContainer td,
+            #localsTableContainer td,
+            #codesTableContainer td {
+                display: flex !important;
+                flex-wrap: wrap !important;
+                align-items: center !important;
+                gap: 0.5rem !important;
+                padding: 0.5rem 0 !important;
+                border-bottom: 1px solid #f1f5f9 !important;
+                font-size: 0.95rem !important;
+                color: #2d3748 !important;
+            }
+            #adminTableContainer tr td:last-child,
+            #localsTableContainer tr td:last-child,
+            #codesTableContainer tr td:last-child { border-bottom: none !important; }
+
+            #adminTableContainer td::before,
+            #localsTableContainer td::before,
+            #codesTableContainer td::before {
+                content: attr(data-label);
+                font-size: 0.7rem;
+                font-weight: 700;
+                color: #718096;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                margin-right: auto;
+            }
+            /* Empty-label cells (e.g., the bulk-select checkbox) — drop the ::before */
+            #adminTableContainer td[data-label=""]::before,
+            #localsTableContainer td[data-label=""]::before,
+            #codesTableContainer td[data-label=""]::before { content: none; }
+
+            /* Multi-line cells (per-meal tickers) — stack label above content */
+            #localsTableContainer td.cell-multi {
+                flex-direction: column !important;
+                align-items: stretch !important;
+            }
+            #localsTableContainer td.cell-multi::before { margin: 0 0 0.4rem 0; }
+            #localsTableContainer td.cell-multi > div { min-width: 0 !important; width: 100% !important; }
+
+            .mobile-details-toggle,
+            .mobile-local-details-toggle {
+                display: inline-flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                padding: 0.4rem 0.75rem !important;
+                background: #edf2f7 !important;
+                border: 1px solid #cbd5e0 !important;
+                color: #1a365d !important;
+                border-radius: 6px !important;
+                cursor: pointer !important;
+                font-size: 0.8rem !important;
+                font-weight: 600 !important;
+            }
+
+            #adminTableContainer tr:not(.details-open) td.res-detail,
+            #localsTableContainer tr:not(.details-open) td.local-detail,
+            #localsTableContainer tr:not(.details-open) .local-detail-action {
+                display: none !important;
+            }
+            #adminTableContainer td.res-primary-actions::before,
+            #localsTableContainer td.local-primary-actions::before {
+                content: none !important;
+            }
+            #adminTableContainer td.res-primary-actions,
+            #localsTableContainer td.local-primary-actions {
+                justify-content: flex-end !important;
+            }
+
+            #localsBulkBar {
+                position: sticky !important;
+                bottom: 0.5rem !important;
+                z-index: 20 !important;
+                background: white !important;
+                border: 1px solid #e2e8f0 !important;
+                border-radius: 12px !important;
+                padding: 0.75rem !important;
+                box-shadow: 0 8px 22px rgba(26,54,93,0.14) !important;
+            }
+            #bulkAddLocalsBtn { flex: 1 1 100% !important; width: 100% !important; }
+            #localsSelectedCount { font-size: 0.85rem !important; color: #718096 !important; }
+            .local-select, #localsSelectAll { width: 22px !important; height: 22px !important; }
+
+            /* Tap-target floor */
+            button { min-height: 38px; }
+
+            /* Edit modal: take the screen */
+            #editGuestModal,
+            #editLocalModal,
+            #moveGuestModal { padding: 0.5rem !important; }
+            #editGuestModal > div,
+            #editLocalModal > div,
+            #moveGuestModal > div {
+                width: 95% !important;
+                max-width: 95% !important;
+                padding: 1.25rem !important;
+                max-height: 90vh;
+                overflow-y: auto;
+                border-radius: 14px !important;
+            }
+            #editGuestModal > div > div[style*="grid-template-columns"],
+            #editLocalModal > div > div[style*="grid-template-columns"] {
+                grid-template-columns: 1fr !important;
+                gap: 0.75rem !important;
+            }
+            #editGuestMealInputs { grid-template-columns: 1fr !important; }
+        }
+</td></tr>
+</style>
+<!-- Login Page -->
+<div id="adminLoginPage" style="display: flex; align-items: center; justify-content: center; min-height: 80vh; padding: 2rem;">
+<div style="background: white; border-radius: 20px; padding: 3rem; box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15); max-width: 400px; width: 100%; text-align: center; border: 1px solid #e2e8f0;">
+<h1 style="font-family: Georgia, serif; font-size: 1.75rem; color: #1a365d; margin: 0 0 0.5rem 0;">Admin Dashboard</h1>
+
+<p style="color: #718096; margin: 0 0 2rem 0;">Chabad in South Beach</p>
+
+<div id="adminLoginError" style="color: #e53e3e; margin-bottom: 1rem; display: none;">Invalid credentials</div>
+<input autocomplete="username" id="adminUsername" placeholder="Username" style="width: 100%; padding: 1rem 1.25rem; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 1rem; margin-bottom: 1rem; box-sizing: border-box;" type="text" /><input autocomplete="current-password" id="adminPassword" placeholder="Password" style="width: 100%; padding: 1rem 1.25rem; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 1rem; margin-bottom: 1rem; box-sizing: border-box;" type="password" /><button id="adminLoginBtn" style="width: 100%; padding: 1rem; background: linear-gradient(135deg, #c9a227, #d4af37); color: white; border: none; border-radius: 10px; font-size: 1.1rem; font-weight: 600; cursor: pointer;">Sign In</button></div>
+</div>
+<!-- Dashboard -->
+
+<div id="adminDashboard" style="display: none; padding: 0; max-width: 1200px; margin: 0 auto;">
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
+<div>
+<h1 style="font-family: Georgia, serif; font-size: 2rem; color: #1a365d; margin: 0;">Shabbat Reservations</h1>
+
+<p style="color: #718096; font-size: 0.9rem; margin: 0.25rem 0 0 0;">Chabad in South Beach Admin Dashboard</p>
+</div>
+<button id="adminLogoutBtn" style="padding: 0.75rem 1.5rem; background: #1a365d; border: none; color: white; border-radius: 8px; cursor: pointer; font-size: 0.9rem;">Sign Out</button></div>
+<!-- Week Selector -->
+
+<div style="background: white; border-radius: 16px; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);"><label for="adminWeekSelect" style="display: block; font-weight: 600; color: #1a365d; margin-bottom: 0.75rem;">Select Shabbos Week</label> <select id="adminWeekSelect" style="width: 100%; padding: 1rem; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 1rem; background: white; cursor: pointer;"><option value="">Loading weeks...</option> </select>
+
+<div style="margin-top: 0.85rem;"><button id="toggleAddWeekBtn" style="padding: 0.55rem 1rem; background: #edf2f7; color: #1a365d; border: 2px dashed #cbd5e0; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.9rem;" type="button">+ Add a week</button></div>
+
+<div id="addWeekBody" style="display: none; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #edf2f7;"><label for="addWeekSelect" style="display: block; font-weight: 600; color: #1a365d; margin-bottom: 0.5rem; font-size: 0.9rem;">Pick a Shabbos or holiday to add</label> <select id="addWeekSelect" style="width: 100%; padding: 0.85rem; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 1rem; background: white; cursor: pointer;"><option value="">Loading dates...</option> </select>
+
+<div id="addWeekPreview" style="display: none; margin-top: 0.85rem; padding: 0.85rem 1rem; background: #f7fafc; border-radius: 10px; font-size: 0.9rem; color: #4a5568;">&nbsp;</div>
+
+<div style="margin-top: 0.85rem; display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;"><button disabled="disabled" id="createWeekBtn" style="padding: 0.7rem 1.4rem; background: linear-gradient(135deg, #c9a227, #d4af37); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.95rem; opacity: 0.6;" type="button">Create Week</button>
+
+<div id="addWeekMsg" style="display: none; font-weight: 500; font-size: 0.9rem;">&nbsp;</div>
+</div>
+</div>
+</div>
+<!-- Stats Grid -->
+
+<div id="statsGrid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
+<div style="text-align: center; padding: 2rem; color: #718096; grid-column: 1 / -1;">Select a week to see stats</div>
+</div>
+<!-- Add Guests Section -->
+
+<div id="addGuestSection" style="background: white; border-radius: 16px; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); display: none;">
+<div id="addGuestTopBar" style="display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap;">
+<div style="font-weight: 600; color: #1a365d; font-size: 1.1rem;">Add Guests</div>
+<button id="toggleAddGuestBtn" style="padding: 0.7rem 1.25rem; background: linear-gradient(135deg, #c9a227, #d4af37); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.95rem;" type="button">+ Add Guests</button></div>
+
+<div id="addGuestBody" style="display: none; margin-top: 1rem;">
+<div id="addGuestHeader" style="display: grid; grid-template-columns: 2fr 1fr 1fr 2fr 2fr 40px; gap: 0.5rem; margin-bottom: 0.5rem;">&nbsp;</div>
+
+<div id="guestRowsContainer">&nbsp;</div>
+<!-- Buttons -->
+
+<div style="margin-top: 1rem; display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;"><button id="addAnotherBtn" style="padding: 0.6rem 1.25rem; background: #edf2f7; color: #1a365d; border: 2px dashed #cbd5e0; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.95rem;">+ Add Another</button><button id="submitAllBtn" style="padding: 0.75rem 1.5rem; background: linear-gradient(135deg, #c9a227, #d4af37); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 1rem;">Submit All</button>
+
+<div id="addGuestMsg" style="color: #22543d; display: none; font-weight: 500;">&nbsp;</div>
+</div>
+</div>
+</div>
+<!-- Reservations Table -->
+
+<div style="background: white; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); overflow: hidden;">
+<div id="reservationsHeader" style="background: #1a365d; color: white; padding: 1.25rem 1.5rem; font-weight: 600; font-size: 1.1rem; cursor: pointer; display: flex; justify-content: space-between; align-items: center; user-select: none;"><span>Reservations</span> <span id="reservationsToggleIcon" style="font-size: 0.9rem; opacity: 0.8;">▾ Hide</span></div>
+
+<div id="reservationsBody" style="display: block;">
+<div id="adminTableContainer" style="overflow-x: auto;">
+<div style="text-align: center; padding: 3rem; color: #718096;">Select a week to view reservations</div>
+</div>
+</div>
+</div>
+<!-- Locals Section -->
+
+<div style="background: white; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); margin-top: 1.5rem; overflow: hidden;">
+<div id="localsHeader" style="background: #1a365d; color: white; padding: 1.25rem 1.5rem; font-weight: 600; font-size: 1.1rem; cursor: pointer; display: flex; justify-content: space-between; align-items: center; user-select: none;"><span>Locals</span> <span id="localsToggleIcon" style="font-size: 0.9rem; opacity: 0.8;">▸ Show</span></div>
+
+<div id="localsBody" style="display: none; padding: 1.5rem;">
+<div style="display: grid; grid-template-columns: 1.8fr 1.8fr 1.2fr 0.7fr 1.8fr 90px; gap: 0.5rem; margin-bottom: 1rem; align-items: end;">
+<div><label style="display: block; font-size: 0.8rem; color: #4a5568; font-weight: 600; margin-bottom: 0.25rem;">Family Name</label> <input id="newLocalName" placeholder="Cohen Family" style="width: 100%; padding: 0.6rem; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.95rem; box-sizing: border-box;" type="text" /></div>
+
+<div><label style="display: block; font-size: 0.8rem; color: #4a5568; font-weight: 600; margin-bottom: 0.25rem;">Email</label> <input id="newLocalEmail" placeholder="email@..." style="width: 100%; padding: 0.6rem; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.95rem; box-sizing: border-box;" type="email" /></div>
+
+<div><label style="display: block; font-size: 0.8rem; color: #4a5568; font-weight: 600; margin-bottom: 0.25rem;">Phone</label> <input id="newLocalPhone" placeholder="555-..." style="width: 100%; padding: 0.6rem; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.95rem; box-sizing: border-box;" type="tel" /></div>
+
+<div><label style="display: block; font-size: 0.8rem; color: #4a5568; font-weight: 600; margin-bottom: 0.25rem;">Headcount</label> <input id="newLocalHeadcount" min="0" placeholder="1" style="width: 100%; padding: 0.6rem; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.95rem; box-sizing: border-box;" type="number" value="1" /></div>
+
+<div><label style="display: block; font-size: 0.8rem; color: #4a5568; font-weight: 600; margin-bottom: 0.25rem;">Notes</label> <input id="newLocalNotes" placeholder="optional" style="width: 100%; padding: 0.6rem; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.95rem; box-sizing: border-box;" type="text" /></div>
+<button id="addLocalBtn" style="padding: 0.65rem 1rem; background: linear-gradient(135deg, #c9a227, #d4af37); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.95rem;" type="button">+ Save</button></div>
+
+<div id="addLocalMsg" style="display: none; font-size: 0.85rem; margin-bottom: 0.75rem;">&nbsp;</div>
+
+<div id="localsTableContainer" style="overflow-x: auto;">
+<div style="text-align: center; padding: 1rem; color: #718096;">Loading regulars...</div>
+</div>
+</div>
+</div>
+<!-- Discount Codes Section -->
+
+<div style="background: white; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); margin-top: 1.5rem; overflow: hidden;">
+<div id="codesHeader" style="background: #1a365d; color: white; padding: 1.25rem 1.5rem; font-weight: 600; font-size: 1.1rem; cursor: pointer; display: flex; justify-content: space-between; align-items: center; user-select: none;"><span>Discount Codes</span> <span id="codesToggleIcon" style="font-size: 0.9rem; opacity: 0.8;">▸ Show</span></div>
+
+<div id="codesBody" style="display: none; padding: 1.5rem;">
+<div style="display: grid; grid-template-columns: 1.3fr 1.4fr 0.9fr 0.9fr 1.8fr 90px; gap: 0.5rem; margin-bottom: 1rem; align-items: end;">
+<div><label style="display: block; font-size: 0.8rem; color: #4a5568; font-weight: 600; margin-bottom: 0.25rem;">Code</label> <input id="newCodeName" placeholder="EARLYBIRD" style="width: 100%; padding: 0.6rem; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.95rem; text-transform: uppercase; box-sizing: border-box;" type="text" /></div>
+
+<div><label style="display: block; font-size: 0.8rem; color: #4a5568; font-weight: 600; margin-bottom: 0.25rem;">Type</label> <select id="newCodeType" style="width: 100%; padding: 0.6rem; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.95rem; background: white; box-sizing: border-box;"><option value="percent">% off total</option><option value="fixed">$ off total</option><option value="cap_per_head">$/person cap</option></select></div>
+
+<div><label style="display: block; font-size: 0.8rem; color: #4a5568; font-weight: 600; margin-bottom: 0.25rem;">Value</label> <input id="newCodeValue" min="0" placeholder="0" style="width: 100%; padding: 0.6rem; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.95rem; box-sizing: border-box;" type="number" /></div>
+
+<div><label style="display: block; font-size: 0.8rem; color: #4a5568; font-weight: 600; margin-bottom: 0.25rem;" title="Blank = unlimited">Max Uses</label> <input id="newCodeMax" min="0" placeholder="∞" style="width: 100%; padding: 0.6rem; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.95rem; box-sizing: border-box;" type="number" /></div>
+
+<div><label style="display: block; font-size: 0.8rem; color: #4a5568; font-weight: 600; margin-bottom: 0.25rem;">Notes</label> <input id="newCodeNotes" placeholder="optional" style="width: 100%; padding: 0.6rem; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.95rem; box-sizing: border-box;" type="text" /></div>
+<button id="addCodeBtn" style="padding: 0.65rem 1rem; background: linear-gradient(135deg, #c9a227, #d4af37); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.95rem;" type="button">+ Add</button></div>
+
+<div id="addCodeMsg" style="display: none; font-size: 0.85rem; margin-bottom: 0.75rem;">&nbsp;</div>
+
+<div id="codesTableContainer" style="overflow-x: auto;">
+<div style="text-align: center; padding: 1rem; color: #718096;">Loading codes...</div>
+</div>
+</div>
+</div>
+<!-- Past Weeks — prior weeks live here so the main selector stays focused on upcoming. -->
+
+<div id="pastWeeksPanel" style="background: white; border-radius: 16px; padding: 1.5rem; margin-top: 1.5rem; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);"><label for="adminPastWeekSelect" style="display: block; font-weight: 600; color: #1a365d; margin-bottom: 0.75rem;">Past Weeks</label> <select id="adminPastWeekSelect" style="width: 100%; padding: 1rem; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 1rem; background: white; cursor: pointer;"><option value="">Select a past week...</option> </select></div>
+</div>
+<!-- Edit Guest Modal -->
+
+<div id="editGuestModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 10000; justify-content: center; align-items: center;">
+<div style="background: white; border-radius: 20px; padding: 2rem; max-width: 520px; width: 90%; box-shadow: 0 25px 50px rgba(0,0,0,0.25);">
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+<h2 style="font-family: Georgia, serif; font-size: 1.4rem; color: #1a365d; margin: 0;">Edit Guest</h2>
+<button id="editModalClose" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #718096; line-height: 1;">&times;</button></div>
+<input id="editGuestRow" type="hidden" />
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+<div style="grid-column: 1 / -1;"><label style="display: block; font-size: 0.85rem; color: #4a5568; margin-bottom: 0.25rem;">Name</label> <input id="editGuestName" placeholder="Guest Name" style="width: 100%; padding: 0.75rem; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 1rem; box-sizing: border-box;" type="text" /></div>
+
+<div id="editGuestMealInputs" style="grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">&nbsp;</div>
+
+<div><label style="display: block; font-size: 0.85rem; color: #4a5568; margin-bottom: 0.25rem;">Cash Paid ($)</label> <input id="editGuestCash" min="0" placeholder="0" style="width: 100%; padding: 0.75rem; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 1rem; box-sizing: border-box;" type="number" /></div>
+
+<div><label style="display: block; font-size: 0.85rem; color: #4a5568; margin-bottom: 0.25rem;">Email</label> <input id="editGuestEmail" placeholder="email@example.com" style="width: 100%; padding: 0.75rem; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 1rem; box-sizing: border-box;" type="email" /></div>
+
+<div><label style="display: block; font-size: 0.85rem; color: #4a5568; margin-bottom: 0.25rem;">Phone</label> <input id="editGuestPhone" placeholder="555-123-4567" style="width: 100%; padding: 0.75rem; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 1rem; box-sizing: border-box;" type="tel" /></div>
+
+<div style="grid-column: 1 / -1;"><label style="display: block; font-size: 0.85rem; color: #4a5568; margin-bottom: 0.25rem;">Notes</label> <input id="editGuestNotes" placeholder="Optional notes" style="width: 100%; padding: 0.75rem; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 1rem; box-sizing: border-box;" type="text" /></div>
+</div>
+
+<div style="margin-top: 1.5rem; display: flex; gap: 1rem; align-items: center;"><button id="editGuestSaveBtn" style="flex: 1; padding: 0.85rem; background: linear-gradient(135deg, #c9a227, #d4af37); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 1rem;">Save Changes</button><button id="editModalCancelBtn" style="padding: 0.85rem 1.5rem; background: #e2e8f0; color: #4a5568; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 1rem;">Cancel</button></div>
+
+<div id="editGuestMsg" style="margin-top: 0.75rem; display: none;">&nbsp;</div>
+</div>
+</div>
+</div>
+<!-- Edit Local Modal -->
+
+<div id="editLocalModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 10001; justify-content: center; align-items: center;">
+<div style="background: white; border-radius: 20px; padding: 2rem; max-width: 520px; width: 90%; box-shadow: 0 25px 50px rgba(0,0,0,0.25);">
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+<h2 style="font-family: Georgia, serif; font-size: 1.4rem; color: #1a365d; margin: 0;">Edit Local</h2>
+<button id="editLocalModalClose" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #718096; line-height: 1;">&times;</button></div>
+<input id="editLocalRow" type="hidden" />
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+<div style="grid-column: 1 / -1;"><label style="display: block; font-size: 0.85rem; color: #4a5568; margin-bottom: 0.25rem;">Family Name</label> <input id="editLocalName" placeholder="Family Name" style="width: 100%; padding: 0.75rem; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 1rem; box-sizing: border-box;" type="text" /></div>
+
+<div><label style="display: block; font-size: 0.85rem; color: #4a5568; margin-bottom: 0.25rem;">Default Headcount</label> <input id="editLocalHeadcount" min="0" placeholder="0" style="width: 100%; padding: 0.75rem; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 1rem; box-sizing: border-box;" type="number" /></div>
+
+<div><label style="display: block; font-size: 0.85rem; color: #4a5568; margin-bottom: 0.25rem;">Email</label> <input id="editLocalEmail" placeholder="email@example.com" style="width: 100%; padding: 0.75rem; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 1rem; box-sizing: border-box;" type="email" /></div>
+
+<div><label style="display: block; font-size: 0.85rem; color: #4a5568; margin-bottom: 0.25rem;">Phone</label> <input id="editLocalPhone" placeholder="555-123-4567" style="width: 100%; padding: 0.75rem; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 1rem; box-sizing: border-box;" type="tel" /></div>
+
+<div style="grid-column: 1 / -1;"><label style="display: block; font-size: 0.85rem; color: #4a5568; margin-bottom: 0.25rem;">Notes</label> <input id="editLocalNotes" placeholder="Optional notes" style="width: 100%; padding: 0.75rem; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 1rem; box-sizing: border-box;" type="text" /></div>
+</div>
+
+<div style="margin-top: 1.5rem; display: flex; gap: 1rem; align-items: center;"><button id="editLocalSaveBtn" style="flex: 1; padding: 0.85rem; background: linear-gradient(135deg, #c9a227, #d4af37); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 1rem;">Save Changes</button><button id="editLocalCancelBtn" style="padding: 0.85rem 1.5rem; background: #e2e8f0; color: #4a5568; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 1rem;">Cancel</button></div>
+
+<div id="editLocalMsg" style="margin-top: 0.75rem; display: none;">&nbsp;</div>
+</div>
+</div>
+<!-- Move Guest Modal -->
+
+<div id="moveGuestModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 10002; justify-content: center; align-items: center;">
+<div style="background: white; border-radius: 20px; padding: 2rem; max-width: 480px; width: 90%; box-shadow: 0 25px 50px rgba(0,0,0,0.25);">
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+<h2 style="font-family: Georgia, serif; font-size: 1.4rem; color: #1a365d; margin: 0;">Move Reservation</h2>
+<button id="moveModalClose" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #718096; line-height: 1;">&times;</button></div>
+
+<p id="moveGuestWho" style="color: #4a5568; font-size: 0.95rem; margin: 0 0 1rem 0;">&nbsp;</p>
+<label for="moveGuestWeekSelect" style="display: block; font-size: 0.85rem; color: #4a5568; font-weight: 600; margin-bottom: 0.25rem;">Move to</label> <select id="moveGuestWeekSelect" style="width: 100%; padding: 0.85rem; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 1rem; background: white; cursor: pointer; box-sizing: border-box;"><option value="">Select a week...</option></select>
+
+<div style="margin-top: 1.5rem; display: flex; gap: 1rem; align-items: center;"><button id="moveGuestConfirmBtn" style="flex: 1; padding: 0.85rem; background: linear-gradient(135deg, #c9a227, #d4af37); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 1rem;">Move</button><button id="moveModalCancelBtn" style="padding: 0.85rem 1.5rem; background: #e2e8f0; color: #4a5568; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 1rem;">Cancel</button></div>
+
+<div id="moveGuestMsg" style="margin-top: 0.75rem; display: none;">&nbsp;</div>
+</div>
+</div>
+<script>
+    //<![CDATA[
+    (function () {
+        var API_URL = 'https://script.google.com/macros/s/AKfycbzNnNNSbv6pUY_xoJDCz7xJl0DLAuXaeDajlwH1isdXw4gQBK0plUyOaThijLgOT6_9ag/exec';
+        var currentPassword = '';
+        var currentWeek = '';
+        var amp = String.fromCharCode(38);
+
+        var loginPage = document.getElementById('adminLoginPage');
+        var dashboard = document.getElementById('adminDashboard');
+        var loginError = document.getElementById('adminLoginError');
+        var usernameInput = document.getElementById('adminUsername');
+        var passwordInput = document.getElementById('adminPassword');
+        var loginBtn = document.getElementById('adminLoginBtn');
+        var logoutBtn = document.getElementById('adminLogoutBtn');
+        var weekSelect = document.getElementById('adminWeekSelect');
+        var pastWeekSelect = document.getElementById('adminPastWeekSelect');
+        var allExistingWeeks = [];   // raw sheet names from action=list, kept for the "missing weeks" filter
+        var upcomingWeekNames = [];  // sorted names from the last loadWeeks — feed the Move modal
+        var pastWeekNames = [];
+        var tableContainer = document.getElementById('adminTableContainer');
+        var reservationsHeader = document.getElementById('reservationsHeader');
+        var reservationsBody = document.getElementById('reservationsBody');
+        var reservationsToggleIcon = document.getElementById('reservationsToggleIcon');
+        var addGuestSection = document.getElementById('addGuestSection');
+        var addGuestBody = document.getElementById('addGuestBody');
+        var toggleAddGuestBtn = document.getElementById('toggleAddGuestBtn');
+        var addGuestMsg = document.getElementById('addGuestMsg');
+        var loadingOverlay = document.getElementById('loadingOverlay');
+        var loadingText = document.getElementById('loadingText');
+        var addGuestHeader = document.getElementById('addGuestHeader');
+
+        // Set whenever loadWeekData succeeds — used by Add Guest + Edit modal
+        // so their inputs always match the current sheet's meal columns.
+        var currentMealLabels = ['Dinner', 'Lunch'];
+
+        function showLoading(text) {
+            loadingText.textContent = text || 'Loading...';
+            loadingOverlay.style.display = 'flex';
+        }
+        function hideLoading() {
+            loadingOverlay.style.display = 'none';
+        }
+
+        function setAddGuestOpen(open) {
+            if (!addGuestBody || !toggleAddGuestBtn) return;
+            addGuestBody.style.display = open ? 'block' : 'none';
+            toggleAddGuestBtn.textContent = open ? 'Hide Add Guests' : '+ Add Guests';
+            toggleAddGuestBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        }
+
+        toggleAddGuestBtn.addEventListener('click', function () {
+            setAddGuestOpen(addGuestBody.style.display !== 'block');
+        });
+
+        window.toggleRowDetails = function (btn) {
+            var row = btn.closest ? btn.closest('tr') : null;
+            if (!row) return;
+            var isOpen = row.classList.toggle('details-open');
+            btn.textContent = isOpen ? 'Hide details' : 'Details';
+            btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        };
+
+        reservationsHeader.addEventListener('click', function () {
+            var isOpen = reservationsBody.style.display !== 'none';
+            if (isOpen) {
+                reservationsBody.style.display = 'none';
+                reservationsToggleIcon.innerHTML = '▸ Show';
+            } else {
+                reservationsBody.style.display = 'block';
+                reservationsToggleIcon.innerHTML = '▾ Hide';
+            }
+        });
+
+        loginBtn.addEventListener('click', function () {
+            var username = usernameInput.value;
+            var password = passwordInput.value;
+
+            if (username === 'admin') {
+                if (password === 'admin123') {
+                    currentPassword = password;
+                    loginPage.style.display = 'none';
+                    dashboard.style.display = 'block';
+                    loadWeeks();
+                } else {
+                    loginError.style.display = 'block';
+                }
+            } else {
+                loginError.style.display = 'block';
+            }
+        });
+
+        logoutBtn.addEventListener('click', function () {
+            currentPassword = '';
+            loginPage.style.display = 'flex';
+            dashboard.style.display = 'none';
+            usernameInput.value = '';
+            passwordInput.value = '';
+            loginError.style.display = 'none';
+        });
+
+        passwordInput.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') { loginBtn.click(); }
+        });
+
+        // Parse a date from a sheet/week name for sorting
+        // Handles: "Ki Tisa - Mar 6 - 7, 2026" and "Parashat Tetzaveh – Feb 27, '26"
+        function parseDateFromWeek(name) {
+            try {
+                // Try new format: "Name - Mon DD - DD, YYYY" or "Name - Mon DD - Mon DD, YYYY"
+                var yearMatch = name.match(/(\d{4})\s*$/);
+                if (yearMatch) {
+                    var year = yearMatch[1];
+                    // Find the last day number before the year
+                    var dayMatch = name.match(/(\d{1,2})\s*,\s*\d{4}/);
+                    // Find month - look for 3-letter month names
+                    var months = name.match(/\b(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\b/gi);
+                    if (dayMatch && months && months.length > 0) {
+                        // Use the last month and the day before the year (Saturday date)
+                        var mon = months[months.length - 1];
+                        var day = dayMatch[1];
+                        var d = new Date(mon + ' ' + day + ', ' + year);
+                        if (!isNaN(d.getTime())) return d.getTime();
+                    }
+                }
+                // Try old format: "Parashat X – Mon DD, 'YY"
+                var oldMatch = name.match(/(\w{3})\s+(\d{1,2}),?\s*'(\d{2})/);
+                if (oldMatch) {
+                    var d2 = new Date(oldMatch[1] + ' ' + oldMatch[2] + ', 20' + oldMatch[3]);
+                    if (!isNaN(d2.getTime())) return d2.getTime();
+                }
+            } catch (e) { }
+            return 99999999999999; // unparseable goes to the end
+        }
+
+        var FAR_FUTURE = 99999999999999;  // parseDateFromWeek sentinel for unparseable names
+
+        // Drive the dashboard to a given week (shared by both dropdowns).
+        function applyWeekSelection(name) {
+            currentWeek = name || '';
+            if (!currentWeek) {
+                tableContainer.innerHTML = '<div style="text-align: center; padding: 3rem; color: #718096;">Select a week to view reservations</div>';
+                addGuestSection.style.display = 'none';
+                setAddGuestOpen(false);
+                resetStats();
+                return;
+            }
+            addGuestSection.style.display = 'block';
+            setAddGuestOpen(false);
+            loadWeekData();
+        }
+
+        // weekToSelect (optional): after the list reloads, auto-select this week
+        // (in whichever dropdown it lands) and load its data — used right after
+        // creating a new week.
+        function loadWeeks(weekToSelect) {
+            showLoading('Loading Shabbos weeks...');
+            weekSelect.innerHTML = '<option value="">Loading...</option>';
+            var url = API_URL + '?action=list' + amp + 'pass=' + currentPassword;
+
+            fetch(url)
+                .then(function (r) { return r.json(); })
+                .then(function (data) {
+                    if (data.error) {
+                        weekSelect.innerHTML = '<option value="">Error loading weeks</option>';
+                        return;
+                    }
+
+                    allExistingWeeks = data.weeks.slice();
+
+                    // Split into upcoming vs. past relative to today. A week's
+                    // parsed date is its Shabbat/Saturday; we treat it as
+                    // upcoming if that date is today or later. Unparseable names
+                    // (legacy sheets) drop into Past at the very bottom.
+                    var nowMid = new Date();
+                    nowMid.setHours(0, 0, 0, 0);
+                    var nowTs = nowMid.getTime();
+
+                    var upcoming = [];
+                    var past = [];
+                    allExistingWeeks.forEach(function (week) {
+                        var ts = parseDateFromWeek(week);
+                        var bad = (ts === FAR_FUTURE);
+                        if (!bad && ts >= nowTs) {
+                            upcoming.push({ name: week, ts: ts });
+                        } else {
+                            past.push({ name: week, ts: ts, bad: bad });
+                        }
+                    });
+
+                    // Upcoming: soonest first (ascending).
+                    upcoming.sort(function (a, b) { return a.ts - b.ts; });
+                    // Past: most recent first (descending); unparseable last, alphabetical.
+                    past.sort(function (a, b) {
+                        if (a.bad && b.bad) return a.name < b.name ? -1 : (a.name > b.name ? 1 : 0);
+                        if (a.bad) return 1;
+                        if (b.bad) return -1;
+                        return b.ts - a.ts;
+                    });
+
+                    upcomingWeekNames = upcoming.map(function (w) { return w.name; });
+                    pastWeekNames = past.map(function (w) { return w.name; });
+
+                    weekSelect.innerHTML = '<option value="">Select a Shabbos...</option>';
+                    upcoming.forEach(function (w) {
+                        var opt = document.createElement('option');
+                        opt.value = w.name;
+                        opt.textContent = w.name;
+                        weekSelect.appendChild(opt);
+                    });
+
+                    pastWeekSelect.innerHTML = '<option value="">Select a past week...</option>';
+                    if (past.length === 0) {
+                        var none = document.createElement('option');
+                        none.value = '';
+                        none.disabled = true;
+                        none.textContent = 'No past weeks';
+                        pastWeekSelect.appendChild(none);
+                    }
+                    past.forEach(function (w) {
+                        var opt = document.createElement('option');
+                        opt.value = w.name;
+                        opt.textContent = w.name;
+                        pastWeekSelect.appendChild(opt);
+                    });
+
+                    hideLoading();
+
+                    if (weekToSelect) {
+                        var inUpcoming = upcoming.some(function (w) { return w.name === weekToSelect; });
+                        if (inUpcoming) {
+                            weekSelect.value = weekToSelect;
+                            pastWeekSelect.value = '';
+                        } else {
+                            pastWeekSelect.value = weekToSelect;
+                            weekSelect.value = '';
+                        }
+                        applyWeekSelection(weekToSelect);
+                    }
+                })
+                .catch(function (err) {
+                    weekSelect.innerHTML = '<option value="">Error loading weeks</option>';
+                    hideLoading();
+                });
+        }
+
+        // ===================================================================
+        // ADD WEEK — mirror the public Meal Form's Hebcal-driven picker so a
+        // week created here gets the same name + meal columns the form would
+        // build. We only derive the meal layout (counts are 0); the backend's
+        // createWeek action reuses getSheetName + resolveMeals + ensureWeekSheet.
+        // ===================================================================
+        var MAX_SLOTS = 8;
+        var addWeekToggleBtn = document.getElementById('toggleAddWeekBtn');
+        var addWeekBody = document.getElementById('addWeekBody');
+        var addWeekSelect = document.getElementById('addWeekSelect');
+        var addWeekPreview = document.getElementById('addWeekPreview');
+        var createWeekBtn = document.getElementById('createWeekBtn');
+        var addWeekMsg = document.getElementById('addWeekMsg');
+        var addWeekEvents = [];
+        var addWeekCalendarLoaded = false;
+        var currentAddEvent = null;
+
+        function addDaysISO(iso, delta) {
+            var p = iso.split('-');
+            var d = new Date(parseInt(p[0], 10), parseInt(p[1], 10) - 1, parseInt(p[2], 10));
+            d.setDate(d.getDate() + delta);
+            var mm = String(d.getMonth() + 1);
+            if (mm.length < 2) mm = '0' + mm;
+            var dd = String(d.getDate());
+            if (dd.length < 2) dd = '0' + dd;
+            return d.getFullYear() + '-' + mm + '-' + dd;
+        }
+        function isoDayOfWeek(iso) {
+            var p = iso.split('-');
+            return new Date(parseInt(p[0], 10), parseInt(p[1], 10) - 1, parseInt(p[2], 10)).getDay();
+        }
+        function fmtShort(iso) {
+            return new Date(iso + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        }
+        function fmtYearShort(iso) {
+            return "'" + String(new Date(iso + 'T12:00:00').getFullYear()).slice(-2);
+        }
+        function classifyHoliday(title) {
+            if (!title) return null;
+            var t = String(title);
+            if (t.indexOf('Pesach') === 0)         return { key: 'pesach',       label: 'Pesach',                              isPesach: true };
+            if (t.indexOf('Rosh Hashana') === 0)   return { key: 'rosh_hashana', label: 'Rosh Hashana' };
+            if (t.indexOf('Yom Kippur') === 0)     return { key: 'yom_kippur',   label: 'Yom Kippur' };
+            if (t === 'Sukkot I' || t === 'Sukkot II') return { key: 'sukkot',  label: 'Sukkot' };
+            if (t.indexOf('Shmini Atzeret') === 0
+                || t.indexOf('Shemini Atzeret') === 0
+                || t.indexOf('Simchat Torah') === 0) return { key: 'shemini',   label: 'Shemini Atzeret / Simchat Torah' };
+            if (t.indexOf('Shavuot') === 0)        return { key: 'shavuot',     label: 'Shavuot' };
+            return null;
+        }
+        function buildHolidayLabel(name, startISO, endISO) {
+            if (startISO === endISO) {
+                return name + ' – ' + fmtShort(startISO) + ', ' + fmtYearShort(startISO);
+            }
+            startISO = addDaysISO(startISO, -1);
+            var sParts = startISO.split('-');
+            var eParts = endISO.split('-');
+            if (sParts[1] === eParts[1]) {
+                var sd = new Date(startISO + 'T12:00:00');
+                var ed = new Date(endISO + 'T12:00:00');
+                var mn = sd.toLocaleDateString('en-US', { month: 'short' });
+                return name + ' – ' + mn + ' ' + sd.getDate() + '-' + ed.getDate() + ', ' + fmtYearShort(endISO);
+            }
+            return name + ' – ' + fmtShort(startISO) + ' - ' + fmtShort(endISO) + ', ' + fmtYearShort(endISO);
+        }
+
+        // Returns an array of meals, each: { label, sub, kind, dateISO, isShabbat }
+        function deriveMeals(event) {
+            if (!event) return [];
+
+            if (event.type === 'parsha') {
+                var sat = event.startDate;
+                var fri = addDaysISO(sat, -1);
+                return [
+                    { label: 'Friday Night', sub: 'Dinner', kind: 'dinner', dateISO: fri, isShabbat: false },
+                    { label: 'Shabbat Day',  sub: 'Lunch',  kind: 'lunch',  dateISO: sat, isShabbat: true }
+                ];
+            }
+
+            if (event.family === 'yom_kippur') {
+                return [
+                    { label: 'Seudat Hamafseket', sub: 'Pre-Fast Meal', kind: 'dinner', dateISO: addDaysISO(event.startDate, -1), isShabbat: false }
+                ];
+            }
+
+            var ytSet = {};
+            if (event.yomTovDates) {
+                for (var yi = 0; yi < event.yomTovDates.length; yi++) ytSet[event.yomTovDates[yi]] = true;
+            }
+
+            var meals = [];
+            var startP = event.startDate.split('-');
+            var endP = event.endDate.split('-');
+            var firstD = new Date(parseInt(startP[0],10), parseInt(startP[1],10)-1, parseInt(startP[2],10));
+            var lastD  = new Date(parseInt(endP[0],10),   parseInt(endP[1],10)-1,   parseInt(endP[2],10));
+            var totalDays = Math.round((lastD - firstD) / 86400000) + 1;
+
+            for (var i = 0; i < totalDays; i++) {
+                var dayISO = addDaysISO(event.startDate, i);
+                var eveISO = addDaysISO(dayISO, -1);
+                var dow = isoDayOfWeek(dayISO);
+                var isShab = (dow === 6);
+                var isYT = event.yomTovDates ? !!ytSet[dayISO] : true;
+                var daySuffix = totalDays > 1 ? ' (Day ' + (i + 1) + ')' : '';
+
+                var prefix;
+                if (isShab && isYT)       prefix = 'Shabbat / Yom Tov';
+                else if (isShab && !isYT) prefix = 'Shabbat';
+                else if (!isShab && isYT) prefix = 'Yom Tov';
+                else                      prefix = 'Chol Hamoed';
+
+                meals.push({ label: prefix + ' Eve' + daySuffix, sub: 'Dinner', kind: 'dinner', dateISO: eveISO, isShabbat: isShab });
+                meals.push({ label: prefix + ' Day' + daySuffix, sub: 'Lunch',  kind: 'lunch',  dateISO: dayISO, isShabbat: isShab });
+            }
+            if (meals.length > MAX_SLOTS) meals = meals.slice(0, MAX_SLOTS);
+            return meals;
+        }
+
+        function loadAddWeekCalendar() {
+            if (addWeekCalendarLoaded) return;
+            var today = new Date();
+            var start = today.toISOString().split('T')[0];
+            var endDate = new Date();
+            endDate.setFullYear(endDate.getFullYear() + 10);
+            var end = endDate.toISOString().split('T')[0];
+
+            var api = 'https://www.hebcal.com/hebcal?v=1' + amp + 'cfg=json' + amp + 'start=' + start + amp + 'end=' + end + amp + 's=on' + amp + 'maj=on' + amp + 'lg=en' + amp + 'geo=zip' + amp + 'zip=33139' + amp + 'tzid=America/New_York';
+
+            addWeekSelect.innerHTML = '<option value="">Loading dates...</option>';
+
+            fetch(api)
+                .then(function (r) { return r.json(); })
+                .then(function (data) {
+                    var todayMid = new Date();
+                    todayMid.setHours(0, 0, 0, 0);
+
+                    var events = [];
+                    var groups = {};
+                    var items = data.items || [];
+
+                    for (var i = 0; i < items.length; i++) {
+                        var item = items[i];
+                        if (!item || !item.date) continue;
+                        if (item.category === 'parashat') {
+                            var d = new Date(item.date + 'T12:00:00');
+                            if (d < todayMid) continue;
+                            events.push({
+                                type: 'parsha',
+                                startDate: item.date,
+                                endDate: item.date,
+                                title: item.title,
+                                label: item.title + ' – ' + fmtShort(item.date) + ', ' + fmtYearShort(item.date)
+                            });
+                        } else if (item.category === 'holiday' && item.yomtov === true) {
+                            var fam = classifyHoliday(item.title);
+                            if (!fam) continue;
+                            var year = parseInt(item.date.split('-')[0], 10);
+                            var k = fam.key + '_' + year;
+                            if (!groups[k]) groups[k] = { family: fam, dates: [] };
+                            groups[k].dates.push(item.date);
+                        }
+                    }
+
+                    var keys = Object.keys(groups);
+                    for (var gi = 0; gi < keys.length; gi++) {
+                        var g = groups[keys[gi]];
+                        g.dates.sort();
+                        var sISO = g.dates[0];
+                        var eISO = g.dates[g.dates.length - 1];
+                        var endObj = new Date(eISO + 'T23:59:59');
+                        if (endObj < todayMid) continue;
+                        events.push({
+                            type: g.family.isPesach ? 'pesach' : 'holiday',
+                            family: g.family.key,
+                            startDate: sISO,
+                            endDate: eISO,
+                            yomTovDates: g.dates.slice(),
+                            title: g.family.label,
+                            label: buildHolidayLabel(g.family.label, sISO, eISO)
+                        });
+                    }
+
+                    events.sort(function (a, b) {
+                        return a.startDate < b.startDate ? -1 : (a.startDate > b.startDate ? 1 : 0);
+                    });
+
+                    // Merge a holiday with an adjacent Shabbat into one event,
+                    // matching the form so meal columns line up.
+                    var parshaByDate = {};
+                    for (var pi = 0; pi < events.length; pi++) {
+                        if (events[pi].type === 'parsha') parshaByDate[events[pi].startDate] = pi;
+                    }
+                    var removeIdx = {};
+                    for (var mi = 0; mi < events.length; mi++) {
+                        var ev = events[mi];
+                        if (ev.type !== 'holiday') continue;
+                        if (isoDayOfWeek(ev.endDate) === 5) {
+                            var nextSat = addDaysISO(ev.endDate, 1);
+                            ev.endDate = nextSat;
+                            ev.label = buildHolidayLabel(ev.title, ev.startDate, ev.endDate);
+                            if (parshaByDate[nextSat] !== undefined) removeIdx[parshaByDate[nextSat]] = true;
+                        }
+                        if (isoDayOfWeek(ev.startDate) === 0) {
+                            var prevSat = addDaysISO(ev.startDate, -1);
+                            ev.startDate = prevSat;
+                            ev.label = buildHolidayLabel(ev.title, ev.startDate, ev.endDate);
+                            if (parshaByDate[prevSat] !== undefined) removeIdx[parshaByDate[prevSat]] = true;
+                        }
+                    }
+                    if (Object.keys(removeIdx).length > 0) {
+                        events = events.filter(function (e, idx) { return !removeIdx[idx]; });
+                    }
+
+                    // Pesach isn't bookable online, so it's never auto-created
+                    // by the form — leave it out of the add-week picker too.
+                    addWeekEvents = events.filter(function (e) { return e.type !== 'pesach'; });
+                    addWeekCalendarLoaded = true;
+                    populateAddWeekOptions();
+                })
+                .catch(function (err) {
+                    addWeekSelect.innerHTML = '<option value="">Could not load dates — try again</option>';
+                    addWeekCalendarLoaded = false;
+                });
+        }
+
+        function setCreateWeekEnabled(on) {
+            createWeekBtn.disabled = !on;
+            createWeekBtn.style.opacity = on ? '1' : '0.6';
+            createWeekBtn.style.cursor = on ? 'pointer' : 'default';
+        }
+
+        // Mirror of getSheetName() in Meal app.js — predicts the sheet/tab name
+        // a given payload would produce, so we can hide weeks that already exist
+        // and never create a double. KEEP IN SYNC with the backend.
+        var MONTH_NAMES_ABBR = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        function predictSheetName(payload) {
+            var title = payload.shabbosTitle ? String(payload.shabbosTitle).trim() : '';
+            var startISO = payload.shabbosDateISO ? String(payload.shabbosDateISO).trim() : '';
+            var endISO = payload.shabbosEndDateISO ? String(payload.shabbosEndDateISO).trim() : startISO;
+
+            // Holiday path
+            if (payload.eventType === 'holiday' && title && startISO) {
+                var sP = startISO.split('-');
+                var eP = endISO.split('-');
+                if (sP.length === 3 && eP.length === 3) {
+                    var sDate = new Date(parseInt(sP[0], 10), parseInt(sP[1], 10) - 1, parseInt(sP[2], 10));
+                    var eDate = new Date(parseInt(eP[0], 10), parseInt(eP[1], 10) - 1, parseInt(eP[2], 10));
+                    var sMonth = MONTH_NAMES_ABBR[sDate.getMonth()];
+                    var eMonth = MONTH_NAMES_ABBR[eDate.getMonth()];
+                    var sDay = sDate.getDate();
+                    var eDay = eDate.getDate();
+                    var hYear = eDate.getFullYear();
+                    var hDateStr;
+                    if (startISO === endISO) {
+                        hDateStr = sMonth + ' ' + sDay + ', ' + hYear;
+                    } else if (sMonth === eMonth) {
+                        hDateStr = sMonth + ' ' + sDay + '-' + eDay + ', ' + hYear;
+                    } else {
+                        hDateStr = sMonth + ' ' + sDay + ' - ' + eMonth + ' ' + eDay + ', ' + hYear;
+                    }
+                    return title + ' - ' + hDateStr;
+                }
+            }
+
+            // Shabbos (parsha) path
+            if (title && startISO) {
+                var pTitle = title.replace(/^Parashat\s+/i, '');
+                var parts = startISO.split('-');
+                if (parts.length === 3) {
+                    var y = parseInt(parts[0], 10);
+                    var mo = parseInt(parts[1], 10) - 1;
+                    var dy = parseInt(parts[2], 10);
+                    var saturday = new Date(y, mo, dy);
+                    var friday = new Date(y, mo, dy);
+                    friday.setDate(friday.getDate() - 1);
+                    var friMonth = MONTH_NAMES_ABBR[friday.getMonth()];
+                    var satMonth = MONTH_NAMES_ABBR[saturday.getMonth()];
+                    var friDay = friday.getDate();
+                    var satDay = saturday.getDate();
+                    var satYear = saturday.getFullYear();
+                    var dateStr;
+                    if (friMonth === satMonth) {
+                        dateStr = friMonth + ' ' + friDay + ' - ' + satDay + ', ' + satYear;
+                    } else {
+                        dateStr = friMonth + ' ' + friDay + ' - ' + satMonth + ' ' + satDay + ', ' + satYear;
+                    }
+                    return pTitle + ' - ' + dateStr;
+                }
+            }
+            return '';
+        }
+
+        // Rebuild the add-week dropdown showing only weeks that don't already
+        // exist as a sheet. Option values stay as the index into addWeekEvents
+        // so the change handler resolves the right event.
+        function populateAddWeekOptions() {
+            var existing = {};
+            for (var i = 0; i < allExistingWeeks.length; i++) {
+                existing[String(allExistingWeeks[i]).trim()] = true;
+            }
+            addWeekSelect.innerHTML = '<option value="">Select a date to add...</option>';
+            var shown = 0;
+            addWeekEvents.forEach(function (e, idx) {
+                var predicted = predictSheetName(buildCreatePayload(e));
+                if (predicted && existing[predicted.trim()]) return; // already in the system
+                var opt = document.createElement('option');
+                opt.value = String(idx);
+                opt.textContent = e.label;
+                addWeekSelect.appendChild(opt);
+                shown++;
+            });
+            if (shown === 0) {
+                var none = document.createElement('option');
+                none.value = '';
+                none.disabled = true;
+                none.textContent = 'All upcoming weeks already exist';
+                addWeekSelect.appendChild(none);
+            }
+        }
+
+        // Build the createWeek payload pieces for an event — mirrors the form's
+        // submit: the sheet column label is "<label> <sub>", and multi-day
+        // holidays shift the start back to the eve so the name covers the
+        // first dinner. Counts are all 0 (empty week).
+        function buildCreatePayload(event) {
+            var meals = deriveMeals(event).map(function (m, i) {
+                return {
+                    id: 'slot' + (i + 1),
+                    label: m.label + ' ' + m.sub,
+                    kind: m.kind,
+                    adult: 0, sub: 0, child: 0
+                };
+            });
+            var rawStartISO = event.startDate;
+            var rawEndISO = event.endDate;
+            var submitType = event.type;
+            var submitStart = (submitType === 'holiday' && rawStartISO !== rawEndISO)
+                ? addDaysISO(rawStartISO, -1)
+                : rawStartISO;
+            return {
+                eventType: submitType,
+                shabbosTitle: event.title,
+                shabbosDateISO: submitStart,
+                shabbosEndDateISO: rawEndISO,
+                meals: meals
+            };
+        }
+
+        addWeekToggleBtn.addEventListener('click', function () {
+            var open = addWeekBody.style.display !== 'block';
+            addWeekBody.style.display = open ? 'block' : 'none';
+            addWeekToggleBtn.textContent = open ? 'Cancel' : '+ Add a week';
+            if (open) {
+                if (addWeekCalendarLoaded) {
+                    populateAddWeekOptions(); // re-filter against the latest week list
+                } else {
+                    loadAddWeekCalendar();
+                }
+            }
+        });
+
+        addWeekSelect.addEventListener('change', function () {
+            addWeekMsg.style.display = 'none';
+            var v = addWeekSelect.value;
+            if (v === '') {
+                currentAddEvent = null;
+                addWeekPreview.style.display = 'none';
+                setCreateWeekEnabled(false);
+                return;
+            }
+            currentAddEvent = addWeekEvents[parseInt(v, 10)] || null;
+            if (!currentAddEvent) { setCreateWeekEnabled(false); return; }
+
+            var payload = buildCreatePayload(currentAddEvent);
+            var mealNames = payload.meals.map(function (m) { return m.label; });
+            addWeekPreview.innerHTML = '<strong>Will create:</strong> ' + escapeHtmlSafe(currentAddEvent.label)
+                + '<br /><span style="color:#718096;">Meals: ' + escapeHtmlSafe(mealNames.join(', ')) + '</span>';
+            addWeekPreview.style.display = 'block';
+            setCreateWeekEnabled(payload.meals.length > 0);
+        });
+
+        createWeekBtn.addEventListener('click', function () {
+            if (!currentAddEvent) return;
+            var payload = buildCreatePayload(currentAddEvent);
+            if (payload.meals.length === 0) {
+                addWeekMsg.textContent = 'No meals could be derived for that date.';
+                addWeekMsg.style.color = '#e53e3e';
+                addWeekMsg.style.display = 'block';
+                return;
+            }
+
+            setCreateWeekEnabled(false);
+            createWeekBtn.textContent = 'Creating...';
+            addWeekMsg.style.display = 'none';
+
+            var url = API_URL + '?action=createWeek' + amp + 'pass=' + currentPassword
+                + amp + 'eventType=' + encodeURIComponent(payload.eventType)
+                + amp + 'shabbosTitle=' + encodeURIComponent(payload.shabbosTitle)
+                + amp + 'shabbosDateISO=' + encodeURIComponent(payload.shabbosDateISO)
+                + amp + 'shabbosEndDateISO=' + encodeURIComponent(payload.shabbosEndDateISO)
+                + amp + 'meals=' + encodeURIComponent(JSON.stringify(payload.meals));
+
+            fetch(url)
+                .then(function (r) { return r.json(); })
+                .then(function (res) {
+                    createWeekBtn.textContent = 'Create Week';
+                    if (res.status === 'success') {
+                        addWeekMsg.innerHTML = '✔ Week created!';
+                        addWeekMsg.style.color = '#22543d';
+                        addWeekMsg.style.display = 'block';
+                        // Collapse the panel and jump to the new week.
+                        addWeekBody.style.display = 'none';
+                        addWeekToggleBtn.textContent = '+ Add a week';
+                        addWeekSelect.value = '';
+                        addWeekPreview.style.display = 'none';
+                        currentAddEvent = null;
+                        loadWeeks(res.week);
+                    } else if (res.error === 'Exists') {
+                        addWeekMsg.textContent = 'That week already exists — pick it from the list above.';
+                        addWeekMsg.style.color = '#e53e3e';
+                        addWeekMsg.style.display = 'block';
+                        setCreateWeekEnabled(true);
+                    } else {
+                        addWeekMsg.textContent = res.message || 'Could not create the week.';
+                        addWeekMsg.style.color = '#e53e3e';
+                        addWeekMsg.style.display = 'block';
+                        setCreateWeekEnabled(true);
+                    }
+                })
+                .catch(function (err) {
+                    createWeekBtn.textContent = 'Create Week';
+                    addWeekMsg.textContent = 'Network error creating the week.';
+                    addWeekMsg.style.color = '#e53e3e';
+                    addWeekMsg.style.display = 'block';
+                    setCreateWeekEnabled(true);
+                });
+        });
+
+        // The two dropdowns (upcoming + past) are mutually exclusive — picking
+        // from one clears the other so there's a single current week.
+        weekSelect.addEventListener('change', function () {
+            if (weekSelect.value) pastWeekSelect.value = '';
+            applyWeekSelection(weekSelect.value);
+        });
+
+        pastWeekSelect.addEventListener('change', function () {
+            if (pastWeekSelect.value) weekSelect.value = '';
+            applyWeekSelection(pastWeekSelect.value);
+        });
+
+        function loadWeekData(silent) {
+            if (!silent) {
+                showLoading('Loading reservations...');
+                tableContainer.innerHTML = '<div style="text-align: center; padding: 3rem; color: #718096;">Loading...</div>';
+            }
+            var url = API_URL + '?action=get' + amp + 'pass=' + currentPassword + amp + 'week=' + encodeURIComponent(currentWeek);
+
+            fetch(url)
+                .then(function (r) { return r.json(); })
+                .then(function (data) {
+                    if (data.error) {
+                        tableContainer.innerHTML = '<div style="text-align: center; padding: 3rem; color: #718096;">Error: ' + data.message + '</div>';
+                        hideLoading();
+                        return;
+                    }
+
+                    renderStatsGrid(data.summary);
+
+                    var thStyle = 'background: #f7fafc; padding: 1rem; text-align: left; font-weight: 600; color: #4a5568; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 2px solid #e2e8f0;';
+                    var tdStyle = 'padding: 1rem; color: #2d3748; border-bottom: 1px solid #e2e8f0;';
+
+                    // Pull meal column labels from the API. Fall back to legacy
+                    // 2-column layout if older sheets don't carry the meals array.
+                    var mealLabels = (data.summary && data.summary.meals && data.summary.meals.length)
+                        ? data.summary.meals.map(function (m) { return m.label; })
+                        : ['Dinner', 'Lunch'];
+
+                    // Keep dashboard-wide state in sync so Add Guest + Edit modal
+                    // render the right number of meal inputs.
+                    currentMealLabels = mealLabels;
+                    renderAddGuestHeader();
+                    // Reset Add Guest rows so they match the new meal column count.
+                    guestRowsContainer.innerHTML = '';
+                    guestRowCount = 0;
+                    addGuestRow();
+                    // Re-render the Locals table so the per-meal tickers reflect this week.
+                    if (localsLoaded && localsCache.length) renderLocalsTable(localsCache);
+
+                    if (data.reservations.length === 0) {
+                        tableContainer.innerHTML = '<div style="text-align: center; padding: 3rem; color: #718096;">No reservations for this week</div>';
+                        setAddGuestOpen(true);
+                        hideLoading();
+                        return;
+                    }
+
+                    var html = '<table style="width: 100%; border-collapse: collapse;">';
+                    html += '<thead><tr>';
+                    html += '<th style="' + thStyle + '">Name</th>';
+                    mealLabels.forEach(function (label) {
+                        html += '<th style="' + thStyle + '">' + label + '</th>';
+                    });
+                    html += '<th style="' + thStyle + '">Payment</th>';
+                    html += '<th style="' + thStyle + '">Email</th>';
+                    html += '<th style="' + thStyle + '">Phone</th>';
+                    html += '<th style="' + thStyle + '">Total</th>';
+                    html += '<th style="' + thStyle + '">Actions</th>';
+                    html += '</tr></thead><tbody>';
+
+                    data.reservations.forEach(function (r) {
+                        var paidBadge = '<span style="display: inline-block; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; background: #c6f6d5; color: #22543d;">Paid</span>';
+                        var pendingBadge = '<span style="display: inline-block; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; background: #feebc8; color: #744210;">Pending</span>';
+                        var manualBadge = '<span style="display: inline-block; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; background: #e2e8f0; color: #4a5568;">Manual</span>';
+                        var deleteBtn = '<button onclick="deleteGuest(' + r._row + ')" style="padding: 0.4rem 0.75rem; background: #e53e3e; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.75rem;">Delete</button>';
+                        var detailsBtn = '<button type="button" class="mobile-details-toggle" onclick="toggleRowDetails(this)" aria-expanded="false" style="margin-right: 0.25rem;">Details</button>';
+                        var mealCountsArr = mealLabels.map(function (label) { return parseInt(r[label], 10) || 0; });
+                        // encodeURIComponent leaves apostrophes alone — escape them so
+                        // names like O'Brien can't break out of the onclick attribute.
+                        var editData = encodeURIComponent(JSON.stringify({
+                            row: r._row,
+                            name: r['Name'] || '',
+                            mealCounts: mealCountsArr,
+                            cash: r['Total Paid'] || '',
+                            email: r['Email'] || '',
+                            phone: r['Phone'] || '',
+                            notes: r['Notes'] || ''
+                        })).replace(/'/g, '%27');
+                        var editBtn = '<button onclick="openEditGuest(\'' + editData + '\')" style="padding: 0.4rem 0.75rem; background: #1a365d; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.75rem; margin-right: 0.25rem;">Edit</button>';
+                        var moveName = encodeURIComponent(r['Name'] || '').replace(/'/g, '%27');
+                        var moveBtn = '<button onclick="openMoveGuest(' + r._row + ', \'' + moveName + '\')" style="padding: 0.4rem 0.75rem; background: #edf2f7; border: 1px solid #cbd5e0; color: #1a365d; border-radius: 6px; cursor: pointer; font-size: 0.75rem; margin-right: 0.25rem;">Move</button>';
+
+                        html += '<tr class="reservation-row">';
+                        html += '<td class="res-primary" data-label="Name" style="' + tdStyle + '"><strong>' + escapeHtmlSafe(r['Name'] || '-') + '</strong></td>';
+                        mealLabels.forEach(function (label) {
+                            html += '<td class="res-primary" data-label="' + escapeHtmlSafe(label) + '" style="' + tdStyle + '">' + escapeHtmlSafe(r[label] || '-') + '</td>';
+                        });
+                        var paymentStatus = r['Payment Processed'];
+                        html += '<td class="res-detail" data-label="Payment" style="' + tdStyle + '">' + (paymentStatus === 'Yes' ? paidBadge : (paymentStatus === 'Manual' ? manualBadge : pendingBadge)) + '</td>';
+                        html += '<td class="res-detail" data-label="Email" style="' + tdStyle + '">' + escapeHtmlSafe(r['Email'] || '-') + '</td>';
+                        html += '<td class="res-detail" data-label="Phone" style="' + tdStyle + '">' + escapeHtmlSafe(r['Phone'] || '-') + '</td>';
+                        html += '<td class="res-primary" data-label="Total" style="' + tdStyle + '">' + escapeHtmlSafe(r['Total Paid'] || '-') + '</td>';
+                        html += '<td class="res-primary-actions" data-label="Actions" style="' + tdStyle + '">' + detailsBtn + editBtn + moveBtn + deleteBtn + '</td>';
+                        html += '</tr>';
+                    });
+
+                    html += '</tbody></table>';
+                    tableContainer.innerHTML = html;
+                    hideLoading();
+                })
+                .catch(function (err) {
+                    tableContainer.innerHTML = '<div style="text-align: center; padding: 3rem; color: #718096;">Error loading reservations</div>';
+                    hideLoading();
+                });
+        }
+
+        // Add Guest functionality — instant rows, batch submit
+        var guestRowsContainer = document.getElementById('guestRowsContainer');
+        var addAnotherBtn = document.getElementById('addAnotherBtn');
+        var submitAllBtn = document.getElementById('submitAllBtn');
+        var guestRowCount = 0;
+
+        function gridTemplateForMeals() {
+            // 2fr Name + 1fr per meal + 1fr Cash + 2fr Email + 2fr Notes + 40px remove
+            var cols = ['2fr'];
+            for (var i = 0; i < currentMealLabels.length; i++) cols.push('1fr');
+            cols.push('1fr', '2fr', '2fr', '40px');
+            return cols.join(' ');
+        }
+
+        function renderAddGuestHeader() {
+            var headerStyle = 'font-size: 0.8rem; color: #4a5568; font-weight: 600; padding-left: 0.25rem;';
+            addGuestHeader.style.gridTemplateColumns = gridTemplateForMeals();
+            while (addGuestHeader.firstChild) addGuestHeader.removeChild(addGuestHeader.firstChild);
+            var labels = ['Name'].concat(currentMealLabels).concat(['Cash $', 'Email', 'Notes', '']);
+            labels.forEach(function (text) {
+                var c = document.createElement('div');
+                c.style.cssText = headerStyle;
+                c.textContent = text;
+                addGuestHeader.appendChild(c);
+            });
+        }
+
+        function addGuestRow() {
+            guestRowCount++;
+            var rowId = 'guestRow_' + guestRowCount;
+            var row = document.createElement('div');
+            row.id = rowId;
+            row.style.cssText = 'display: grid; grid-template-columns: ' + gridTemplateForMeals() + '; gap: 0.5rem; margin-bottom: 0.5rem; align-items: center;';
+
+            var inputStyle = 'width: 100%; padding: 0.6rem; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 1rem; box-sizing: border-box;';
+
+            // Wraps a field with a hidden "mobile label" — invisible on desktop
+            // (parent is grid; display:contents makes the wrapper transparent),
+            // visible on phones where the parent reflows to a column.
+            function mobWrap(labelText, contentEl) {
+                var wrap = document.createElement('div');
+                wrap.className = 'mob-row';
+                wrap.style.cssText = 'display: contents;';
+                var label = document.createElement('span');
+                label.className = 'mob-label';
+                label.textContent = labelText;
+                wrap.appendChild(label);
+                wrap.appendChild(contentEl);
+                return wrap;
+            }
+
+            var nameInput = document.createElement('input');
+            nameInput.type = 'text';
+            nameInput.placeholder = 'Guest name';
+            nameInput.className = 'gr-name';
+            nameInput.style.cssText = inputStyle;
+            row.appendChild(mobWrap('Name', nameInput));
+
+            for (var i = 0; i < currentMealLabels.length; i++) {
+                var tickerWrap = document.createElement('div');
+                tickerWrap.className = 'gr-meal-ticker';
+                tickerWrap.setAttribute('data-meal-idx', String(i));
+                tickerWrap.style.cssText = 'display: flex; align-items: center; justify-content: center; gap: 0.3rem;';
+
+                var btnDec = document.createElement('button');
+                btnDec.type = 'button';
+                btnDec.innerHTML = '−';
+                btnDec.style.cssText = 'width: 32px; height: 32px; border: 1px solid #cbd5e0; border-radius: 50%; background: white; color: #1a365d; cursor: pointer; padding: 0; line-height: 1;';
+
+                var valSpan = document.createElement('span');
+                valSpan.className = 'gr-meal-val';
+                valSpan.innerText = '0';
+                valSpan.style.cssText = 'display: inline-block; min-width: 22px; text-align: center; font-weight: 600;';
+
+                var btnInc = document.createElement('button');
+                btnInc.type = 'button';
+                btnInc.innerHTML = '+';
+                btnInc.style.cssText = 'width: 32px; height: 32px; border: 1px solid #cbd5e0; border-radius: 50%; background: white; color: #1a365d; cursor: pointer; padding: 0; line-height: 1;';
+
+                btnDec.addEventListener('click', (function (span) { return function () {
+                    var n = Math.max(0, (parseInt(span.innerText, 10) || 0) - 1);
+                    span.innerText = String(n);
+                }; })(valSpan));
+                btnInc.addEventListener('click', (function (span) { return function () {
+                    var n = Math.max(0, (parseInt(span.innerText, 10) || 0) + 1);
+                    span.innerText = String(n);
+                }; })(valSpan));
+
+                tickerWrap.appendChild(btnDec);
+                tickerWrap.appendChild(valSpan);
+                tickerWrap.appendChild(btnInc);
+                row.appendChild(mobWrap(currentMealLabels[i], tickerWrap));
+            }
+
+            var cashInput = document.createElement('input');
+            cashInput.type = 'number';
+            cashInput.min = '0';
+            cashInput.placeholder = '0';
+            cashInput.className = 'gr-cash';
+            cashInput.style.cssText = inputStyle;
+            row.appendChild(mobWrap('Cash $', cashInput));
+
+            var emailInput = document.createElement('input');
+            emailInput.type = 'email';
+            emailInput.placeholder = 'email';
+            emailInput.className = 'gr-email';
+            emailInput.style.cssText = inputStyle;
+            row.appendChild(mobWrap('Email', emailInput));
+
+            var notesInput = document.createElement('input');
+            notesInput.type = 'text';
+            notesInput.placeholder = 'notes';
+            notesInput.className = 'gr-notes';
+            notesInput.style.cssText = inputStyle;
+            row.appendChild(mobWrap('Notes', notesInput));
+
+            var removeBtn = document.createElement('button');
+            removeBtn.type = 'button';
+            removeBtn.title = 'Remove';
+            removeBtn.style.cssText = 'background: none; border: 1px solid #fed7d7; color: #e53e3e; font-size: 1.1rem; cursor: pointer; padding: 0.35rem 0.75rem; border-radius: 8px; line-height: 1;';
+            removeBtn.innerHTML = '× Remove';
+            removeBtn.addEventListener('click', function () { row.remove(); });
+            row.appendChild(removeBtn);
+
+            guestRowsContainer.appendChild(row);
+            nameInput.focus();
+        }
+
+        addAnotherBtn.addEventListener('click', function () {
+            addGuestRow();
+        });
+
+        submitAllBtn.addEventListener('click', function () {
+            var rows = guestRowsContainer.querySelectorAll('[id^="guestRow_"]');
+            var guests = [];
+
+            for (var i = 0; i < rows.length; i++) {
+                var name = rows[i].querySelector('.gr-name').value.trim();
+                if (!name) continue;
+                var mealVals = rows[i].querySelectorAll('.gr-meal-val');
+                var mealCounts = [];
+                for (var mi = 0; mi < mealVals.length; mi++) {
+                    mealCounts.push(parseInt(mealVals[mi].innerText, 10) || 0);
+                }
+                var cashEl = rows[i].querySelector('.gr-cash');
+                var cash = cashEl ? cashEl.value.trim() : '';
+                var email = rows[i].querySelector('.gr-email').value.trim();
+                var notes = rows[i].querySelector('.gr-notes').value.trim();
+                guests.push({ name: name, mealCounts: mealCounts, cash: cash, email: email, notes: notes });
+            }
+
+            if (guests.length === 0) {
+                addGuestMsg.textContent = 'Please enter at least one name';
+                addGuestMsg.style.color = '#e53e3e';
+                addGuestMsg.style.display = 'block';
+                return;
+            }
+
+            submitAllBtn.disabled = true;
+            submitAllBtn.textContent = 'Submitting ' + guests.length + '...';
+            addGuestMsg.style.display = 'none';
+
+            var promises = guests.map(function (g) {
+                var url = API_URL + '?action=add' + amp + 'pass=' + currentPassword
+                    + amp + 'week=' + encodeURIComponent(currentWeek)
+                    + amp + 'name=' + encodeURIComponent(g.name)
+                    + amp + 'email=' + encodeURIComponent(g.email)
+                    + amp + 'notes=' + encodeURIComponent(g.notes);
+                if (g.cash) url += amp + 'cash=' + encodeURIComponent(g.cash);
+                for (var mi = 0; mi < g.mealCounts.length; mi++) {
+                    url += amp + 'meal' + mi + '=' + g.mealCounts[mi];
+                }
+                return fetch(url).then(function (r) { return r.json(); });
+            });
+
+            Promise.all(promises)
+                .then(function (results) {
+                    var ok = results.filter(function (r) { return r.status === 'success'; }).length;
+                    var fail = results.length - ok;
+
+                    submitAllBtn.disabled = false;
+                    submitAllBtn.textContent = 'Submit All';
+
+                    if (fail === 0) {
+                        addGuestMsg.innerHTML = '\u2714 ' + ok + ' guest' + (ok > 1 ? 's' : '') + ' added!';
+                        addGuestMsg.style.color = '#22543d';
+                    } else {
+                        addGuestMsg.innerHTML = ok + ' added, ' + fail + ' failed.';
+                        addGuestMsg.style.color = '#e53e3e';
+                    }
+                    addGuestMsg.style.display = 'block';
+
+                    // Clear rows and reload table
+                    guestRowsContainer.innerHTML = '';
+                    guestRowCount = 0;
+                    addGuestRow(); // Add fresh empty row
+                    loadWeekData(true);
+                })
+                .catch(function (err) {
+                    submitAllBtn.disabled = false;
+                    submitAllBtn.textContent = 'Submit All';
+                    addGuestMsg.textContent = 'Error submitting guests';
+                    addGuestMsg.style.color = '#e53e3e';
+                    addGuestMsg.style.display = 'block';
+                });
+        });
+
+        // --- Edit Guest Modal ---
+        var editModal = document.getElementById('editGuestModal');
+        var editGuestMsg = document.getElementById('editGuestMsg');
+
+        function closeEditModal() {
+            editModal.style.display = 'none';
+            editGuestMsg.style.display = 'none';
+        }
+        document.getElementById('editModalClose').addEventListener('click', closeEditModal);
+        document.getElementById('editModalCancelBtn').addEventListener('click', closeEditModal);
+        editModal.addEventListener('click', function(e) {
+            if (e.target === editModal) closeEditModal();
+        });
+
+        function renderEditMealInputs(mealCounts) {
+            var container = document.getElementById('editGuestMealInputs');
+            while (container.firstChild) container.removeChild(container.firstChild);
+            for (var i = 0; i < currentMealLabels.length; i++) {
+                var wrap = document.createElement('div');
+                var label = document.createElement('label');
+                label.style.cssText = 'display: block; font-size: 0.85rem; color: #4a5568; margin-bottom: 0.25rem;';
+                label.textContent = currentMealLabels[i];
+                wrap.appendChild(label);
+                var input = document.createElement('input');
+                input.type = 'number';
+                input.min = '0';
+                input.className = 'edit-meal';
+                input.setAttribute('data-meal-idx', String(i));
+                input.value = String((mealCounts && mealCounts[i]) || 0);
+                input.style.cssText = 'width: 100%; padding: 0.75rem; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 1rem; box-sizing: border-box;';
+                wrap.appendChild(input);
+                container.appendChild(wrap);
+            }
+        }
+
+        window.openEditGuest = function(encodedData) {
+            var d = JSON.parse(decodeURIComponent(encodedData));
+            document.getElementById('editGuestRow').value = d.row;
+            document.getElementById('editGuestName').value = d.name;
+            renderEditMealInputs(d.mealCounts || []);
+            // Strip '$' prefix if present
+            document.getElementById('editGuestCash').value = String(d.cash).replace(/^\$/, '');
+            document.getElementById('editGuestEmail').value = d.email;
+            document.getElementById('editGuestPhone').value = d.phone;
+            document.getElementById('editGuestNotes').value = d.notes;
+            editGuestMsg.style.display = 'none';
+            editModal.style.display = 'flex';
+            document.getElementById('editGuestName').focus();
+        };
+
+        document.getElementById('editGuestSaveBtn').addEventListener('click', function() {
+            var row = document.getElementById('editGuestRow').value;
+            var name = document.getElementById('editGuestName').value.trim();
+            var mealInputs = document.querySelectorAll('#editGuestMealInputs .edit-meal');
+            var cash = document.getElementById('editGuestCash').value;
+            var email = document.getElementById('editGuestEmail').value.trim();
+            var phone = document.getElementById('editGuestPhone').value.trim();
+            var notes = document.getElementById('editGuestNotes').value.trim();
+
+            if (!name) {
+                editGuestMsg.textContent = 'Name is required';
+                editGuestMsg.style.color = '#e53e3e';
+                editGuestMsg.style.display = 'block';
+                return;
+            }
+
+            var saveBtn = document.getElementById('editGuestSaveBtn');
+            saveBtn.disabled = true;
+            saveBtn.textContent = 'Saving...';
+
+            var url = API_URL + '?action=update' + amp + 'pass=' + currentPassword
+                + amp + 'week=' + encodeURIComponent(currentWeek)
+                + amp + 'row=' + row
+                + amp + 'name=' + encodeURIComponent(name)
+                + amp + 'cash=' + encodeURIComponent(cash)
+                + amp + 'email=' + encodeURIComponent(email)
+                + amp + 'phone=' + encodeURIComponent(phone)
+                + amp + 'notes=' + encodeURIComponent(notes);
+            for (var mi = 0; mi < mealInputs.length; mi++) {
+                url += amp + 'meal' + mi + '=' + encodeURIComponent(mealInputs[mi].value || '0');
+            }
+
+            fetch(url)
+                .then(function(r) { return r.json(); })
+                .then(function(data) {
+                    saveBtn.disabled = false;
+                    saveBtn.textContent = 'Save Changes';
+                    if (data.error) {
+                        editGuestMsg.textContent = 'Error: ' + data.message;
+                        editGuestMsg.style.color = '#e53e3e';
+                        editGuestMsg.style.display = 'block';
+                    } else {
+                        closeEditModal();
+                        loadWeekData(true);
+                    }
+                })
+                .catch(function(err) {
+                    saveBtn.disabled = false;
+                    saveBtn.textContent = 'Save Changes';
+                    editGuestMsg.textContent = 'Error saving changes';
+                    editGuestMsg.style.color = '#e53e3e';
+                    editGuestMsg.style.display = 'block';
+                });
+        });
+
+        function resetStats() {
+            var grid = document.getElementById('statsGrid');
+            grid.innerHTML = '<div style="text-align: center; padding: 2rem; color: #718096; grid-column: 1 / -1;">Select a week to see stats</div>';
+        }
+
+        function renderStatsGrid(summary) {
+            var grid = document.getElementById('statsGrid');
+            var cardWhite = 'background: white; border-radius: 16px; padding: 1.5rem; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); text-align: center;';
+            var cardGold  = 'background: linear-gradient(135deg, #c9a227, #d4af37); border-radius: 16px; padding: 1.5rem; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); text-align: center;';
+            var numNavy   = 'font-size: 2.2rem; font-weight: 700; color: #1a365d; margin-bottom: 0.25rem;';
+            var numWhite  = 'font-size: 2.2rem; font-weight: 700; color: white; margin-bottom: 0.25rem;';
+            var labelMute = 'color: #718096; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px;';
+            var labelGold = 'color: white; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px;';
+
+            var html = '';
+            // One card per meal column
+            if (summary && Array.isArray(summary.meals)) {
+                summary.meals.forEach(function (m) {
+                    html += '<div style="' + cardWhite + '">'
+                          + '<div style="' + numNavy + '">' + (m.count || 0) + '</div>'
+                          + '<div style="' + labelMute + '">' + escapeHtmlSafe(m.label) + '</div>'
+                          + '</div>';
+                });
+            }
+            // Revenue (gold highlight)
+            var rev = (summary && summary.totalRevenue) || '$0';
+            html += '<div style="' + cardGold + '">'
+                  + '<div style="' + numWhite + '">' + (typeof rev === 'number' ? '$' + rev : rev) + '</div>'
+                  + '<div style="' + labelGold + '">Total Revenue</div>'
+                  + '</div>';
+            // Discounts
+            var disc = (summary && summary.totalDiscount) || '$0';
+            html += '<div style="' + cardWhite + '">'
+                  + '<div style="' + numNavy + '">' + (typeof disc === 'number' ? '$' + disc : disc) + '</div>'
+                  + '<div style="' + labelMute + '">Discounts</div>'
+                  + '</div>';
+            grid.innerHTML = html;
+        }
+
+        // Make deleteGuest available globally
+        window.deleteGuest = function (row) {
+            if (!confirm('Are you sure you want to delete this guest?')) return;
+
+            var url = API_URL + '?action=delete' + amp + 'pass=' + currentPassword + amp + 'week=' + encodeURIComponent(currentWeek) + amp + 'row=' + row;
+
+            fetch(url)
+                .then(function (r) { return r.json(); })
+                .then(function (data) {
+                    if (data.error) {
+                        alert('Error: ' + data.message);
+                    } else {
+                        loadWeekData(true);
+                    }
+                })
+                .catch(function (err) {
+                    alert('Error deleting guest');
+                });
+        };
+
+        // --- Move Guest Modal ---
+        var moveModal = document.getElementById('moveGuestModal');
+        var moveGuestMsg = document.getElementById('moveGuestMsg');
+        var moveWeekSelect = document.getElementById('moveGuestWeekSelect');
+        var moveConfirmBtn = document.getElementById('moveGuestConfirmBtn');
+        var moveGuestRowPending = 0;
+
+        function closeMoveModal() {
+            moveModal.style.display = 'none';
+            moveGuestMsg.style.display = 'none';
+        }
+        document.getElementById('moveModalClose').addEventListener('click', closeMoveModal);
+        document.getElementById('moveModalCancelBtn').addEventListener('click', closeMoveModal);
+        moveModal.addEventListener('click', function (e) {
+            if (e.target === moveModal) closeMoveModal();
+        });
+
+        function showMoveMsg(text) {
+            moveGuestMsg.textContent = text;
+            moveGuestMsg.style.color = '#e53e3e';
+            moveGuestMsg.style.display = 'block';
+        }
+
+        window.openMoveGuest = function (row, encodedName) {
+            moveGuestRowPending = row;
+            var name = decodeURIComponent(encodedName || '');
+            document.getElementById('moveGuestWho').textContent =
+                'Move ' + (name || 'this guest') + ' out of "' + currentWeek + '". Payment info and meal counts come along.';
+
+            // Rebuild the destination list from the latest week lists, minus the current week.
+            moveWeekSelect.innerHTML = '<option value="">Select a week...</option>';
+            function addGroup(label, names) {
+                var pool = names.filter(function (n) { return n !== currentWeek; });
+                if (pool.length === 0) return;
+                var grp = document.createElement('optgroup');
+                grp.label = label;
+                pool.forEach(function (n) {
+                    var opt = document.createElement('option');
+                    opt.value = n;
+                    opt.textContent = n;
+                    grp.appendChild(opt);
+                });
+                moveWeekSelect.appendChild(grp);
+            }
+            addGroup('Upcoming', upcomingWeekNames);
+            addGroup('Past', pastWeekNames);
+
+            moveGuestMsg.style.display = 'none';
+            moveConfirmBtn.disabled = false;
+            moveConfirmBtn.textContent = 'Move';
+            moveModal.style.display = 'flex';
+        };
+
+        moveConfirmBtn.addEventListener('click', function () {
+            var target = moveWeekSelect.value;
+            if (!target) { showMoveMsg('Pick a destination week'); return; }
+
+            moveConfirmBtn.disabled = true;
+            moveConfirmBtn.textContent = 'Moving...';
+
+            var url = API_URL + '?action=move' + amp + 'pass=' + currentPassword
+                + amp + 'week=' + encodeURIComponent(currentWeek)
+                + amp + 'row=' + moveGuestRowPending
+                + amp + 'targetWeek=' + encodeURIComponent(target);
+
+            fetch(url)
+                .then(function (r) { return r.json(); })
+                .then(function (data) {
+                    moveConfirmBtn.disabled = false;
+                    moveConfirmBtn.textContent = 'Move';
+                    if (data.error) {
+                        showMoveMsg('Error: ' + (data.message || 'could not move'));
+                    } else {
+                        closeMoveModal();
+                        // Backend flags meal counts it couldn't place in the target layout.
+                        if (data.warning) alert(data.warning);
+                        loadWeekData(true);
+                    }
+                })
+                .catch(function () {
+                    moveConfirmBtn.disabled = false;
+                    moveConfirmBtn.textContent = 'Move';
+                    showMoveMsg('Network error');
+                });
+        });
+
+        // ============================================================
+        // DISCOUNT CODES MANAGEMENT
+        // ============================================================
+        var codesHeader = document.getElementById('codesHeader');
+        var codesBody = document.getElementById('codesBody');
+        var codesToggleIcon = document.getElementById('codesToggleIcon');
+        var codesTableContainer = document.getElementById('codesTableContainer');
+        var addCodeBtn = document.getElementById('addCodeBtn');
+        var addCodeMsg = document.getElementById('addCodeMsg');
+        var codesLoaded = false;
+
+        codesHeader.addEventListener('click', function () {
+            var isOpen = codesBody.style.display === 'block';
+            if (isOpen) {
+                codesBody.style.display = 'none';
+                codesToggleIcon.innerHTML = '▸ Show';
+            } else {
+                codesBody.style.display = 'block';
+                codesToggleIcon.innerHTML = '▾ Hide';
+                if (!codesLoaded) loadCodes();
+            }
+        });
+
+        function loadCodes() {
+            codesTableContainer.innerHTML = '<div style="text-align: center; padding: 1rem; color: #718096;">Loading codes...</div>';
+            var url = API_URL + '?action=listCodes' + amp + 'pass=' + currentPassword;
+            fetch(url)
+                .then(function (r) { return r.json(); })
+                .then(function (data) {
+                    if (data.error) {
+                        codesTableContainer.innerHTML = '<div style="text-align: center; padding: 1rem; color: #e53e3e;">Error: ' + data.message + '</div>';
+                        return;
+                    }
+                    renderCodesTable(data.codes || []);
+                    codesLoaded = true;
+                })
+                .catch(function (err) {
+                    codesTableContainer.innerHTML = '<div style="text-align: center; padding: 1rem; color: #e53e3e;">Could not load codes</div>';
+                });
+        }
+
+        function typeLabel(t) {
+            if (t === 'percent') return '% off';
+            if (t === 'fixed') return '$ off';
+            if (t === 'cap_per_head') return '$/person cap';
+            return t;
+        }
+
+        function valueLabel(t, v) {
+            if (t === 'percent') return v + '%';
+            if (t === 'fixed') return '$' + v;
+            if (t === 'cap_per_head') return '$' + v + '/person';
+            return String(v);
+        }
+
+        function renderCodesTable(codes) {
+            if (codes.length === 0) {
+                codesTableContainer.innerHTML = '<div style="text-align: center; padding: 1.5rem; color: #718096;">No discount codes yet. Add one above.</div>';
+                return;
+            }
+            var thStyle = 'background: #f7fafc; padding: 0.75rem; text-align: left; font-weight: 600; color: #4a5568; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 2px solid #e2e8f0;';
+            var tdStyle = 'padding: 0.75rem; color: #2d3748; border-bottom: 1px solid #e2e8f0; font-size: 0.95rem;';
+
+            var html = '<table style="width: 100%; border-collapse: collapse;">';
+            html += '<thead><tr>';
+            html += '<th style="' + thStyle + '">Code</th>';
+            html += '<th style="' + thStyle + '">Type</th>';
+            html += '<th style="' + thStyle + '">Value</th>';
+            html += '<th style="' + thStyle + '">Used / Max</th>';
+            html += '<th style="' + thStyle + '">Active</th>';
+            html += '<th style="' + thStyle + '">Notes</th>';
+            html += '<th style="' + thStyle + '">Actions</th>';
+            html += '</tr></thead><tbody>';
+
+            codes.forEach(function (c) {
+                var usedDisplay = c.used + ' / ' + (c.maxUses === null || c.maxUses === 0 ? '∞' : c.maxUses);
+                var activeBadge = c.active
+                    ? '<span style="display: inline-block; padding: 0.25rem 0.6rem; border-radius: 12px; font-size: 0.7rem; font-weight: 600; background: #c6f6d5; color: #22543d;">ON</span>'
+                    : '<span style="display: inline-block; padding: 0.25rem 0.6rem; border-radius: 12px; font-size: 0.7rem; font-weight: 600; background: #e2e8f0; color: #4a5568;">OFF</span>';
+                var safeCode = encodeURIComponent(c.code);
+                var toggleBtn = '<button onclick="toggleCode(\'' + safeCode + '\')" style="padding: 0.3rem 0.6rem; background: #edf2f7; border: 1px solid #cbd5e0; color: #4a5568; border-radius: 6px; cursor: pointer; font-size: 0.8rem; margin-right: 0.25rem;">' + (c.active ? 'Disable' : 'Enable') + '</button>';
+                var resetBtn = '<button onclick="resetCode(\'' + safeCode + '\')" style="padding: 0.3rem 0.6rem; background: #edf2f7; border: 1px solid #cbd5e0; color: #4a5568; border-radius: 6px; cursor: pointer; font-size: 0.8rem; margin-right: 0.25rem;">Reset</button>';
+                var deleteBtn = '<button onclick="deleteCode(\'' + safeCode + '\')" style="padding: 0.3rem 0.6rem; background: #e53e3e; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.8rem;">Delete</button>';
+
+                html += '<tr>';
+                html += '<td data-label="Code" style="' + tdStyle + '"><strong>' + c.code + '</strong></td>';
+                html += '<td data-label="Type" style="' + tdStyle + '">' + typeLabel(c.type) + '</td>';
+                html += '<td data-label="Value" style="' + tdStyle + '">' + valueLabel(c.type, c.value) + '</td>';
+                html += '<td data-label="Used / Max" style="' + tdStyle + '">' + usedDisplay + '</td>';
+                html += '<td data-label="Active" style="' + tdStyle + '">' + activeBadge + '</td>';
+                html += '<td data-label="Notes" style="' + tdStyle + '; color: #718096;">' + (c.notes || '') + '</td>';
+                html += '<td data-label="Actions" style="' + tdStyle + '">' + toggleBtn + resetBtn + deleteBtn + '</td>';
+                html += '</tr>';
+            });
+
+            html += '</tbody></table>';
+            codesTableContainer.innerHTML = html;
+        }
+
+        function showCodeMsg(text, isError) {
+            addCodeMsg.textContent = text;
+            addCodeMsg.style.color = isError ? '#e53e3e' : '#22543d';
+            addCodeMsg.style.display = 'block';
+            setTimeout(function () { addCodeMsg.style.display = 'none'; }, 4000);
+        }
+
+        addCodeBtn.addEventListener('click', function () {
+            var name = document.getElementById('newCodeName').value.trim();
+            var type = document.getElementById('newCodeType').value;
+            var value = document.getElementById('newCodeValue').value;
+            var max = document.getElementById('newCodeMax').value;
+            var notes = document.getElementById('newCodeNotes').value;
+
+            if (!name) { showCodeMsg('Enter a code name', true); return; }
+            if (!value || parseFloat(value) <= 0) { showCodeMsg('Enter a value greater than 0', true); return; }
+
+            addCodeBtn.disabled = true;
+            addCodeBtn.textContent = 'Adding...';
+
+            var url = API_URL + '?action=addCode' + amp + 'pass=' + currentPassword
+                + amp + 'code=' + encodeURIComponent(name)
+                + amp + 'type=' + encodeURIComponent(type)
+                + amp + 'value=' + encodeURIComponent(value)
+                + amp + 'maxUses=' + encodeURIComponent(max)
+                + amp + 'notes=' + encodeURIComponent(notes);
+
+            fetch(url)
+                .then(function (r) { return r.json(); })
+                .then(function (data) {
+                    addCodeBtn.disabled = false;
+                    addCodeBtn.textContent = '+ Add';
+                    if (data.error) {
+                        showCodeMsg(data.message || 'Could not add code', true);
+                    } else {
+                        showCodeMsg('Code added', false);
+                        document.getElementById('newCodeName').value = '';
+                        document.getElementById('newCodeValue').value = '';
+                        document.getElementById('newCodeMax').value = '';
+                        document.getElementById('newCodeNotes').value = '';
+                        loadCodes();
+                    }
+                })
+                .catch(function (err) {
+                    addCodeBtn.disabled = false;
+                    addCodeBtn.textContent = '+ Add';
+                    showCodeMsg('Network error', true);
+                });
+        });
+
+        window.toggleCode = function (encodedCode) {
+            var url = API_URL + '?action=toggleCode' + amp + 'pass=' + currentPassword + amp + 'code=' + encodedCode;
+            fetch(url)
+                .then(function (r) { return r.json(); })
+                .then(function (data) {
+                    if (data.error) { showCodeMsg(data.message, true); }
+                    else { loadCodes(); }
+                })
+                .catch(function (err) { showCodeMsg('Network error', true); });
+        };
+
+        window.resetCode = function (encodedCode) {
+            if (!confirm('Reset usage counter for this code back to 0?')) return;
+            var url = API_URL + '?action=resetCode' + amp + 'pass=' + currentPassword + amp + 'code=' + encodedCode;
+            fetch(url)
+                .then(function (r) { return r.json(); })
+                .then(function (data) {
+                    if (data.error) { showCodeMsg(data.message, true); }
+                    else { showCodeMsg('Usage reset', false); loadCodes(); }
+                })
+                .catch(function (err) { showCodeMsg('Network error', true); });
+        };
+
+        window.deleteCode = function (encodedCode) {
+            if (!confirm('Delete this discount code? This cannot be undone.')) return;
+            var url = API_URL + '?action=deleteCode' + amp + 'pass=' + currentPassword + amp + 'code=' + encodedCode;
+            fetch(url)
+                .then(function (r) { return r.json(); })
+                .then(function (data) {
+                    if (data.error) { showCodeMsg(data.message, true); }
+                    else { showCodeMsg('Deleted', false); loadCodes(); }
+                })
+                .catch(function (err) { showCodeMsg('Network error', true); });
+        };
+
+        // ============================================================
+        // LOCAL FAMILIES (Regulars)
+        // ============================================================
+        var localsHeader = document.getElementById('localsHeader');
+        var localsBody = document.getElementById('localsBody');
+        var localsToggleIcon = document.getElementById('localsToggleIcon');
+        var localsTableContainer = document.getElementById('localsTableContainer');
+        var addLocalBtn = document.getElementById('addLocalBtn');
+        var addLocalMsg = document.getElementById('addLocalMsg');
+        var localsLoaded = false;
+        var localsCache = [];
+
+        localsHeader.addEventListener('click', function () {
+            var isOpen = localsBody.style.display === 'block';
+            if (isOpen) {
+                localsBody.style.display = 'none';
+                localsToggleIcon.innerHTML = '▸ Show';
+            } else {
+                localsBody.style.display = 'block';
+                localsToggleIcon.innerHTML = '▾ Hide';
+                if (!localsLoaded) loadLocals();
+            }
+        });
+
+        function loadLocals() {
+            localsTableContainer.innerHTML = '<div style="text-align: center; padding: 1rem; color: #718096;">Loading...</div>';
+            var url = API_URL + '?action=listLocals' + amp + 'pass=' + currentPassword;
+            fetch(url)
+                .then(function (r) { return r.json(); })
+                .then(function (data) {
+                    if (data.error) {
+                        localsTableContainer.innerHTML = '<div style="text-align: center; padding: 1rem; color: #e53e3e;">Error: ' + data.message + '</div>';
+                        return;
+                    }
+                    localsCache = data.locals || [];
+                    renderLocalsTable(localsCache);
+                    localsLoaded = true;
+                })
+                .catch(function (err) {
+                    localsTableContainer.innerHTML = '<div style="text-align: center; padding: 1rem; color: #e53e3e;">Could not load regulars</div>';
+                });
+        }
+
+        function buildTicker(idPrefix, val, decFn, incFn) {
+            return ''
+                + '<div style="display: inline-flex; align-items: center; gap: 0.4rem;">'
+                +   '<button type="button" onclick="' + decFn + '" style="width: 26px; height: 26px; border: 1px solid #cbd5e0; border-radius: 50%; background: white; color: #1a365d; cursor: pointer;">−</button>'
+                +   '<span id="' + idPrefix + '" style="display: inline-block; min-width: 22px; text-align: center; font-weight: 600;">' + val + '</span>'
+                +   '<button type="button" onclick="' + incFn + '" style="width: 26px; height: 26px; border: 1px solid #cbd5e0; border-radius: 50%; background: white; color: #1a365d; cursor: pointer;">+</button>'
+                + '</div>';
+        }
+
+        function renderLocalsTable(locals) {
+            if (locals.length === 0) {
+                localsTableContainer.innerHTML = '<div style="text-align: center; padding: 1.5rem; color: #718096;">No regulars yet. Add one above.</div>';
+                return;
+            }
+            var thStyle = 'background: #f7fafc; padding: 0.75rem; text-align: left; font-weight: 600; color: #4a5568; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 2px solid #e2e8f0;';
+            var tdStyle = 'padding: 0.75rem; color: #2d3748; border-bottom: 1px solid #e2e8f0; font-size: 0.95rem; vertical-align: top;';
+            var hasWeek = !!currentWeek;
+            var headcountColTitle = hasWeek ? 'Per Meal' : 'Headcount';
+
+            var html = '';
+            if (hasWeek) {
+                html += '<div id="localsBulkBar" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; gap: 0.75rem; flex-wrap: wrap;">'
+                      +   '<label style="display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.9rem; color: #4a5568; cursor: pointer;">'
+                      +     '<input id="localsSelectAll" type="checkbox" onclick="toggleSelectAllLocals(this.checked)" style="width: 16px; height: 16px;"> Select all'
+                      +   '</label>'
+                      +   '<span id="localsSelectedCount">0 selected</span>'
+                      +   '<button id="bulkAddLocalsBtn" onclick="addSelectedLocalsToWeek()" style="padding: 0.55rem 1.25rem; background: linear-gradient(135deg, #c9a227, #d4af37); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.95rem;">+ Add Selected to Week</button>'
+                      + '</div>';
+            }
+
+            html += '<table style="width: 100%; border-collapse: collapse;">';
+            html += '<thead><tr>';
+            if (hasWeek) html += '<th style="' + thStyle + '; width: 40px;"> </th>';
+            html += '<th style="' + thStyle + '">Name</th>';
+            html += '<th style="' + thStyle + '">' + headcountColTitle + '</th>';
+            html += '<th style="' + thStyle + '">Email</th>';
+            html += '<th style="' + thStyle + '">Phone</th>';
+            html += '<th style="' + thStyle + '">Notes</th>';
+            html += '<th style="' + thStyle + '">Add to Week</th>';
+            html += '<th style="' + thStyle + '">Actions</th>';
+            html += '</tr></thead><tbody>';
+
+            locals.forEach(function (loc) {
+                var headcountCell;
+                if (hasWeek) {
+                    // Per-meal tickers, each pre-filled with the local's default headcount.
+                    // Values live in DOM only and are read at Add time — they don't
+                    // overwrite the stored "headcount" default.
+                    var rows = currentMealLabels.map(function (label, idx) {
+                        var tickerId = 'localMeal_' + loc._row + '_' + idx;
+                        var tk = buildTicker(
+                            tickerId,
+                            loc.headcount,
+                            "bumpLocalMeal(" + loc._row + "," + idx + ",-1)",
+                            "bumpLocalMeal(" + loc._row + "," + idx + ",1)"
+                        );
+                        return '<div style="display: flex; align-items: center; gap: 0.6rem; padding: 0.15rem 0;">'
+                             +   '<span style="font-size: 0.8rem; color: #718096; min-width: 0; flex: 1;">' + escapeHtmlSafe(label) + '</span>'
+                             +   tk
+                             + '</div>';
+                    });
+                    headcountCell = '<div style="display: flex; flex-direction: column; gap: 0.1rem; min-width: 280px;">' + rows.join('') + '</div>';
+                } else {
+                    // No week picked — show the single stored-headcount ticker (persists to sheet on bump).
+                    headcountCell = buildTicker(
+                        'localHc_' + loc._row,
+                        loc.headcount,
+                        "bumpLocalHeadcount(" + loc._row + ",-1)",
+                        "bumpLocalHeadcount(" + loc._row + ",1)"
+                    );
+                }
+
+                var addBtn = hasWeek
+                    ? '<button onclick="addLocalToWeek(' + loc._row + ')" style="padding: 0.4rem 0.85rem; background: #38a169; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.85rem; font-weight: 600;">+ Add</button>'
+                    : '<span style="font-size: 0.8rem; color: #a0aec0;">Pick a week</span>';
+                var detailsBtn = '<button type="button" class="mobile-local-details-toggle" onclick="toggleRowDetails(this)" aria-expanded="false">Details</button>';
+                var editBtn = '<button onclick="editLocal(' + loc._row + ')" style="padding: 0.3rem 0.6rem; background: #edf2f7; border: 1px solid #cbd5e0; color: #4a5568; border-radius: 6px; cursor: pointer; font-size: 0.8rem; margin-right: 0.25rem;">Edit</button>';
+                var deleteBtn = '<button class="local-detail-action" onclick="deleteLocal(' + loc._row + ')" style="padding: 0.3rem 0.6rem; background: #e53e3e; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.8rem;">Delete</button>';
+
+                var headcountClass = hasWeek ? ' class="cell-multi"' : '';
+                html += '<tr class="local-row">';
+                if (hasWeek) {
+                    html += '<td data-label="Select" style="' + tdStyle + '"><input type="checkbox" class="local-select" data-row="' + loc._row + '" onclick="updateSelectedLocalsCount()" style="width: 16px; height: 16px;"></td>';
+                }
+                html += '<td data-label="Name" style="' + tdStyle + '"><strong>' + escapeHtmlSafe(loc.name) + '</strong></td>';
+                html += '<td data-label="' + escapeHtmlSafe(headcountColTitle) + '"' + headcountClass + ' style="' + tdStyle + '">' + headcountCell + '</td>';
+                html += '<td class="local-detail" data-label="Email" style="' + tdStyle + '; color: #718096;">' + escapeHtmlSafe(loc.email) + '</td>';
+                html += '<td class="local-detail" data-label="Phone" style="' + tdStyle + '; color: #718096;">' + escapeHtmlSafe(loc.phone) + '</td>';
+                html += '<td class="local-detail" data-label="Notes" style="' + tdStyle + '; color: #718096;">' + escapeHtmlSafe(loc.notes) + '</td>';
+                html += '<td data-label="Add to Week" style="' + tdStyle + '">' + addBtn + '</td>';
+                html += '<td class="local-primary-actions" data-label="Actions" style="' + tdStyle + '">' + detailsBtn + editBtn + deleteBtn + '</td>';
+                html += '</tr>';
+            });
+
+            html += '</tbody></table>';
+            localsTableContainer.innerHTML = html;
+            window.updateSelectedLocalsCount();
+        }
+
+        // Per-meal ticker bump for a local. Updates DOM only — actual values
+        // are read out of these spans when "+ Add" is clicked.
+        window.bumpLocalMeal = function (row, mealIdx, delta) {
+            var el = document.getElementById('localMeal_' + row + '_' + mealIdx);
+            if (!el) return;
+            var n = Math.max(0, (parseInt(el.innerText, 10) || 0) + delta);
+            el.innerText = String(n);
+        };
+
+        window.updateSelectedLocalsCount = function () {
+            var countEl = document.getElementById('localsSelectedCount');
+            if (!countEl) return;
+            var selected = localsTableContainer.querySelectorAll('.local-select:checked').length;
+            countEl.textContent = selected + ' selected';
+        };
+
+        window.toggleSelectAllLocals = function (checked) {
+            var boxes = localsTableContainer.querySelectorAll('.local-select');
+            for (var i = 0; i < boxes.length; i++) boxes[i].checked = checked;
+            window.updateSelectedLocalsCount();
+        };
+
+        // Read the per-meal ticker values for a given local _row.
+        function readLocalMealCounts(row) {
+            var counts = [];
+            var anyPositive = false;
+            for (var mi = 0; mi < currentMealLabels.length; mi++) {
+                var el = document.getElementById('localMeal_' + row + '_' + mi);
+                var n = el ? (parseInt(el.innerText, 10) || 0) : 0;
+                if (n > 0) anyPositive = true;
+                counts.push(n);
+            }
+            return { counts: counts, anyPositive: anyPositive };
+        }
+
+        function buildAddLocalUrl(loc, mealCounts) {
+            var url = API_URL + '?action=add' + amp + 'pass=' + currentPassword
+                + amp + 'week=' + encodeURIComponent(currentWeek)
+                + amp + 'name=' + encodeURIComponent(loc.name)
+                + amp + 'email=' + encodeURIComponent(loc.email)
+                + amp + 'phone=' + encodeURIComponent(loc.phone)
+                + amp + 'notes=' + encodeURIComponent(loc.notes);
+            for (var mj = 0; mj < mealCounts.length; mj++) {
+                url += amp + 'meal' + mj + '=' + mealCounts[mj];
+            }
+            return url;
+        }
+
+        // Bulk: read every checked local, fire all add requests in parallel,
+        // and only refresh week data once after they all complete.
+        window.addSelectedLocalsToWeek = function () {
+            if (!currentWeek) { showLocalMsg('Pick a week first', true); return; }
+            var boxes = localsTableContainer.querySelectorAll('.local-select:checked');
+            if (boxes.length === 0) { showLocalMsg('Select at least one regular', true); return; }
+
+            var toAdd = [];
+            for (var i = 0; i < boxes.length; i++) {
+                var row = parseInt(boxes[i].getAttribute('data-row'), 10);
+                var loc = null;
+                for (var li = 0; li < localsCache.length; li++) {
+                    if (localsCache[li]._row === row) { loc = localsCache[li]; break; }
+                }
+                if (!loc) continue;
+                var mc = readLocalMealCounts(row);
+                if (!mc.anyPositive) continue;
+                toAdd.push({ loc: loc, counts: mc.counts });
+            }
+
+            if (toAdd.length === 0) {
+                showLocalMsg('No selected regulars have headcounts > 0', true);
+                return;
+            }
+
+            var bulkBtn = document.getElementById('bulkAddLocalsBtn');
+            if (bulkBtn) { bulkBtn.disabled = true; bulkBtn.textContent = 'Adding ' + toAdd.length + '...'; }
+
+            var promises = toAdd.map(function (item) {
+                return fetch(buildAddLocalUrl(item.loc, item.counts))
+                    .then(function (r) { return r.json(); })
+                    .catch(function () { return { error: 'network' }; });
+            });
+
+            Promise.all(promises).then(function (results) {
+                if (bulkBtn) { bulkBtn.disabled = false; bulkBtn.textContent = '+ Add Selected to Week'; }
+                var ok = results.filter(function (r) { return r && r.status === 'success'; }).length;
+                var fail = results.length - ok;
+                if (fail === 0) {
+                    showLocalMsg('Added ' + ok + ' to ' + currentWeek, false);
+                } else {
+                    showLocalMsg(ok + ' added, ' + fail + ' failed', true);
+                }
+                // Uncheck everything
+                toggleSelectAllLocals(false);
+                var selAll = document.getElementById('localsSelectAll');
+                if (selAll) selAll.checked = false;
+                // Single refresh
+                loadWeekData(true);
+            });
+        };
+
+        function escapeHtmlSafe(s) {
+            return String(s || '').replace(/[&<>"']/g, function (c) {
+                return { '&': '&', '<': '<', '>': '>', '"': '"', "'": ''' }[c];
+            });
+        }
+
+        function showLocalMsg(text, isError) {
+            addLocalMsg.textContent = text;
+            addLocalMsg.style.color = isError ? '#e53e3e' : '#22543d';
+            addLocalMsg.style.display = 'block';
+            setTimeout(function () { addLocalMsg.style.display = 'none'; }, 4000);
+        }
+
+        addLocalBtn.addEventListener('click', function () {
+            var name = document.getElementById('newLocalName').value.trim();
+            var email = document.getElementById('newLocalEmail').value.trim();
+            var phone = document.getElementById('newLocalPhone').value.trim();
+            var headcount = document.getElementById('newLocalHeadcount').value;
+            var notes = document.getElementById('newLocalNotes').value.trim();
+
+            if (!name) { showLocalMsg('Enter a family name', true); return; }
+
+            addLocalBtn.disabled = true;
+            addLocalBtn.textContent = 'Saving...';
+
+            var url = API_URL + '?action=addLocal' + amp + 'pass=' + currentPassword
+                + amp + 'name=' + encodeURIComponent(name)
+                + amp + 'email=' + encodeURIComponent(email)
+                + amp + 'phone=' + encodeURIComponent(phone)
+                + amp + 'headcount=' + encodeURIComponent(headcount || 0)
+                + amp + 'notes=' + encodeURIComponent(notes);
+
+            fetch(url)
+                .then(function (r) { return r.json(); })
+                .then(function (data) {
+                    addLocalBtn.disabled = false;
+                    addLocalBtn.textContent = '+ Save';
+                    if (data.error) {
+                        showLocalMsg(data.message || 'Could not add', true);
+                    } else {
+                        showLocalMsg('Saved', false);
+                        document.getElementById('newLocalName').value = '';
+                        document.getElementById('newLocalEmail').value = '';
+                        document.getElementById('newLocalPhone').value = '';
+                        document.getElementById('newLocalHeadcount').value = '1';
+                        document.getElementById('newLocalNotes').value = '';
+                        loadLocals();
+                    }
+                })
+                .catch(function (err) {
+                    addLocalBtn.disabled = false;
+                    addLocalBtn.textContent = '+ Save';
+                    showLocalMsg('Network error', true);
+                });
+        });
+
+        window.bumpLocalHeadcount = function (row, delta) {
+            // Find the local in cache, compute new headcount, persist
+            var loc = null;
+            for (var i = 0; i < localsCache.length; i++) {
+                if (localsCache[i]._row === row) { loc = localsCache[i]; break; }
+            }
+            if (!loc) return;
+            var next = Math.max(0, loc.headcount + delta);
+            loc.headcount = next;
+            renderLocalsTable(localsCache);  // optimistic update
+            var url = API_URL + '?action=updateLocal' + amp + 'pass=' + currentPassword
+                + amp + 'row=' + row + amp + 'headcount=' + next;
+            fetch(url).then(function (r) { return r.json(); }).then(function (data) {
+                if (data.error) showLocalMsg(data.message || 'Could not save', true);
+            }).catch(function () { showLocalMsg('Network error', true); });
+        };
+
+        var editLocalModal = document.getElementById('editLocalModal');
+        var editLocalMsg = document.getElementById('editLocalMsg');
+
+        function closeEditLocalModal() {
+            editLocalModal.style.display = 'none';
+            editLocalMsg.style.display = 'none';
+        }
+        document.getElementById('editLocalModalClose').addEventListener('click', closeEditLocalModal);
+        document.getElementById('editLocalCancelBtn').addEventListener('click', closeEditLocalModal);
+        editLocalModal.addEventListener('click', function (e) {
+            if (e.target === editLocalModal) closeEditLocalModal();
+        });
+
+        window.editLocal = function (row) {
+            var loc = null;
+            for (var i = 0; i < localsCache.length; i++) {
+                if (localsCache[i]._row === row) { loc = localsCache[i]; break; }
+            }
+            if (!loc) return;
+            document.getElementById('editLocalRow').value = row;
+            document.getElementById('editLocalName').value = loc.name || '';
+            document.getElementById('editLocalHeadcount').value = String(loc.headcount || 0);
+            document.getElementById('editLocalEmail').value = loc.email || '';
+            document.getElementById('editLocalPhone').value = loc.phone || '';
+            document.getElementById('editLocalNotes').value = loc.notes || '';
+            editLocalMsg.style.display = 'none';
+            editLocalModal.style.display = 'flex';
+            document.getElementById('editLocalName').focus();
+        };
+
+        document.getElementById('editLocalSaveBtn').addEventListener('click', function () {
+            var row = document.getElementById('editLocalRow').value;
+            var newName = document.getElementById('editLocalName').value.trim();
+            var newHeadcount = document.getElementById('editLocalHeadcount').value;
+            var newEmail = document.getElementById('editLocalEmail').value.trim();
+            var newPhone = document.getElementById('editLocalPhone').value.trim();
+            var newNotes = document.getElementById('editLocalNotes').value.trim();
+
+            if (!newName) {
+                editLocalMsg.textContent = 'Family name is required';
+                editLocalMsg.style.color = '#e53e3e';
+                editLocalMsg.style.display = 'block';
+                return;
+            }
+
+            var saveBtn = document.getElementById('editLocalSaveBtn');
+            saveBtn.disabled = true;
+            saveBtn.textContent = 'Saving...';
+
+            var url = API_URL + '?action=updateLocal' + amp + 'pass=' + currentPassword
+                + amp + 'row=' + row
+                + amp + 'name=' + encodeURIComponent(newName)
+                + amp + 'email=' + encodeURIComponent(newEmail)
+                + amp + 'phone=' + encodeURIComponent(newPhone)
+                + amp + 'headcount=' + encodeURIComponent(newHeadcount || 0)
+                + amp + 'notes=' + encodeURIComponent(newNotes);
+            fetch(url).then(function (r) { return r.json(); }).then(function (data) {
+                saveBtn.disabled = false;
+                saveBtn.textContent = 'Save Changes';
+                if (data.error) {
+                    editLocalMsg.textContent = data.message || 'Could not save';
+                    editLocalMsg.style.color = '#e53e3e';
+                    editLocalMsg.style.display = 'block';
+                } else {
+                    closeEditLocalModal();
+                    showLocalMsg('Updated', false);
+                    loadLocals();
+                }
+            }).catch(function () {
+                saveBtn.disabled = false;
+                saveBtn.textContent = 'Save Changes';
+                editLocalMsg.textContent = 'Network error';
+                editLocalMsg.style.color = '#e53e3e';
+                editLocalMsg.style.display = 'block';
+            });
+        });
+
+        window.deleteLocal = function (row) {
+            if (!confirm('Remove this family from the regulars list?')) return;
+            var url = API_URL + '?action=deleteLocal' + amp + 'pass=' + currentPassword + amp + 'row=' + row;
+            fetch(url).then(function (r) { return r.json(); }).then(function (data) {
+                if (data.error) showLocalMsg(data.message || 'Could not delete', true);
+                else { showLocalMsg('Deleted', false); loadLocals(); }
+            }).catch(function () { showLocalMsg('Network error', true); });
+        };
+
+        // Adds a local to the currently selected week using the per-meal ticker
+        // values shown next to that row (defaults to local.headcount per meal).
+        window.addLocalToWeek = function (row) {
+            if (!currentWeek) { showLocalMsg('Pick a week first', true); return; }
+            var loc = null;
+            for (var i = 0; i < localsCache.length; i++) {
+                if (localsCache[i]._row === row) { loc = localsCache[i]; break; }
+            }
+            if (!loc) return;
+
+            // Read per-meal counts from the row's tickers
+            var mealCounts = [];
+            var anyPositive = false;
+            for (var mi = 0; mi < currentMealLabels.length; mi++) {
+                var el = document.getElementById('localMeal_' + row + '_' + mi);
+                var n = el ? (parseInt(el.innerText, 10) || 0) : 0;
+                if (n > 0) anyPositive = true;
+                mealCounts.push(n);
+            }
+            if (!anyPositive) { showLocalMsg('Set at least one meal count > 0', true); return; }
+
+            var url = API_URL + '?action=add' + amp + 'pass=' + currentPassword
+                + amp + 'week=' + encodeURIComponent(currentWeek)
+                + amp + 'name=' + encodeURIComponent(loc.name)
+                + amp + 'email=' + encodeURIComponent(loc.email)
+                + amp + 'phone=' + encodeURIComponent(loc.phone)
+                + amp + 'notes=' + encodeURIComponent(loc.notes);
+            for (var mj = 0; mj < mealCounts.length; mj++) {
+                url += amp + 'meal' + mj + '=' + mealCounts[mj];
+            }
+            fetch(url).then(function (r) { return r.json(); }).then(function (data) {
+                if (data.error) showLocalMsg(data.message || 'Could not add', true);
+                else { showLocalMsg('Added ' + loc.name + ' to ' + currentWeek, false); loadWeekData(true); }
+            }).catch(function () { showLocalMsg('Network error', true); });
+        };
+    })();
+    //]]>
+</script>

@@ -1,0 +1,347 @@
+<!-- Minyan Schedule Fragment -->
+<div class="minyan-schedule-wrapper">
+<style type="text/css">@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap');
+
+        .minyan-schedule-wrapper {
+            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .minyan-schedule-wrapper * {
+            box-sizing: border-box;
+        }
+
+        /* HEADER */
+        .minyan-schedule-wrapper .header {
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+            width: 100%;
+            padding: 5rem 1.5rem 6rem;
+            text-align: center;
+            color: #ffffff !important;
+            position: relative;
+            z-index: 1;
+        }
+
+        .minyan-schedule-wrapper .header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 5rem;
+            /* Increased from 4rem */
+            font-weight: 700;
+            margin: 0 0 1.5rem 0;
+            color: #ffffff !important;
+            line-height: 1.1;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .minyan-schedule-wrapper .header .subtitle {
+            font-size: 1.75rem;
+            /* Increased from 1.5rem */
+            color: rgba(255, 255, 255, 0.95);
+            font-weight: 300;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* CONTENT */
+        .minyan-schedule-wrapper .content-container {
+            max-width: 1400px;
+            width: 95%;
+            margin-top: -4rem;
+            margin-bottom: 4rem;
+            padding: 0 1.5rem;
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            gap: 3rem;
+        }
+
+        @media (min-width: 900px) {
+            .minyan-schedule-wrapper .content-container {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            }
+        }
+
+        /* CARD */
+        .minyan-schedule-wrapper .schedule-card {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 3.5rem;
+            box-shadow: 0 12px 20px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+            text-align: left;
+        }
+
+        .minyan-schedule-wrapper .schedule-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: #c29d59;
+        }
+
+        /* ICONS - BASE64 SOLUTION */
+        .minyan-schedule-wrapper .icon-box {
+            width: 70px;
+            /* Increased from 60px */
+            height: 70px;
+            background-color: #f1f5f9;
+            border-radius: 16px;
+            margin-bottom: 2.5rem;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: 38px 38px;
+            /* Increased from 32px */
+        }
+
+        /* Sun Icon */
+        .minyan-schedule-wrapper .icon-sun {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%231e3a8a' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z' /%3E%3C/svg%3E");
+        }
+
+        /* Candles Icon */
+        .minyan-schedule-wrapper .icon-candles {
+            background-color: #fffcf0;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23c29d59' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z' /%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M9.879 16.121A3 3 0 1012.015 11L11 14H9c0 .768.293 1.536.879 2.121z' /%3E%3C/svg%3E");
+        }
+
+        .minyan-schedule-wrapper h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            /* Increased from 2.5rem */
+            color: #0f172a;
+            margin-top: 0;
+            margin-bottom: 2.5rem;
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 1.5rem;
+        }
+
+        /* ROWS & ALIGNMENT */
+        .minyan-schedule-wrapper .time-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            border-bottom: 1px dashed #cbd5e1;
+            padding: 2rem 0;
+            /* More spacing */
+        }
+
+        .minyan-schedule-wrapper .time-row:last-child {
+            border-bottom: none;
+        }
+
+        .minyan-schedule-wrapper .day-label {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            color: #1e293b;
+            font-size: 1.6rem;
+            /* Increased from 1.4rem */
+            min-width: 180px;
+        }
+
+        .minyan-schedule-wrapper .time-content {
+            text-align: right;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+        }
+
+        .minyan-schedule-wrapper .time-value {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            color: #1e3a8a;
+            font-size: 1.8rem;
+            /* Increased from 1.5rem */
+        }
+
+        .minyan-schedule-wrapper .time-sub {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.25rem;
+            /* Increased from 1.1rem */
+            color: #64748b;
+            margin-top: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .minyan-schedule-wrapper .action-link {
+            font-family: 'Outfit', sans-serif;
+            display: inline-block;
+            font-size: 1.05rem;
+            /* Increased from 0.95rem */
+            background: #f1f5f9;
+            color: #1e3a8a;
+            padding: 8px 18px;
+            /* Bigger buttons */
+            border-radius: 99px;
+            text-decoration: none;
+            margin-top: 10px;
+            font-weight: 600;
+        }
+
+        .minyan-schedule-wrapper .shabbat-card {
+            grid-column: 1 / -1;
+            background: linear-gradient(to bottom right, #ffffff, #fafbfd);
+        }
+
+        .minyan-schedule-wrapper .shabbat-splits {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 5rem;
+        }
+
+        .minyan-schedule-wrapper .section-title {
+            font-family: 'Outfit', sans-serif;
+            display: block;
+            font-size: 1.3rem;
+            /* Increased from 1.15rem */
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #c29d59;
+            font-weight: 800;
+            margin-bottom: 2rem;
+            margin-top: 1rem;
+        }
+
+        .minyan-schedule-wrapper .footer-note {
+            font-family: 'Outfit', sans-serif;
+            text-align: center;
+            color: #64748b;
+            padding: 2rem;
+            font-size: 1.25rem;
+            /* Increased from 1.1rem */
+            grid-column: 1 / -1;
+        }
+
+        /* MOBILE FIXES */
+        @media (max-width: 768px) {
+            .minyan-schedule-wrapper .header h1 {
+                font-size: 3.5rem;
+                /* Mobile Size Adjustment */
+            }
+
+            .minyan-schedule-wrapper .header .subtitle {
+                font-size: 1.25rem;
+            }
+
+            .minyan-schedule-wrapper .schedule-card {
+                padding: 1.75rem;
+            }
+
+            .minyan-schedule-wrapper .shabbat-splits {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+
+            /* Vertical Alignment for Mobile */
+            .minyan-schedule-wrapper .time-row {
+                flex-direction: column;
+                gap: 0.75rem;
+                align-items: flex-start;
+                /* FORCE LEFT ALIGNMENT */
+            }
+
+            .minyan-schedule-wrapper .time-content {
+                align-items: flex-start;
+                /* FORCE LEFT ALIGNMENT */
+                text-align: left;
+                /* FORCE LEFT ALIGNMENT */
+                width: 100%;
+                margin-left: 0;
+            }
+
+            .minyan-schedule-wrapper .time-sub {
+                justify-content: flex-start;
+            }
+
+            /* Adjust spacing for stacked items */
+            .minyan-schedule-wrapper .day-label {
+                margin-bottom: 0.25rem;
+                font-size: 1.75rem;
+                /* Very clear size for mobile headers */
+            }
+        }
+</style>
+<div class="header">
+<h1>Minyan Schedule</h1>
+
+<div class="subtitle">Join us for daily prayer, study, and community</div>
+</div>
+
+<div class="content-container"><!-- Weekday Panel -->
+<div class="schedule-card">
+<div class="icon-box icon-sun">&nbsp;</div>
+
+<h2>Weekday Services</h2>
+
+<div class="time-row"><span class="day-label">Sunday</span>
+
+<div class="time-content"><span class="time-value">9:00 AM</span> <span class="time-sub"> Torah &amp; Breakfast at 10:00 AM </span></div>
+</div>
+
+<div class="time-row"><span class="day-label">Monday - Friday</span>
+
+<div class="time-content"><span class="time-value">8:00 AM</span> <span class="time-sub"> Torah &amp; Breakfast at 9:00 AM </span></div>
+</div>
+</div>
+<!-- Shabbat Panel -->
+
+<div class="schedule-card shabbat-card">
+<div class="icon-box icon-candles">&nbsp;</div>
+
+<h2>Shabbat Services</h2>
+
+<div class="shabbat-splits"><!-- Friday Evening -->
+<div class="split-col"><span class="section-title">Friday Evening</span>
+
+<div class="time-row"><span class="day-label">Mincha</span>
+
+<div class="time-content"><span class="time-value" style="font-size:1.6rem;">@ Candle Lighting</span> <a class="action-link" href="http://chabadsobe.com/candles" target="_blank">Check Times &rarr;</a></div>
+</div>
+
+<div class="time-row"><span class="day-label">Shabbat Dinner</span>
+
+<div class="time-content"><span class="time-value" style="font-size:1.6rem;">45 mins after Lighting</span> <a class="action-link" href="https://chabadsobe.com/shabbatdinner">Sign Up &rarr;</a></div>
+</div>
+</div>
+<!-- Shabbat Day -->
+
+<div class="split-col"><span class="section-title">Shabbat Day</span>
+
+<div class="time-row"><span class="day-label">Chassidut</span>
+
+<div class="time-content"><span class="time-value">9:30 AM</span></div>
+</div>
+
+<div class="time-row"><span class="day-label">Shacharit</span>
+
+<div class="time-content"><span class="time-value">10:00 AM</span></div>
+</div>
+
+<div class="time-row"><span class="day-label">Kiddush Lunch</span>
+
+<div class="time-content"><span class="time-value">12:30 PM</span> <a class="action-link" href="https://chabadsobe.com/shabbatdinner">Sign Up &rarr;</a></div>
+</div>
+
+<div class="time-row"><span class="day-label">Mincha</span>
+
+<div class="time-content"><span class="time-value" style="font-size:1.6rem;">Depends on the week</span> <a class="action-link" href="https://wa.me/17869202302?text=Hi%2C%20what%20time%20is%20Mincha%20this%20week%20Shabbos%20afternoon%3F" target="_blank">Check Times &rarr;</a></div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="footer-note">&copy; Chabad of South Beach. All times subject to change.</div>
+</div>
+</div>

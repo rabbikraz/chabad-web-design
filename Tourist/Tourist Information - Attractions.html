@@ -1,0 +1,510 @@
+<!-- Local Attractions Fragment -->
+<div class="attractions-wrapper">
+<style type="text/css">@import url('https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700&family=Marcellus&display=swap');
+
+        .attractions-wrapper {
+            padding: 0 clamp(0px, 2vw, 24px);
+            font-family: var(--sb-font-body, 'Figtree', sans-serif);
+            background-color: var(--sb-bg, #FBF5E9);
+            color: var(--sb-text, #17232E);
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .attractions-wrapper * {
+            box-sizing: border-box;
+        }
+
+        /* HEADER */
+        .attractions-wrapper .header-section {
+            background: linear-gradient(135deg, var(--sb-teal-900, #072026) 0%, var(--sb-teal, #17656B) 100%);
+            width: 100%;
+            padding: 5rem 1.5rem 6rem;
+            text-align: center;
+            color: #ffffff;
+        
+            border-radius: var(--sb-radius-lg, 18px);
+            box-shadow: var(--sb-shadow-md, 0 10px 28px rgba(23,35,46,.12));
+        }
+
+        .attractions-wrapper .header-section h1 {
+            font-family: var(--sb-font-heading, 'Marcellus', serif);
+            font-size: 4rem;
+            font-weight: 700;
+            margin: 0 0 1rem 0;
+            line-height: 1.1;
+            color: #ffffff !important;
+        }
+
+        .attractions-wrapper .header-section .subtitle {
+            font-size: 1.5rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 300;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* CONTAINER */
+        .attractions-wrapper .content-container {
+            max-width: 1100px;
+            width: 95%;
+            margin-top: -4rem;
+            margin-bottom: 4rem;
+            padding: 0 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        /* ACCORDION */
+        .attractions-wrapper .accordion-item {
+            background: var(--sb-surface, #F3E8D3);
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            border: 1px solid var(--sb-divider, rgba(23,35,46,.14));
+        }
+
+        .attractions-wrapper .accordion-header {
+            padding: 2rem 2.5rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--sb-surface, #F3E8D3);
+            transition: background 0.2s;
+        }
+
+        .attractions-wrapper .accordion-header:hover {
+            background: var(--sb-bg, #FBF5E9);
+        }
+
+        .attractions-wrapper .accordion-title {
+            font-family: var(--sb-font-heading, 'Marcellus', serif);
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--sb-teal, #17656B);
+            margin: 0;
+        }
+
+        .attractions-wrapper .chevron-icon {
+            width: 32px;
+            height: 32px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23C08A2E' stroke-width='2.5'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7' /%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: contain;
+            transition: transform 0.3s ease;
+        }
+
+        .attractions-wrapper .accordion-item.active .chevron-icon {
+            transform: rotate(180deg);
+        }
+
+        .attractions-wrapper .accordion-body {
+            display: none;
+            padding: 0 2.5rem 3rem;
+            background: var(--sb-surface, #F3E8D3);
+        }
+
+        .attractions-wrapper .accordion-item.active .accordion-body {
+            display: block;
+        }
+
+        /* GRID */
+        .attractions-wrapper .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 1rem;
+        }
+
+        /* CARD */
+        .attractions-wrapper .place-card {
+            background: var(--sb-bg, #FBF5E9);
+            border: 1px solid var(--sb-divider, rgba(23,35,46,.14));
+            border-radius: 12px;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .attractions-wrapper .place-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            border-color: var(--sb-accent-200, #EFDAAE);
+        }
+
+        .attractions-wrapper .place-name {
+            font-family: var(--sb-font-heading, 'Marcellus', serif);
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--sb-text, #17232E);
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        .attractions-wrapper .place-detail {
+            font-size: 1.05rem;
+            color: rgba(23,35,46,.7);
+            margin-bottom: 0.8rem;
+            line-height: 1.5;
+        }
+
+        .attractions-wrapper .place-detail strong {
+            color: var(--sb-teal, #17656B);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+            display: block;
+            margin-bottom: 0.2rem;
+        }
+
+        .attractions-wrapper .action-btn {
+            display: block;
+            width: 100%;
+            background: var(--sb-teal, #17656B);
+            color: #ffffff;
+            text-align: center;
+            padding: 1rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 1.5rem;
+            transition: background 0.2s;
+        }
+
+        .attractions-wrapper .action-btn:hover {
+            background: var(--sb-teal-900, #072026);
+        }
+
+        @media (max-width: 768px) {
+            .attractions-wrapper .header-section h1 {
+                font-size: 2.8rem;
+            }
+
+            .attractions-wrapper .accordion-header {
+                padding: 1.5rem;
+            }
+
+            .attractions-wrapper .accordion-body {
+                padding: 0 1.5rem 2rem;
+            }
+
+            .attractions-wrapper .accordion-title {
+                font-size: 1.8rem;
+            }
+        }
+</style>
+<div class="header-section">
+<h1>Local Attractions</h1>
+
+<div class="subtitle" style="color: #ffffff;">Experience South Beach</div>
+</div>
+
+<div class="content-container"><!-- PARKS -->
+<div class="accordion-item" id="acc-parks">
+<div class="accordion-header" onclick="toggleAttr('acc-parks')">
+<div class="accordion-title">Parks &amp; Nature</div>
+
+<div class="chevron-icon">&nbsp;</div>
+</div>
+
+<div class="accordion-body">
+<div class="cards-grid"><!-- South Pointe -->
+<div class="place-card">
+<div class="place-name">South Pointe Park &amp; Pier</div>
+
+<div>
+<div class="place-detail"><strong>Address</strong><a href="https://maps.google.com/?q=1+Washington+Ave,+Miami+Beach,+FL" style="color:inherit;text-decoration:none;" target="_blank">1 Washington Ave</a></div>
+
+<div class="place-detail"><strong>Price</strong>Free</div>
+</div>
+<a class="action-btn" href="https://www.miamibeachfl.gov/city-hall/parks-and-recreation/parks-facilities-directory/south-pointe-park/" target="_blank">More Info</a></div>
+<!-- Botanical Garden -->
+
+<div class="place-card">
+<div class="place-name">Miami Beach Botanical Garden</div>
+
+<div>
+<div class="place-detail"><strong>Address</strong><a href="https://maps.google.com/?q=2000+Convention+Center+Dr,+Miami+Beach,+FL" style="color:inherit;text-decoration:none;" target="_blank">2000 Convention Center Dr</a></div>
+
+<div class="place-detail"><strong>Price</strong>Free (Donation Suggested)</div>
+</div>
+<a class="action-btn" href="https://www.mbgarden.org/" target="_blank">Visit Website</a></div>
+<!-- Lummus Park -->
+
+<div class="place-card">
+<div class="place-name">Lummus Park</div>
+
+<div>
+<div class="place-detail"><strong>Address</strong><a href="https://maps.google.com/?q=Ocean+Drive,+Miami+Beach,+FL" style="color:inherit;text-decoration:none;" target="_blank">Ocean Dr (5th - 15th St)</a></div>
+
+<div class="place-detail"><strong>Price</strong>Free</div>
+</div>
+<a class="action-btn" href="https://www.miamibeachfl.gov/city-hall/parks-and-recreation/parks-facilities-directory/lummus-park/" target="_blank">More Info</a></div>
+<!-- Flamingo Park -->
+
+<div class="place-card">
+<div class="place-name">Flamingo Park</div>
+
+<div>
+<div class="place-detail"><strong>Address</strong><a href="https://maps.google.com/?q=1200+Meridian+Ave,+Miami+Beach,+FL" style="color:inherit;text-decoration:none;" target="_blank">1200 Meridian Ave</a></div>
+
+<div class="place-detail"><strong>Price</strong>Park Free / Pool Fees Apply</div>
+</div>
+<a class="action-btn" href="https://www.miamibeachfl.gov/city-hall/parks-and-recreation/parks-facilities-directory/flamingo-park/" target="_blank">More Info</a></div>
+<!-- Bayshore Park -->
+
+<div class="place-card">
+<div class="place-name">Bayshore Park</div>
+
+<div>
+<div class="place-detail"><strong>Address</strong><a href="https://maps.google.com/?q=2795+Prairie+Ave,+Miami+Beach,+FL" style="color:inherit;text-decoration:none;" target="_blank">2795 Prairie Ave</a></div>
+
+<div class="place-detail"><strong>Price</strong>Free</div>
+</div>
+<a class="action-btn" href="https://www.miamibeachfl.gov/city-hall/parks-and-recreation/parks-facilities-directory/bayshore-park/" target="_blank">More Info</a></div>
+</div>
+</div>
+</div>
+<!-- MUSEUMS -->
+
+<div class="accordion-item" id="acc-museums">
+<div class="accordion-header" onclick="toggleAttr('acc-museums')">
+<div class="accordion-title">Museums &amp; Culture</div>
+
+<div class="chevron-icon">&nbsp;</div>
+</div>
+
+<div class="accordion-body">
+<div class="cards-grid"><!-- The Bass -->
+<div class="place-card">
+<div class="place-name">The Bass Museum of Art</div>
+
+<div>
+<div class="place-detail"><strong>Address</strong><a href="https://maps.google.com/?q=2100+Collins+Ave,+Miami+Beach,+FL" style="color:inherit;text-decoration:none;" target="_blank">2100 Collins Ave</a></div>
+
+<div class="place-detail"><strong>Price</strong>Adult ~$15 | Child (6-) Free</div>
+</div>
+<a class="action-btn" href="https://thebass.org/" target="_blank">Get Tickets</a></div>
+<!-- Jewish Museum -->
+
+<div class="place-card">
+<div class="place-name">Jewish Museum of Florida-FIU</div>
+
+<div>
+<div class="place-detail"><strong>Address</strong><a href="https://maps.google.com/?q=301+Washington+Ave,+Miami+Beach,+FL" style="color:inherit;text-decoration:none;" target="_blank">301 Washington Ave</a></div>
+
+<div class="place-detail"><strong>Price</strong>Adult $12 | Child (6-) Free</div>
+</div>
+<a class="action-btn" href="https://jmof.fiu.edu/" target="_blank">Visit Website</a></div>
+<!-- Holocaust Memorial -->
+
+<div class="place-card">
+<div class="place-name">Holocaust Memorial Miami Beach</div>
+
+<div>
+<div class="place-detail"><strong>Address</strong><a href="https://maps.google.com/?q=1933-1945+Meridian+Ave,+Miami+Beach,+FL" style="color:inherit;text-decoration:none;" target="_blank">1933-1945 Meridian Ave</a></div>
+
+<div class="place-detail"><strong>Price</strong>Free</div>
+</div>
+<a class="action-btn" href="https://holocaustmemorialmiamibeach.org/" target="_blank">Plan Visit</a></div>
+</div>
+</div>
+</div>
+<!-- TOURS -->
+
+<div class="accordion-item" id="acc-tours">
+<div class="accordion-header" onclick="toggleAttr('acc-tours')">
+<div class="accordion-title">Tours &amp; Sightseeing</div>
+
+<div class="chevron-icon">&nbsp;</div>
+</div>
+
+<div class="accordion-body">
+<div class="cards-grid"><!-- Big Bus -->
+<div class="place-card">
+<div class="place-name">Big Bus Tours Miami</div>
+
+<div>
+<div class="place-detail"><strong>Location</strong><a href="https://maps.google.com/?q=401+Biscayne+Blvd,+Miami,+FL" style="color:inherit;text-decoration:none;" target="_blank">Hop-on Hop-off (Bayside Start)</a></div>
+
+<div class="place-detail"><strong>Price</strong>Adult ~$50 | Child (3-12) ~$40</div>
+</div>
+<a class="action-btn" href="https://www.bigbustours.com/en/miami/miami-bus-tours" target="_blank">Book Tour</a></div>
+<!-- Duck Tours -->
+
+<div class="place-card">
+<div class="place-name">Duck Tours South Beach</div>
+
+<div>
+<div class="place-detail"><strong>Address</strong><a href="https://maps.google.com/?q=1661+James+Ave,+Miami+Beach,+FL" style="color:inherit;text-decoration:none;" target="_blank">1661 James Ave</a></div>
+
+<div class="place-detail"><strong>Price</strong>Adult ~$45 | Child (4-12) ~$30</div>
+</div>
+<a class="action-btn" href="https://ducktourssouthbeach.com/" target="_blank">Book Adventure</a></div>
+<!-- Bike and Roll -->
+
+<div class="place-card">
+<div class="place-name">Bike and Roll Miami</div>
+
+<div>
+<div class="place-detail"><strong>Address</strong><a href="https://maps.google.com/?q=210+10th+St,+Miami+Beach,+FL" style="color:inherit;text-decoration:none;" target="_blank">210 10th St (Segway/Bike)</a></div>
+
+<div class="place-detail"><strong>Price</strong>Rentals ~$30+ | Tours ~$60+</div>
+</div>
+<a class="action-btn" href="https://bikemiami.com/" target="_blank">Rent / Tour</a></div>
+<!-- Art Deco Segway -->
+
+<div class="place-card">
+<div class="place-name">Art Deco Segway Tour</div>
+
+<div>
+<div class="place-detail"><strong>Location</strong><a href="https://maps.google.com/?q=South+Beach,+Miami+Beach,+FL" style="color:inherit;text-decoration:none;" target="_blank">South Beach District</a></div>
+
+<div class="place-detail"><strong>Price</strong>~$50+ (Adults/Teens)</div>
+</div>
+<a class="action-btn" href="https://www.viator.com/Miami-Beach-tours/Segway-Tours/d5160-g12-c46" target="_blank">Find Tour</a></div>
+<!-- Miami Bayfront Cruises -->
+
+<div class="place-card">
+<div class="place-name">Miami Bayfront Cruises</div>
+
+<div>
+<div class="place-detail"><strong>Address</strong><a href="https://maps.google.com/?q=401+Biscayne+Blvd,+Miami,+FL" style="color:inherit;text-decoration:none;" target="_blank">401 Biscayne Blvd (Bayside)</a></div>
+
+<div class="place-detail"><strong>Price</strong>Adult ~$30 | Child (4-12) ~$20</div>
+</div>
+<a class="action-btn" href="https://www.islandqueencruises.com/" target="_blank">Book Cruise</a></div>
+</div>
+</div>
+</div>
+<!-- WATER SPORTS -->
+
+<div class="accordion-item" id="acc-water">
+<div class="accordion-header" onclick="toggleAttr('acc-water')">
+<div class="accordion-title">Water Sports</div>
+
+<div class="chevron-icon">&nbsp;</div>
+</div>
+
+<div class="accordion-body">
+<div class="cards-grid"><!-- Thriller Speedboat -->
+<div class="place-card">
+<div class="place-name">Thriller Miami Speedboat</div>
+
+<div>
+<div class="place-detail"><strong>Address</strong><a href="https://maps.google.com/?q=401+Biscayne+Blvd,+Miami,+FL" style="color:inherit;text-decoration:none;" target="_blank">401 Biscayne Blvd (Bayside)</a></div>
+
+<div class="place-detail"><strong>Price</strong>Adult ~$45 | Child (3-11) ~$35</div>
+</div>
+<a class="action-btn" href="https://www.thrillermiami.com/" target="_blank">Book Ride</a></div>
+<!-- Jet Ski -->
+
+<div class="place-card">
+<div class="place-name">Miami Beach Jet Ski</div>
+
+<div>
+<div class="place-detail"><strong>Location</strong><a href="https://maps.google.com/?q=Miami+Beach,+FL" style="color:inherit;text-decoration:none;" target="_blank">Various Beach Locations</a></div>
+
+<div class="place-detail"><strong>Price</strong>~$100+ (Per Ski)</div>
+</div>
+<a class="action-btn" href="https://www.miamijetskirental.com/" target="_blank">Rent Jet Ski</a></div>
+<!-- BouYak -->
+
+<div class="place-card">
+<div class="place-name">BouYak Watersports</div>
+
+<div>
+<div class="place-detail"><strong>Activity</strong><a href="https://maps.google.com/?q=Miami+Beach,+FL" style="color:inherit;text-decoration:none;" target="_blank">Kayak &amp; Paddleboard</a></div>
+
+<div class="place-detail"><strong>Price</strong>Check Website</div>
+</div>
+<a class="action-btn" href="https://bouyak.com/" target="_blank">Rentals</a></div>
+<!-- Parasail -->
+
+<div class="place-card">
+<div class="place-name">Miami Parasail</div>
+
+<div>
+<div class="place-detail"><strong>Address</strong><a href="https://maps.google.com/?q=1601+Collins+Ave,+Miami+Beach,+FL" style="color:inherit;text-decoration:none;" target="_blank">Behind Loews Hotel</a></div>
+
+<div class="place-detail"><strong>Price</strong>~$85 Per Person</div>
+</div>
+<a class="action-btn" href="https://www.miamiparasail.com/" target="_blank">Book Parasail</a></div>
+</div>
+</div>
+</div>
+<!-- NEARBY -->
+
+<div class="accordion-item" id="acc-nearby">
+<div class="accordion-header" onclick="toggleAttr('acc-nearby')">
+<div class="accordion-title">Popular Nearby</div>
+
+<div class="chevron-icon">&nbsp;</div>
+</div>
+
+<div class="accordion-body">
+<div class="cards-grid"><!-- Jungle Island -->
+<div class="place-card">
+<div class="place-name">Jungle Island</div>
+
+<div>
+<div class="place-detail"><strong>Address</strong><a href="https://maps.google.com/?q=1111+Parrot+Jungle+Trail,+Miami,+FL" style="color:inherit;text-decoration:none;" target="_blank">1111 Parrot Jungle Trail</a></div>
+
+<div class="place-detail"><strong>Price</strong>Adult ~$30 | Child ~$20 (Varies)</div>
+</div>
+<a class="action-btn" href="https://www.jungleisland.com/" target="_blank">Visit Website</a></div>
+<!-- Childrens Museum -->
+
+<div class="place-card">
+<div class="place-name">Miami Children&#39;s Museum</div>
+
+<div>
+<div class="place-detail"><strong>Address</strong><a href="https://maps.google.com/?q=980+MacArthur+Causeway,+Miami,+FL" style="color:inherit;text-decoration:none;" target="_blank">980 MacArthur Causeway</a></div>
+
+<div class="place-detail"><strong>Price</strong>~$26 (FL Res $18)</div>
+</div>
+<a class="action-btn" href="https://www.miamichildrensmuseum.org/" target="_blank">Visit Website</a></div>
+<!-- Frost Science -->
+
+<div class="place-card">
+<div class="place-name">Frost Science Museum</div>
+
+<div>
+<div class="place-detail"><strong>Address</strong><a href="https://maps.google.com/?q=1101+Biscayne+Blvd,+Miami,+FL" style="color:inherit;text-decoration:none;" target="_blank">1101 Biscayne Blvd</a></div>
+
+<div class="place-detail"><strong>Price</strong>Adult ~$30 | Child (4-11) ~$23</div>
+</div>
+<a class="action-btn" href="https://www.frostscience.org/" target="_blank">Visit Website</a></div>
+<!-- PAMM -->
+
+<div class="place-card">
+<div class="place-name">P&eacute;rez Art Museum (PAMM)</div>
+
+<div>
+<div class="place-detail"><strong>Address</strong><a href="https://maps.google.com/?q=1103+Biscayne+Blvd,+Miami,+FL" style="color:inherit;text-decoration:none;" target="_blank">1103 Biscayne Blvd</a></div>
+
+<div class="place-detail"><strong>Price</strong>Adult $18 | Child (6-) Free</div>
+</div>
+<a class="action-btn" href="https://www.pamm.org/" target="_blank">Visit Website</a></div>
+</div>
+</div>
+</div>
+</div>
+<script>
+        function toggleAttr(id) {
+            var item = document.getElementById(id);
+            if (item.classList.contains('active')) {
+                item.classList.remove('active');
+            } else {
+                item.classList.add('active');
+            }
+        }
+    </script></div>
