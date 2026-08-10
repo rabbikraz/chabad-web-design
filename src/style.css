@@ -323,16 +323,40 @@ body:not(.sites-article) img.synopsis_icon {
    the card be typographic; where a real image exists, show it properly.
    -------------------------------------------------------------------------- */
 .article_index_container .co_index.article_index {
-  margin-left: -10px;
-  margin-right: -10px;
+  /* the stock layout hangs the grid outside its container with a -10px
+     margin; the content wrapper is .no_overflow, so the outer cards got
+     clipped. Keep the grid inside its box and gutter from within instead. */
+  margin-left: 0;
+  margin-right: 0;
   /* rows are flex items: let them stretch so every card on a line matches the
      tallest (a two-line title no longer leaves its neighbours short) */
   align-items: stretch;
 }
+/* .row IS the 33% column — make it a transparent gutter wrapper so the card
+   inside it can be inset, leaving real space between cards */
+#cco_body .article_index_container .co_index.article_index .row,
+.article_index_container .co_index.article_index .row {
+  background: none !important;
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  margin: 0 0 18px !important;
+}
+/* .item is the actual card */
 .article_index_container .co_index.article_index .row .item {
-  padding: 0 10px;
-  margin-bottom: 0;
+  background: var(--sb-event-soft, var(--sb-surface));
+  border-radius: var(--sb-radius-lg);
+  padding: 20px 24px !important;
+  margin: 0 9px !important;
   text-align: left;
+  box-sizing: border-box;
+  transition: transform 180ms ease, box-shadow 180ms ease;
+}
+.article_index_container .co_index.article_index .row .item:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--sb-shadow-md);
 }
 .article_index_container .co_index.article_index .row .item,
 .article_index_container .co_index.article_index .row .item .item_contents,
@@ -420,14 +444,6 @@ body:not(.sites-article) img.synopsis_icon {
   font-size: 15.5px;
   line-height: 1.55;
   margin-top: 6px;
-}
-/* the cream card + hover lift (the .row background comes from section 16b) */
-#cco_body .article_index_container .co_index.article_index .row {
-  transition: transform 180ms ease, box-shadow 180ms ease;
-}
-#cco_body .article_index_container .co_index.article_index .row:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--sb-shadow-md);
 }
 
 /* Widget shadow noise off; we add our own treatments per section */
