@@ -904,7 +904,12 @@ body.cco_body #tabContentMain .co_menu_item.donate_link span.parent a:hover {
     left: 0;
     right: 0;
     bottom: 0;
-    height: auto;
+    /* explicit viewport height, not just inset:0 — on the homepage something
+       was collapsing the drawer to roughly one row (visible item + scroll).
+       dvh first so mobile browser chrome doesn't shrink it either. */
+    height: 100vh !important;
+    height: 100dvh !important;
+    max-height: 100dvh !important;
     z-index: 100;
     background: var(--sb-teal-900);
     color: var(--sb-bg);
@@ -948,6 +953,26 @@ body.cco_body #tabContentMain .co_menu_item.donate_link span.parent a:hover {
   #header .header-wrapper #co_menu_container { width: 100% !important; padding: 0; height: auto; }
   #header #co_menu_container_wrapper { width: 100%; float: none; height: auto; }
   table.main_menu_container, table.main_menu_container tbody { display: block; width: 100%; }
+  /* The homepage loads enscroll + runenscroll.js, which calls
+     Co.Tools.Content.MakeScrollable() and pins inline heights on whatever it
+     wraps. Nothing inside the drawer may carry a height or its own scroller,
+     or the menu collapses to a single scrollable row. */
+  #header .site-nav-wrapper #co_menu_container_wrapper,
+  #header .site-nav-wrapper #co_menu_container,
+  #header .site-nav-wrapper .co_menu_container,
+  #header .site-nav-wrapper table.main_menu_container,
+  #header .site-nav-wrapper table.main_menu_container tbody,
+  #header .site-nav-wrapper #tabContentMain,
+  #header .site-nav-wrapper .make_scrollable,
+  #header .site-nav-wrapper .enscroll-pane,
+  #header .site-nav-wrapper .scrollable_track {
+    height: auto !important;
+    max-height: none !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+  }
+  #header .site-nav-wrapper .scrollable_track,
+  #header .site-nav-wrapper .scrollable_handle { display: none !important; }
   #header #tabContentMain {
     display: flex;
     flex-direction: column;
@@ -971,12 +996,19 @@ body.cco_body #tabContentMain .co_menu_item.donate_link span.parent a:hover {
     justify-content: space-between;
     white-space: normal !important;
   }
+  /* leave room for the expand arrow so long labels never run under it */
+  body.cco_body #header #tabContentMain .co_menu_item.multi_level span.parent a {
+    padding-right: 58px !important;
+  }
   body.cco_body #header #tabContentMain .co_menu_item span.parent:hover a {
     background: none !important;
     color: var(--sb-accent-300) !important;
   }
+  /* the label's own chevron is suppressed on mobile — the expand control
+     below draws the arrow instead, so tapping the arrow is unambiguous */
   body.cco_body #tabContentMain .co_menu_item.multi_level span.parent a:after {
-    border-color: var(--sb-accent-300);
+    display: none !important;
+    content: none !important;
   }
   /* drawer items must survive any CMS slide-panel state the runtime JS
      toggles (it hid every item but the tapped one). Flex column puts the
@@ -996,11 +1028,13 @@ body.cco_body #tabContentMain .co_menu_item.donate_link span.parent a:hover {
   /* our own accordion toggle: transparent tap target over the row's chevron
      (the CMS one was removed — it slid into unstyled panel states) */
   #header .sb-sub-toggle {
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     position: absolute;
     right: 0;
     top: 0;
-    width: 64px;
+    width: 58px;
     height: 62px;
     background: none;
     border: none;
@@ -1008,8 +1042,29 @@ body.cco_body #tabContentMain .co_menu_item.donate_link span.parent a:hover {
     cursor: pointer;
     z-index: 3;
   }
-  body.cco_body #tabContentMain .co_menu_item.sb-open.multi_level span.parent a:after {
-    transform: rotate(225deg) translateY(2px);
+  /* A real, visible chevron — this IS the expand control.
+     !important because the blanket `#header .site-nav-wrapper *:before
+     { content: none !important }` rule that strips the CMS's decorative
+     pseudo-elements would otherwise erase it. */
+  #header .site-nav-wrapper .sb-sub-toggle:before,
+  #header .sb-sub-toggle:before {
+    content: "" !important;
+    display: block;
+    width: 11px;
+    height: 11px;
+    border-right: 2.5px solid var(--sb-accent-300) !important;
+    border-bottom: 2.5px solid var(--sb-accent-300) !important;
+    background: none !important;
+    transform: rotate(45deg);
+    margin-top: -5px;
+    transition: transform 200ms ease, border-color 200ms ease;
+  }
+  #header .site-nav-wrapper .co_menu_item.sb-open .sb-sub-toggle:before,
+  #header .co_menu_item.sb-open .sb-sub-toggle:before {
+    transform: rotate(225deg);
+    margin-top: 4px;
+    border-right-color: var(--sb-bg) !important;
+    border-bottom-color: var(--sb-bg) !important;
   }
   /* submenus: collapsed by default, rolled out inline by .sb-open (our
      accordion). !important beats the CMS's inline display toggling.
