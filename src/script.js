@@ -906,6 +906,57 @@
     });
   }
 
+  /* ---------------- registration form autofill ---------------- */
+
+  /* The template labels its fields with <div class="label">, not <label for>,
+     so a browser or password manager has nothing authoritative to match on and
+     has to guess from position — which our two-column layout throws off, so
+     every value lands one field out (email into last name, zip into city...).
+     Naming each field with a standard autocomplete token removes the guessing.
+     Payment fields are marked off so autofill can't silently reset the method
+     select, which then fails validation with "select at least one payment
+     method". */
+  var AUTOCOMPLETE = {
+    ReserversTitle: 'honorific-prefix',
+    ReserversFirstName: 'given-name',
+    ReserversLastName: 'family-name',
+    ReserversEmailAddress: 'email',
+    ReserversBillingAddress1: 'address-line1',
+    ReserversBillingCity: 'address-level2',
+    ReserversBillingState: 'address-level1',
+    ReserversBillingPostCode: 'postal-code',
+    ReserversCountry: 'country-name',
+    ReserversPhone: 'tel',
+    PaymentMethod: 'off'
+  };
+
+  function initFormAutofill() {
+    var form = $('#RegisterSinglePage');
+    if (!form) return;
+    Object.keys(AUTOCOMPLETE).forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el && !el.getAttribute('autocomplete')) {
+        el.setAttribute('autocomplete', AUTOCOMPLETE[id]);
+      }
+    });
+    // attendee-row names belong to other people — never autofill them
+    $all('#RegisterSinglePage .reservation input', form).forEach(function (el) {
+      if (!el.getAttribute('autocomplete')) el.setAttribute('autocomplete', 'off');
+    });
+    // give the CMS's <div class="label"> a real association with its field, so
+    // assistive tech and autofill heuristics agree with what's on screen
+    $all('#ReserversInformation .clearfix.small_vertical_padding, #Payment .clearfix.small_vertical_padding', form)
+      .forEach(function (row, i) {
+        var label = row.querySelector('.label');
+        var field = row.querySelector('input, select, textarea');
+        if (!label || !field) return;
+        if (!label.id) label.id = 'sb-lbl-' + i;
+        if (!field.getAttribute('aria-labelledby')) {
+          field.setAttribute('aria-labelledby', label.id);
+        }
+      });
+  }
+
   /* ---------------- sponsorship tiers (event registration pages) ---------------- */
 
   function initSponsorTiers() {
@@ -1056,6 +1107,7 @@
     safe('footer', buildFooter);
     safe('feedback-bar', relocateFeedbackBar);
     safe('event-hero', buildEventHero);
+    safe('form-autofill', initFormAutofill);
     safe('sponsor-tiers', initSponsorTiers);
     safe('event-listing', themeEventListing);
     safe('event-description-clamp', initEventDescriptionClamp);

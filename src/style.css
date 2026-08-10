@@ -2423,14 +2423,27 @@ body.cco_body input[type="radio"] { accent-color: var(--sb-accent); }
 }
 #RegisterSinglePage .notice .fa { color: var(--sb-teal-700); }
 .reservation_input_select,
-.reservation_input_select2,
-#Payment .selected_value,
-#Performances .selected_value {
+.reservation_input_select2 {
   font-family: var(--sb-font-body);
   border: 1px solid var(--sb-divider);
   border-radius: var(--sb-radius-sm);
   background: #fff;
   color: var(--sb-text);
+}
+/* .selected_value is a readout the CMS fills in beside the select; styling it
+   like an input left an empty bordered box sitting next to the dropdown */
+#Payment .selected_value,
+#Performances .selected_value {
+  font-family: var(--sb-font-body);
+  color: var(--sb-text);
+  background: none;
+  border: none;
+}
+#Payment .selected_value:empty,
+#Performances .selected_value:empty { display: none; }
+/* the payment method select is the one control that must be unmistakable */
+#RegisterSinglePage #PaymentMethod {
+  min-width: min(320px, 100%);
 }
 #RegisterSinglePage input[type="text"],
 #RegisterSinglePage input[type="email"],
