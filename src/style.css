@@ -1040,7 +1040,10 @@ body.cco_body #tabContentMain .co_menu_item.donate_link span.parent a:hover {
     border: none;
     padding: 0;
     cursor: pointer;
-    z-index: 3;
+    /* must clear span.parent, which the theme puts at z-index 6 with
+       position:relative — at a lower value the menu link paints over the
+       arrow and the tap navigates instead of expanding */
+    z-index: 20;
   }
   /* A real, visible chevron — this IS the expand control.
      !important because the blanket `#header .site-nav-wrapper *:before
