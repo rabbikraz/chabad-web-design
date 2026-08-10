@@ -933,6 +933,14 @@
   function initFormAutofill() {
     var form = $('#RegisterSinglePage');
     if (!form) return;
+    // a form (or field) declaring autocomplete="off" switches the browser's
+    // autofill off wholesale — which looks exactly like "it doesn't see a form"
+    if (/^off$/i.test(form.getAttribute('autocomplete') || '')) {
+      form.setAttribute('autocomplete', 'on');
+    }
+    $all('#ReserversInformation [autocomplete="off"]', form).forEach(function (el) {
+      el.removeAttribute('autocomplete');
+    });
     Object.keys(AUTOCOMPLETE).forEach(function (id) {
       var el = document.getElementById(id);
       if (el && !el.getAttribute('autocomplete')) {
@@ -955,6 +963,86 @@
           field.setAttribute('aria-labelledby', label.id);
         }
       });
+  }
+
+  /* ---------------- credit card fields ---------------- */
+
+  /* Card brands by number prefix, each with the spellings a card-type dropdown
+     might use. The CMS's own detectCardType() compares the number's brand
+     against the option values and does `selectedIndex = index` — where index
+     is -1 when nothing matches, silently clearing the selection. Its table
+     says "American Express" while a form may list "Amex", so Amex ends up
+     unset while Visa works. We only step in when it left nothing selected. */
+  var CARD_BRANDS = [
+    { aliases: ['amex', 'americanexpress'], test: function (n) { return /^3[47]/.test(n); } },
+    { aliases: ['visa'], test: function (n) { return /^4/.test(n); } },
+    { aliases: ['mastercard', 'mc'], test: function (n) { return /^5[1-5]/.test(n) || /^2(2[2-9]|[3-6][0-9]|7[01]|720)/.test(n); } },
+    { aliases: ['discover', 'discovercard'], test: function (n) { return /^6(011|5|4[4-9])/.test(n); } },
+    { aliases: ['dinersclub', 'diners', 'dinersclubinternational'], test: function (n) { return /^3(0[0-5]|09|[68])/.test(n); } },
+    { aliases: ['jcb'], test: function (n) { return /^35(2[89]|[3-8][0-9])/.test(n); } },
+    { aliases: ['unionpay', 'chinaunionpay'], test: function (n) { return /^62/.test(n); } }
+  ];
+  function normCard(s) { return String(s || '').toLowerCase().replace(/[^a-z0-9]/g, ''); }
+
+  function syncCardType() {
+    var num = document.getElementById('PaymentCreditCardNumber');
+    var sel = document.getElementById('PaymentCreditCardType');
+    if (!num || !sel || !sel.options || !sel.options.length) return;
+    // leave a working selection alone — only rescue an empty one
+    if (sel.selectedIndex >= 0 && sel.value) return;
+    var digits = String(num.value || '').replace(/\D/g, '');
+    if (digits.length < 2) return;
+    var brand = CARD_BRANDS.filter(function (b) { return b.test(digits); })[0];
+    if (!brand) return;
+    for (var i = 0; i < sel.options.length; i++) {
+      var o = sel.options[i];
+      if (!o.value && !o.text) continue;
+      if (brand.aliases.indexOf(normCard(o.value)) !== -1 ||
+          brand.aliases.indexOf(normCard(o.text)) !== -1) {
+        sel.selectedIndex = i;
+        ['input', 'change'].forEach(function (t) {
+          sel.dispatchEvent(new Event(t, { bubbles: true }));
+        });
+        return;
+      }
+    }
+  }
+
+  var CC_AUTOCOMPLETE = {
+    PaymentCreditCardNumber: 'cc-number',
+    PaymentCardExpirationMonth: 'cc-exp-month',
+    PaymentCardExpirationYear: 'cc-exp-year',
+    PaymentCardCode: 'cc-csc',
+    PaymentCreditCardType: 'cc-type',
+    PaymentNameOnCard: 'cc-name'
+  };
+  function applyCardAutocomplete() {
+    Object.keys(CC_AUTOCOMPLETE).forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el && el.getAttribute('autocomplete') !== CC_AUTOCOMPLETE[id]) {
+        el.setAttribute('autocomplete', CC_AUTOCOMPLETE[id]);
+      }
+    });
+  }
+
+  function initCreditCard() {
+    if (!$('#RegisterSinglePage')) return;
+    applyCardAutocomplete();
+    // the card block is rendered only once Credit Card is chosen, so watch for it
+    var mo = new MutationObserver(function () {
+      applyCardAutocomplete();
+      syncCardType();
+    });
+    mo.observe(document.body, { childList: true, subtree: true });
+    // autofill can populate without firing input, so listen broadly
+    ['input', 'change', 'blur'].forEach(function (type) {
+      document.addEventListener(type, function (e) {
+        if (e.target && e.target.id === 'PaymentCreditCardNumber') {
+          // after the CMS's own handler has run
+          setTimeout(syncCardType, 0);
+        }
+      }, true);
+    });
   }
 
   /* ---------------- sponsorship tiers (event registration pages) ---------------- */
@@ -1108,6 +1196,7 @@
     safe('feedback-bar', relocateFeedbackBar);
     safe('event-hero', buildEventHero);
     safe('form-autofill', initFormAutofill);
+    safe('credit-card', initCreditCard);
     safe('sponsor-tiers', initSponsorTiers);
     safe('event-listing', themeEventListing);
     safe('event-description-clamp', initEventDescriptionClamp);
