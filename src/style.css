@@ -314,6 +314,122 @@ body:not(.sites-article) img.synopsis_icon {
   aspect-ratio: 1 / 1;
 }
 
+/* --------------------------------------------------------------------------
+   SECTION INDEX CARDS  (e.g. /Events.htm, any section listing its children)
+   The stock template stacks two grey tiles per item — an image tile and a
+   title tile — and reverses the title out in white over the grey. Almost
+   every item ships a 0-width spacer.gif instead of a picture, so those grey
+   blocks are just empty boxes with a caption. Drop the empty tile and let
+   the card be typographic; where a real image exists, show it properly.
+   -------------------------------------------------------------------------- */
+.article_index_container .co_index.article_index {
+  margin-left: -10px;
+  margin-right: -10px;
+  /* rows are flex items: let them stretch so every card on a line matches the
+     tallest (a two-line title no longer leaves its neighbours short) */
+  align-items: stretch;
+}
+.article_index_container .co_index.article_index .row .item {
+  padding: 0 10px;
+  margin-bottom: 0;
+  text-align: left;
+}
+.article_index_container .co_index.article_index .row .item,
+.article_index_container .co_index.article_index .row .item .item_contents,
+.article_index_container .co_index.article_index .row .item .inner {
+  height: 100%;
+}
+.article_index_container .co_index.article_index .row .item .item_contents {
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+/* Image tiles are dropped so the grid is uniform. Nearly every item ships a
+   0-width spacer.gif rather than a picture, and a lone real image made its
+   card much taller than the rest, punching a hole in the row. To bring
+   pictures back, delete this rule — the thumbnail styling below is already
+   in place and will render them properly. */
+.article_index_container .co_index.article_index .row .item .synopsis_icon {
+  display: none !important;
+}
+/* a real thumbnail: rounded, no grey wash, no multiply blend */
+.article_index_container .co_index.article_index .row .item .synopsis_icon a.synopsis_icon {
+  background-color: transparent !important;
+  border-radius: var(--sb-radius-md);
+  overflow: hidden;
+  margin-bottom: 14px;
+}
+.article_index_container .co_index.article_index .row .item .synopsis_icon a.synopsis_icon:after {
+  display: none !important;
+  content: none !important;
+}
+.article_index_container .co_index.article_index .row .item .synopsis_icon a.synopsis_icon img {
+  mix-blend-mode: normal !important;
+  object-fit: cover;
+}
+/* the title tile becomes the card body */
+.article_index_container .co_index.article_index .row .item .title {
+  background: none !important;
+  background-color: transparent !important;
+  padding-top: 0 !important;
+  position: static !important;
+  width: auto;
+  text-align: left;
+  font-family: var(--sb-font-heading);
+  font-size: 23px;
+  line-height: 1.25;
+}
+.article_index_container .co_index.article_index .row .item .title a {
+  position: static !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  width: auto !important;
+  height: auto !important;
+  padding: 0 !important;
+  color: var(--sb-text) !important;
+  text-align: left;
+  transition: color 180ms ease;
+}
+.article_index_container .co_index.article_index .row .item .title a:hover {
+  background: none !important;
+  color: var(--sb-accent-700) !important;
+}
+/* gold arrow so the card reads as a link */
+.article_index_container .co_index.article_index .row .item .title a:after {
+  content: "\2192";
+  flex: none;
+  font-family: var(--sb-font-body);
+  font-size: 19px;
+  color: var(--sb-accent);
+  transition: transform 180ms ease;
+}
+.article_index_container .co_index.article_index .row .item .title a:hover:after {
+  transform: translateX(4px);
+}
+.article_index_container .co_index.article_index .row .item .subtitle {
+  color: rgba(23, 35, 46, .7) !important;
+  font-style: normal;
+  font-size: 15.5px;
+  margin-top: 6px;
+}
+.article_index_container .co_index.article_index .row .item .synopsis {
+  color: rgba(23, 35, 46, .7);
+  font-size: 15.5px;
+  line-height: 1.55;
+  margin-top: 6px;
+}
+/* the cream card + hover lift (the .row background comes from section 16b) */
+#cco_body .article_index_container .co_index.article_index .row {
+  transition: transform 180ms ease, box-shadow 180ms ease;
+}
+#cco_body .article_index_container .co_index.article_index .row:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--sb-shadow-md);
+}
+
 /* Widget shadow noise off; we add our own treatments per section */
 .widget-4, .widget-4 .wrapper, .sneak_peek { box-shadow: none; }
 .sneak_peek div.widget_content { border: none; }
