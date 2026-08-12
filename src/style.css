@@ -2075,6 +2075,26 @@ body.cco_body #co_content_container .article-header__title {
 }
 #co_body_container { width: auto; }
 
+/* Syndicated chabad.org article pages (library, parshah, holidays…) ship a
+   right-hand sidebar: their own section nav, promo widgets, a shop credit and
+   the pushkah. Hidden site-wide so those pages match the ones built here, and
+   the article column then takes the full content width.
+   Note this also removes chabad.org's local section navigation on those pages;
+   ours in the header is the way around the site. */
+#co_ads_container,
+.co_body .ads.g260,
+.sidebar-local-navigation,
+.co_local_menu,
+#customizable_promos { display: none !important; }
+/* the article column is the only remaining flex child — let it fill */
+#co_body_container.g700,
+#co_body_container.g960,
+.co_body .content.g700 {
+  width: auto !important;
+  max-width: 100% !important;
+  float: none !important;
+}
+
 /* Generic CMS buttons → gold pills */
 body.cco_body .button,
 body.cco_body button.button,
