@@ -1955,6 +1955,11 @@
       var ta = li.querySelector('textarea');
       if (!ta || li.querySelector('.sb-mw-yz')) return;
       li.classList.add('sb-mw-yzli');
+      // the standalone Memorial Board question is redundant now that each
+      // yahrzeit row carries its own plaque checkbox - hide it and drive
+      // it from the rows so the office email still gets the field
+      var memLi = lisByLabel(/^memorial board$/)[0];
+      if (memLi) memLi.style.display = 'none';
       var box = div('sb-mw-yz');
       (li.querySelector('.form-input') || li).appendChild(box);
       var list = div('sb-mw-yzlist');
@@ -2013,6 +2018,11 @@
             rowVal(r, 'memorial') ? 'MEMORIAL BOARD PLAQUE REQUESTED ($360)' : ''
           ].filter(Boolean).join(' - ');
         }).filter(Boolean).join('\n');
+        if (memLi) {
+          var want = $all('.sb-mw-yzrow [data-yz="memorial"]', list).some(function (c) { return c.checked; });
+          var mc = memLi.querySelector('input[type="checkbox"]');
+          if (mc && mc.checked !== want) { mc.checked = want; fire(mc, ['change']); }
+        }
       }
       function convertRow(r) {
         var out = r.querySelector('.sb-mw-yzheb');
