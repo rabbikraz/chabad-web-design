@@ -1258,7 +1258,26 @@
     var TIER_NAMES = ['Basic', 'Chai', 'Silver', 'Gold'];
 
     /* wizard state is the source of truth; it is synced INTO the builder */
-    var st = { tier: '', hh: '', parents: 'two', kids: 1, billing: 'monthly' };
+    var st = { tier: '', hh: '', parents: 'two', kids: 1, billing: 'monthly', disc: null };
+    /* Discount codes (original semantics: free / percent off every
+       payment / dollars off every payment; never below zero). Codes are
+       maintained here and shipped by deploy - tell the office to route
+       new codes through the developer. Keys must be UPPERCASE. */
+    var DISCOUNTS = window.SB_MW_CODES || {
+      WELCOME10: { kind: 'percent', value: 10 },
+      RABBI: { kind: 'free', value: 0 }
+    };
+    function applyDisc(amount) {
+      var v = Number(amount || 0);
+      var d = st.disc;
+      if (d) {
+        if (d.kind === 'percent') v = v * (1 - Number(d.value || 0) / 100);
+        if (d.kind === 'amount') v = v - Number(d.value || 0);
+        if (d.kind === 'free') v = 0;
+      }
+      if (v < 0) v = 0;
+      return Math.round(v * 100) / 100;
+    }
 
     function money(n) { return String.fromCharCode(36) + Number(n).toLocaleString('en-US'); }
     function monthlyFor(tier) {
@@ -1353,6 +1372,15 @@
           } else { clearGroup(g.par); clearGroup(g.kids); }
         });
       });
+      // discount rides a hidden number field priced at -$1/unit, so the
+      // platform's own total (and the real charge) reflects the code
+      var discLi = lisByLabel(/^\(discount\) amount$/, true)[0];
+      if (discLi) {
+        var per = annualMode ? monthlyFor(st.tier) * 12 : monthlyFor(st.tier);
+        var off = Math.round(per - applyDisc(per));
+        var di = discLi.querySelector('input');
+        if (di && di.value !== String(off)) { di.value = String(off || 0); fire(di, ['input', 'change', 'keyup']); }
+      }
       // membership bills monthly; paying the year up front is the one-time path
       var rc = recurBox();
       if (rc) {
@@ -1368,7 +1396,7 @@
       if (li.querySelector('input[name="website"]')) return 'pay';
       if (li.querySelector('[id="total_amount"]')) return 'total';
       var raw = rawLabelOf(li);
-      if (/^membership level/.test(raw) || /^\((basic|chai|silver|gold)( annual)?\)/.test(raw)) return 'engine';
+      if (/^membership level/.test(raw) || /^\((basic|chai|silver|gold)( annual)?\)/.test(raw) || /^\(discount\)/i.test(raw)) return 'engine';
       var lbl = labelOf(li);
       if (/^(i am joining as|parents at home|number of children|billing frequency)/.test(lbl)) return 'engine';
       if (/^(spouse |anniversary$)/.test(lbl)) return 'spouse';
@@ -1516,6 +1544,48 @@
     billRow.appendChild(billSeg);
     payCard.insertBefore(billRow, sum);
     if (!hasAnnual) billRow.style.display = 'none';
+    var discRow = div('sb-mw-discrow');
+    discRow.innerHTML = '<div class="sb-mw-billlab">Discount code</div>';
+    var discWrap = div('sb-mw-discwrap');
+    var discIn = document.createElement('input');
+    discIn.type = 'text';
+    discIn.className = 'form-textbox no-validation sb-mw-discin';
+    discIn.setAttribute('autocomplete', 'off');
+    discIn.placeholder = 'Enter code';
+    var discBtn = btn('sb-mw-discapply', 'Apply');
+    discWrap.appendChild(discIn);
+    discWrap.appendChild(discBtn);
+    discRow.appendChild(discWrap);
+    var discMsg = div('sb-mw-discmsg');
+    discRow.appendChild(discMsg);
+    payCard.insertBefore(discRow, sum);
+    function discText(d) {
+      if (d.kind === 'free') return 'fully covered';
+      if (d.kind === 'percent') return d.value + '% off every payment';
+      return money(d.value) + ' off every payment';
+    }
+    function tryCode() {
+      var code = String(discIn.value || '').trim().toUpperCase();
+      if (!code) {
+        st.disc = null;
+        discMsg.textContent = '';
+        discMsg.className = 'sb-mw-discmsg';
+      } else if (DISCOUNTS[code]) {
+        st.disc = { code: code, kind: DISCOUNTS[code].kind, value: DISCOUNTS[code].value };
+        discMsg.textContent = 'Code applied - ' + discText(st.disc) + '.';
+        discMsg.className = 'sb-mw-discmsg sb-ok';
+      } else {
+        st.disc = null;
+        discMsg.textContent = 'That code was not recognized.';
+        discMsg.className = 'sb-mw-discmsg sb-bad';
+      }
+      syncBuilder();
+      paint();
+    }
+    discBtn.addEventListener('click', tryCode);
+    discIn.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); tryCode(); } });
+    // the hidden priced field only exists once forms/add-discount-field.js ran
+    if (!lisByLabel(/^\(discount\) amount$/, true)[0]) discRow.style.display = 'none';
     var payHolder = div('sb-mw-payfields');
     payCard.appendChild(payHolder);
     var errbar = el('div', 'sb-mf-errbar');
@@ -1643,14 +1713,20 @@
         b.classList.toggle('sb-on', b.getAttribute('data-bill') === st.billing);
       });
       var m2 = monthlyFor(st.tier);
+      var perPay = st.billing === 'annual' ? m2 * 12 : m2;
+      var payNow = applyDisc(perPay);
       var billTxt = !st.tier ? '-' : (st.billing === 'annual'
-        ? money(m2 * 12) + ' now, for the full year'
-        : money(m2) + ' / month, recurring');
+        ? money(payNow) + ' now, for the full year'
+        : money(payNow) + ' / month, recurring');
+      var discRowHtml = st.disc && st.tier
+        ? '<div class="sb-mw-sumrow"><span>Discount (' + st.disc.code + ')</span><span>-' + money(Math.round(perPay - payNow)) + '</span></div>'
+        : '';
       sumRows.innerHTML =
         '<div class="sb-mw-sumrow"><span>Membership</span><span>' + (st.tier || '-') + '</span></div>' +
         '<div class="sb-mw-sumrow"><span>Household</span><span>' + hhDesc() + '</span></div>' +
         '<div class="sb-mw-sumrow"><span>Monthly</span><span>' + (st.tier ? money(m2) + ' / mo' : '-') + '</span></div>' +
         '<div class="sb-mw-sumrow"><span>Annual total</span><span>' + (st.tier ? money(m2 * 12) + ' / yr' : '-') + '</span></div>' +
+        discRowHtml +
         '<div class="sb-mw-sumrow"><span>Billing</span><span>' + billTxt + '</span></div>';
     }
 
@@ -1867,11 +1943,12 @@
     }
     try { upgradeDates(); } catch (e) { }
 
-    /* Yahrzeits like the original form: structured rows (name,
-       relationship, date-of-passing picker, after-sunset) with the
-       Hebcal Hebrew date shown per row. The builder's own textarea
-       stays in the form, hidden, and carries the serialized rows so
-       the office email is unchanged. */
+    /* Yahrzeits exactly like the original form: repeatable panels with
+       English + Hebrew name, relationship dropdown, gender of the
+       deceased, date-of-passing picker with after-sunset, the converted
+       Hebrew date, and a per-yahrzeit memorial-plaque checkbox. The
+       builder's own textarea stays hidden and carries the serialized
+       rows so the office email is unchanged. */
     function initYahrzeits() {
       var li = lisByLabel(/^yahrzeits$/)[0];
       if (!li) return;
@@ -1882,37 +1959,58 @@
       (li.querySelector('.form-input') || li).appendChild(box);
       var list = div('sb-mw-yzlist');
       box.appendChild(list);
-      var add = btn('sb-mw-yzadd', '+ Add another yahrzeit');
+      var add = btn('sb-mw-yzadd', '+ Add yahrzeit');
       box.appendChild(add);
+      var seq = 0;
+      function field(cls, labelText, inner) {
+        return '<div class="sb-mw-yzfield ' + (cls || '') + '"><span class="sb-mw-yzlab">' + labelText + '</span>' + inner + '</div>';
+      }
       function addRow() {
+        seq++;
         var r = div('sb-mw-yzrow');
         r.innerHTML =
-          '<input type="text" class="form-textbox no-validation" data-yz="name" placeholder="Name (English and Hebrew)">' +
-          '<input type="text" class="form-textbox no-validation" data-yz="rel" placeholder="Relationship (e.g. my father)">' +
-          '<input type="date" class="form-textbox no-validation" data-yz="date" aria-label="Date of passing">' +
-          '<label class="sb-mw-yzsun"><input type="checkbox" data-yz="sunset"> Passed after sunset</label>' +
-          '<button type="button" class="sb-mw-yzdel">Remove</button>' +
-          '<div class="sb-mw-heb sb-mw-yzheb" style="display:none"></div>';
+          '<div class="sb-mw-yzhead"><span class="sb-mw-yztitle">Yahrzeit</span><button type="button" class="sb-mw-yzdel">Remove</button></div>' +
+          field('', 'Name of deceased (English)',
+            '<input type="text" class="form-textbox no-validation" data-yz="name" placeholder="Full name">') +
+          field('', 'Hebrew name',
+            '<input type="text" class="form-textbox no-validation" data-yz="nameheb" placeholder="e.g. Moshe ben Avraham">') +
+          field('', 'Relationship',
+            '<select class="form-dropdown no-validation" data-yz="rel"><option value="">Please select</option><option>Father</option><option>Mother</option><option>Spouse</option><option>Sibling</option><option>Child</option><option>Other</option></select>') +
+          field('', 'Gender of deceased',
+            '<div class="sb-mw-seg" data-yz="gseg"><button type="button" class="sb-mw-segopt" data-g="Male">Male</button><button type="button" class="sb-mw-segopt" data-g="Female">Female</button></div>') +
+          field('', 'Date of passing',
+            '<input type="date" class="form-textbox no-validation" data-yz="date">' +
+            '<label class="sb-mw-yzsun"><input type="checkbox" data-yz="sunset"> Passed after sunset (the Hebrew date is the next day)</label>') +
+          field('', 'Hebrew date',
+            '<div class="sb-mw-heb sb-mw-yzheb">-</div>') +
+          '<label class="sb-mw-yzmem"><input type="checkbox" data-yz="memorial"> Add their name to our memorial board - a permanent plaque, lit each year on the yahrzeit ($360, one-time - the office will follow up)</label>';
         list.appendChild(r);
         return r;
       }
       function rowVal(r, k) {
         var e = r.querySelector('[data-yz="' + k + '"]');
         if (!e) return '';
-        return e.type === 'checkbox' ? e.checked : String(e.value || '').trim();
+        if (e.type === 'checkbox') return e.checked;
+        return String(e.value || '').trim();
+      }
+      function rowGender(r) {
+        var on = r.querySelector('[data-yz="gseg"] .sb-mw-segopt.sb-on');
+        return on ? on.getAttribute('data-g') : '';
       }
       function serialize() {
         ta.value = $all('.sb-mw-yzrow', list).map(function (r) {
           var name = rowVal(r, 'name');
           var d = rowVal(r, 'date');
-          if (!name && !d) return '';
+          if (!name && !d && !rowVal(r, 'nameheb')) return '';
           var heb = r.querySelector('.sb-mw-yzheb').getAttribute('data-heb') || '';
-          var rel = rowVal(r, 'rel');
           return [name || '(no name given)',
-            rel ? '(' + rel + ')' : '',
+            rowVal(r, 'nameheb') ? '(Hebrew: ' + rowVal(r, 'nameheb') + ')' : '',
+            rowVal(r, 'rel'),
+            rowGender(r),
             d ? 'passed ' + d : '',
             rowVal(r, 'sunset') ? 'after sunset' : '',
-            heb ? 'Hebrew date: ' + heb : ''
+            heb ? 'Hebrew date: ' + heb : '',
+            rowVal(r, 'memorial') ? 'MEMORIAL BOARD PLAQUE REQUESTED ($360)' : ''
           ].filter(Boolean).join(' - ');
         }).filter(Boolean).join('\n');
       }
@@ -1920,33 +2018,37 @@
         var out = r.querySelector('.sb-mw-yzheb');
         var d = rowVal(r, 'date');
         if (!d) {
-          out.style.display = 'none';
-          out.textContent = '';
+          out.textContent = '-';
           out.removeAttribute('data-heb');
           serialize();
           return;
         }
-        out.style.display = '';
         out.textContent = 'Converting...';
         g2h(d, rowVal(r, 'sunset'), function (dta) {
           if (!dta || !dta.hd) {
-            out.style.display = 'none';
+            out.textContent = '-';
             out.removeAttribute('data-heb');
             serialize();
             return;
           }
           var s = dta.hd + ' ' + dta.hm + ' ' + dta.hy + (dta.hebrew ? ' (' + dta.hebrew + ')' : '');
-          out.textContent = 'Yahrzeit (Hebrew date): ' + s;
+          out.textContent = s;
           out.setAttribute('data-heb', s);
           serialize();
         });
       }
       add.addEventListener('click', function () { addRow(); });
       box.addEventListener('click', function (e) {
-        if (e.target && e.target.classList.contains('sb-mw-yzdel')) {
-          var r = e.target.closest('.sb-mw-yzrow');
+        var t = e.target;
+        if (t && t.classList.contains('sb-mw-yzdel')) {
+          var r = t.closest('.sb-mw-yzrow');
           if (r) r.parentNode.removeChild(r);
           if (!list.querySelector('.sb-mw-yzrow')) addRow();
+          serialize();
+          return;
+        }
+        if (t && t.classList.contains('sb-mw-segopt') && t.closest('[data-yz="gseg"]')) {
+          $all('.sb-mw-segopt', t.parentNode).forEach(function (b) { b.classList.toggle('sb-on', b === t); });
           serialize();
         }
       });
@@ -1955,7 +2057,6 @@
         if (r) convertRow(r);
       });
       box.addEventListener('input', serialize);
-      // rows saved in the box from a previous visit stay as plain text
       addRow();
     }
     try { initYahrzeits(); } catch (e) { }

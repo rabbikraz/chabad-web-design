@@ -4064,6 +4064,55 @@ html:not(#sbx):not(#sbx2):not(#sbx3) body.cco_body form.sb-mf button.sb-mw-yzadd
   cursor: pointer;
 }
 html:not(#sbx):not(#sbx2):not(#sbx3) body.cco_body form.sb-mf button.sb-mw-yzadd:hover { border-style: solid; }
+/* yahrzeit v2: labeled panel like the original */
+html:not(#sbx):not(#sbx2):not(#sbx3) body.cco_body form.sb-mf .sb-mw-yzhead {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 0 .2rem;
+}
+html:not(#sbx):not(#sbx2):not(#sbx3) body.cco_body form.sb-mf .sb-mw-yztitle { font-weight: 600; font-size: 14.5px; color: #2b171c; }
+html:not(#sbx):not(#sbx2):not(#sbx3) body.cco_body form.sb-mf .sb-mw-yzfield { min-width: 0; }
+html:not(#sbx):not(#sbx2):not(#sbx3) body.cco_body form.sb-mf .sb-mw-yzlab {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #7d5c64;
+  margin: 0 0 .3rem;
+}
+html:not(#sbx):not(#sbx2):not(#sbx3) body.cco_body form.sb-mf .sb-mw-yzfield select.form-dropdown { width: 100%; height: 44px !important; }
+html:not(#sbx):not(#sbx2):not(#sbx3) body.cco_body form.sb-mf .sb-mw-yzfield .sb-mw-heb { margin-top: 0; min-height: 44px; display: flex; align-items: center; }
+html:not(#sbx):not(#sbx2):not(#sbx3) body.cco_body form.sb-mf .sb-mw-yzmem {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: flex-start;
+  gap: .55rem;
+  font-size: 14px;
+  color: #5a3d44;
+  cursor: pointer;
+  border-top: 1px dashed #cfa9ad;
+  padding-top: .7rem;
+}
+html:not(#sbx):not(#sbx2):not(#sbx3) body.cco_body form.sb-mf .sb-mw-yzmem input { width: 16px !important; height: 16px !important; min-height: 0 !important; margin: 2px 0 0; accent-color: #7a1f3d; flex: none; }
+/* discount code row on the payment card */
+html:not(#sbx):not(#sbx2):not(#sbx3) body.cco_body form.sb-mf .sb-mw-discrow { margin: 0 0 1rem; }
+html:not(#sbx):not(#sbx2):not(#sbx3) body.cco_body form.sb-mf .sb-mw-discwrap { display: flex; gap: .5rem; margin-top: .35rem; }
+html:not(#sbx):not(#sbx2):not(#sbx3) body.cco_body form.sb-mf input.sb-mw-discin { width: 220px !important; max-width: 60%; text-transform: uppercase; }
+html:not(#sbx):not(#sbx2):not(#sbx3) body.cco_body form.sb-mf button.sb-mw-discapply {
+  border: 1px solid #a8757f;
+  background: #fff;
+  color: #7a1f3d;
+  border-radius: 8px;
+  padding: 0 1.1rem;
+  font-family: inherit;
+  font-size: 14.5px;
+  cursor: pointer;
+}
+html:not(#sbx):not(#sbx2):not(#sbx3) body.cco_body form.sb-mf button.sb-mw-discapply:hover { border-color: #7a1f3d; }
+html:not(#sbx):not(#sbx2):not(#sbx3) body.cco_body form.sb-mf .sb-mw-discmsg { font-size: 13.5px; margin-top: .35rem; }
+html:not(#sbx):not(#sbx2):not(#sbx3) body.cco_body form.sb-mf .sb-mw-discmsg.sb-ok { color: #166534; }
+html:not(#sbx):not(#sbx2):not(#sbx3) body.cco_body form.sb-mf .sb-mw-discmsg.sb-bad { color: #dc2626; }
 @media (max-width: 640px) {
   html:not(#sbx):not(#sbx2):not(#sbx3) body.cco_body form.sb-mf .sb-mw-yzrow { grid-template-columns: 1fr; }
   html:not(#sbx):not(#sbx2):not(#sbx3) body.cco_body form.sb-mf button.sb-mw-yzdel { justify-self: start; }
