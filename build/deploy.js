@@ -51,6 +51,7 @@ function purge(file) {
   await purge('dist/site.css');
   await purge('dist/site.js');
   await purge('dist/version.txt');
+  await purge('dist/boot.js');
   console.log('\nDeployed and pinned to ' + sha.slice(0, 10) +
     '. Browsers pick it up within ~5-10 minutes; Ctrl+Shift+R for instant.');
 })();
