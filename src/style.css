@@ -3988,6 +3988,16 @@ html:not(#sbx):not(#sbx2):not(#sbx3) body.cco_body form.sb-mf .form-radio-item >
 /* native date picker stands in for the month/day/year dropdowns */
 html:not(#sbx):not(#sbx2):not(#sbx3) body.cco_body form.sb-mf li.sb-mw-hasdate .form-input > .dir_ltr,
 html:not(#sbx):not(#sbx2):not(#sbx3) body.cco_body form.sb-mf li.sb-mw-hasdate .form-input-wide > .dir_ltr { display: none !important; }
+/* native date-picker popup: the popup itself is browser chrome, but its
+   selected-day / today highlight follows accent-color - make it gold */
+html:not(#sbx):not(#sbx2):not(#sbx3) body.cco_body form.sb-mf input[type="date"] {
+  accent-color: #C08A2E;
+  color-scheme: light;
+}
+html:not(#sbx):not(#sbx2):not(#sbx3) body.cco_body form.sb-mf input[type="date"]::-webkit-calendar-picker-indicator {
+  opacity: .7;
+  cursor: pointer;
+}
 html:not(#sbx):not(#sbx2):not(#sbx3) body.cco_body form.sb-mf input.sb-mw-dateproxy {
   display: block;
   width: 240px !important;
