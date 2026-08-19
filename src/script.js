@@ -61,21 +61,7 @@
      order total updates); clicking again clears it. ?sponsor=1800 in a
      link pre-selects a tier. window.SB_SPONSOR_TIERS overrides all.
      ------------------------------------------------------------------ */
-  var SPONSOR_TIERS = window.SB_SPONSOR_TIERS || {
-    // The Gathering — Unity Challah Bake (Sep 1, 2026)
-    '23338': {
-      heading: 'Sponsorship Opportunities',
-      blurb: "Sponsors help cover the evening's program.",
-      tiers: [
-        { label: 'Presenting Sponsor', amount: 5000 },
-        { label: 'Diamond Sponsor', amount: 2500 },
-        { label: 'Gold Sponsor', amount: 1800 },
-        { label: 'Silver Sponsor', amount: 500 },
-        { label: 'Community Sponsor', amount: 360 },
-        { label: 'Friend of The Gathering', amount: 180 }
-      ]
-    }
-  };
+  var SPONSOR_TIERS = window.SB_SPONSOR_TIERS || {};
 
   /* ------------------------------------------------------------------
      PER-PAGE THEMES — recolor an event/program page to match its flyer.
@@ -88,12 +74,7 @@
 
      Anything not set falls back to the site palette.
      ------------------------------------------------------------------ */
-  var PAGE_THEMES = window.SB_PAGE_THEMES || {
-    // The Gathering — sage green + blush cream, sampled from the flyer
-    '23338': { accent: '#4A6752', accentDark: '#39503F', band: '#35493B', soft: '#F6ECE6' },
-    // Wisdom and Whiskey (SoBe Men's Club) — sage-grey + dusty rose
-    '23305': { accent: '#A96F68', accentDark: '#8A5751', band: '#6E7768', soft: '#EFE4E0' }
-  };
+  var PAGE_THEMES = window.SB_PAGE_THEMES || {};
 
   function applyPageTheme() {
     var href = window.location.href;
@@ -136,7 +117,9 @@
   // admin decodes entities when saving the code box, which corrupts the
   // script (e.g. an encoded apostrophe becomes ''' — a syntax error).
   // Entities are therefore assembled at runtime from an amp constant.
-  var AMP = String.fromCharCode(38);
+  // (window.name check is opaque to the minifier's constant folder, so
+  // `unsafe` compression can never fold this into a literal entity)
+  var AMP = String.fromCharCode(typeof window.name === 'string' ? 38 : 0);
   function esc(s) {
     return String(s)
       .replace(/&/g, AMP + 'amp;')
@@ -317,6 +300,23 @@
   function normalizeNavLabels() {
     $all('#tabContentMain span.parent a br').forEach(function (br) {
       br.parentNode.replaceChild(document.createTextNode(' '), br);
+    });
+    // tiered "Tourist Information" label: as the desktop nav gets tight the
+    // CSS hides .sb-nav-t3 ("Tourist Info"), then .sb-nav-t2 ("Tourist").
+    // The mobile drawer (no media match) always shows the full label.
+    $all('#tabContentMain span.parent a').forEach(function (a) {
+      if (a.children.length) return; // text-only labels; never touch icons
+      var m = /^tourist\s+(information|info)$/i.exec(txt(a));
+      if (!m) return;
+      a.textContent = 'Tourist';
+      var t2 = el('span', 'sb-nav-t2');
+      t2.textContent = ' Info';
+      if (m[1].length > 4) { // full "Information" — add the hideable tail
+        var t3 = el('span', 'sb-nav-t3');
+        t3.textContent = 'rmation';
+        t2.appendChild(t3);
+      }
+      a.appendChild(t2);
     });
   }
 
@@ -865,185 +865,12 @@
     }
   }
 
-  /* ---------------- event listing: tint each row with its event's theme ---------------- */
+  /* event-listing theming + read-more clamp moved to
+     src/register-autofill.js (header block) for footer size */
 
-  function themeEventListing() {
-    if (!window.SB_FORCE_LISTING &&
-        window.location.pathname.toLowerCase().indexOf('/tools/events') === -1) return;
-    $all('.event, .row, .item').forEach(function (row) {
-      var link = row.querySelector('a[href*="eventid"]');
-      if (!link) return;
-      var m = /eventid[=\/](\d+)/i.exec(link.getAttribute('href') || '');
-      var t = m && PAGE_THEMES[m[1]];
-      if (!t) return;
-      if (t.soft) row.style.setProperty('--sb-event-soft', t.soft);
-      if (t.accent) row.style.setProperty('--sb-event-accent', t.accent);
-      if (t.accentDark) row.style.setProperty('--sb-event-accent-dark', t.accentDark);
-    });
-  }
-
-  function initEventDescriptionClamp() {
-    if (!window.SB_FORCE_LISTING &&
-        window.location.pathname.toLowerCase().indexOf('/tools/events') === -1) return;
-    $all('.event .bottom_padding').forEach(function (desc) {
-      if (desc.dataset.sbReadmore) return;
-      desc.dataset.sbReadmore = '1';
-      desc.classList.add('sb-clamp-3');
-      // only add the toggle if the text actually overflows 3 lines —
-      // short descriptions get no dangling "Read more" link
-      if (desc.scrollHeight <= desc.clientHeight + 2) {
-        desc.classList.remove('sb-clamp-3');
-        return;
-      }
-      var btn = el('button', 'sb-readmore-toggle');
-      btn.type = 'button';
-      btn.textContent = 'Read more';
-      btn.addEventListener('click', function () {
-        var expanded = desc.classList.toggle('sb-expanded');
-        btn.textContent = expanded ? 'Read less' : 'Read more';
-      });
-      desc.insertAdjacentElement('afterend', btn);
-    });
-  }
-
-  /* ---------------- registration form autofill ---------------- */
-
-  /* The template labels its fields with <div class="label">, not <label for>,
-     so a browser or password manager has nothing authoritative to match on and
-     has to guess from position — which our two-column layout throws off, so
-     every value lands one field out (email into last name, zip into city...).
-     Naming each field with a standard autocomplete token removes the guessing.
-     Payment fields are marked off so autofill can't silently reset the method
-     select, which then fails validation with "select at least one payment
-     method". */
-  var AUTOCOMPLETE = {
-    ReserversTitle: 'honorific-prefix',
-    ReserversFirstName: 'given-name',
-    ReserversLastName: 'family-name',
-    ReserversEmailAddress: 'email',
-    ReserversBillingAddress1: 'address-line1',
-    ReserversBillingCity: 'address-level2',
-    ReserversBillingState: 'address-level1',
-    ReserversBillingPostCode: 'postal-code',
-    ReserversCountry: 'country-name',
-    ReserversPhone: 'tel',
-    PaymentMethod: 'off'
-  };
-
-  function initFormAutofill() {
-    var form = $('#RegisterSinglePage');
-    if (!form) return;
-    // a form (or field) declaring autocomplete="off" switches the browser's
-    // autofill off wholesale — which looks exactly like "it doesn't see a form"
-    if (/^off$/i.test(form.getAttribute('autocomplete') || '')) {
-      form.setAttribute('autocomplete', 'on');
-    }
-    $all('#ReserversInformation [autocomplete="off"]', form).forEach(function (el) {
-      el.removeAttribute('autocomplete');
-    });
-    Object.keys(AUTOCOMPLETE).forEach(function (id) {
-      var el = document.getElementById(id);
-      if (el && !el.getAttribute('autocomplete')) {
-        el.setAttribute('autocomplete', AUTOCOMPLETE[id]);
-      }
-    });
-    // attendee-row names belong to other people — never autofill them
-    $all('#RegisterSinglePage .reservation input', form).forEach(function (el) {
-      if (!el.getAttribute('autocomplete')) el.setAttribute('autocomplete', 'off');
-    });
-    // give the CMS's <div class="label"> a real association with its field, so
-    // assistive tech and autofill heuristics agree with what's on screen
-    $all('#ReserversInformation .clearfix.small_vertical_padding, #Payment .clearfix.small_vertical_padding', form)
-      .forEach(function (row, i) {
-        var label = row.querySelector('.label');
-        var field = row.querySelector('input, select, textarea');
-        if (!label || !field) return;
-        if (!label.id) label.id = 'sb-lbl-' + i;
-        if (!field.getAttribute('aria-labelledby')) {
-          field.setAttribute('aria-labelledby', label.id);
-        }
-      });
-  }
-
-  /* ---------------- credit card fields ---------------- */
-
-  /* Card brands by number prefix, each with the spellings a card-type dropdown
-     might use. The CMS's own detectCardType() compares the number's brand
-     against the option values and does `selectedIndex = index` — where index
-     is -1 when nothing matches, silently clearing the selection. Its table
-     says "American Express" while a form may list "Amex", so Amex ends up
-     unset while Visa works. We only step in when it left nothing selected. */
-  var CARD_BRANDS = [
-    { aliases: ['amex', 'americanexpress'], test: function (n) { return /^3[47]/.test(n); } },
-    { aliases: ['visa'], test: function (n) { return /^4/.test(n); } },
-    { aliases: ['mastercard', 'mc'], test: function (n) { return /^5[1-5]/.test(n) || /^2(2[2-9]|[3-6][0-9]|7[01]|720)/.test(n); } },
-    { aliases: ['discover', 'discovercard'], test: function (n) { return /^6(011|5|4[4-9])/.test(n); } },
-    { aliases: ['dinersclub', 'diners', 'dinersclubinternational'], test: function (n) { return /^3(0[0-5]|09|[68])/.test(n); } },
-    { aliases: ['jcb'], test: function (n) { return /^35(2[89]|[3-8][0-9])/.test(n); } },
-    { aliases: ['unionpay', 'chinaunionpay'], test: function (n) { return /^62/.test(n); } }
-  ];
-  function normCard(s) { return String(s || '').toLowerCase().replace(/[^a-z0-9]/g, ''); }
-
-  function syncCardType() {
-    var num = document.getElementById('PaymentCreditCardNumber');
-    var sel = document.getElementById('PaymentCreditCardType');
-    if (!num || !sel || !sel.options || !sel.options.length) return;
-    // leave a working selection alone — only rescue an empty one
-    if (sel.selectedIndex >= 0 && sel.value) return;
-    var digits = String(num.value || '').replace(/\D/g, '');
-    if (digits.length < 2) return;
-    var brand = CARD_BRANDS.filter(function (b) { return b.test(digits); })[0];
-    if (!brand) return;
-    for (var i = 0; i < sel.options.length; i++) {
-      var o = sel.options[i];
-      if (!o.value && !o.text) continue;
-      if (brand.aliases.indexOf(normCard(o.value)) !== -1 ||
-          brand.aliases.indexOf(normCard(o.text)) !== -1) {
-        sel.selectedIndex = i;
-        ['input', 'change'].forEach(function (t) {
-          sel.dispatchEvent(new Event(t, { bubbles: true }));
-        });
-        return;
-      }
-    }
-  }
-
-  var CC_AUTOCOMPLETE = {
-    PaymentCreditCardNumber: 'cc-number',
-    PaymentCardExpirationMonth: 'cc-exp-month',
-    PaymentCardExpirationYear: 'cc-exp-year',
-    PaymentCardCode: 'cc-csc',
-    PaymentCreditCardType: 'cc-type',
-    PaymentNameOnCard: 'cc-name'
-  };
-  function applyCardAutocomplete() {
-    Object.keys(CC_AUTOCOMPLETE).forEach(function (id) {
-      var el = document.getElementById(id);
-      if (el && el.getAttribute('autocomplete') !== CC_AUTOCOMPLETE[id]) {
-        el.setAttribute('autocomplete', CC_AUTOCOMPLETE[id]);
-      }
-    });
-  }
-
-  function initCreditCard() {
-    if (!$('#RegisterSinglePage')) return;
-    applyCardAutocomplete();
-    // the card block is rendered only once Credit Card is chosen, so watch for it
-    var mo = new MutationObserver(function () {
-      applyCardAutocomplete();
-      syncCardType();
-    });
-    mo.observe(document.body, { childList: true, subtree: true });
-    // autofill can populate without firing input, so listen broadly
-    ['input', 'change', 'blur'].forEach(function (type) {
-      document.addEventListener(type, function (e) {
-        if (e.target && e.target.id === 'PaymentCreditCardNumber') {
-          // after the CMS's own handler has run
-          setTimeout(syncCardType, 0);
-        }
-      }, true);
-    });
-  }
+  /* registration-page autofill + credit-card fixes moved to
+     src/register-autofill.js (ships in the HEADER block: the footer
+     code box refuses to save past ~63KB url-encoded) */
 
   /* ---------------- sponsorship tiers (event registration pages) ---------------- */
 
@@ -1156,6 +983,987 @@
     mo.observe(document.body, { childList: true, subtree: true });
   }
 
+  /* ---------------- high holiday seats form (#sb-hh) ----------------
+     The pasted form page (forms/hh-seats.html) is static HTML inside the
+     CMS's own <form>; this layer adds the UX: name fields matching the
+     seat counts, single-select donation pills, a live order summary, an
+     auto-calculated (still editable) charge total, and card validation
+     only when there is actually something to charge. */
+
+  function initHHSeats() {
+    var root = $('#sb-hh');
+    if (!root) return;
+
+    // dollar sign assembled at runtime: the literal dollar-before-quote
+    // sequence is a String.replace replacement pattern (see esc() note)
+    var DLR = String.fromCharCode(36);
+    var ADULT_SUGGESTED = 100;
+    var CHILD_SUGGESTED = 50;
+
+    function field(name) { return root.querySelector('[name="' + name + '"]'); }
+    var adultSel = field('Adult Attendees Amount');
+    var childSel = field('Children Attendees Amount');
+    var totalIn = field('x_amount');
+    var otherIn = field('Other Amount');
+    var cardNum = field('x_card_num');
+    var cardCode = field('x_card_code');
+    var expMonth = field('x_exp_month');
+    var expYear = field('x_exp_year');
+    var radios = $all('input[name="Donation Amount"]', root);
+    var payChoices = $all('input[name="Payment Choice"]', root);
+    var summary = $('#sb-hh-summary');
+    var payNote = $('#sb-hh-paynote');
+
+    function num(v) {
+      var n = parseFloat(String(v == null ? '' : v).replace(/[^0-9.]/g, ''));
+      return isFinite(n) && n > 0 ? n : 0;
+    }
+    function money(n) {
+      var r = Math.round(n * 100) / 100;
+      return DLR + r.toLocaleString('en-US');
+    }
+
+    // reveal exactly as many name fields as seats chosen (and clear the rest
+    // so hidden leftovers never ride along in the submission)
+    function syncNames(sel, colId) {
+      var col = $('#' + colId, root);
+      if (!col) return;
+      var n = sel ? parseInt(sel.value, 10) || 0 : 0;
+      $all('.sb-hh-name', col).forEach(function (row, i) {
+        var show = i < n;
+        row.style.display = show ? '' : 'none';
+        if (!show) {
+          var input = row.querySelector('input');
+          if (input) input.value = '';
+        }
+      });
+      var block = $('.sb-hh-names', col);
+      if (block) block.style.display = n ? '' : 'none';
+    }
+
+    function chosenDonation() {
+      var other = num(otherIn && otherIn.value);
+      if (other) return other;
+      var picked = radios.filter(function (r) { return r.checked; })[0];
+      return picked ? num(picked.value) : 0;
+    }
+
+    // three payment modes via the "Payment Choice" radios:
+    // suggested (auto-calculated total), custom (visitor-typed total),
+    // guest (no charge at all — the card block collapses entirely)
+    function payMode() {
+      var v = '';
+      payChoices.forEach(function (r) { if (r.checked) v = r.value; });
+      if (v.indexOf('No payment') === 0) return 'guest';
+      if (v.indexOf('Custom') === 0) return 'custom';
+      return 'suggested';
+    }
+    function setChoice(prefix) {
+      payChoices.forEach(function (r) { r.checked = r.value.indexOf(prefix) === 0; });
+    }
+
+    function compute() {
+      var adults = adultSel ? parseInt(adultSel.value, 10) || 0 : 0;
+      var children = childSel ? parseInt(childSel.value, 10) || 0 : 0;
+      var seats = adults * ADULT_SUGGESTED + children * CHILD_SUGGESTED;
+      var donation = chosenDonation();
+      var total = seats + donation;
+      var mode = payMode();
+
+      if (totalIn) {
+        if (mode === 'guest') totalIn.value = '0';
+        else if (mode === 'suggested') totalIn.value = total ? String(total) : '';
+        // locked while auto-calculated; "Choose my own amount" unlocks it
+        totalIn.readOnly = mode === 'suggested';
+      }
+      root.classList.add('sb-hh-js');
+      root.classList.toggle('sb-hh-guest', mode === 'guest');
+      root.classList.toggle('sb-hh-custom', mode === 'custom');
+      var charge = mode === 'guest' ? 0 : (totalIn ? num(totalIn.value) : total);
+
+      if (summary) {
+        summary.innerHTML = '';
+        var box = el('div', 'sb-hh-sumbox');
+        var line = function (label, amt, cls) {
+          var row = el('div', 'sb-hh-sumline' + (cls ? ' ' + cls : ''));
+          var l = el('span');
+          l.textContent = label;
+          var a = el('span', 'sb-hh-sumamt');
+          a.textContent = amt;
+          row.appendChild(l);
+          row.appendChild(a);
+          box.appendChild(row);
+        };
+        var seatCount = adults + children;
+        if (mode === 'guest') {
+          var guest = el('div', 'sb-hh-sumfree');
+          guest.textContent = seatCount
+            ? seatCount + (seatCount === 1 ? ' seat' : ' seats') + ' reserved, no charge.'
+            : 'Choose your seats above. No charge.';
+          box.appendChild(guest);
+        } else {
+          if (adults) line(adults + (adults === 1 ? ' adult seat' : ' adult seats'), money(adults * ADULT_SUGGESTED));
+          if (children) line(children + (children === 1 ? ' child seat' : ' child seats'), money(children * CHILD_SUGGESTED));
+          if (donation) line('Donation', money(donation));
+          if (charge > 0) {
+            line('Total charge', money(charge), 'sb-hh-sumtotal');
+          } else {
+            var free = el('div', 'sb-hh-sumfree');
+            free.textContent = (adults || children)
+              ? 'No charge. We look forward to celebrating with you.'
+              : 'Choose your seats above.';
+            box.appendChild(free);
+          }
+        }
+        summary.appendChild(box);
+      }
+
+      if (payNote) {
+        payNote.textContent = mode === 'custom'
+          ? 'Enter any amount that works for you. Every contribution helps.'
+          : 'Calculated from your selections. Pick "Choose my own amount" to change it.';
+      }
+
+      // card details are only mandatory when there is a charge
+      [cardNum, cardCode].forEach(function (f) {
+        if (!f) return;
+        if (charge > 0) f.setAttribute('required', 'true');
+        else f.removeAttribute('required');
+      });
+    }
+
+    if (adultSel) adultSel.addEventListener('change', function () { syncNames(adultSel, 'sb-hh-adults'); compute(); });
+    if (childSel) childSel.addEventListener('change', function () { syncNames(childSel, 'sb-hh-children'); compute(); });
+
+    // donation pills: single-select, click again to deselect, and the
+    // Other box clears the pills (and vice versa)
+    var lastPicked = radios.filter(function (r) { return r.checked; })[0] || null;
+    radios.forEach(function (r) {
+      r.addEventListener('click', function () {
+        if (r === lastPicked) {
+          r.checked = false;
+          lastPicked = null;
+        } else {
+          lastPicked = r;
+          if (otherIn) otherIn.value = '';
+          // donating means paying — leave guest mode
+          if (payMode() === 'guest') setChoice('Suggested');
+        }
+        compute();
+      });
+    });
+    if (otherIn) {
+      otherIn.addEventListener('input', function () {
+        if (otherIn.value.trim()) {
+          radios.forEach(function (r) { r.checked = false; });
+          lastPicked = null;
+          if (payMode() === 'guest') setChoice('Suggested');
+        }
+        compute();
+      });
+    }
+
+    // typing a total of your own IS choosing your own amount
+    if (totalIn) {
+      totalIn.addEventListener('input', function () {
+        if (payMode() === 'suggested') setChoice('Custom');
+        compute();
+      });
+    }
+
+    payChoices.forEach(function (r) {
+      r.addEventListener('change', function () {
+        if (!r.checked) return;
+        var mode = payMode();
+        if (mode === 'guest') {
+          radios.forEach(function (d) { d.checked = false; });
+          lastPicked = null;
+          if (otherIn) otherIn.value = '';
+        }
+        compute();
+        if (mode === 'custom' && totalIn) {
+          totalIn.focus();
+          totalIn.select();
+        }
+      });
+    });
+
+    var form = root.closest('form');
+    if (form) {
+      // the CMS appends its own submit control after the pasted content —
+      // adopt it into the design
+      // the CMS also appends a Reset button — nobody has ever wanted to
+      // wipe a half-filled reservation form on purpose
+      $all('input[type="reset"], button[type="reset"]', form).forEach(function (b) {
+        if (b.parentNode) b.parentNode.removeChild(b);
+      });
+      var submit = form.querySelector('input[type="submit"], button[type="submit"], input[type="image"]');
+      if (submit) {
+        submit.classList.add('sb-hh-submit');
+        if (submit.parentNode && submit.parentNode !== form) {
+          submit.parentNode.classList.add('sb-hh-submit-row');
+        }
+      }
+      form.addEventListener('submit', function (event) {
+        var charge = num(totalIn && totalIn.value);
+        if (!charge) return;
+        var digits = cardNum ? cardNum.value.replace(/\D/g, '') : '';
+        var expOk = expMonth && expYear && /^\d+$/.test(expMonth.value) && /^\d+$/.test(expYear.value);
+        if (digits.length < 12 || !expOk) {
+          event.preventDefault();
+          alert('Please enter your card number and expiration date to process the ' + money(charge) + ' charge, or set the total to 0 to reserve seats without a charge.');
+        }
+      });
+    }
+
+    syncNames(adultSel, 'sb-hh-adults');
+    syncNames(childSel, 'sb-hh-children');
+    compute();
+  }
+
+  /* ---------------- membership form: BUILDER page ----------------
+     The membership signup runs on the ChabadOne form builder (payment,
+     per-tier pricing, conditional fields), but the visitor experience
+     is the original Membership Form.html wizard, rebuilt on top of it:
+     Screen 1 - household cards + parents/children + tier cards with
+     live prices and benefits; Screen 2 - your info / spouse / children;
+     Screen 3 - extras, summary, payment, submit. The custom screen-1
+     controls PROXY into the builder's own (hidden) fields, so the
+     builder still computes the Total and posts everything.
+     Fields are matched by LABEL, never by id. Styling: style.css 21. */
+
+  function initMembershipBuilder() {
+    var root = $all('form.userform-form').filter(function (f) {
+      return $all('.form-label-left label, .form-label label', f).some(function (l) {
+        return /membership level/i.test(l.textContent);
+      });
+    })[0];
+    if (!root) return;
+    root.classList.add('sb-mf');
+    document.body.classList.add('sb-memform');
+    var hebOuts = [];
+    var hebCache = {};
+    var formAll = $('.form-all', root) || root;
+    var ulist = $('ul.form-section', root);
+    if (!ulist) return;
+
+    /* ---- the original form's pricing + benefits ---- */
+    var PRICING = {
+      Basic: { single: 50, couple: 80, child: 20 },
+      Chai: { single: 180, couple: 300, child: 90 },
+      Silver: { single: 500, couple: 800, child: 250 },
+      Gold: { single: 1000, couple: 1800, child: 360 }
+    };
+    var BENEFITS = window.SB_MW_BENEFITS || {};
+    var TIER_NAMES = ['Basic', 'Chai', 'Silver', 'Gold'];
+
+    /* wizard state is the source of truth; it is synced INTO the builder */
+    var st = { tier: '', hh: '', parents: 'two', kids: 1, billing: 'monthly' };
+
+    function money(n) { return String.fromCharCode(36) + Number(n).toLocaleString('en-US'); }
+    function monthlyFor(tier) {
+      var p = PRICING[tier];
+      if (!p) return 0;
+      if (st.hh === 'Couple') return p.couple;
+      if (st.hh === 'Family') return (st.parents === 'one' ? p.single : p.couple) + p.child * st.kids;
+      return p.single;
+    }
+    function hasSpouse() {
+      if (st.hh === 'Couple') return true;
+      return st.hh === 'Family' && st.parents !== 'one';
+    }
+    function hhDesc() {
+      if (st.hh !== 'Family') return st.hh || 'Single';
+      return (st.parents === 'one' ? 'Single-parent family, ' : 'Family, ') +
+        st.kids + (st.kids === 1 ? ' child' : ' children');
+    }
+
+    /* ---- label helpers ---- */
+    function normLbl(s) { return String(s || '').replace(/\s+/g, ' ').trim().toLowerCase(); }
+    function rawLabelOf(li) {
+      var l = li.querySelector('.form-label-left label, .form-label label');
+      if (!l) return '';
+      var c = l.cloneNode(true);
+      var star = c.querySelector('.form-required');
+      if (star) star.parentNode.removeChild(star);
+      return normLbl(c.textContent);
+    }
+    function labelOf(li) {
+      return rawLabelOf(li).replace(/^\((basic|chai|silver|gold)( annual)?\)\s*/, '');
+    }
+    function allLis() { return $all('li.form-line, li.form-input-wide', root); }
+    function lisByLabel(re, raw) {
+      return allLis().filter(function (li) { return re.test(raw ? rawLabelOf(li) : labelOf(li)); });
+    }
+    function liShown(li) { return !!(li && li.offsetParent !== null); }
+    function fire(elm, types) {
+      types.forEach(function (t) { elm.dispatchEvent(new Event(t, { bubbles: true })); });
+    }
+    function setRadio(li, value, on) {
+      if (!li) return;
+      $all('input[type="radio"]', li).forEach(function (r) {
+        if (String(r.value).toLowerCase() === String(value).toLowerCase()) {
+          if (r.checked !== on) { r.checked = on; fire(r, ['click', 'change']); }
+        } else if (on && r.checked) { r.checked = false; }
+      });
+    }
+    function clearGroup(li) {
+      if (!li) return;
+      var any = false;
+      $all('input', li).forEach(function (f) {
+        if (f.type === 'radio' || f.type === 'checkbox') { if (f.checked) { f.checked = false; any = true; } }
+        else if (f.value) { f.value = ''; any = true; }
+      });
+      if (any) fire(li.querySelector('input') || li, ['change']);
+    }
+
+    /* the builder's field trio for each tier, matched by raw label */
+    function trio(tier, annual) {
+      var p = '^\\(' + tier.toLowerCase() + (annual ? ' annual' : '') + '\\) ';
+      return {
+        hh: lisByLabel(new RegExp(p + 'i am joining as'), true)[0] || null,
+        par: lisByLabel(new RegExp(p + 'parents at home'), true)[0] || null,
+        kids: lisByLabel(new RegExp(p + 'number of children'), true)[0] || null
+      };
+    }
+    var tierLi = lisByLabel(/^membership level/)[0] || null;
+    var billLi = lisByLabel(/^billing frequency/)[0] || null;
+    // annual-priced field twins exist only once the builder add-on ran
+    var hasAnnual = !!trio('Basic', true).hh;
+    function recurBox() {
+      return $all('input', root).filter(function (f) { return /paymentrecurrence/.test(f.name || ''); })[0] || null;
+    }
+
+    /* push the wizard state into the real fields */
+    function syncBuilder() {
+      if (!st.tier) return;
+      var annualMode = st.billing === 'annual' && hasAnnual;
+      if (billLi) setRadio(billLi, annualMode ? 'Annual' : 'Monthly', true);
+      if (tierLi) setRadio(tierLi, st.tier, true);
+      TIER_NAMES.forEach(function (t) {
+        [false, true].forEach(function (annual) {
+          var g = trio(t, annual);
+          if (!g.hh && annual) return;
+          if (t !== st.tier || annual !== annualMode) { clearGroup(g.hh); clearGroup(g.par); clearGroup(g.kids); return; }
+          setRadio(g.hh, st.hh || 'Single', true);
+          if (st.hh === 'Family') {
+            setRadio(g.par, st.parents === 'one' ? 'Single Parent' : 'Two parents', true);
+            var input = g.kids && g.kids.querySelector('input');
+            if (input && input.value !== String(st.kids)) { input.value = String(st.kids); fire(input, ['input', 'change', 'keyup']); }
+          } else { clearGroup(g.par); clearGroup(g.kids); }
+        });
+      });
+      // membership bills monthly; paying the year up front is the one-time path
+      var rc = recurBox();
+      if (rc) {
+        var want = !annualMode;
+        if (rc.checked !== want) { rc.checked = want; fire(rc, ['change']); }
+      }
+    }
+
+    /* ---- sort every question into a wizard slot ---- */
+    function classify(li) {
+      if (li.querySelector('.form-header-group') || li.querySelector('.form-html')) return 'hide';
+      if (li.querySelector('.form-buttons-wrapper')) return 'submit';
+      if (li.querySelector('input[name="website"]')) return 'pay';
+      if (li.querySelector('[id="total_amount"]')) return 'total';
+      var raw = rawLabelOf(li);
+      if (/^membership level/.test(raw) || /^\((basic|chai|silver|gold)( annual)?\)/.test(raw)) return 'engine';
+      var lbl = labelOf(li);
+      if (/^(i am joining as|parents at home|number of children|billing frequency)/.test(lbl)) return 'engine';
+      if (/^(spouse |anniversary$)/.test(lbl)) return 'spouse';
+      if (/^(child \d+ |children)/.test(lbl)) return 'children';
+      if (/^(yahrzeits|memorial board|donor wall|kiddush|anything else)/.test(lbl)) return 'extras';
+      if (/^(total|payment)/.test(lbl)) return 'pay';
+      if ($all('input', li).some(function (f) { return /paymentrecurrence/.test(f.name || ''); })) return 'pay';
+      return 'info';
+    }
+
+    /* ---- build the wizard shell ---- */
+    function div(cls, html) { return el('div', cls, html == null ? undefined : html); }
+    function btn(cls, text) {
+      var b = el('button', cls);
+      b.type = 'button';
+      b.textContent = text;
+      return b;
+    }
+    var wrap = div('sb-mw');
+    var engine = div('sb-mw-engine');      // hidden: the priced builder fields
+    var s1 = div('sb-mw-screen sb-mw-s1');
+    var s2 = div('sb-mw-screen sb-mw-s2');
+    var s3 = div('sb-mw-screen sb-mw-s3');
+    wrap.appendChild(engine);
+    wrap.appendChild(s1);
+    wrap.appendChild(s2);
+    wrap.appendChild(s3);
+    ulist.parentNode.insertBefore(wrap, ulist);
+    ulist.classList.add('sb-mw-list');       // becomes a plain container
+
+    function card(parent, title, sub) {
+      var c = div('sb-mw-card');
+      if (title) {
+        var h = div('sb-mw-card-h');
+        h.textContent = title;
+        c.appendChild(h);
+      }
+      if (sub) {
+        var p = el('p', 'sb-mw-card-sub');
+        p.textContent = sub;
+        c.appendChild(p);
+      }
+      parent.appendChild(c);
+      return c;
+    }
+
+    /* SCREEN 1 — hero, household, tiers (all custom controls) */
+    s1.appendChild(div('sb-mw-hero',
+      '<h2>Become a partner in our Chabad</h2><p>Select your household to see your pricing.</p>'));
+    s1.appendChild(div('sb-mw-seclabel', 'I am joining as'));
+    var hhGrid = div('sb-mw-hhgrid');
+    [['Single', 'One adult'], ['Couple', 'Two adults'], ['Family', 'Parents + children']].forEach(function (o) {
+      var c = div('sb-mw-hhcard');
+      c.setAttribute('data-hh', o[0]);
+      c.innerHTML = '<div class="sb-mw-hhname">' + o[0] + '</div><div class="sb-mw-hhsub">' + o[1] + '</div>';
+      c.addEventListener('click', function () { st.hh = o[0]; paint(); });
+      hhGrid.appendChild(c);
+    });
+    s1.appendChild(hhGrid);
+
+    var famRow = div('sb-mw-famrow');
+    var parSeg = div('sb-mw-seg');
+    [['two', 'Two parents'], ['one', 'Single parent']].forEach(function (o) {
+      var b = btn('sb-mw-segopt', o[1]);
+      b.setAttribute('data-par', o[0]);
+      b.addEventListener('click', function () { st.parents = o[0]; paint(); });
+      parSeg.appendChild(b);
+    });
+    var parBox = div('sb-mw-fambox');
+    parBox.appendChild(div('sb-mw-famlab', 'Parents in the home'));
+    parBox.appendChild(parSeg);
+    famRow.appendChild(parBox);
+    var kidsBox = div('sb-mw-fambox');
+    kidsBox.appendChild(div('sb-mw-famlab', 'Children at home'));
+    var stepper = div('sb-mw-stepper');
+    var minus = btn('sb-mw-step', '-');
+    var kidsNum = el('span', 'sb-mw-stepnum');
+    kidsNum.textContent = '1';
+    var plus = btn('sb-mw-step', '+');
+    minus.addEventListener('click', function () { if (st.kids > 1) { st.kids--; paint(); } });
+    plus.addEventListener('click', function () { if (st.kids < 6) { st.kids++; paint(); } });
+    stepper.appendChild(minus);
+    stepper.appendChild(kidsNum);
+    stepper.appendChild(plus);
+    kidsBox.appendChild(stepper);
+    famRow.appendChild(kidsBox);
+    s1.appendChild(famRow);
+
+    s1.appendChild(div('sb-mw-seclabel', 'Membership level'));
+    var tierGrid = div('sb-mw-tiergrid');
+    var tierEls = {};
+    TIER_NAMES.forEach(function (t) {
+      var c = div('sb-mw-tier' + (t === 'Chai' ? ' sb-mw-popular' : ''));
+      c.innerHTML =
+        (t === 'Chai' ? '<span class="sb-mw-badge">Most popular</span>' : '') +
+        '<div class="sb-mw-tname">' + t + '</div>' +
+        '<div class="sb-mw-tprice"><span class="sb-mw-tnum"></span><span class="sb-mw-tper">/mo</span></div>' +
+        '<div class="sb-mw-tyear"></div>' +
+        '<ul class="sb-mw-tperks">' + (BENEFITS[t] || []).map(function (b) { return '<li>' + b + '</li>'; }).join('') + '</ul>';
+      c.addEventListener('click', function () { st.tier = t; paint(); });
+      tierGrid.appendChild(c);
+      tierEls[t] = c;
+    });
+    s1.appendChild(tierGrid);
+    var cont1 = btn('sb-mw-continue', 'Select a tier to continue');
+    cont1.disabled = true;
+    s1.appendChild(cont1);
+    s1.appendChild(div('sb-mw-away',
+      '<b>No one is ever turned away</b><span>If membership is not within reach right now, please reach out to the Rabbi privately. Every Jew has a place at our table.</span>'));
+
+    /* SCREEN 2 — the builder's real fields, in the original's white cards */
+    var top2 = div('sb-mw-top');
+    var back2 = btn('sb-mw-back', 'Back');
+    top2.appendChild(back2);
+    top2.appendChild(div('sb-mw-h1', 'Your information'));
+    s2.appendChild(top2);
+    var err2 = div('sb-mw-err');
+    err2.textContent = 'Please complete the highlighted required fields.';
+    s2.appendChild(err2);
+    var infoCard = card(s2, 'Primary member');
+    var spouseCard = card(s2, 'Spouse', 'Shares the household mailing address above.');
+    var kidsCard = card(s2, 'Children', 'One row per child, based on the count you chose.');
+    var cont2 = btn('sb-mw-continue', 'Continue to preferences and payment');
+    s2.appendChild(cont2);
+
+    /* SCREEN 3 — extras, summary, payment, submit */
+    var top3 = div('sb-mw-top');
+    var back3 = btn('sb-mw-back', 'Back');
+    top3.appendChild(back3);
+    top3.appendChild(div('sb-mw-h1', 'Preferences & payment'));
+    s3.appendChild(top3);
+    var extrasCard = card(s3, 'Preferences');
+    var payCard = card(s3, 'Payment');
+    var sum = div('sb-mw-sum');
+    payCard.appendChild(sum);
+    var billRow = div('sb-mw-billrow');
+    billRow.appendChild(div('sb-mw-billlab', 'How would you like to pay?'));
+    var billSeg = div('sb-mw-seg');
+    [['monthly', 'Monthly'], ['annual', 'Annual (pay full year)']].forEach(function (o) {
+      var b = btn('sb-mw-segopt', o[1]);
+      b.setAttribute('data-bill', o[0]);
+      b.addEventListener('click', function () { st.billing = o[0]; syncBuilder(); paint(); });
+      billSeg.appendChild(b);
+    });
+    billRow.appendChild(billSeg);
+    payCard.insertBefore(billRow, sum);
+    if (!hasAnnual) billRow.style.display = 'none';
+    var payHolder = div('sb-mw-payfields');
+    payCard.appendChild(payHolder);
+    var errbar = el('div', 'sb-mf-errbar');
+    payCard.appendChild(errbar);
+    var submitHolder = div('sb-mw-submit');
+    payCard.appendChild(submitHolder);
+
+    /* distribute the builder's lis */
+    var totalLi = null;
+    $all('ul.form-section > li', root).forEach(function (li) {
+      var slot = classify(li);
+      if (slot === 'hide') { li.style.display = 'none'; engine.appendChild(li); return; }
+      if (slot === 'engine') { engine.appendChild(li); return; }
+      if (slot === 'total') { totalLi = li; li.classList.add('sb-mw-totalli'); sum.appendChild(li); return; }
+      if (slot === 'spouse') { spouseCard.appendChild(li); return; }
+      if (slot === 'children') { kidsCard.appendChild(li); return; }
+      if (slot === 'extras') { extrasCard.appendChild(li); return; }
+      if (slot === 'pay') {
+        if ($all('input', li).some(function (f) { return /paymentrecurrence/.test(f.name || ''); })) li.classList.add('sb-mw-recurli');
+        payHolder.appendChild(li);
+        return;
+      }
+      if (slot === 'submit') {
+        if (submitHolder.querySelector('li')) li.style.display = 'none'; // duplicate submit
+        submitHolder.appendChild(li);
+        return;
+      }
+      infoCard.appendChild(li);
+    });
+
+    // first/last name side by side (class beats :has() quirks)
+    allLis().forEach(function (li) {
+      if (li.querySelector('input[id^="first_"]')) li.classList.add('sb-mf-namerow');
+    });
+
+    /* Jewishness rules, same as the original form, for BOTH adults:
+       Not Jewish -> tribe / lineage / mother's Hebrew name / Hebrew
+       birthday don't apply; Convert -> tribe is Yisroel by definition
+       (hidden) and lineage/mother default to Avraham Avinu / Sara
+       Imeinu exactly like the original auto-fill. */
+    function hideLi(li, hide) {
+      if (!li) return;
+      li.style.display = hide ? 'none' : '';
+      if (hide) $all('input', li).forEach(function (f) {
+        if (f.type === 'radio' || f.type === 'checkbox') f.checked = false;
+        else if (f.type !== 'hidden') f.value = '';
+      });
+    }
+    function checkedIn(li) {
+      if (!li) return '';
+      var hit = $all('input[type="radio"]', li).filter(function (f) { return f.checked; })[0];
+      return hit ? hit.value : '';
+    }
+    function jewishnessRules() {
+      [{ p: '', owner: 'Member' }, { p: 'spouse ', owner: 'Spouse' }].forEach(function (side) {
+        var jli = lisByLabel(new RegExp('^' + side.p + 'jewishness$'))[0];
+        if (!jli) return;
+        var v = checkedIn(jli);
+        var notJew = /not jewish/i.test(v);
+        var convert = /convert/i.test(v);
+        hideLi(lisByLabel(new RegExp('^' + side.p + 'tribe$'))[0], notJew || convert);
+        var linLi = lisByLabel(new RegExp('^' + side.p + 'hebrew lineage'))[0];
+        var momLi = lisByLabel(new RegExp('^' + side.p + 'mother.s hebrew name$'))[0];
+        hideLi(linLi, notJew);
+        hideLi(momLi, notJew);
+        // Hebrew birthday box doesn't apply to a non-Jewish member
+        hebOuts.forEach(function (h) {
+          if (h.owner === side.owner) h.out.style.visibility = notJew ? 'hidden' : '';
+        });
+        // the original's convert auto-fill (removed again if they switch back)
+        var lin = linLi && linLi.querySelector('input');
+        var mom = momLi && momLi.querySelector('input');
+        var gli = lisByLabel(new RegExp('^' + side.p + 'gender$'))[0];
+        var female = /female/i.test(checkedIn(gli));
+        if (convert) {
+          if (lin && (!lin.value || lin.getAttribute('data-auto'))) {
+            lin.value = (female ? 'bas' : 'ben') + ' Avraham Avinu';
+            lin.setAttribute('data-auto', '1');
+          }
+          if (mom && (!mom.value || mom.getAttribute('data-auto'))) {
+            mom.value = 'Sara Imeinu';
+            mom.setAttribute('data-auto', '1');
+          }
+        } else {
+          [lin, mom].forEach(function (f) {
+            if (f && f.getAttribute('data-auto')) { f.value = ''; f.removeAttribute('data-auto'); }
+          });
+        }
+      });
+    }
+
+    /* summary rows above the builder's own Total */
+    var sumRows = div('sb-mw-sumrows');
+    sum.insertBefore(sumRows, sum.firstChild);
+
+    /* ---- painting ---- */
+    function paint() {
+      $all('.sb-mw-hhcard', s1).forEach(function (c) {
+        c.classList.toggle('sb-on', c.getAttribute('data-hh') === (st.hh || 'Single'));
+      });
+      famRow.style.display = st.hh === 'Family' ? 'flex' : 'none';
+      $all('.sb-mw-segopt', parSeg).forEach(function (b) {
+        b.classList.toggle('sb-on', b.getAttribute('data-par') === st.parents);
+      });
+      kidsNum.textContent = st.kids;
+      TIER_NAMES.forEach(function (t) {
+        var c = tierEls[t];
+        var m = monthlyFor(t);
+        $('.sb-mw-tnum', c).textContent = money(m);
+        $('.sb-mw-tyear', c).textContent = money(m * 12) + ' / year';
+        c.classList.toggle('sb-on', st.tier === t);
+      });
+      if (st.tier) {
+        cont1.disabled = false;
+        cont1.textContent = 'Continue as ' + hhDesc() + ' - ' + st.tier + ' - ' + money(monthlyFor(st.tier)) + '/mo';
+      } else {
+        cont1.disabled = true;
+        cont1.textContent = 'Select a tier to continue';
+      }
+      try { jewishnessRules(); } catch (e) { }
+      spouseCard.style.display = hasSpouse() ? '' : 'none';
+      kidsCard.style.display = st.hh === 'Family' ? '' : 'none';
+      if (st.billing === 'annual' && !hasAnnual) st.billing = 'monthly';
+      $all('.sb-mw-segopt', billSeg).forEach(function (b) {
+        b.classList.toggle('sb-on', b.getAttribute('data-bill') === st.billing);
+      });
+      var m2 = monthlyFor(st.tier);
+      var billTxt = !st.tier ? '-' : (st.billing === 'annual'
+        ? money(m2 * 12) + ' now, for the full year'
+        : money(m2) + ' / month, recurring');
+      sumRows.innerHTML =
+        '<div class="sb-mw-sumrow"><span>Membership</span><span>' + (st.tier || '-') + '</span></div>' +
+        '<div class="sb-mw-sumrow"><span>Household</span><span>' + hhDesc() + '</span></div>' +
+        '<div class="sb-mw-sumrow"><span>Monthly</span><span>' + (st.tier ? money(m2) + ' / mo' : '-') + '</span></div>' +
+        '<div class="sb-mw-sumrow"><span>Annual total</span><span>' + (st.tier ? money(m2 * 12) + ' / yr' : '-') + '</span></div>' +
+        '<div class="sb-mw-sumrow"><span>Billing</span><span>' + billTxt + '</span></div>';
+    }
+
+    function clearHidden(cardEl) {
+      $all('input, select, textarea', cardEl).forEach(function (f) {
+        if (f.type === 'radio' || f.type === 'checkbox') f.checked = false;
+        else if (f.type !== 'hidden') f.value = '';
+      });
+    }
+    function showScreen(n) {
+      s1.style.display = n === 1 ? 'block' : 'none';
+      s2.style.display = n === 2 ? 'block' : 'none';
+      s3.style.display = n === 3 ? 'block' : 'none';
+      window.scrollTo(0, 0);
+    }
+    cont1.addEventListener('click', function () {
+      if (!st.tier) return;
+      if (!st.hh) st.hh = 'Single';
+      syncBuilder();
+      if (!hasSpouse()) clearHidden(spouseCard);
+      if (st.hh !== 'Family') clearHidden(kidsCard);
+      paint();
+      showScreen(2);
+    });
+    back2.addEventListener('click', function () { showScreen(1); });
+    back3.addEventListener('click', function () { showScreen(2); });
+    cont2.addEventListener('click', function () {
+      var bad = validateScreen2();
+      err2.classList.toggle('sb-on', !!bad);
+      if (bad) { bad.scrollIntoView({ behavior: 'smooth', block: 'center' }); return; }
+      showScreen(3);
+    });
+
+    /* ---- validation ---- */
+    function markInvalid(li) { if (li) li.classList.add('sb-mf-invalid'); return li; }
+    function clearInvalid(li) { if (li) li.classList.remove('sb-mf-invalid'); }
+    function liFilled(li) {
+      var ok = true;
+      var radios = [];
+      $all('input, select, textarea', li).forEach(function (f) {
+        if (f.type === 'hidden') return;
+        if ((f.className || '').indexOf('no-validation') !== -1) return;
+        if (f.type === 'radio' || f.type === 'checkbox') { radios.push(f); return; }
+        if (!String(f.value || '').trim()) ok = false;
+      });
+      if (radios.length && !radios.some(function (r) { return r.checked; })) ok = false;
+      return ok;
+    }
+    root.addEventListener('input', function (e) {
+      var li = e.target && e.target.closest ? e.target.closest('li.sb-mf-invalid') : null;
+      if (li) clearInvalid(li);
+    });
+    // builder radios (jewishness, gender...) repaint the dependent fields
+    root.addEventListener('change', function (e) {
+      if (e.target && e.target.type === 'radio') { try { jewishnessRules(); } catch (err) { } }
+    });
+    root.addEventListener('change', function (e) {
+      var li = e.target && e.target.closest ? e.target.closest('li.sb-mf-invalid') : null;
+      if (li) clearInvalid(li);
+    });
+
+    // screen 2 gate: builder-required fields + spouse/children when they apply
+    function validateScreen2() {
+      var firstBad = null;
+      function need(li) {
+        if (!li || !liShown(li)) return;
+        if (!liFilled(li)) { markInvalid(li); if (!firstBad) firstBad = li; }
+      }
+      $all('li.sb-mf-invalid', s2).forEach(clearInvalid);
+      $all('li', infoCard).forEach(function (li) {
+        var req = $all('input, select, textarea', li).some(function (f) {
+          return (f.className || '').indexOf('required') !== -1;
+        });
+        if (req) need(li);
+      });
+      if (hasSpouse()) {
+        [/^spouse first name$/, /^spouse last name$/, /^spouse birthday$/,
+          /^spouse gender$/, /^spouse jewishness$/].forEach(function (re) {
+            need(lisByLabel(re)[0]);
+          });
+      }
+      if (st.hh === 'Family') {
+        lisByLabel(/^child \d+ (name|birthday)/).forEach(need);
+      }
+      return firstBad;
+    }
+
+    /* ---- Hebrew date converter (the original's Hebcal feature) ----
+       Shows the Hebrew date under every Gregorian date as it is picked,
+       honoring the Born After Sunset answer. Hebcal sends
+       Access-Control-Allow-Origin: *, so a plain fetch works — exactly
+       what the original Membership Form.html and Meal Form do. */
+    function g2h(iso, sunset, cb) {
+      var key = iso + '|' + (sunset ? 1 : 0);
+      if (hebCache[key]) { cb(hebCache[key]); return; }
+      var url = 'https://www.hebcal.com/converter?cfg=json&g2h=1&gy=' + iso.slice(0, 4) +
+        '&gm=' + Number(iso.slice(5, 7)) + '&gd=' + Number(iso.slice(8, 10)) + (sunset ? '&gs=on' : '');
+      fetch(url).then(function (r) { return r.json(); })
+        .then(function (d) { hebCache[key] = d; cb(d); })
+        .catch(function () { cb(null); });
+    }
+    function pad2(v) { return ('0' + v).slice(-2); }
+    function attachHeb(li, sunsetRe, kind, owner) {
+      if (!li || li.querySelector('.sb-mw-heb')) return;
+      var out = el('div', 'sb-mw-heb');
+      out.style.display = 'none';
+      (li.querySelector('.form-input') || li).appendChild(out);
+      hebOuts.push({ out: out, owner: owner });
+      function calc() {
+        var sels = $all('select', li);
+        if (sels.length < 3) return;
+        var m = sels[0].value, d = sels[1].value, y = sels[2].value;
+        if (!m || !d || !y) { out.style.display = 'none'; out.textContent = ''; out.removeAttribute('data-heb'); return; }
+        var sunset = false;
+        if (sunsetRe) {
+          var sli = lisByLabel(sunsetRe)[0];
+          if (sli) sunset = /yes/i.test(
+            $all('input[type="radio"]', sli).filter(function (r) { return r.checked; })
+              .map(function (r) { return r.value; })[0] || '');
+        }
+        var iso = y + '-' + pad2(m) + '-' + pad2(d);
+        out.style.display = '';
+        out.textContent = 'Converting...';
+        g2h(iso, sunset, function (dta) {
+          if (!dta || !dta.hd) { out.style.display = 'none'; out.textContent = ''; out.removeAttribute('data-heb'); return; }
+          var s = dta.hd + ' ' + dta.hm + ' ' + dta.hy + (dta.hebrew ? ' (' + dta.hebrew + ')' : '');
+          out.textContent = kind + ': ' + s;
+          out.setAttribute('data-heb', s);
+        });
+      }
+      li.addEventListener('change', calc);
+      if (sunsetRe) {
+        root.addEventListener('change', function (e) {
+          var sli = e.target && e.target.closest ? e.target.closest('li.form-line') : null;
+          if (sli && sunsetRe.test(labelOf(sli))) calc();
+        });
+      }
+      calc();
+    }
+    try {
+      attachHeb(lisByLabel(/^birth date$/)[0], /^born after sunset/, 'Hebrew birthday', 'Member');
+      attachHeb(lisByLabel(/^spouse birthday$/)[0], /^spouse born after sunset/, 'Hebrew birthday', 'Spouse');
+      attachHeb(lisByLabel(/^anniversary$/)[0], null, 'Hebrew anniversary', 'Anniversary');
+      lisByLabel(/^child \d+ birthday$/).forEach(function (li) {
+        attachHeb(li, null, 'Hebrew birthday', labelOf(li).replace(/ birthday$/, ''));
+      });
+    } catch (e) { if (window.console) console.warn('[sb-mw] converter skipped:', e); }
+    // the display boxes don't post with the form, so the results ride
+    // along in the Anything Else box for the office email
+    function stuffHebrewDates() {
+      var lines = hebOuts.filter(function (h) { return h.out.getAttribute('data-heb'); })
+        .map(function (h) { return h.owner + ': ' + h.out.getAttribute('data-heb'); });
+      var ta = (lisByLabel(/^anything else$/)[0] || {}).querySelector
+        ? lisByLabel(/^anything else$/)[0].querySelector('textarea') : null;
+      if (!ta) return;
+      var MARK = '-- Hebrew dates (auto) --';
+      var base = ta.value.split(MARK)[0].replace(/\s+$/, '');
+      ta.value = lines.length ? (base ? base + '\n\n' : '') + MARK + '\n' + lines.join('\n') : base;
+    }
+
+    // final submit: everything again, shown in the payment card's error bar
+    document.addEventListener('submit', function (event) {
+      if (event.target !== root) return;
+      var bad = null;
+      try { bad = validateScreen2(); } catch (e) { return; }
+      if (!bad) {
+        errbar.classList.remove('sb-on');
+        try { stuffHebrewDates(); } catch (e) { }
+        return;
+      }
+      event.preventDefault();
+      event.stopPropagation();
+      errbar.textContent = 'Some required details are missing - tap Back and complete the highlighted fields.';
+      errbar.classList.add('sb-on');
+    }, true);
+
+    /* native date pickers over the builder's month/day/year dropdowns,
+       like the original form; the dropdowns stay filled underneath so
+       conditions, validation and the Hebrew converter keep working */
+    function upgradeDates() {
+      allLis().forEach(function (li) {
+        var grp = li.querySelector('.form-input > .dir_ltr, .form-input-wide > .dir_ltr');
+        if (!grp || li.querySelector('.sb-mw-dateproxy')) return;
+        var sels = $all('select', grp);
+        if (sels.length < 3 || !/\[month\]/.test(sels[0].name || '')) return;
+        var inp = document.createElement('input');
+        inp.type = 'date';
+        inp.className = 'form-textbox sb-mw-dateproxy no-validation';
+        grp.parentNode.insertBefore(inp, grp);
+        li.classList.add('sb-mw-hasdate');
+        function toSel(sel, v) {
+          var sv = String(v);
+          if (!$all('option', sel).some(function (o) { return o.value === sv; })) {
+            var o = document.createElement('option');
+            o.value = sv; o.textContent = sv;
+            sel.appendChild(o);
+          }
+          if (sel.value !== sv) { sel.value = sv; fire(sel, ['change']); }
+        }
+        inp.addEventListener('change', function () {
+          var v = inp.value;
+          if (!v) {
+            sels.forEach(function (s) { if (s.value) { s.value = ''; fire(s, ['change']); } });
+            return;
+          }
+          toSel(sels[0], Number(v.slice(5, 7)));
+          toSel(sels[1], Number(v.slice(8, 10)));
+          toSel(sels[2], Number(v.slice(0, 4)));
+        });
+        if (sels[0].value && sels[1].value && sels[2].value) {
+          inp.value = sels[2].value + '-' + pad2(sels[0].value) + '-' + pad2(sels[1].value);
+        }
+      });
+    }
+    try { upgradeDates(); } catch (e) { }
+
+    /* Yahrzeits like the original form: structured rows (name,
+       relationship, date-of-passing picker, after-sunset) with the
+       Hebcal Hebrew date shown per row. The builder's own textarea
+       stays in the form, hidden, and carries the serialized rows so
+       the office email is unchanged. */
+    function initYahrzeits() {
+      var li = lisByLabel(/^yahrzeits$/)[0];
+      if (!li) return;
+      var ta = li.querySelector('textarea');
+      if (!ta || li.querySelector('.sb-mw-yz')) return;
+      li.classList.add('sb-mw-yzli');
+      var box = div('sb-mw-yz');
+      (li.querySelector('.form-input') || li).appendChild(box);
+      var list = div('sb-mw-yzlist');
+      box.appendChild(list);
+      var add = btn('sb-mw-yzadd', '+ Add another yahrzeit');
+      box.appendChild(add);
+      function addRow() {
+        var r = div('sb-mw-yzrow');
+        r.innerHTML =
+          '<input type="text" class="form-textbox no-validation" data-yz="name" placeholder="Name (English and Hebrew)">' +
+          '<input type="text" class="form-textbox no-validation" data-yz="rel" placeholder="Relationship (e.g. my father)">' +
+          '<input type="date" class="form-textbox no-validation" data-yz="date" aria-label="Date of passing">' +
+          '<label class="sb-mw-yzsun"><input type="checkbox" data-yz="sunset"> Passed after sunset</label>' +
+          '<button type="button" class="sb-mw-yzdel">Remove</button>' +
+          '<div class="sb-mw-heb sb-mw-yzheb" style="display:none"></div>';
+        list.appendChild(r);
+        return r;
+      }
+      function rowVal(r, k) {
+        var e = r.querySelector('[data-yz="' + k + '"]');
+        if (!e) return '';
+        return e.type === 'checkbox' ? e.checked : String(e.value || '').trim();
+      }
+      function serialize() {
+        ta.value = $all('.sb-mw-yzrow', list).map(function (r) {
+          var name = rowVal(r, 'name');
+          var d = rowVal(r, 'date');
+          if (!name && !d) return '';
+          var heb = r.querySelector('.sb-mw-yzheb').getAttribute('data-heb') || '';
+          var rel = rowVal(r, 'rel');
+          return [name || '(no name given)',
+            rel ? '(' + rel + ')' : '',
+            d ? 'passed ' + d : '',
+            rowVal(r, 'sunset') ? 'after sunset' : '',
+            heb ? 'Hebrew date: ' + heb : ''
+          ].filter(Boolean).join(' - ');
+        }).filter(Boolean).join('\n');
+      }
+      function convertRow(r) {
+        var out = r.querySelector('.sb-mw-yzheb');
+        var d = rowVal(r, 'date');
+        if (!d) {
+          out.style.display = 'none';
+          out.textContent = '';
+          out.removeAttribute('data-heb');
+          serialize();
+          return;
+        }
+        out.style.display = '';
+        out.textContent = 'Converting...';
+        g2h(d, rowVal(r, 'sunset'), function (dta) {
+          if (!dta || !dta.hd) {
+            out.style.display = 'none';
+            out.removeAttribute('data-heb');
+            serialize();
+            return;
+          }
+          var s = dta.hd + ' ' + dta.hm + ' ' + dta.hy + (dta.hebrew ? ' (' + dta.hebrew + ')' : '');
+          out.textContent = 'Yahrzeit (Hebrew date): ' + s;
+          out.setAttribute('data-heb', s);
+          serialize();
+        });
+      }
+      add.addEventListener('click', function () { addRow(); });
+      box.addEventListener('click', function (e) {
+        if (e.target && e.target.classList.contains('sb-mw-yzdel')) {
+          var r = e.target.closest('.sb-mw-yzrow');
+          if (r) r.parentNode.removeChild(r);
+          if (!list.querySelector('.sb-mw-yzrow')) addRow();
+          serialize();
+        }
+      });
+      box.addEventListener('change', function (e) {
+        var r = e.target && e.target.closest ? e.target.closest('.sb-mw-yzrow') : null;
+        if (r) convertRow(r);
+      });
+      box.addEventListener('input', serialize);
+      // rows saved in the box from a previous visit stay as plain text
+      addRow();
+    }
+    try { initYahrzeits(); } catch (e) { }
+
+    paint();
+    showScreen(1);
+  }
+
   /* ---------------- init ---------------- */
 
   function init() {
@@ -1195,11 +2003,9 @@
     safe('footer', buildFooter);
     safe('feedback-bar', relocateFeedbackBar);
     safe('event-hero', buildEventHero);
-    safe('form-autofill', initFormAutofill);
-    safe('credit-card', initCreditCard);
     safe('sponsor-tiers', initSponsorTiers);
-    safe('event-listing', themeEventListing);
-    safe('event-description-clamp', initEventDescriptionClamp);
+    safe('hh-seats', initHHSeats);
+    safe('membership-builder', initMembershipBuilder);
   }
 
   // Footer code box loads after the DOM, but guard anyway.

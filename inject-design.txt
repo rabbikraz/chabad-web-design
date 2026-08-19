@@ -1,0 +1,1271 @@
+(function(){
+  var w = document.getElementById("co_editor_div").contentWindow;
+  if (!w || !w.Co_ContentEditor || !w.Co_ContentEditor.Container) { alert("Editor not ready - wait for the email to finish loading, then run this again."); return; }
+  w.Co_ContentEditor.Container.innerHTML = `<style type="text/css">@import url('https://fonts.googleapis.com/css2?family=Alef:wght@400;700&family=Figtree:wght@300;400;500;600;700&family=Marcellus&display=swap');
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Alef:wght@400;700&family=Figtree:wght@300;400;500;600;700&family=Marcellus&display=swap" rel="stylesheet" />
+<style type="text/css">.coTitle_he{
+font-family: 'Alef', Arial, Helvetica, sans-serif!important;
+word-break: break-word;
+}
+.coCandleLighting_he img{
+display:block;
+margin:0px auto;
+}
+.co_magazine .co_more_link, .co_news .co_more_link {
+    text-align:Right;
+}
+.coCandleLighting_he{
+font-family: "Arial Narrow",Arial, Helvetica, sans-serif;
+}
+.coMessage_he{
+font-family:'Alef', Arial, Helvetica, sans-serif;
+font-size: 13pt;
+color:#17232E;
+font-weight:400;
+line-height:160%;
+font-style:normal;
+}
+.coMessage_he a{
+color:#0E464B;
+}
+.guideItemTitle_he{
+font-size: 12.5pt!important;
+text-align:center;
+text-decoration:none;
+font-family:'Alef', sans-serif;
+}
+</style>
+<style type="text/css">table {
+border-collapse: collapse;
+}
+.coLogo,.coLogo img{
+display:block;
+}
+.coLogo img{
+border-radius:12px;
+}
+.coMastLogo img{
+border-radius:12px;
+display:block;
+margin:0px auto;
+}
+.co_CLContent_cell,.co_CLLocation,.co_CLContent,.co_Heading,.co_CLDate,.co_CLCity,.co_CLTime,.co_torah_portion{
+color:#EAF1F0!important;
+font-family:'Figtree', 'Segoe UI', Helvetica, Arial, sans-serif;
+font-size:10pt;
+text-align: center;
+}
+.co_Heading,.co_CLLocation{
+color:#E2C179!important;
+text-transform:uppercase;
+letter-spacing:.16em;
+font-size:8.5pt;
+}
+.co_CLCity{
+color:#E2C179!important;
+}
+.coCandleLighting_en{
+padding:0px 5px 10px 5px!important;
+}
+.co_CLDate{
+color:rgba(234,241,240,.7)!important;
+}
+.co_CLTime{
+font-weight:600;
+}
+.co_CLDate,.co_CLTime{
+display:inline-block;
+}
+.co_CLTime{
+margin-Right:5px;
+margin-Left: 5px;
+white-space:nowrap;
+}
+.co_ClTable{
+width:auto!important;
+margin:0px auto;
+}
+.co_CLDate,.co_CLTime{
+font-size:12.5pt!important;
+}
+.co_torah_portion{
+margin-Right: 5px;
+word-break:keep-all;
+margin-top: 10px;
+font-family:'Marcellus', Georgia, 'Times New Roman', serif!important;
+font-size:11pt!important;
+}
+.co_Portion_Name p,.co_Portion_Name a{
+color:#E2C179;
+}
+.coMosadInfo, .coMosadInfo a{
+padding-top:25px;
+margin:0px auto;
+font-family: 'Figtree', 'Segoe UI', Helvetica, Arial, sans-serif ;
+font-size: 10pt;
+color:#17232E;
+font-weight:400;
+text-align:center;
+}
+.coMosadInfo a{
+color:#0E464B;
+}
+.co_photo_gallery_container{
+margin 0px auto;
+text-align:center;
+vertical-align:middle;
+display:table-cell;
+padding:30px;
+}
+.co_photo_gallery_photo td{
+width:150px;
+height:150px;
+}
+.co_photo_gallery_photo img{
+padding:0px 12px;
+vertical-align:bottom;
+width:150px;
+}
+.co_photo_gallery_caption{
+font-family: 'Figtree', 'Segoe UI', Helvetica, Arial, sans-serif;
+font-size: 11pt;
+color:#17232E;
+font-style:normal;
+text-align:center;
+vertical-align:top;
+padding-bottom:24px;
+}
+.coTitle_en,.coTitle_en a {
+font-family: 'Marcellus', Georgia, 'Times New Roman', serif;
+font-size:24pt;
+line-height:115%;
+color:#17232E!important;
+word-break:break-word!important;
+}
+.coMessage_en {
+    font-family: 'Figtree', 'Segoe UI', Helvetica, Arial, sans-serif;
+}
+.coMessage_en,
+.coMessage_en p,
+.coMessage_en co_body{
+font-size: 13pt;
+color:#17232E;
+font-weight:400;
+line-height:160%;
+font-style:normal;
+}
+.coMessage_en a{
+color:#0E464B;
+text-decoration:underline;
+}
+.co_event_item{
+margin-bottom:25px;
+}
+.co_nutshell a, .co_nutshell .co_h1 a{
+text-decoration:underline;
+color:#0E464B;
+}
+.co_nutshell, .co_nutshell a .co_h1{
+font-size: 13pt;
+text-decoration:none;
+color:#17232E;
+font-weight:normal!important;
+font-style:normal!important;
+}
+.co_nutshell .co_h1{
+font-family:'Marcellus', Georgia, 'Times New Roman', serif;
+font-size: 19pt;
+display:block;
+padding-bottom:6px;
+}
+.co_daily_quote{
+font-family:'Marcellus', Georgia, 'Times New Roman', serif;
+font-size: 18pt;
+line-height:145%;
+color:#0E464B;
+}
+.co_daily_quote .co_content{
+font-family:'Figtree', 'Segoe UI', Helvetica, Arial, sans-serif;
+font-size: 9.5pt;
+letter-spacing:.14em;
+text-transform:uppercase;
+color:#8A5F16;
+padding-top:14px;
+}
+.co_rabbi_message_footer{
+padding-top:10px;
+}
+.co_event_title,
+.co_event_title a{
+font-family:'Marcellus', Georgia, 'Times New Roman', serif!important;
+font-size: 17pt!important;
+font-weight:normal!important;
+color:#8A5F16!important;
+text-decoration:none;
+margin-top:5px;
+}
+.co_latest_blog_title,.co_latest_blog_title a{
+font-family:'Marcellus', Georgia, 'Times New Roman', serif!important;
+font-size: 17pt!important;
+font-weight:normal!important;
+color:#17232E!important;
+text-decoration:none;
+padding-top:20px;
+}
+.co_latest_blog_text p{
+margin-top:9px;
+margin-bottom:3px;
+}
+.co_latest_blog_more,.co_latest_blog_more a,
+.co_latest_blog_item_footer,
+.co_latest_blog_item_footer a{
+font-size: 11pt!important;
+text-decoration:none!important;
+}
+.co_magazine co_section_text, .co_latest_blog_more {
+    font-family: 'Figtree', 'Segoe UI', Helvetica, Arial, sans-serif;
+}
+.co_more_link,.co_more_link a,
+.co_event_morelink,.co_event_morelink a{
+font-family:'Figtree', 'Segoe UI', Helvetica, Arial, sans-serif!important;
+font-size: 9.5pt!important;
+font-weight:600!important;
+letter-spacing:.1em;
+text-transform:uppercase;
+color:#8A5F16!important;
+text-decoration:none!important;
+}
+.co_h3 a{
+font-family:'Marcellus', Georgia, 'Times New Roman', serif!important;
+font-size: 14pt!important;
+color:#17232E!important;
+text-decoration:none!important;
+}
+.co_magazine .co_content, .co_news .co_content{
+font-family:'Figtree', 'Segoe UI', Helvetica, Arial, sans-serif;
+font-size:11pt;
+line-height:155%;
+color:rgba(23,35,46,.8);
+}
+.co_articletype{
+font-family:'Figtree', 'Segoe UI', Helvetica, Arial, sans-serif;
+font-weight:700;
+font-size:9pt;
+letter-spacing:.16em;
+text-transform:uppercase;
+color:#8A5F16;
+}
+.co_magazine img,
+.co_news img{
+margin-Right: 10px;
+}
+.co_event_title{
+padding-top:10px
+}
+.guideItemTitle_en{
+font-family:'Marcellus', Georgia, 'Times New Roman', serif!important;
+font-size: 12.5pt!important;
+text-align:center;
+padding: 5px 0px 30px 0px;
+text-decoration:none;
+}
+.coThisWeekAtDomain{
+word-break: break-all;
+}
+.co_events_footer{
+color:#EAF1F0;
+}
+.fiveNinetyTable .messagegroup {
+    margin-top:12px;
+    margin-bottom:12px;
+}
+</style>
+<style type="text/css">@media only screen and (max-device-width: 480px){
+table,.sixFiftyTable,.fiveNinetyTable,.titleLine,.coYellow,.coMosadInfo,.co_photo_gallery_container,.co_photo_gallery_item,.co_photo_gallery_body,.co_photo_gallery_gradient,.co_photo_gallery_gradient,.co_photo_gallery,.co_photo_gallery_item,.co_photo_gallery_photo{
+width:100%!important;
+height:auto;
+}
+.co_photo_gallery_photo td{
+width:100%!important;
+height:auto;
+}
+.co_photo_gallery_photo img{
+width:100%!important;
+padding: 8px 0px!important;
+display:block;
+}
+.co_photo_gallery_caption{
+padding:5px!important;
+}
+.co_photo_gallery_container {
+padding:0px!important;
+}
+.co_CLTime,.co_CLDate,.co_CLLocation,.co_CLContent,.co_CLCity,.co_Heading,.co_CLContent_cell{
+text-align:center;
+font-size:18px;
+margin:0px auto
+}
+.co_Heading,.co_CLLocation,.co_CLCity{
+font-size:12px!important;
+}
+.co_ClTable{
+width:37%!important;
+height:auto;
+padding:10px 0px!important;
+display:block;
+vertical-align:middle;
+margin:5px auto;
+}
+.coSpacer,
+.co_news co_section_text img,
+.newsImg img,
+.co_magazine img,
+.co_news img{
+display:none;
+}
+.coCandleLighting_en{
+width:97%!important;
+height:auto;
+display:block;
+vertical-align:middle;
+margin:0px auto;
+padding:0px!important;
+}
+.coThisWeek,
+.coLogo,.coLogo img{
+width:100%!important;
+height:auto;
+padding:0px 0px!important;
+display:block;
+vertical-align:middle;
+margin:0px auto;
+}
+.coCandleLighting_en img{
+width:50%;
+display:block;
+margin:0px auto;
+}
+td.coIcon,td.coTitle_en{
+width:100%!important;
+height:auto;
+margin:0px auto;
+display:block;
+text-align:center;
+vertical-align:middle;
+padding: 15px 0px!important;
+}
+.coTitle_en{
+font-size:21pt!important;
+}
+.tableTwo,
+.coMessage_en,
+.co_rabbi_message {
+padding:5px!important;
+}
+.coMessage_en td{
+padding-bottom:25px!important;
+}
+
+.coMessage_en img{
+max-width:100%!important;
+height:auto;
+}
+.guideItemTitle_en{
+margin-bottom:25px;
+}
+.guideItem_en img{
+width:59%;
+height:auto;
+display:block;
+padding:0px!important;
+}
+.guideItem_en td{
+width:100%;
+height:auto;
+display:block;
+padding:0px!important;
+}
+.blueBoxes{
+display:none;
+}
+.coSpacer div{
+height:30px!important;
+}
+.socailIcon img{
+    width:25%!important;
+    padding:7%!important;
+}
+}
+</style>
+<!--[if (mso)|(IE)]>
+    <style type="text/css">
+	p, table, td, body, a, h1 ,h2,tr,span,div {
+	font-family:'Segoe UI',Arial!important;font-family:'Segoe UI',Arial;
+	}
+	.mso-title {
+	font-family:Georgia!important;font-family:Georgia;
+	}
+}
+    </style>
+<![endif]-->
+
+<table dir="ltr" width="100%" style="border-collapse: collapse;background-color: #072026;margin: 0px auto;padding-top: 30px;" align="center" cellpadding="0" cellspacing="0" border="0">
+<tbody><tr>
+<td style="padding-top: 10px;" colspan="5">
+<div>
+<br /></div></td>
+</tr>
+<tr>
+<td>
+<table dir="ltr" class="sixFiftyTable" style="width: 670px;border-collapse: collapse;background-color: #072026;margin: 0px auto;" align="center" cellpadding="0" cellspacing="0" border="0">
+<tbody><tr><td class="coBH" style="background: #072026;font-family: 'Figtree', 'Segoe UI', Helvetica, Arial, sans-serif;font-size: 9pt;letter-spacing: .12em;text-align: right;padding-right: 10px;color: rgba(234, 241, 240, 0.55);" colspan="5">ב״ה</td>
+</tr>
+</tbody></table>
+</td>
+</tr>
+</tbody></table>
+<div real_id="link-online" real_name="Link Online" actions="delete" title="Link Online" id="co_section_51" name="co_section">
+<table dir="ltr" width="100%" style="border-collapse: collapse;background-color: #072026;margin: 0px auto;" align="center" cellpadding="0" cellspacing="0" border="0">
+<tbody><tr>
+<td>
+<div style="text-align: center;font-family: 'Figtree', 'Segoe UI', Helvetica, Arial, sans-serif;font-size: 9pt;letter-spacing: .12em;text-transform: uppercase;">
+<p>
+<span class="trouble">
+<a href="https://www.ChabadinSouthBeach.com/[[view_email_code_and_mosadid]]" style="color: #E2C179;text-decoration: none;">
+View this email online</a></span></p></div></td>
+</tr>
+</tbody></table>
+</div>
+<table dir="ltr" width="100%" style="border-collapse: collapse;background-color: #072026;margin: 0px auto;" align="center" cellpadding="0" cellspacing="0" border="0">
+<tbody><tr>
+<td style="padding-top: 10px;" colspan="5">
+<div>
+<br /></div></td>
+</tr>
+<tr>
+<td>
+<table dir="ltr" class="sixFiftyTable" style="width: 670px;border-collapse: collapse;background-color: #072026;margin: 0px auto;" align="center" cellpadding="0" cellspacing="0" border="0">
+<tbody><tr>
+<td valign="bottom">
+<div real_id="tableOne" title="Message" real_name="Message" actions="edit,delete" datatype="html" id="co_section_50" name="co_section">
+<table dir="ltr" class="tableTwo" width="100%" style="border-collapse: collapse;background-color: #072026;margin: 0px auto;" align="center" cellpadding="0" cellspacing="0" border="0">
+<tbody><tr>
+<td align="center">
+<table width="610" style="width: 610px;border-collapse: separate;background-color: #F3E8D3;border-radius: 16px;margin: 0px auto;" align="center" cellpadding="0" cellspacing="0" border="0">
+<tbody><tr>
+<td class="coMastLogo" align="center" style="padding: 34px 24px 0px;background-color: #F3E8D3;border-radius: 16px 16px 0 0;">
+<div aid="-1" actions="delete" imagesrc="/media/images/1093/NKjZ10935596.jpg" real_id="chabad_sitelogo" editor_instance="1" real_name="Site Logo" title="Site Logo" autoselect="false" image_size="120" id="co_template_6" name="co_template"><div xmlns:co="www1.chabadonline.com/alpha1" xml:space="preserve" title="" id="co_dynamic_58" name="co_dynamic">
+
+<img src="https://www.ChabadinSouthBeach.com/media/images/1093/NKjZ10935596.jpg" width="120" height="120"/></div></div>
+</td>
+</tr>
+<tr>
+<td class="coThisWeek" align="center" style="padding: 18px 30px 4px;font-family: 'Marcellus', Georgia, 'Times New Roman', serif;font-size: 24pt;line-height: 120%;font-weight: normal;text-align: center;color: #17232E;">
+<div class="mso-title"><div real_id="titleOne" real_name="Title" title="Title" datatype="line" id="co_editable_35" name="co_editable">
+This Week at Chabad in South Beach</div>
+</div></td>
+</tr>
+<tr>
+<td align="center" style="padding: 16px 22px 22px;">
+<table width="100%" style="border-collapse: separate;background-color: #202C38;border-radius: 12px;margin: 0px auto;" align="center" cellpadding="0" cellspacing="0" border="0">
+<tbody><tr>
+<td align="center" style="background-color: #202C38;border-radius: 12px;font-family: 'Figtree', 'Segoe UI', Helvetica, Arial, sans-serif;text-align: center;padding: 22px 20px 24px;color: #EAF1F0;">
+<img src="http://01.myjewishpage.com/images/mychabad/communicator/Template11/Asset%2021.jpg" style="margin: 0px auto;padding-bottom: 12px;text-align: center;display: block;"/>
+<div aid="-1" actions="delete" weeks="1" real_id="candlelighting" editor_instance="1" real_name="Candle Lighting" title="Shabbat Times" show_title="true" display_parsha="true" lines="1" show_zmanim_name="false" include_holiday_names="false" include_end_times="false" id="co_template_5" name="co_template"><div xmlns:co="www1.chabadonline.com/alpha1" xml:space="preserve" title="" id="co_dynamic_57" name="co_dynamic">
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0" class="co_ClTable">
+<tr>
+<td class="co_CLContent_cell" width="100%">
+<div class="co_CLHeader">
+<div class="co_Heading">Candle Lighting Times for</div><div class="co_CLLocation"><span class="co_CLCity">South Beach</span>: </div></div><table width="100%" border="0" cellpadding="0" cellspacing="0" class="co_CLContent">
+<tr>
+<td>
+<div class="co_CLDate">Friday, Aug. 21</div></td><td valign="bottom">
+<div class="co_CLTime">7:33 pm</div></td></tr></table><div class="co_torah_portion">Torah Portion: <span class="co_Portion_Name">
+<a href="https://www.ChabadinSouthBeach.com/parshah/default.asp?tdate=8/16/2026">Ki Teitzei</a></span></div></td></tr></table></div></div>
+</td>
+</tr>
+</tbody></table>
+</td>
+</tr>
+</tbody></table>
+</td>
+</tr>
+</tbody></table>
+</div>
+<table dir="ltr" width="100%" style="border-collapse: collapse;background-color: #072026;margin: 0px auto;" align="center" cellpadding="0" cellspacing="0" border="0">
+<tbody>
+<tr><td style="padding: 22px 35px 4px;margin: 0px auto;font-family: 'Figtree', 'Segoe UI', Helvetica, Arial, sans-serif;font-size: 10pt;color: rgba(234, 241, 240, 0.75);font-weight: 400;text-align: center;" align="center">
+
+<div real_id="email_heading_mosad_info" real_name="Mosad Information" actions="edit,delete" title="Mosad Information Header" type="static" datatype="html" id="co_section_49" name="co_section">
+
+<span dir="ltr" style="color: rgba(234, 241, 240, 0.75);">Chabad in South Beach</span><span dir="ltr" style="color: rgba(234, 241, 240, 0.75);"> • <strong>Email: </strong><a href="mailto:rabbi@chabadinsouthbeach.com" dir="ltr" style="margin: 0px auto;font-family: 'Figtree', 'Segoe UI', Helvetica, Arial, sans-serif;font-size: 10pt;color: #E2C179;font-weight: 500;text-align: center;text-decoration: none;">rabbi@chabadinsouthbeach.com</a></span><span dir="ltr" style="color: rgba(234, 241, 240, 0.75);"> • <strong>Phone: </strong>786-514-9593</span>  • <a href="http://www.ChabadinSouthBeach.com" style="margin: 0px auto;font-family: 'Figtree', 'Segoe UI', Helvetica, Arial, sans-serif;font-size: 10pt;color: #E2C179;font-weight: 500;text-align: center;text-decoration: none;">www.ChabadinSouthBeach.com</a></div>
+
+</td>
+</tr>
+<tr>
+<td class="coSpacer">
+<div style="line-height: 34px;">&#160;</div>
+</td>
+</tr></tbody></table>
+<!-- Rabbi Message 1  -->
+<div real_id="rabbiMessageOne" title="Rabbi's Message" real_name="Rabbi's Message" actions="edit,delete,copy" languages="en" datatype="html" id="co_section_48" name="co_section">
+<table dir="ltr" width="100%" style="border-collapse: collapse;background-color: #072026;margin: 0px auto;" align="center" cellpadding="0" cellspacing="0" border="0">
+<tbody><tr>
+<td valign="top">
+<table class="fiveNinetyTable" width="610" style="border-collapse: separate;margin: 0px auto;font-family: 'Marcellus', Georgia, 'Times New Roman', serif;background-color: rgb(255, 255, 255);border-top: 6px solid #C08A2E;border-radius: 16px;" align="center">
+<tbody><tr>
+<td class="coTitle_en" style="font-family: 'Marcellus', Georgia, 'Times New Roman', serif;padding: 24px 30px 4px;font-size: 24pt;line-height: 115%;color: #17232E !important;word-break: break-word !important;">
+<div style="font-family: 'Figtree', 'Segoe UI', Helvetica, Arial, sans-serif;font-size: 8.5pt;font-weight: 600;letter-spacing: .18em;text-transform: uppercase;color: #8A5F16;padding-bottom: 6px;">Weekly Message</div>
+<div class="mso-title">
+<div real_id="titleTwo" real_name="Title" title="Title" datatype="line" id="co_editable_34" name="co_editable">
+Message from the Rabbi
+</div></div>
+</td>
+</tr>
+<tr>
+<td class="coMessage_en" colspan="2" style="font-style: normal;padding: 30px;font-family: 'Figtree', 'Segoe UI', Helvetica, Arial, sans-serif;font-size: 13pt;color: #17232E;font-weight: 400;line-height: 160%;" valign="top">
+<div>
+<div real_id="rabbi_message" real_name="Rabbi Message" actions="delete" aid="9179" rabbi_name="{Default}" autoselect="true" show_title="true" custom_title="Dear Friends," title="Rabbi Message" id="co_template_4" name="co_template"><div xmlns:co="www1.chabadonline.com/alpha1" xml:space="preserve" title="" id="co_dynamic_56" name="co_dynamic">
+
+<span><table width="100%" border="0" cellpadding="0" cellspacing="0" class="co_rabbi_message_table">
+<tr>
+<td class="co_rabbi_message_header">
+<div class="co_rabbi_message_heading">Dear Friends,</div></td></tr><tr>
+<td style="height:15px;"></td></tr><tr>
+<td class="co_rabbi_message">
+<div class="co_body">&#160;</div>
+
+<p class="inlineCopyright">&#160;</p></td></tr><tr>
+<td class="co_rabbi_message_footer">
+<div class="co_rabbi_message_footer">
+<p>Rabbi Khazanovich</p></div></td></tr></table><br/></span></div></div></div>
+</td>
+</tr>
+</tbody></table>
+</td>
+</tr>
+<tr>
+<td class="coSpacer" valign="top">
+<div style="line-height: 34px;">&#160;</div>
+</td>
+</tr>
+</tbody></table>
+</div>
+<!--Rabbi Message 2  -->
+
+<!--Event Table -->
+<div real_id="ServiceTimes" title="Service Times" real_name="Service Times" actions="edit,delete,copy" datatype="html" id="co_section_47" name="co_section">
+<table dir="ltr" width="100%" style="border-collapse: collapse;background-color: #072026;margin: 0px auto;" align="center" cellpadding="0" cellspacing="0" border="0">
+<tbody><tr>
+<td valign="top">
+<table class="fiveNinetyTable" width="610" style="border-collapse: separate;margin: 0px auto;font-family: 'Marcellus', Georgia, 'Times New Roman', serif;background-color: rgb(255, 255, 255);border-top: 6px solid #C08A2E;border-radius: 16px;" align="center">
+<tbody><tr>
+<td class="coTitle_en" style="font-family: 'Marcellus', Georgia, 'Times New Roman', serif;padding: 24px 30px 4px;font-size: 24pt;line-height: 115%;color: #17232E !important;word-break: break-word !important;">
+<div style="font-family: 'Figtree', 'Segoe UI', Helvetica, Arial, sans-serif;font-size: 8.5pt;font-weight: 600;letter-spacing: .18em;text-transform: uppercase;color: #8A5F16;padding-bottom: 6px;">Join Us This Shabbat</div>
+<div class="mso-title">
+<div real_id="titleSix" real_name="Title" title="Title" datatype="line" id="co_editable_33" name="co_editable">
+Service Times
+</div></div>
+</td>
+</tr>
+<tr>
+<td class="coMessage_en" colspan="2" style="font-style: normal;padding: 30px;font-family: 'Figtree', 'Segoe UI', Helvetica, Arial, sans-serif;font-size: 13pt;color: #17232E;font-weight: 400;line-height: 160%;">
+<div>
+<div real_id="schedule" real_name="Schedule" title="Schedule" datatype="html" id="co_editable_32" name="co_editable"><p style="font-size: 13pt;color: #17232E;font-weight: 400;line-height: 160%;font-style: normal;"><span style="color: #8A5F16;font-weight: 700;letter-spacing: .1em;text-transform: uppercase;font-size: 10.5pt;">Friday night </span><br />
+8:00 pm<br />
+<br />
+<span style="color: #8A5F16;font-weight: 700;letter-spacing: .1em;text-transform: uppercase;font-size: 10.5pt;">Shabbat day </span><br />
+10:00 am<br />
+<br />
+<span style="color: #8A5F16;font-weight: 700;letter-spacing: .1em;text-transform: uppercase;font-size: 10.5pt;">
+<strong>Mincha</strong><strong>&#160;and Seudah Shelishit</strong></span><br />
+7:00 pm</p>
+</div></div>
+</td>
+</tr>
+</tbody></table>
+</td>
+</tr>
+<tr>
+<td class="coSpacer">
+<div style="line-height: 34px;">&#160;</div>
+</td>
+</tr>
+</tbody></table>
+</div><div real_id="kiddushSponsors" title="Kiddush Sponsors" real_name="Kiddush Sponsors" actions="edit,delete,copy" datatype="html" id="co_section_46" name="co_section">
+<table dir="ltr" width="100%" style="border-collapse: collapse;background-color: #072026;margin: 0px auto;" align="center" cellpadding="0" cellspacing="0" border="0">
+<tbody><tr>
+<td valign="top">
+<table class="fiveNinetyTable" width="610" style="border-collapse: separate;margin: 0px auto;font-family: 'Marcellus', Georgia, 'Times New Roman', serif;background-color: rgb(255, 255, 255);border-top: 6px solid #C08A2E;border-radius: 16px;" align="center">
+<tbody><tr>
+<td class="coTitle_en" style="font-family: 'Marcellus', Georgia, 'Times New Roman', serif;padding: 24px 30px 4px;font-size: 24pt;line-height: 115%;color: #17232E !important;word-break: break-word !important;">
+<div style="font-family: 'Figtree', 'Segoe UI', Helvetica, Arial, sans-serif;font-size: 8.5pt;font-weight: 600;letter-spacing: .18em;text-transform: uppercase;color: #8A5F16;padding-bottom: 6px;">This Shabbat</div>
+<div class="mso-title">
+<div real_id="titleSeven" real_name="Title" title="Title" datatype="line" id="co_editable_31" name="co_editable">
+Kiddush Sponsored By:
+</div></div>
+</td>
+</tr>
+<tr>
+<td class="coMessage_en" colspan="2" style="font-style: normal;padding: 30px;font-family: 'Figtree', 'Segoe UI', Helvetica, Arial, sans-serif;font-size: 13pt;color: #17232E;font-weight: 400;line-height: 160%;text-align: center;">
+<div real_id="kidd" real_name="Message" title="Message" datatype="html" aria-readonly="false" id="co_editable_30" name="co_editable"><div class="messagegroup" style="margin-top: 12px;margin-bottom: 12px;">
+<div>
+<p align="center" style="margin-right: 10px;margin-bottom: 11px;margin-left: 10px;text-align: center;"><span style="font-size: 26px;font-family: 'Marcellus', Georgia, 'Times New Roman', serif;">
+<span style="color: #8A5F16;">
+<strong>Julia Stein & Adam Diamond<br />
+and Family</strong></span></span>&#160;</p>
+</div>
+</div>
+</div>
+</td>
+</tr>
+</tbody></table>
+</td>
+</tr>
+<tr>
+<td class="coSpacer">
+<div style="line-height: 34px;">&#160;</div>
+</td>
+</tr>
+</tbody></table>
+</div><div real_id="donate" title="Donate" real_name="Donate" actions="edit,delete,copy" datatype="html" id="co_section_45" name="co_section">
+<table dir="ltr" width="100%" style="border-collapse: collapse;background-color: #072026;margin: 0px auto;" align="center" cellpadding="0" cellspacing="0" border="0">
+<tbody><tr>
+<td valign="top">
+<table class="fiveNinetyTable" width="610" style="border-collapse: separate;margin: 0px auto;font-family: 'Marcellus', Georgia, 'Times New Roman', serif;background-color: rgb(255, 255, 255);border-top: 6px solid #C08A2E;border-radius: 16px;" align="center">
+<tbody><tr>
+<td class="coTitle_en" style="font-family: 'Marcellus', Georgia, 'Times New Roman', serif;padding: 24px 30px 4px;font-size: 24pt;line-height: 115%;color: #17232E !important;word-break: break-word !important;">
+<div style="font-family: 'Figtree', 'Segoe UI', Helvetica, Arial, sans-serif;font-size: 8.5pt;font-weight: 600;letter-spacing: .18em;text-transform: uppercase;color: #8A5F16;padding-bottom: 6px;">Partner With Us</div>
+<div class="mso-title">
+<div real_id="titleEleven" real_name="Title" title="Title" datatype="line" id="co_editable_29" name="co_editable">
+Donate
+</div></div>
+</td>
+</tr>
+<tr>
+<td class="coMessage_en" colspan="2" style="font-style: normal;padding: 30px;font-family: 'Figtree', 'Segoe UI', Helvetica, Arial, sans-serif;font-size: 13pt;color: #17232E;font-weight: 400;line-height: 160%;">
+<div>
+<div real_id="partner" real_name="Message" title="Message" datatype="html" id="co_editable_28" name="co_editable">
+<div>
+Join in and become a partner in the work we do!
+</div>
+</div></div>
+<p style="color: #17232E;font-weight: 400;line-height: 150%;font-style: normal;text-align: center;font-size: 16pt;text-decoration: underline;font-family: 'Marcellus', Georgia, 'Times New Roman', serif;">&#160;</p><div real_id="link" title="Link" real_name="Link" datatype="html" id="co_editable_27" name="co_editable"><p>
+<a href="http://www.ChabadinSouthBeach.com/donate" style="text-decoration: none;color: #8A5F16;font-weight: 600;letter-spacing: .08em;text-transform: uppercase;font-size: 11pt;">Help us continue our work»</a></p>
+</div>
+<p style="font-size: 13pt;color: #17232E;font-weight: 400;line-height: 160%;font-style: normal;">&#160;</p>
+</td>
+</tr>
+</tbody></table>
+</td>
+</tr>
+<tr>
+<td class="coSpacer">
+<div style="line-height: 34px;">&#160;</div>
+</td>
+</tr>
+</tbody></table>
+</div><div real_id="fEvent" title="Featured Event" real_name="Featured Event" actions="edit,delete,copy" datatype="html" id="co_section_44" name="co_section">
+<table dir="ltr" width="100%" style="border-collapse: collapse;background-color: #072026;margin: 0px auto;" align="center" cellpadding="0" cellspacing="0" border="0">
+<tbody><tr>
+<td valign="top">
+<table class="fiveNinetyTable" width="610" style="border-collapse: separate;margin: 0px auto;background-color: rgb(255, 255, 255);font-family: 'Marcellus', Georgia, 'Times New Roman', serif;border-top: 6px solid #C08A2E;border-radius: 16px;" align="center">
+<tbody><tr>
+<td class="coTitle_en" style="font-family: 'Marcellus', Georgia, 'Times New Roman', serif;padding: 24px 30px 4px;font-size: 24pt;line-height: 115%;color: #17232E !important;word-break: break-word !important;">
+<div style="font-family: 'Figtree', 'Segoe UI', Helvetica, Arial, sans-serif;font-size: 8.5pt;font-weight: 600;letter-spacing: .18em;text-transform: uppercase;color: #8A5F16;padding-bottom: 6px;">Upcoming</div>
+<div class="mso-title">
+<div real_id="titleFour" real_name="Title" title="Title" datatype="line" id="co_editable_26" name="co_editable">
+Featured Event
+</div></div>
+</td>
+</tr>
+<tr>
+<td class="coMessage_en" colspan="2" style="font-style: normal;padding: 30px;font-family: 'Figtree', 'Segoe UI', Helvetica, Arial, sans-serif;font-size: 13pt;color: #17232E;font-weight: 400;line-height: 160%;">
+<div>
+<div real_id="flyer" real_name="Flyer" title="Flyer" datatype="html" id="co_editable_25" name="co_editable"><p>
+<a href="https://RabbiKraz.com/YerushalayimPt2">Audio link for class 1& 2</a></p>
+
+<p>
+<a href="https://www.ChabadinSouthBeach.com/templates/articlecco_cdo/aid/7408423/jewish/Yerushalaim-Series.htm">
+<img height="540" src="https://www.ChabadinSouthBeach.com/media/images/1376/jXYD13767583.jpg" width="540" style="max-width: 100%;height: auto;border-radius: 10px;"/></a></p>
+</div></div>
+</td>
+</tr>
+</tbody></table>
+</td>
+</tr>
+<tr>
+<td class="coSpacer">
+<div style="line-height: 34px;">&#160;</div>
+</td>
+</tr>
+</tbody></table>
+</div><div real_id="fEvent9" title="Featured Event 2" real_name="Featured Event" actions="edit,delete,copy" datatype="html" id="co_section_43" name="co_section">
+<table dir="ltr" width="100%" style="border-collapse: collapse;background-color: #072026;margin: 0px auto;" align="center" cellpadding="0" cellspacing="0" border="0">
+<tbody><tr>
+<td valign="top">
+<table class="fiveNinetyTable" width="610" style="border-collapse: separate;margin: 0px auto;background-color: rgb(255, 255, 255);font-family: 'Marcellus', Georgia, 'Times New Roman', serif;border-top: 6px solid #C08A2E;border-radius: 16px;" align="center">
+<tbody><tr>
+<td class="coTitle_en" style="font-family: 'Marcellus', Georgia, 'Times New Roman', serif;padding: 24px 30px 4px;font-size: 24pt;line-height: 115%;color: #17232E !important;word-break: break-word !important;">
+<div style="font-family: 'Figtree', 'Segoe UI', Helvetica, Arial, sans-serif;font-size: 8.5pt;font-weight: 600;letter-spacing: .18em;text-transform: uppercase;color: #8A5F16;padding-bottom: 6px;">Upcoming</div>
+<div class="mso-title">
+<div real_id="titleFour7" real_name="Title" title="Title" datatype="line" id="co_editable_24" name="co_editable">
+<div>Registration now open</div></div></div>
+</td>
+</tr>
+<tr>
+<td class="coMessage_en" colspan="2" style="font-style: normal;padding: 30px;font-family: 'Figtree', 'Segoe UI', Helvetica, Arial, sans-serif;font-size: 13pt;color: #17232E;font-weight: 400;line-height: 160%;">
+<div>
+<div real_id="flyer8" real_name="Flyer" title="Flyer" datatype="html" id="co_editable_23" name="co_editable"><p>
+<a href="https://www.ChabadinSouthBeach.com/templates/articlecco_cdo/aid/7407611/jewish/Kidz-Club.htm">
+<img height="189" src="https://www.ChabadinSouthBeach.com/media/images/1375/jAQN13757122.jpeg" width="540" style="max-width: 100%;height: auto;border-radius: 10px;"/></a></p>
+</div></div>
+</td>
+</tr>
+</tbody></table>
+</td>
+</tr>
+<tr>
+<td class="coSpacer">
+<div style="line-height: 34px;">&#160;</div>
+</td>
+</tr>
+</tbody></table>
+</div>
+<div real_id="customMessage" title="Custom Message" real_name="Custom Message" actions="edit,delete,copy" datatype="html" id="co_section_42" name="co_section">
+<table dir="ltr" width="100%" style="border-collapse: collapse;background-color: #072026;margin: 0px auto;" align="center" cellpadding="0" cellspacing="0" border="0">
+<tbody><tr>
+<td valign="top">
+<table class="fiveNinetyTable" width="610" style="border-collapse: separate;margin: 0px auto;font-family: 'Marcellus', Georgia, 'Times New Roman', serif;background-color: rgb(255, 255, 255);border-top: 6px solid #C08A2E;border-radius: 16px;" align="center">
+<tbody><tr>
+<td class="coTitle_en" style="font-family: 'Marcellus', Georgia, 'Times New Roman', serif;padding: 24px 30px 4px;font-size: 24pt;line-height: 115%;color: #17232E !important;word-break: break-word !important;">
+<div style="font-family: 'Figtree', 'Segoe UI', Helvetica, Arial, sans-serif;font-size: 8.5pt;font-weight: 600;letter-spacing: .18em;text-transform: uppercase;color: #8A5F16;padding-bottom: 6px;">A Story</div>
+<div class="mso-title">
+<div real_id="titleEighteen" real_name="Title" title="Title" datatype="line" id="co_editable_22" name="co_editable">A Telling Story</div></div>
+</td>
+</tr>
+<tr>
+<td class="coMessage_en" colspan="2" style="font-style: normal;padding: 30px;font-family: 'Figtree', 'Segoe UI', Helvetica, Arial, sans-serif;font-size: 13pt;color: #17232E;font-weight: 400;line-height: 160%;">
+<div>
+<div real_id="customMessage" real_name="Custom Message" title="Message" datatype="html" aria-readonly="false" id="co_editable_21" name="co_editable"><div class="wrapper">
+<div>
+<div>
+<strong>Struggle</strong></div>
+
+<div>
+<span style="font-size: 14px;">
+<em>By <a href="https://www.chabad.org/search/keyword_cdo/kid/90/jewish/Tauber-Yanki.htm" title="Browse more articles by Tauber, Yanki">Yanki </a><a href="https://www.chabad.org/search/keyword_cdo/kid/90/jewish/Tauber-Yanki.htm" title="Browse more articles by Tauber, Yanki">Tauber</a>Published<br />
+by <a href="https://www.chabad.org/63254">Kehot Publication Society</a></em></span></div>
+</div>
+</div>
+
+<div>
+<div class="co_article_body" data-articleid="2511160" data-contenttype="full">
+<p class="co-title">Pinchas the son of Elazar the son of Aaron (25:11)</p>
+
+<p class="co-summary2">Why does G-d refer to Pinchas as the "son of Elazar the son of Aaron"? Because the tribes of Israel were mocking him, saying "have you seen this 'son of the fattener', whose mother's father (Jethro) fattened calves for idolatrous sacrifices, and now he goes and kills a prince in Israel?" Therefore, G-d traces his lineage to Aaron.</p>
+
+<p align="right" class="co-summary2">- Talmud, Sanhedrin 82b</p>
+
+<p class="co-summary2">Few professions are as cruel and inhumane as the fattening of calves for slaughter. So when Pinchas slew Zimri, many said: "Look at this holy zealot! He acts as if motivated by this burning desire to avenge the honor of G-d but, in truth, he has merely found a 'holy' outlet for his cruel and violent nature. After all, it's in his blood - just look at his maternal grandfather…" So G-d described him as "Pinchas the son of Elazar the son of Aaron" in order to attest that in character and temperament he actually took after his paternal grandfather - the compassionate and peace-loving Aaron.<co:footnote>"Be of the disciples of Aaron: A lover of peace, a pursuer of peace, one who loves G-d's creatures and draws them close to Torah" - Ethics Of The Fathers 1:11.</co:footnote></p>
+
+<p class="co-summary2">The true greatness of Pinchas lay in that he acted in blatant contrast to his inborn instincts, conquering his nature to bring peace between G-d and Israel.</p>
+
+<p align="right" class="co-summary2">- Rabbi Menachem M. Schneerson, the Lubavitcher Rebbe, of righteous memory</p>
+
+<p class="co-text">The founder of Chabad chassidism, Rabbi Schneur Zalman of Liadi, once declared: "The entire point of chassidism is that man should transform the nature of his character."</p>
+
+<p class="co-text">A chassid once complained to Rabbi Schneur Zalman's grandson, Rabbi Menachem Mendel of Lubavitch: "Rebbe, I don't know what to do. I lack all desire and pleasure in the study of Torah."</p>
+
+<p class="co-text">"That's fantastic!" replied Rabbi Menachem Mendel. "Indeed, you are a lucky man. But what am I to do about the fact that I so strongly desire to learn…?!"</p>
+</div>
+</div>
+</div></div>
+</td>
+</tr>
+</tbody></table>
+</td>
+</tr>
+<tr>
+<td class="coSpacer">
+<div style="line-height: 34px;">&#160;</div>
+</td>
+</tr>
+</tbody></table>
+</div>
+<div real_id="thisWeek" title="This Week" real_name="This Week" actions="edit,delete,copy" datatype="html" id="co_section_41" name="co_section">
+<table dir="ltr" width="100%" style="border-collapse: collapse;background-color: #072026;margin: 0px auto;" align="center" cellpadding="0" cellspacing="0" border="0">
+<tbody><tr>
+<td valign="top">
+<table class="fiveNinetyTable" width="610" style="border-collapse: separate;margin: 0px auto;font-family: 'Marcellus', Georgia, 'Times New Roman', serif;background-color: rgb(255, 255, 255);border-top: 6px solid #C08A2E;border-radius: 16px;" align="center">
+<tbody><tr>
+<td class="coTitle_en" style="font-family: 'Marcellus', Georgia, 'Times New Roman', serif;padding: 24px 30px 4px;font-size: 24pt;line-height: 115%;color: #17232E !important;word-break: break-word !important;">
+<div style="font-family: 'Figtree', 'Segoe UI', Helvetica, Arial, sans-serif;font-size: 8.5pt;font-weight: 600;letter-spacing: .18em;text-transform: uppercase;color: #8A5F16;padding-bottom: 6px;">From Our Website</div>
+<div class="mso-title">
+<div real_id="titleSeventeen" real_name="Title" title="Title" datatype="line" id="co_editable_20" name="co_editable">
+This Week @ www.ChabadinSouthBeach.com
+</div></div>
+</td>
+</tr>
+<tr>
+<td class="coMessage_en" colspan="2" style="font-style: normal;padding: 30px;font-family: 'Figtree', 'Segoe UI', Helvetica, Arial, sans-serif;font-size: 13pt;color: #17232E;font-weight: 400;line-height: 160%;">
+<div>
+<div real_id="magazine" real_name="This Week @ http://www.ChabadinSouthBeach.com" actions="delete" aid="9179" show_title="false" include_icon="true" include_synopsis="true" include_more_link="true" icon_size="115" multi_style="false" title="This Week @ http://www.ChabadinSouthBeach.com" id="co_template_3" name="co_template"><div xmlns:co="www1.chabadonline.com/alpha1" xml:space="preserve" title="" id="co_dynamic_55" name="co_dynamic">
+
+<span>
+<table width="100%" border="0" cellspacing="1" cellpadding="0" class="co_magazine co_section_text">
+<tr>
+<td>&nbsp;</td><td>&nbsp;</td></tr><tr>
+<td valign="top" style="width:115px;">
+<a href="https://www.ChabadinSouthBeach.com/article.asp?aid=4859743">
+<img style="height:auto;" height="auto" width="115" src="https://www.ChabadinSouthBeach.com/media/images/1135/uItJ11356033.jpg" border="0" align="left"/></a></td><td valign="top" width="100%" style="padding-Left: 5px;"><span class="co_articletype">Your Questions</span><br/><span class="co_h3"><a href="https://www.ChabadinSouthBeach.com/article.asp?aid=4859743">Shofar Over the Internet During Elul?</a><br/></span><span class="co_content">Due to the pandemic, I’m
+currently unable to attend service. Can I fulfill this custom by listening to
+the shofar over Zoom?</span><div class="co_more_link">
+<a class="co_more_link" href="https://www.ChabadinSouthBeach.com/article.asp?aid=4859743">More...</a></div></td></tr></table><table width="100%" border="0" cellspacing="1" cellpadding="0" class="co_magazine co_section_text">
+<tr>
+<td>&nbsp;</td><td>&nbsp;</td></tr><tr>
+<td valign="top" style="width:115px;">
+<a href="https://www.ChabadinSouthBeach.com/article.asp?aid=5216686">
+<img style="height:auto;" height="auto" width="115" src="https://www.ChabadinSouthBeach.com/media/images/1326/mTCg13261137.jpg" border="0" align="left"/></a></td><td valign="top" width="100%" style="padding-Left: 5px;"><span class="co_articletype">Freeman Files</span><br/><span class="co_h3"><a href="https://www.ChabadinSouthBeach.com/article.asp?aid=5216686">A Soul, Murdered and Alive</a><br/></span><span class="co_content">Call out from the depths of your heart, and the depths of heaven ring.</span><div class="co_more_link">
+<a class="co_more_link" href="https://www.ChabadinSouthBeach.com/article.asp?aid=5216686">More...</a></div></td></tr></table><table width="100%" border="0" cellspacing="1" cellpadding="0" class="co_magazine co_section_text">
+<tr>
+<td>&nbsp;</td><td>&nbsp;</td></tr><tr>
+<td valign="top" style="width:115px;">
+<a href="https://www.ChabadinSouthBeach.com/article.asp?aid=7464873">
+<img style="height:auto;" height="auto" width="115" src="https://www.ChabadinSouthBeach.com/media/images/1196/glHu11965733.jpg" border="0" align="left"/></a></td><td valign="top" width="100%" style="padding-Left: 5px;"><span class="co_articletype">Quiz</span><br/><span class="co_h3"><a href="https://www.ChabadinSouthBeach.com/article.asp?aid=7464873">Take the Tzedakah Quiz</a><br/></span><span class="co_content">Do you know a penny from a pushke? Test your tzedakah knowledge. </span><div class="co_more_link">
+<a class="co_more_link" href="https://www.ChabadinSouthBeach.com/article.asp?aid=7464873">More...</a></div></td></tr></table><table width="100%" border="0" cellspacing="1" cellpadding="0" class="co_magazine co_section_text">
+<tr>
+<td>&nbsp;</td><td>&nbsp;</td></tr><tr>
+<td valign="top" style="width:115px;">
+<a href="https://www.ChabadinSouthBeach.com/article.asp?aid=6158949">
+<img style="height:auto;" height="auto" width="115" src="https://www.ChabadinSouthBeach.com/media/images/1251/OfOs12518907.jpg" border="0" align="left"/></a></td><td valign="top" width="100%" style="padding-Left: 5px;"><span class="co_articletype">Halachah for Life</span><br/><span class="co_h3"><a href="https://www.ChabadinSouthBeach.com/article.asp?aid=6158949">What You Need to Know About Taking a Walk on Shabbat</a><br/></span><span class="co_content">Discover how far you may walk on Shabbat and what actions to take if you inadvertently carry.</span><div class="co_more_link">
+<a class="co_more_link" href="https://www.ChabadinSouthBeach.com/article.asp?aid=6158949">More...</a></div></td></tr></table></span>
+</div></div></div>
+</td>
+</tr>
+</tbody></table>
+</td>
+</tr>
+<tr>
+<td class="coSpacer">
+<div style="line-height: 34px;">&#160;</div>
+</td>
+</tr>
+</tbody></table>
+</div>
+<div real_id="parshahNut" title="In a Nutshell" real_name="In a Nutshell" actions="edit,delete,copy" datatype="html" id="co_section_40" name="co_section">
+<table dir="ltr" width="100%" style="border-collapse: collapse;background-color: #072026;margin: 0px auto;" align="center" cellpadding="0" cellspacing="0" border="0">
+<tbody><tr>
+<td valign="top">
+<table class="fiveNinetyTable" width="610" style="border-collapse: separate;margin: 0px auto;font-family: 'Marcellus', Georgia, 'Times New Roman', serif;background-color: rgb(255, 255, 255);border-top: 6px solid #C08A2E;border-radius: 16px;" align="center">
+<tbody><tr>
+<td class="coTitle_en" style="font-family: 'Marcellus', Georgia, 'Times New Roman', serif;padding: 24px 30px 4px;font-size: 24pt;line-height: 115%;color: #17232E !important;word-break: break-word !important;">
+<div style="font-family: 'Figtree', 'Segoe UI', Helvetica, Arial, sans-serif;font-size: 8.5pt;font-weight: 600;letter-spacing: .18em;text-transform: uppercase;color: #8A5F16;padding-bottom: 6px;">The Weekly Parshah</div>
+<div class="mso-title">
+<div real_id="titleNine" real_name="Title" title="Title" datatype="line" id="co_editable_19" name="co_editable">
+Parshah in a Nutshell
+</div></div>
+</td>
+</tr>
+<tr>
+<td class="coMessage_en" colspan="2" style="font-style: normal;padding: 30px;font-family: 'Figtree', 'Segoe UI', Helvetica, Arial, sans-serif;font-size: 13pt;color: #17232E;line-height: 160%;font-weight: 400 !important;">
+<div>
+<div real_id="parshah_nutshell" real_name="Parshah in a nutshell" actions="delete" aid="-1" display_parsha="true" title="Parshah in a nutshell" id="co_template_2" name="co_template"><div xmlns:co="www1.chabadonline.com/alpha1" xml:space="preserve" title="" id="co_dynamic_54" name="co_dynamic">
+
+<table width="100%" border="0" cellspacing="2" cellpadding="0">
+<tr>
+<td class="co_content co_nutshell"><br/><span class="co_h1">Parshat Ki Teitzei</span>
+<div class="co_body">
+<p>
+<b>The name of the Parshah, "Ki Teitzei," means "when you go out," and it is found in Deuteronomy 21:10.</b></p>
+
+<p>Seventy-four of the <b>
+<a href="https://www.ChabadinSouthBeach.com/library/article_cdo/aid/1426382/jewish/Torah.htm" title="Torah">
+<b>Torah</b></a></b>’s <b>
+<a href="https://www.ChabadinSouthBeach.com/library/article_cdo/aid/756399/jewish/The-613-Commandments-Mitzvot.htm" title="The 613 Commandments (Mitzvot)">
+<b>613 commandments</b></a></b> (<b>
+<a href="https://www.ChabadinSouthBeach.com/library/article_cdo/aid/1438516/jewish/Mitzvah.htm" title="Mitzvah">
+<b>mitzvot</b></a></b>) are in the Parshah of <b>
+<a href="https://www.ChabadinSouthBeach.com/parshah/default_cdo/aid/36237/jewish/Ki-Teitzei.htm" title="Ki Teitzei">
+<b>Ki Teitzei</b></a></b>. These include the laws of the beautiful captive, the <b>
+<a href="https://www.ChabadinSouthBeach.com/library/article_cdo/aid/3375874/jewish/Why-and-How-Does-the-Firstborn-Get-a-Double-Inheritance.htm" title="Why (and How) Does the Firstborn Get a Double Inheritance?">
+<b>inheritance rights of the firstborn</b></a></b>, the wayward and rebellious son, <b>
+<a href="https://www.ChabadinSouthBeach.com/library/article_cdo/aid/3714276/jewish/What-to-Expect-at-a-Jewish-Funeral.htm">
+<b>burial</b></a></b> and dignity of the dead, <b>
+<a href="https://www.ChabadinSouthBeach.com/library/article_cdo/aid/1058268/jewish/Returning-Lost-Objects.htm" title="Returning Lost Objects">
+<b>returning a lost object</b></a></b>, <b>
+<a href="https://www.ChabadinSouthBeach.com/library/article_cdo/aid/3429784/jewish/Shiluach-Haken.htm" title="Shiluach Haken">
+<b>sending away the mother bird</b></a></b> before taking her young, the duty to erect a <b>
+<a href="https://www.ChabadinSouthBeach.com/library/article_cdo/aid/1317263/jewish/Safety-First.htm" title="Safety First!">
+<b>safety fence</b></a></b> around the roof of one’s home, and the various forms of <b>
+<a href="https://www.ChabadinSouthBeach.com/library/article_cdo/aid/3570273/jewish/What-Is-Kilayim.htm" title="What Is Kilayim?">
+<b>
+<i>kilayim</i></b></a></b> (forbidden plant and animal hybrids).</p>
+<p>Also recounted are the judicial procedures and penalties for adultery, for the rape or seduction of an unmarried girl, and for a husband who falsely accuses his wife of infidelity. The following cannot marry a person of <b>
+<a href="https://www.ChabadinSouthBeach.com/library/article_cdo/aid/601092/jewish/Why-Is-Jewishness-Matrilineal.htm" title="Why Is Jewishness Matrilineal?">
+<b>Jewish lineage</b></a></b>: a <b>
+<a href="https://www.ChabadinSouthBeach.com/library/article_cdo/aid/4007896/jewish/What-Is-a-Mamzer.htm" title="What Is a &quot;Mamzer&quot;?">
+<b>
+<i>mamzer</i></b></a></b> (someone born from an adulterous or incestuous relationship); a male of Moabite or Ammonite descent; a first- or second-generation Edomite or Egyptian.</p>
+<p>Our <b>
+<a href="https://www.ChabadinSouthBeach.com/parshah/default_cdo/aid/36237/jewish/Ki-Teitzei.htm" title="Ki Teitzei">
+<b>Parshah</b></a></b> also includes laws governing the purity of the military camp; the prohibition against turning in an escaped slave; the duty to <b>
+<a href="https://www.ChabadinSouthBeach.com/library/article_cdo/aid/1218800/jewish/The-Obligation-to-Pay-Workers-on-Time.htm" title="The Obligation to Pay Workers on Time">
+<b>pay a worker on time</b></a></b>, and to allow anyone working for you—man or animal—to “eat on the job”; the proper treatment of a debtor, and the prohibition against charging <b>
+<a href="https://www.ChabadinSouthBeach.com/library/article_cdo/aid/4108763/jewish/Moneylending-and-Jewish-Law.htm" title="Moneylending and Jewish Law">
+<b>interest</b></a></b> on a loan; the laws of <b>
+<a href="https://www.ChabadinSouthBeach.com/library/article_cdo/aid/557906/jewish/Jewish-Divorce-What-Is-a-Get.htm" title="Jewish Divorce: What Is a ‘Get’?">
+<b>divorce</b></a></b> (from which are also derived many of the laws of <b>
+<a href="https://www.ChabadinSouthBeach.com/library/article_cdo/aid/448424/jewish/The-Jewish-Wedding-and-Marriage.htm" title="The Jewish Wedding and Marriage">
+<b>marriage</b></a></b>); the penalty of thirty-nine lashes for transgression of a Torah prohibition; and the procedures for <b>
+<a href="https://www.ChabadinSouthBeach.com/library/article_cdo/aid/558049/jewish/Levirate-Marriage-Yibbum-and-Chalitzah.htm" title="Levirate Marriage: Yibbum and Chalitzah">
+<b>
+<i>yibbum</i></b></a></b> (“levirate marriage”) of the wife of a deceased childless brother, or <b>
+<a href="https://www.ChabadinSouthBeach.com/library/article_cdo/aid/558049/jewish/Levirate-Marriage-Yibbum-and-Chalitzah.htm" title="Levirate Marriage: Yibbum and Chalitzah">
+<b>
+<i>chalitzah</i></b></a></b> (“removing of the shoe”) in the case that the brother-in-law does not wish to marry her.</p>
+<p>Ki Teitzei concludes with the obligation to remember “what <b>
+<a href="https://www.ChabadinSouthBeach.com/library/article_cdo/aid/3942715/jewish/Who-Were-Amalek-and-the-Amalekites.htm" title="Who Were Amalek and the Amalekites?">
+<b>Amalek</b></a></b> did to you on the road, on your way out of Egypt.”</p>
+
+<p><b>Learn: <a href="https://www.ChabadinSouthBeach.com/parshah/in-depth/default_cdo/aid/57209/jewish/Ki-Teitzei-In-Depth.htm" title="Ki Teitzei In Depth">
+<b>Ki Teitzei in Depth</b></a></b><br/>
+<b>Browse: <a href="https://www.ChabadinSouthBeach.com/parshah/article_cdo/aid/88587/jewish/Parshah-Columnists.htm" title="Parshah Columnists">
+<b>Ki Teitzei&#160;Parshah Columnists</b></a></b><br/>
+<b>Prep: <a href="https://www.ChabadinSouthBeach.com/library/article_cdo/aid/2827062/jewish/Dvar-Torah-Questions-and-Answers-on-Ki-Teitzei.htm" title="Dvar Torah Questions and Answers on Ki Teitzei">
+<b>Devar Torah Q&A for Ki Teitzei</b></a></b><br/>
+<b>Read: <a href="https://www.ChabadinSouthBeach.com/parshah/article_cdo/aid/555429/jewish/Haftorah-in-a-Nutshell.htm" title="Haftorah in a Nutshell">
+<b>Haftarah in a Nutshell</b></a></b><br/>
+<b>Play: <a href="https://www.ChabadinSouthBeach.com/parshah/article_cdo/aid/4483469/jewish/Ki-Teitzei-Parshah-Quiz.htm" title="Ki Teitzei Parshah Quiz">
+<b>Ki Teitzei&#160;Parshah Quiz</b></a></b></p>
+</div>
+
+<p class="inlineCopyright">&#160;</p></td></tr><tr>
+<td class="co_content">&#160;</td></tr></table></div></div></div>
+</td>
+</tr>
+</tbody></table>
+</td>
+</tr>
+<tr>
+<td class="coSpacer">
+<div style="line-height: 34px;">&#160;</div>
+</td>
+</tr>
+</tbody></table>
+</div>
+<div real_id="quote" title="Today's Quote" real_name="Today's Quote" actions="edit,delete,copy" languages="en" datatype="html" id="co_section_39" name="co_section">
+<table dir="ltr" width="100%" style="border-collapse: collapse;background-color: #072026;margin: 0px auto;" align="center" cellpadding="0" cellspacing="0" border="0">
+<tbody><tr>
+<td valign="top">
+<table class="fiveNinetyTable" width="610" style="border-collapse: separate;margin: 0px auto;font-family: 'Marcellus', Georgia, 'Times New Roman', serif;background-color: rgb(255, 255, 255);border-top: 6px solid #C08A2E;border-radius: 16px;" align="center">
+<tbody><tr>
+<td class="coTitle_en" style="font-family: 'Marcellus', Georgia, 'Times New Roman', serif;padding: 24px 30px 4px;font-size: 24pt;line-height: 115%;color: #17232E !important;word-break: break-word !important;">
+<div style="font-family: 'Figtree', 'Segoe UI', Helvetica, Arial, sans-serif;font-size: 8.5pt;font-weight: 600;letter-spacing: .18em;text-transform: uppercase;color: #8A5F16;padding-bottom: 6px;">Daily Wisdom</div>
+<div class="mso-title">
+<div real_id="titleSixteen" real_name="Title" title="Title" datatype="line" id="co_editable_18" name="co_editable">
+Today's Quote
+</div></div>
+</td>
+</tr>
+<tr>
+<td class="coMessage_en" colspan="2" style="font-style: normal;padding: 30px;font-family: 'Figtree', 'Segoe UI', Helvetica, Arial, sans-serif;font-size: 13pt;color: #17232E;font-weight: 400;line-height: 160%;">
+<div>
+<div real_id="daily_quote" real_name="Daily Quote" actions="delete" aid="9179" title="Daily Quote" id="co_template_1" name="co_template"><div xmlns:co="www1.chabadonline.com/alpha1" xml:space="preserve" title="" id="co_dynamic_53" name="co_dynamic">
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0" class="co_daily_quote_table">
+<tr>
+<td class="co_daily_quote">On that day G‑d made a covenant with Abram, saying: “To your seed I have given this land.”<div class="co_content">— Genesis 15:18</div></td></tr>
+</table><br/></div></div></div>
+</td>
+</tr>
+</tbody></table>
+</td>
+</tr>
+<tr>
+<td class="coSpacer">
+<div style="line-height: 34px;">&#160;</div>
+</td>
+</tr>
+</tbody></table>
+</div>
+<div real_id="worldNews" title="World News" real_name="World News" actions="edit,delete,copy" languages="en" datatype="html" id="co_section_38" name="co_section">
+<table dir="ltr" width="100%" style="border-collapse: collapse;background-color: #072026;margin: 0px auto;" align="center" cellpadding="0" cellspacing="0" border="0">
+<tbody><tr>
+<td valign="top">
+<table class="fiveNinetyTable" width="610" style="border-collapse: separate;margin: 0px auto;font-family: 'Marcellus', Georgia, 'Times New Roman', serif;background-color: rgb(255, 255, 255);border-top: 6px solid #C08A2E;border-radius: 16px;" align="center">
+<tbody><tr>
+<td class="coTitle_en" style="font-family: 'Marcellus', Georgia, 'Times New Roman', serif;padding: 24px 30px 4px;font-size: 24pt;line-height: 115%;color: #17232E !important;word-break: break-word !important;">
+<div style="font-family: 'Figtree', 'Segoe UI', Helvetica, Arial, sans-serif;font-size: 8.5pt;font-weight: 600;letter-spacing: .18em;text-transform: uppercase;color: #8A5F16;padding-bottom: 6px;">Around the Chabad World</div>
+<div class="mso-title">
+<div real_id="titleTwelve" real_name="Title" title="Title" datatype="line" id="co_editable_17" name="co_editable">
+Chabad World News
+</div></div>
+</td>
+</tr>
+<tr>
+<td class="coMessage_en" colspan="2" style="font-style: normal;padding: 30px;font-family: 'Figtree', 'Segoe UI', Helvetica, Arial, sans-serif;font-size: 13pt;color: #17232E;font-weight: 400;line-height: 160%;">
+<div>
+<div real_id="global_chabad_news" real_name="Global Chabad News" title="All the latest news!" actions="delete" show_title="false" aid="533790" display_direction="vertical" include_icon="true" icon_size="150" include_synopsis="true" include_more_link="true" multi_style="false" max="4" id="co_template_0" name="co_template"><div xmlns:co="www1.chabadonline.com/alpha1" xml:space="preserve" title="" id="co_dynamic_52" name="co_dynamic">
+
+<span>
+<table width="100%" border="0" cellspacing="1" cellpadding="0" class="co_news co_section_text">
+<tr>
+<td valign="top">&nbsp;</td><td valign="top">&nbsp;</td></tr><tr>
+<td valign="top">
+<a href="https://www.ChabadinSouthBeach.com/article.asp?aid=7468834">
+<img src="https://www.ChabadinSouthBeach.com/media/images/1382/jkhi13821373.jpg" height="100" border="0"/></a></td><td valign="top" width="100%" style="padding-left: 5px;"><span class="co_articletype">North America</span><br/><span class="co_h3"><a href="https://www.ChabadinSouthBeach.com/article.asp?aid=7468834">American Airlines Honored For Compassion Shown Ahead of Slain Bondi Rabbi’s Funeral</a><br/></span><span class="co_content"></span><div class="co_more_link">
+<a class="co_more_link" href="https://www.ChabadinSouthBeach.com/article.asp?aid=7468834">More&hellip;</a></div></td></tr></table><table width="100%" border="0" cellspacing="1" cellpadding="0" class="co_news co_section_text">
+<tr>
+<td valign="top">&nbsp;</td><td valign="top">&nbsp;</td></tr><tr>
+<td valign="top">
+<a href="https://www.ChabadinSouthBeach.com/article.asp?aid=7461825">
+<img src="https://www.ChabadinSouthBeach.com/media/images/1381/LTJj13813878.jpg" height="100" border="0"/></a></td><td valign="top" width="100%" style="padding-left: 5px;"><span class="co_articletype">North America</span><br/><span class="co_h3"><a href="https://www.ChabadinSouthBeach.com/article.asp?aid=7461825">Park East Synagogue and Chabad of the Upper East Side Announce Historic New Chapter</a><br/></span><span class="co_content"></span><div class="co_more_link">
+<a class="co_more_link" href="https://www.ChabadinSouthBeach.com/article.asp?aid=7461825">More&hellip;</a></div></td></tr></table><table width="100%" border="0" cellspacing="1" cellpadding="0" class="co_news co_section_text">
+<tr>
+<td valign="top">&nbsp;</td><td valign="top">&nbsp;</td></tr><tr>
+<td valign="top">
+<a href="https://www.ChabadinSouthBeach.com/article.asp?aid=7460749">
+<img src="https://www.ChabadinSouthBeach.com/media/images/1381/GIdn13812432.jpeg" height="100" border="0"/></a></td><td valign="top" width="100%" style="padding-left: 5px;"><span class="co_articletype">North America</span><br/><span class="co_h3"><a href="https://www.ChabadinSouthBeach.com/article.asp?aid=7460749">Once a Summer Getaway, Ontario Lake Town Now Has a Jewish Home for All Seasons</a><br/></span><span class="co_content"></span><div class="co_more_link">
+<a class="co_more_link" href="https://www.ChabadinSouthBeach.com/article.asp?aid=7460749">More&hellip;</a></div></td></tr></table><table width="100%" border="0" cellspacing="1" cellpadding="0" class="co_news co_section_text">
+<tr>
+<td valign="top">&nbsp;</td><td valign="top">&nbsp;</td></tr><tr>
+<td valign="top">
+<a href="https://www.ChabadinSouthBeach.com/article.asp?aid=7458713">
+<img src="https://www.ChabadinSouthBeach.com/media/images/1380/xaTd13809049.jpeg" height="100" border="0"/></a></td><td valign="top" width="100%" style="padding-left: 5px;"><span class="co_articletype">North America</span><br/><span class="co_h3"><a href="https://www.ChabadinSouthBeach.com/article.asp?aid=7458713">As Wildfires Ravage Spokane, Chabad Assists Displaced Families</a><br/></span><span class="co_content"></span><div class="co_more_link">
+<a class="co_more_link" href="https://www.ChabadinSouthBeach.com/article.asp?aid=7458713">More&hellip;</a></div></td></tr></table></span>
+</div></div></div>
+</td>
+</tr>
+</tbody></table>
+</td>
+</tr>
+<tr>
+<td class="coSpacer">
+<div style="line-height: 34px;">&#160;</div>
+</td>
+</tr>
+</tbody></table>
+</div>
+<div real_id="chabadGuide" title="Chabad Guide" real_name="Chabad Guide" actions="edit,delete,copy" datatype="html" id="co_section_37" name="co_section">
+<table dir="ltr" width="100%" style="border-collapse: collapse;background-color: #072026;margin: 0px auto;" align="center" cellpadding="0" cellspacing="0" border="0">
+<tbody><tr>
+<td valign="top">
+<table class="fiveNinetyTable" width="610" style="border-collapse: separate;margin: 0px auto;font-family: 'Marcellus', Georgia, 'Times New Roman', serif;background-color: rgb(255, 255, 255);border-top: 6px solid #C08A2E;border-radius: 16px;" align="center">
+<tbody><tr>
+<td class="coTitle_en" style="font-family: 'Marcellus', Georgia, 'Times New Roman', serif;padding: 24px 30px 4px;font-size: 24pt;line-height: 115%;color: #17232E !important;word-break: break-word !important;">
+<div style="font-family: 'Figtree', 'Segoe UI', Helvetica, Arial, sans-serif;font-size: 8.5pt;font-weight: 600;letter-spacing: .18em;text-transform: uppercase;color: #8A5F16;padding-bottom: 6px;">Explore</div>
+<div class="mso-title">
+<div real_id="titleFifteen" real_name="Title" title="Title" datatype="line" id="co_editable_16" name="co_editable">
+Chabad Guide
+</div></div>
+</td>
+</tr>
+<tr>
+<td class="guideItem_en" colspan="2" style="padding: 30px;font-family: 'Marcellus', Georgia, 'Times New Roman', serif;font-size: 12.5pt;color: #17232E;font-weight: 400;line-height: 150%;margin: 0px auto;">
+<table width="100%" style="border-collapse: collapse;margin: 0px auto;" align="center" cellpadding="0" cellspacing="0" border="0">
+<tbody><tr>
+<td class="guideItem_en" align="center" width="110" valign="top">
+<div real_id="chabadGuide1" real_name="Synagogue Services" title="Synagogue Services" actions="edit,delete" datatype="html" id="co_editable_15" name="co_editable">
+<table width="100%" style="border-collapse: collapse;margin: 0px auto;" align="center" cellpadding="0" cellspacing="0" border="0">
+<tbody><tr>
+<td align="center">
+<a href="http://www.ChabadinSouthBeach.com/">
+<img src="https://www.ChabadinSouthBeach.com/media/images/937/nuUr9370429.jpg" border="0" style="text-align: center;display: block;margin: 0px auto;border-radius: 12px;"/></a>
+</td>
+</tr>
+<tr>
+<td class="guideItemTitle_en" align="center" style="text-align: center;padding: 5px 0px 30px;text-decoration: none;font-size: 14pt !important;">
+<div>
+<a href="http://www.ChabadinSouthBeach.com/" style="color: #17232E;text-decoration: none;">
+Synagogue Services
+»
+</a></div>
+</td>
+</tr>
+</tbody></table>
+</div>
+</td>
+<td class="guideItem_en" align="center" width="110" valign="top">
+<div real_id="chabadGuide2" real_name="Adult Education" title="Adult Education" actions="edit,delete" datatype="html" id="co_editable_14" name="co_editable">
+<table width="100%" style="border-collapse: collapse;margin: 0px auto;" align="center" cellpadding="0" cellspacing="0" border="0">
+<tbody><tr>
+<td align="center">
+<a href="http://www.ChabadinSouthBeach.com/">
+<img src="https://www.ChabadinSouthBeach.com/media/images/902/gXaE9025457.jpg" border="0" style="text-align: center;display: block;margin: 0px auto;border-radius: 12px;"/></a></td>
+</tr>
+<tr>
+<td class="guideItemTitle_en" align="center" style="text-align: center;padding: 5px 0px 30px;text-decoration: none;font-size: 14pt !important;">
+<div>
+<a href="http://www.ChabadinSouthBeach.com/" style="color: #17232E;text-decoration: none;">
+Adult Education
+»
+</a></div>
+</td>
+</tr>
+</tbody></table>
+</div>
+</td>
+<td class="guideItem_en" align="center" width="110" valign="top">
+<div real_id="chabadGuide3" real_name="Hebrew School" title="Hebrew School" actions="edit,delete" datatype="html" id="co_editable_13" name="co_editable">
+<table width="100%" style="border-collapse: collapse;margin: 0px auto;" align="center" cellpadding="0" cellspacing="0" border="0">
+<tbody><tr>
+<td align="center">
+<a href="http://www.ChabadinSouthBeach.com/">
+<img src="https://www.ChabadinSouthBeach.com/media/images/978/IwPW9787257.jpg" border="0" style="text-align: center;display: block;margin: 0px auto;border-radius: 12px;"/></a></td>
+</tr>
+<tr>
+<td class="guideItemTitle_en" align="center" style="text-align: center;padding: 5px 0px 30px;text-decoration: none;font-size: 14pt !important;">
+<div>
+<a href="http://www.ChabadinSouthBeach.com/" style="color: #17232E;text-decoration: none;">
+Hebrew School
+»
+</a></div>
+</td>
+</tr>
+</tbody></table>
+</div>
+</td>
+</tr>
+<tr>
+<td class="guideItem_en" align="center" width="110" valign="top">
+<div real_id="chabadGuide4" real_name="Women's Circle" title="Women's Circle" actions="edit,delete" datatype="html" id="co_editable_12" name="co_editable">
+<table width="100%" style="border-collapse: collapse;margin: 0px auto;" align="center" cellpadding="0" cellspacing="0" border="0">
+<tbody><tr>
+<td align="center">
+<a href="http://www.ChabadinSouthBeach.com/">
+<img src="https://www.ChabadinSouthBeach.com/media/images/1016/fFxK10166077.jpg" border="0" style="text-align: center;display: block;margin: 0px auto;border-radius: 12px;"/></a></td>
+</tr>
+<tr>
+<td class="guideItemTitle_en" align="center" style="text-align: center;padding: 5px 0px 30px;text-decoration: none;font-size: 14pt !important;">
+<div>
+<a href="http://www.ChabadinSouthBeach.com/" style="color: #17232E;text-decoration: none;">
+Women's Circle
+»
+</a></div>
+</td>
+</tr>
+</tbody></table>
+</div>
+</td>
+<td class="guideItem_en" align="center" width="110" valign="top">
+<div real_id="chabadGuide5" real_name="Mikvah" title="Mikvah" actions="edit,delete" datatype="html" id="co_editable_11" name="co_editable">
+<table width="100%" style="border-collapse: collapse;margin: 0px auto;" align="center" cellpadding="0" cellspacing="0" border="0">
+<tbody><tr>
+<td align="center">
+<a href="http://www.ChabadinSouthBeach.com/">
+<img src="https://www.ChabadinSouthBeach.com/media/images/970/gHtt9706376.jpg" border="0" style="text-align: center;display: block;margin: 0px auto;border-radius: 12px;"/></a></td>
+</tr>
+<tr>
+<td class="guideItemTitle_en" align="center" style="text-align: center;padding: 5px 0px 30px;text-decoration: none;font-size: 14pt !important;">
+<div>
+<a href="http://www.ChabadinSouthBeach.com/" style="color: #17232E;text-decoration: none;">
+Mikvah
+»
+</a></div>
+</td>
+</tr>
+</tbody></table>
+</div>
+</td>
+<td class="guideItem_en" align="center" width="110" valign="top">
+<div real_id="chabadGuide6" real_name="Kids' Program" title="Kids' Program" actions="edit,delete" datatype="html" id="co_editable_10" name="co_editable">
+<table width="100%" style="border-collapse: collapse;margin: 0px auto;" align="center" cellpadding="0" cellspacing="0" border="0">
+<tbody><tr>
+<td align="center">
+<a href="http://www.ChabadinSouthBeach.com/">
+<img src="https://www.ChabadinSouthBeach.com/media/images/1001/nVyy10018283.jpg" border="0" style="text-align: center;display: block;margin: 0px auto;border-radius: 12px;"/></a></td>
+</tr>
+<tr>
+<td class="guideItemTitle_en" align="center" style="text-align: center;padding: 5px 0px 30px;text-decoration: none;font-size: 14pt !important;">
+<div>
+<a href="http://www.ChabadinSouthBeach.com/" style="color: #17232E;text-decoration: none;">
+Kids' Program
+»
+</a></div>
+</td>
+</tr>
+</tbody></table>
+</div>
+</td>
+</tr>
+</tbody></table>
+</td>
+</tr>
+</tbody></table>
+</td>
+</tr>
+<tr>
+<td class="coSpacer">
+<div style="line-height: 34px;">&#160;</div>
+</td>
+</tr>
+</tbody></table>
+</div>
+<div real_id="socials" title="Socials" real_name="socials" actions="edit,delete,copy" datatype="html" id="co_section_36" name="co_section">
+<table dir="ltr" width="100%" style="border-collapse: collapse;background-color: #072026;margin: 0px auto;" align="center" cellpadding="0" cellspacing="0" border="0">
+<tbody><tr>
+<td valign="top">
+<table class="fiveNinetyTable" width="610" style="border-collapse: separate;margin: 0px auto;font-family: 'Marcellus', Georgia, 'Times New Roman', serif;background-color: rgb(255, 255, 255);border-top: 6px solid #C08A2E;border-radius: 16px;" align="center">
+<tbody><tr>
+<td class="coTitle_en" width="550" style="font-family: 'Marcellus', Georgia, 'Times New Roman', serif;padding: 24px 30px 4px;font-size: 24pt;line-height: 115%;text-align: center;color: #17232E !important;word-break: break-word !important;">
+<div style="font-family: 'Figtree', 'Segoe UI', Helvetica, Arial, sans-serif;font-size: 8.5pt;font-weight: 600;letter-spacing: .18em;text-transform: uppercase;color: #8A5F16;padding-bottom: 6px;">Stay Connected</div>
+<div class="mso-title">
+<div real_id="titleFifteen" real_name="Title" title="Title" datatype="line" id="co_editable_9" name="co_editable">
+Follow us on:
+</div></div>
+</td>
+</tr>
+<tr>
+<td class="guideItem_en" style="padding: 30px;font-family: 'Marcellus', Georgia, 'Times New Roman', serif;font-size: 12.5pt;color: #17232E;font-weight: 400;line-height: 150%;margin: 0px auto;">
+<table width="100%" style="border-collapse: collapse;margin: 0px auto;" align="center" cellpadding="0" cellspacing="0" border="0">
+<tbody><tr>
+<td class="guideItem_en" align="center" width="110" valign="top">
+
+<table width="100%" style="border-collapse: collapse;margin: 0px auto;" align="center" cellpadding="0" cellspacing="0" border="0">
+<tbody><tr>
+<td align="center" class="socailIcon">
+<div real_id="soFacebook" real_name="soFacebook" title="Facebook" tag_only="true" attribute="href" actions="edit,delete" id="co_editable_8" name="co_editable">
+<a href="https://www.facebook.com/chabadsouthbeach">
+<img src="http://01.myjewishpage.com/images/mychabad/communicator/Template11/Asset-Facebook.png" border="0" style="text-align: center;margin: 0px auto;"/></a></div>
+</td>
+<td align="center" class="socailIcon">
+</td>
+<td align="center" class="socailIcon">
+<div real_id="coInstagram" real_name="coInstagram" title="Instagram" tag_only="true" attribute="href" actions="edit,delete" id="co_editable_7" name="co_editable">
+<a href="https://www.instagram.com/chabadofsouthbeach">
+<img src="http://01.myjewishpage.com/images/mychabad/communicator/Template11/Asset-Instagram.png" border="0" style="text-align: center;margin: 0px auto;"/></a></div></td>
+<td align="center" class="socailIcon">
+</td>
+<td align="center" class="socailIcon">
+</td>
+
+</tr>
+</tbody></table>
+</td>
+</tr>
+</tbody></table>
+</td>
+</tr>
+</tbody></table>
+</td>
+</tr>
+<tr>
+<td class="coSpacer">
+<div style="line-height: 34px;">&#160;</div>
+</td>
+</tr>
+</tbody></table>
+</div>
+
+</td>
+</tr>
+</tbody></table>
+</td>
+</tr>
+</tbody></table>
+`;
+  alert("New design injected. Now click the SAVE button in the Options panel, wait for Saved!, then reload the page (F5).");
+})();

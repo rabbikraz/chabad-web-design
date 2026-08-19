@@ -1,0 +1,2221 @@
+<!-- ==========================================
+     CHABAD IN SOUTH BEACH - MEMBERSHIP SIGNUP
+     For ChabadOne CMS (strict-XML paste). Rules:
+       - No literal '<' in <script> text: use forEach (not i < n loops).
+       - No literal '&' in <script> text: no '&&' (use nested ifs).
+       - All dynamic updates via textContent / style only. No innerHTML
+         with markup strings, so the CMS never chokes on dynamic '<'.
+     Theme via CSS custom properties (dark-mode compatible).
+
+     BUILD STATUS: Phase 1 complete (Screen 1: household + tier + pricing).
+     Screens 2-4 to follow.
+     ========================================== -->
+<link href="https://fonts.googleapis.com" rel="preconnect" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet" />
+
+
+<!-- A real form element so browser autofill works (safe here: the markup is
+     injected by JS in the native build, so the ChabadOne editor never sees it).
+     onsubmit=false because we submit via fetch. -->
+<form id="membershipApp" autocomplete="on" onsubmit="return false;">
+
+  <!-- ============ SCREEN 1 ============ -->
+  <div id="screen1">
+
+    <div class="mhead">
+      <h1>Become a partner in our Chabad</h1>
+      <p>Select your household to see your pricing.</p>
+    </div>
+
+    <!-- Household selector -->
+    <div class="seclabel">I am joining as</div>
+    <div class="hh-grid">
+      <div class="hh-card selected" data-hh="single" onclick="selectHousehold('single')">
+        <div class="hh-title">Single</div>
+        <div class="hh-sub">One adult</div>
+      </div>
+      <div class="hh-card" data-hh="couple" onclick="selectHousehold('couple')">
+        <div class="hh-title">Couple</div>
+        <div class="hh-sub">Two adults</div>
+      </div>
+      <div class="hh-card" data-hh="family" onclick="selectHousehold('family')">
+        <div class="hh-title">Family</div>
+        <div class="hh-sub">Couple + children</div>
+      </div>
+    </div>
+
+    <!-- Parents in the home (Family only) -->
+    <div class="kids-card" id="familyParents" style="display: none;">
+      <div class="kids-label">Parents in the home</div>
+      <div class="seg">
+        <label class="seg-opt"><input type="radio" name="familyParents" value="two" checked="checked" onchange="setParents('two')" /><span>Two parents</span></label>
+        <label class="seg-opt"><input type="radio" name="familyParents" value="one" onchange="setParents('one')" /><span>Single parent</span></label>
+      </div>
+    </div>
+
+    <!-- Children stepper (Family only) -->
+    <div class="kids-card" id="kidsStepper" style="display: none;">
+      <div class="kids-label">Number of children at home</div>
+      <div class="stepper">
+        <button type="button" class="step-btn" onclick="changeKids(-1)" aria-label="Fewer children">-</button>
+        <span class="step-num" id="kidsNum">1</span>
+        <button type="button" class="step-btn" onclick="changeKids(1)" aria-label="More children">+</button>
+      </div>
+    </div>
+
+    <!-- Tier cards -->
+    <div class="tier-grid">
+
+      <div class="tier-card" data-tier="basic" onclick="selectTier('basic')">
+        <div class="tier-name">Basic</div>
+        <div class="tier-price"><span class="tier-price-num" id="price-basic">$50</span><span class="tier-per">/mo</span></div>
+        <div class="tier-annual" id="annual-basic">$600 / year</div>
+        <ul class="tier-benefits">
+          <li>Your special days on the community calendar</li>
+          <li>5% off all events and programs</li>
+          <li>Reserved High Holiday seat</li>
+        </ul>
+      </div>
+
+      <div class="tier-card popular" data-tier="chai" onclick="selectTier('chai')">
+        <div class="tier-badge">Most popular</div>
+        <div class="tier-name">Chai</div>
+        <div class="tier-price"><span class="tier-price-num" id="price-chai">$180</span><span class="tier-per">/mo</span></div>
+        <div class="tier-annual" id="annual-chai">$2,160 / year</div>
+        <ul class="tier-benefits">
+          <li>10% off all events and programs</li>
+          <li>Listed on Chai donor wall</li>
+          <li>20% off Lulav &amp; Esrog set</li>
+        </ul>
+      </div>
+
+      <div class="tier-card" data-tier="silver" onclick="selectTier('silver')">
+        <div class="tier-name">Silver</div>
+        <div class="tier-price"><span class="tier-price-num" id="price-silver">$500</span><span class="tier-per">/mo</span></div>
+        <div class="tier-annual" id="annual-silver">$6,000 / year</div>
+        <ul class="tier-benefits">
+          <li>Annual mezuzah checking</li>
+          <li>1 co-sponsored Kiddush per year</li>
+          <li>VIP High Holiday seating</li>
+          <li>50% off Lulav &amp; Esrog set</li>
+          <li>Listed on Silver donor wall</li>
+        </ul>
+      </div>
+
+      <div class="tier-card" data-tier="gold" onclick="selectTier('gold')">
+        <div class="tier-name">Gold</div>
+        <div class="tier-price"><span class="tier-price-num" id="price-gold">$1,000</span><span class="tier-per">/mo</span></div>
+        <div class="tier-annual" id="annual-gold">$12,000 / year</div>
+        <ul class="tier-benefits">
+          <li>Annual mezuzah &amp; tefillin checking</li>
+          <li>1 co-sponsored Kiddush per year</li>
+          <li>Lulav &amp; Esrog set provided</li>
+          <li>Listed on Gold donor wall</li>
+        </ul>
+      </div>
+
+    </div>
+
+    <!-- Continue -->
+    <button type="button" class="continue-btn" id="continueBtn" disabled="disabled" onclick="goToScreen2()">Select a tier to continue</button>
+
+    <!-- No one is ever turned away -->
+    <div class="turned-away">
+      <b>No one is ever turned away</b>
+      <span>If membership is not within reach right now, please reach out to the Rabbi privately. Every Jew has a place at our table.</span>
+    </div>
+
+  </div>
+  <!-- ============ /SCREEN 1 ============ -->
+
+  <!-- ============ SCREEN 2 - MEMBER INFO ============ -->
+  <div id="screen2" style="display: none;">
+
+    <div class="s2-top">
+      <button type="button" class="back-btn" onclick="showScreen(1)">Back</button>
+      <h1>Your information</h1>
+    </div>
+
+    <div class="s2-err" id="screen2Err">Please complete the highlighted required fields.</div>
+
+    <!-- PRIMARY MEMBER -->
+    <div class="scard">
+      <h2>Primary member</h2>
+
+      <div class="row2">
+        <div class="field"><label class="flabel">First name (English)<span class="req">*</span></label>
+          <input type="text" id="p_firstName" autocomplete="given-name" placeholder="First name" /></div>
+        <div class="field"><label class="flabel">Last name<span class="req">*</span></label>
+          <input type="text" id="p_lastName" autocomplete="family-name" placeholder="Last name" /></div>
+      </div>
+
+      <div class="field heb-name-group">
+        <label class="flabel">Hebrew name</label>
+        <div class="seg">
+          <label class="seg-opt"><input type="radio" name="p_hebOpt" value="enter" class="hebOpt" /><span>Enter Hebrew name</span></label>
+          <label class="seg-opt"><input type="radio" name="p_hebOpt" value="same" class="hebOpt" checked="checked" /><span>Same as English</span></label>
+          <label class="seg-opt"><input type="radio" name="p_hebOpt" value="none" class="hebOpt" /><span>I don't have one</span></label>
+        </div>
+        <input type="text" id="p_hebName" class="hebInput" placeholder="Hebrew name" style="display: none;" />
+      </div>
+
+      <div class="field"><label class="flabel">Gender<span class="req">*</span></label>
+        <div class="seg">
+          <label class="seg-opt"><input type="radio" name="p_gender" value="M" class="genderRadio" /><span>Male</span></label>
+          <label class="seg-opt"><input type="radio" name="p_gender" value="F" class="genderRadio" /><span>Female</span></label>
+        </div>
+      </div>
+
+      <div class="field"><label class="flabel">Jewishness<span class="req">*</span></label>
+        <div class="seg">
+          <label class="seg-opt"><input type="radio" name="p_jewishness" value="birth" class="jewRadio" /><span>From birth</span></label>
+          <label class="seg-opt"><input type="radio" name="p_jewishness" value="convert" class="jewRadio" /><span>Convert</span></label>
+          <label class="seg-opt"><input type="radio" name="p_jewishness" value="not" class="jewRadio" /><span>Not Jewish</span></label>
+        </div>
+
+        <div class="convert-block">
+          <p class="cb-note">For converts we need your conversion documents on file. Please email a copy to the Rabbi or bring the originals in person. Enter the supervising authority below so we can match your records.</p>
+          <div class="field"><label class="flabel">Supervising Rabbi / Beit Din<span class="req">*</span></label>
+            <input type="text" id="p_convertAuthority" placeholder="e.g. Beth Din of America" /></div>
+          <div class="field" style="margin-bottom: 0;"><label class="flabel">Date of conversion</label>
+            <input type="date" id="p_convertDate" /></div>
+        </div>
+
+        <div class="convert-block birthconv-block">
+          <div class="field" style="margin-bottom:0;"><label class="flabel">Any conversions in the family?</label>
+            <div class="seg">
+              <label class="seg-opt"><input type="radio" name="p_famConv" value="yes" class="famConvRadio" /><span>Yes</span></label>
+              <label class="seg-opt"><input type="radio" name="p_famConv" value="no" class="famConvRadio" checked="checked" /><span>No</span></label>
+            </div>
+            <div class="famconv-who" style="display: none; margin-top: 0.75rem;">
+              <div class="helper" style="margin-top:0;margin-bottom:0.5rem;">Who in the family converted?</div>
+              <label class="chk"><input type="checkbox" id="p_fc_mother" /> <span>Mother</span></label>
+              <label class="chk"><input type="checkbox" id="p_fc_father" /> <span>Father</span></label>
+              <label class="chk"><input type="checkbox" id="p_fc_grandmother" /> <span>Grandmother</span></label>
+              <label class="chk"><input type="checkbox" id="p_fc_grandfather" /> <span>Grandfather</span></label>
+              <label class="chk" style="margin-bottom:0.4rem;"><input type="checkbox" id="p_fc_other" class="fcOther" /> <span>Other</span></label>
+              <input type="text" id="p_fc_otherText" class="fcOtherText" placeholder="Please specify" style="display: none;" />
+              <div class="field" style="margin-top:0.75rem;margin-bottom:0;"><label class="flabel">Details about the conversion(s)</label>
+                <input type="text" id="p_fc_details" placeholder="e.g. who converted, supervising Beit Din, approximate year" />
+                <div class="helper">This helps the Rabbi confirm Jewish status. Optional but appreciated.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="field"><label class="flabel">Tribe<span class="req tribe-req" style="display: none;">*</span></label>
+        <div class="seg">
+          <label class="seg-opt"><input type="radio" name="p_tribe" value="Kohen" /><span>Kohen</span></label>
+          <label class="seg-opt"><input type="radio" name="p_tribe" value="Levi" /><span>Levi</span></label>
+          <label class="seg-opt"><input type="radio" name="p_tribe" value="Yisroel" /><span>Yisroel</span></label>
+        </div>
+      </div>
+
+      <div class="field"><label class="flabel">Hebrew lineage (ben/bas ___)</label>
+        <input type="text" id="p_lineage" placeholder="e.g. ben Avraham" />
+        <div class="helper">Father's Hebrew name. Use 'Avraham' if unsure or ask the Rabbi.</div>
+      </div>
+
+      <div class="field"><label class="flabel">Mother's Hebrew name</label>
+        <input type="text" id="p_motherHeb" placeholder="e.g. Sara" />
+        <div class="helper">Used for mi shebeirach prayers</div>
+      </div>
+
+      <div class="row2">
+        <div class="field"><label class="flabel">Date of birth<span class="req">*</span></label>
+          <input type="date" id="p_dob" autocomplete="bday" onchange="onDobChange('p')" />
+          <label class="chk" style="margin-top:0.5rem;margin-bottom:0;"><input type="checkbox" id="p_dobSunset" onchange="onDobChange('p')" /> <span>Born after sunset (the Hebrew date is the next day)</span></label>
+        </div>
+        <div class="field"><label class="flabel">Hebrew birthday</label>
+          <div class="heb-display" id="p_hebDob">-</div></div>
+      </div>
+
+      <div class="field"><label class="flabel">Marital status<span class="req">*</span></label>
+        <div class="seg">
+          <label class="seg-opt"><input type="radio" name="p_maritalStatus" value="single" /><span>Single</span></label>
+          <label class="seg-opt"><input type="radio" name="p_maritalStatus" value="married" /><span>Married</span></label>
+          <label class="seg-opt"><input type="radio" name="p_maritalStatus" value="divorced" /><span>Divorced</span></label>
+          <label class="seg-opt"><input type="radio" name="p_maritalStatus" value="widowed" /><span>Widowed</span></label>
+        </div>
+      </div>
+
+      <div class="field"><label class="flabel">Occupation</label>
+        <input type="text" id="p_occupation" placeholder="Optional" /></div>
+
+      <div class="row2">
+        <div class="field"><label class="flabel">Email<span class="req">*</span></label>
+          <input type="email" id="p_email" autocomplete="email" placeholder="you@example.com" /></div>
+        <div class="field"><label class="flabel">Cell phone<span class="req">*</span></label>
+          <input type="tel" id="p_cell" autocomplete="tel" placeholder="(305) 555-0123" /></div>
+      </div>
+      <div class="row2">
+        <div class="field"><label class="flabel">Work phone</label>
+          <input type="tel" id="p_work" placeholder="Optional" /></div>
+        <div class="field"><label class="flabel">Home phone</label>
+          <input type="tel" id="p_home" placeholder="Optional" /></div>
+      </div>
+
+      <!-- Yahrzeits: optional repeatable section -->
+      <div class="yz-slot">
+        <label class="flabel">Yahrzeits (optional)</label>
+        <div class="helper" style="margin-top:0;margin-bottom:0.5rem;">Add a yahrzeit to be reminded and included in our prayers. The other calendar fills in automatically.</div>
+        <div id="p_yahrzeits"></div>
+        <button type="button" class="yz-add" onclick="addYahrzeit('p')">+ Add yahrzeit</button>
+      </div>
+    </div>
+
+    <!-- MAILING ADDRESS (household) -->
+    <div class="scard">
+      <h2>Mailing address</h2>
+      <div class="field"><label class="flabel">Street</label>
+        <input type="text" id="addr_street" autocomplete="street-address" placeholder="Street address" /></div>
+      <div class="row2">
+        <div class="field"><label class="flabel">City</label><input type="text" id="addr_city" autocomplete="address-level2" /></div>
+        <div class="field"><label class="flabel">State</label><input type="text" id="addr_state" autocomplete="address-level1" /></div>
+      </div>
+      <div class="row2">
+        <div class="field"><label class="flabel">ZIP</label><input type="text" id="addr_zip" autocomplete="postal-code" /></div>
+        <div class="field"><label class="flabel">Country</label><input type="text" id="addr_country" autocomplete="country-name" placeholder="USA" /></div>
+      </div>
+    </div>
+
+    <!-- SPOUSE (Couple / Family only) -->
+    <div class="scard" id="spouseSection" style="display: none;">
+      <h2>Spouse</h2>
+      <p class="scard-sub">Shares the household contact info and mailing address above.</p>
+
+      <div class="row2">
+        <div class="field"><label class="flabel">First name (English)<span class="req">*</span></label>
+          <input type="text" id="s_firstName" placeholder="First name" /></div>
+        <div class="field"><label class="flabel">Last name<span class="req">*</span></label>
+          <input type="text" id="s_lastName" placeholder="Last name" /></div>
+      </div>
+
+      <div class="field heb-name-group">
+        <label class="flabel">Hebrew name</label>
+        <div class="seg">
+          <label class="seg-opt"><input type="radio" name="s_hebOpt" value="enter" class="hebOpt" /><span>Enter Hebrew name</span></label>
+          <label class="seg-opt"><input type="radio" name="s_hebOpt" value="same" class="hebOpt" checked="checked" /><span>Same as English</span></label>
+          <label class="seg-opt"><input type="radio" name="s_hebOpt" value="none" class="hebOpt" /><span>I don't have one</span></label>
+        </div>
+        <input type="text" id="s_hebName" class="hebInput" placeholder="Hebrew name" style="display: none;" />
+      </div>
+
+      <div class="field"><label class="flabel">Gender<span class="req">*</span></label>
+        <div class="seg">
+          <label class="seg-opt"><input type="radio" name="s_gender" value="M" class="genderRadio" /><span>Male</span></label>
+          <label class="seg-opt"><input type="radio" name="s_gender" value="F" class="genderRadio" /><span>Female</span></label>
+        </div>
+      </div>
+
+      <div class="field"><label class="flabel">Jewishness<span class="req">*</span></label>
+        <div class="seg">
+          <label class="seg-opt"><input type="radio" name="s_jewishness" value="birth" class="jewRadio" /><span>From birth</span></label>
+          <label class="seg-opt"><input type="radio" name="s_jewishness" value="convert" class="jewRadio" /><span>Convert</span></label>
+          <label class="seg-opt"><input type="radio" name="s_jewishness" value="not" class="jewRadio" /><span>Not Jewish</span></label>
+        </div>
+
+        <div class="convert-block">
+          <p class="cb-note">For converts we need your conversion documents on file. Please email a copy to the Rabbi or bring the originals in person. Enter the supervising authority below so we can match your records.</p>
+          <div class="field"><label class="flabel">Supervising Rabbi / Beit Din<span class="req">*</span></label>
+            <input type="text" id="s_convertAuthority" placeholder="e.g. Beth Din of America" /></div>
+          <div class="field" style="margin-bottom: 0;"><label class="flabel">Date of conversion</label>
+            <input type="date" id="s_convertDate" /></div>
+        </div>
+
+        <div class="convert-block birthconv-block">
+          <div class="field" style="margin-bottom:0;"><label class="flabel">Any conversions in the family?</label>
+            <div class="seg">
+              <label class="seg-opt"><input type="radio" name="s_famConv" value="yes" class="famConvRadio" /><span>Yes</span></label>
+              <label class="seg-opt"><input type="radio" name="s_famConv" value="no" class="famConvRadio" checked="checked" /><span>No</span></label>
+            </div>
+            <div class="famconv-who" style="display: none; margin-top: 0.75rem;">
+              <div class="helper" style="margin-top:0;margin-bottom:0.5rem;">Who in the family converted?</div>
+              <label class="chk"><input type="checkbox" id="s_fc_mother" /> <span>Mother</span></label>
+              <label class="chk"><input type="checkbox" id="s_fc_father" /> <span>Father</span></label>
+              <label class="chk"><input type="checkbox" id="s_fc_grandmother" /> <span>Grandmother</span></label>
+              <label class="chk"><input type="checkbox" id="s_fc_grandfather" /> <span>Grandfather</span></label>
+              <label class="chk" style="margin-bottom:0.4rem;"><input type="checkbox" id="s_fc_other" class="fcOther" /> <span>Other</span></label>
+              <input type="text" id="s_fc_otherText" class="fcOtherText" placeholder="Please specify" style="display: none;" />
+              <div class="field" style="margin-top:0.75rem;margin-bottom:0;"><label class="flabel">Details about the conversion(s)</label>
+                <input type="text" id="s_fc_details" placeholder="e.g. who converted, supervising Beit Din, approximate year" />
+                <div class="helper">This helps the Rabbi confirm Jewish status. Optional but appreciated.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="field"><label class="flabel">Tribe<span class="req tribe-req" style="display: none;">*</span></label>
+        <div class="seg">
+          <label class="seg-opt"><input type="radio" name="s_tribe" value="Kohen" /><span>Kohen</span></label>
+          <label class="seg-opt"><input type="radio" name="s_tribe" value="Levi" /><span>Levi</span></label>
+          <label class="seg-opt"><input type="radio" name="s_tribe" value="Yisroel" /><span>Yisroel</span></label>
+        </div>
+      </div>
+
+      <div class="field"><label class="flabel">Hebrew lineage (ben/bas ___)</label>
+        <input type="text" id="s_lineage" placeholder="e.g. bas Avraham" />
+        <div class="helper">Father's Hebrew name. Use 'Avraham' if unsure or ask the Rabbi.</div>
+      </div>
+
+      <div class="field"><label class="flabel">Mother's Hebrew name</label>
+        <input type="text" id="s_motherHeb" placeholder="e.g. Sara" />
+        <div class="helper">Used for mi shebeirach prayers</div>
+      </div>
+
+      <div class="row2">
+        <div class="field"><label class="flabel">Date of birth<span class="req">*</span></label>
+          <input type="date" id="s_dob" onchange="onDobChange('s')" />
+          <label class="chk" style="margin-top:0.5rem;margin-bottom:0;"><input type="checkbox" id="s_dobSunset" onchange="onDobChange('s')" /> <span>Born after sunset (the Hebrew date is the next day)</span></label>
+        </div>
+        <div class="field"><label class="flabel">Hebrew birthday</label>
+          <div class="heb-display" id="s_hebDob">-</div></div>
+      </div>
+
+      <div class="row2">
+        <div class="field"><label class="flabel">Anniversary date<span class="req">*</span></label>
+          <input type="date" id="s_anniversary" onchange="onAnnivChange()" /></div>
+        <div class="field"><label class="flabel">Hebrew anniversary</label>
+          <div class="heb-display" id="s_hebAnniv">-</div></div>
+      </div>
+
+      <div class="field"><label class="flabel">Occupation</label>
+        <input type="text" id="s_occupation" placeholder="Optional" /></div>
+
+      <div class="row2">
+        <div class="field"><label class="flabel">Email</label>
+          <input type="email" id="s_email" placeholder="Optional" /></div>
+        <div class="field"><label class="flabel">Cell phone</label>
+          <input type="tel" id="s_cell" placeholder="Optional" /></div>
+      </div>
+
+      <div class="yz-slot">
+        <label class="flabel">Yahrzeits (optional)</label>
+        <div class="helper" style="margin-top:0;margin-bottom:0.5rem;">Add a yahrzeit to be reminded and included in our prayers. The other calendar fills in automatically.</div>
+        <div id="s_yahrzeits"></div>
+        <button type="button" class="yz-add" onclick="addYahrzeit('s')">+ Add yahrzeit</button>
+      </div>
+    </div>
+
+    <!-- CHILDREN (Family only) -->
+    <div id="childrenWrap" style="display: none;">
+      <div class="scard">
+        <h2>Children</h2>
+        <p class="scard-sub">One panel per child, based on the count you chose.</p>
+        <div id="childrenContainer"></div>
+      </div>
+    </div>
+
+    <button type="button" class="continue-btn" onclick="goToScreen3()">Continue to preferences &amp; payment</button>
+
+  </div>
+  <!-- ============ /SCREEN 2 ============ -->
+
+  <!-- ============ SCREEN 3 - PREFERENCES + PAYMENT ============ -->
+  <div id="screen3" style="display: none;">
+
+    <div class="s2-top">
+      <button type="button" class="back-btn" onclick="showScreen(2)">Back</button>
+      <h1>Preferences &amp; payment</h1>
+    </div>
+
+    <!-- PREFERENCES -->
+    <div class="scard" id="prefsCard">
+      <h2>Preferences</h2>
+
+      <div class="field" id="donorWallField" style="display: none;"><label class="flabel">Donor wall display name</label>
+        <input type="text" id="pref_donorWall" placeholder="e.g. The Cohen Family" />
+        <div class="helper">How you want your family listed. Enter 'Anonymous' to stay private.</div>
+      </div>
+
+      <div class="field" id="kiddushField" style="display: none; margin-bottom:0;"><label class="flabel">Kiddush sponsorship dedication</label>
+        <input type="text" id="pref_kiddush" placeholder="e.g. In memory of..." />
+        <div class="helper">Included with your Silver / Gold membership.</div>
+      </div>
+    </div>
+
+    <!-- PAYMENT -->
+    <div class="scard">
+      <h2>Payment</h2>
+
+      <div class="field"><label class="flabel">Billing</label>
+        <div class="seg">
+          <label class="seg-opt"><input type="radio" name="pay_billing" value="monthly" checked="checked" onchange="onBillingChange()" /><span>Monthly</span></label>
+          <label class="seg-opt"><input type="radio" name="pay_billing" value="annual" onchange="onBillingChange()" /><span>Annual (pay full year)</span></label>
+        </div>
+      </div>
+
+      <div class="field" id="memorialPayField" style="display:none;">
+        <label class="flabel" id="memorial_fee_label">Memorial board</label>
+        <div class="helper" style="margin-top:0;margin-bottom:0.5rem;" id="memorial_fee_help">Memorial board plaque.</div>
+        <div class="seg">
+          <label class="seg-opt"><input type="radio" name="pay_memorial" value="first" checked="checked" onchange="onMemorialPayChange()" /><span>Add to my first payment</span></label>
+          <label class="seg-opt"><input type="radio" name="pay_memorial" value="separate" onchange="onMemorialPayChange()" /><span>Pay separately</span></label>
+        </div>
+        <div class="helper" style="margin-top:0.4rem;">If you choose to pay separately, the office will arrange it with you.</div>
+      </div>
+
+      <div class="sum-card">
+        <div class="sum-row"><span>Membership</span><span id="sum_tier">-</span></div>
+        <div class="sum-row"><span>Household</span><span id="sum_household">-</span></div>
+        <div class="sum-row"><span>Start date</span><span id="sum_start">-</span></div>
+        <div class="sum-row"><span>Monthly</span><span id="sum_monthly">-</span></div>
+        <div class="sum-row"><span>Annual total</span><span id="sum_annual">-</span></div>
+        <div class="sum-row" id="sum_memorial_row" style="display:none;"><span id="sum_memorial_label">Memorial board (one-time)</span><span id="sum_memorial">-</span></div>
+        <div class="sum-row sum-total"><span>You pay</span><span id="sum_billed">-</span></div>
+      </div>
+
+      <div class="field"><label class="flabel">Membership start date</label>
+        <input type="date" id="pay_startDate" onchange="onStartDateChange()" />
+      </div>
+
+      <div class="field"><label class="flabel">Membership code (optional)</label>
+        <div class="code-row">
+          <input type="text" id="pay_code" placeholder="Enter code" />
+          <button type="button" class="code-btn" onclick="applyCode()">Apply</button>
+        </div>
+        <div class="helper" id="code_msg" style="margin-top:0.4rem;"></div>
+      </div>
+
+      <div class="field" id="termsField" style="margin-bottom:0.9rem;">
+        <label class="chk"><input type="checkbox" id="pay_terms" onchange="onTermsChange()" /> <span id="terms_label">I authorize the recurring billing shown above until I cancel.</span></label>
+      </div>
+
+      <div id="paypal-notice" class="pay-notice">Please accept the billing authorization above to enable payment.</div>
+      <div id="paypal-button-container"></div>
+
+      <button type="button" id="compFinishBtn" class="continue-btn" style="display:none;margin-top:0.4rem;" onclick="finishComped()">Complete my membership</button>
+    </div>
+
+  </div>
+  <!-- ============ /SCREEN 3 ============ -->
+
+  <!-- ============ SCREEN 4 - CONFIRMATION ============ -->
+  <div id="screen4" style="display: none;">
+    <div class="scard conf-card">
+      <div class="conf-check"><span class="conf-tick"></span></div>
+      <h2 id="conf_title">Welcome to our Chabad family!</h2>
+      <p id="conf_lead" class="conf-lead">Your membership is confirmed. A welcome email is on its way, and the Rabbi has been notified.</p>
+
+      <div class="sum-card" style="text-align:left;">
+        <div class="sum-row"><span>Membership</span><span id="conf_tier">-</span></div>
+        <div class="sum-row"><span>Household</span><span id="conf_household">-</span></div>
+        <div class="sum-row"><span>Start date</span><span id="conf_start">-</span></div>
+        <div class="sum-row sum-total"><span>Monthly</span><span id="conf_monthly">-</span></div>
+        <div class="sum-row"><span>Annual total</span><span id="conf_annual">-</span></div>
+        <div class="sum-row" id="conf_memorial_row" style="display:none;"><span>Memorial board</span><span id="conf_memorial">-</span></div>
+        <div class="sum-row"><span>Subscription</span><span id="conf_sub">-</span></div>
+      </div>
+
+      <p class="conf-next">A receipt for the recurring payment comes from PayPal. For any questions, just reply to your welcome email or reach out to the office.</p>
+    </div>
+  </div>
+  <!-- ============ /SCREEN 4 ============ -->
+
+  <!-- Hidden template: one child panel, cloned per child (XML-safe; no innerHTML markup) -->
+  <div class="child-panel" id="childTemplate" style="display: none;" aria-hidden="true">
+    <div class="child-num">Child</div>
+
+    <div class="field"><label class="flabel">First name (English)<span class="req">*</span></label>
+      <input type="text" data-field="firstName" placeholder="First name" /></div>
+
+    <div class="field heb-name-group">
+      <label class="flabel">Hebrew name</label>
+      <div class="seg">
+        <label class="seg-opt"><input type="radio" data-group="hebOpt" value="enter" class="hebOpt" /><span>Enter Hebrew name</span></label>
+        <label class="seg-opt"><input type="radio" data-group="hebOpt" value="same" class="hebOpt" checked="checked" /><span>Same as English</span></label>
+        <label class="seg-opt"><input type="radio" data-group="hebOpt" value="none" class="hebOpt" /><span>I don't have one</span></label>
+      </div>
+      <input type="text" data-field="hebName" class="hebInput" placeholder="Hebrew name" style="display: none;" />
+    </div>
+
+    <div class="field"><label class="flabel">Gender</label>
+      <div class="seg">
+        <label class="seg-opt"><input type="radio" data-group="gender" value="M" /><span>Male</span></label>
+        <label class="seg-opt"><input type="radio" data-group="gender" value="F" /><span>Female</span></label>
+      </div>
+    </div>
+
+    <div class="row2">
+      <div class="field"><label class="flabel">Date of birth<span class="req">*</span></label>
+        <input type="date" data-field="dob" data-dobchild="1" />
+        <label class="chk" style="margin-top:0.5rem;margin-bottom:0;"><input type="checkbox" data-field="dobSunset" /> <span>Born after sunset</span></label>
+      </div>
+      <div class="field"><label class="flabel">Hebrew birthday</label>
+        <div class="heb-display" data-field="hebDob">-</div></div>
+    </div>
+
+    <div class="field"><label class="flabel">Bar / Bat mitzvah</label>
+      <div class="heb-display" data-field="bmitzvah">-</div></div>
+
+    <div class="field">
+      <label class="chk"><input type="checkbox" data-field="bmLessons" /> <span>We're interested in bar/bat mitzvah lessons</span></label></div>
+
+    <div class="field"><label class="flabel">School / yeshiva</label>
+      <input type="text" data-field="school" placeholder="Optional" /></div>
+  </div>
+
+  <!-- Hidden template: one yahrzeit panel, cloned per "Add yahrzeit" (XML-safe; no innerHTML markup) -->
+  <div class="yz-panel" id="yzTemplate" style="display: none;" aria-hidden="true">
+    <div class="yz-head">
+      <span class="yz-title">Yahrzeit</span>
+      <button type="button" class="yz-remove">Remove</button>
+    </div>
+
+    <div class="row2">
+      <div class="field"><label class="flabel">Name of deceased (English)</label>
+        <input type="text" data-yf="nameEng" placeholder="Full name" /></div>
+      <div class="field"><label class="flabel">Hebrew name</label>
+        <input type="text" data-yf="nameHeb" placeholder="e.g. Moshe ben Avraham" /></div>
+    </div>
+
+    <div class="row2">
+      <div class="field"><label class="flabel">Relationship</label>
+        <select data-yf="rel">
+          <option value="father">Father</option>
+          <option value="mother">Mother</option>
+          <option value="spouse">Spouse</option>
+          <option value="sibling">Sibling</option>
+          <option value="child">Child</option>
+          <option value="other">Other</option>
+        </select></div>
+      <div class="field"><label class="flabel">Gender of deceased</label>
+        <div class="seg">
+          <label class="seg-opt"><input type="radio" data-group="yzgender" value="M" /><span>Male</span></label>
+          <label class="seg-opt"><input type="radio" data-group="yzgender" value="F" /><span>Female</span></label>
+        </div>
+      </div>
+    </div>
+
+    <div class="row2">
+      <div class="field"><label class="flabel">Date of passing</label>
+        <input type="date" data-yf="dateEng" />
+        <label class="yz-sunset"><input type="checkbox" data-yf="afterSunset" /> Passed after sunset (the Hebrew date is the next day)</label>
+      </div>
+      <div class="field"><label class="flabel">Hebrew date</label>
+        <div class="heb-display" data-yf="result">-</div></div>
+    </div>
+
+    <div class="field" style="margin-bottom:0;">
+      <label class="chk"><input type="checkbox" data-yf="memorial" /> <span>Add their name to our memorial board - a permanent plaque, lit each year on the yahrzeit ($360, one-time)</span></label>
+    </div>
+  </div>
+
+</form>
+
+<script>
+/* ============================================================
+   STATE (single in-memory object; no localStorage in ChabadOne)
+   ============================================================ */
+var state = {
+  household: { type: 'single', parents: 'two', maritalStatus: '', kidsCount: 1, tier: null, monthly: 0, annual: 0, startDate: '' },
+  address: { street: '', city: '', state: '', zip: '', country: '' },
+  primary: null,
+  spouse: null,
+  children: [],
+  preferences: { donorWall: '', kiddushDedication: '' },
+  payment: { provider: 'paypal', subscriptionId: '' }
+};
+
+/* ---- Pricing table ---- */
+var PRICING = {
+  basic:  { single: 50,   couple: 80,   child: 20  },
+  chai:   { single: 180,  couple: 300,  child: 90  },
+  silver: { single: 500,  couple: 800,  child: 250 },
+  gold:   { single: 1000, couple: 1800, child: 360 }
+};
+var TIERS = ['basic', 'chai', 'silver', 'gold'];
+
+/* One-time fee per memorial-board plaque (yahrzeit). */
+var MEMORIAL_FEE = 360;
+
+var HH_LABEL = { single: 'Single', couple: 'Couple', family: 'Family' };
+var TIER_LABEL = { basic: 'Basic', chai: 'Chai', silver: 'Silver', gold: 'Gold' };
+
+/* ============================================================
+   STYLING via JS. The ChabadOne CMS strips pasted style blocks
+   (and mangles a stylesheet injected as a big string), so every
+   rule is applied here as element.style, the proven-safe pattern
+   in this CMS. Dynamic states (selected/checked/hover/invalid)
+   are handled by the restyle helpers below.
+   ============================================================ */
+/* Warm, burgundy-led palette: the page itself is a rosy linen tint so the
+   white cards read as highlights instead of the whole page being white.
+   Neutrals (text, borders) are warmed to match - no cool slate grays. */
+var C = {
+  accent: '#7a1f3d', accentStrong: '#5c1730',
+  accentTint: 'rgba(122,31,61,0.10)', accentFaint: 'rgba(122,31,61,0.40)',
+  text: '#2b171c', text2: '#5a3d44', text3: '#7d5c64',
+  cardBg: '#ffffff', cardBgSoft: '#f8eeeb',
+  borderSub: '#cfa9ad', borderHair: '#a8757f',
+  appBg: '#f3e5e1', appEdge: '#e4c8c1',
+  danger: '#dc2626', dangerText: '#dc2626'
+};
+
+function S(sel, o) {
+  document.querySelectorAll(sel).forEach(function (el) {
+    var k;
+    for (k in o) { el.style[k] = o[k]; }
+  });
+}
+
+function styleInit() {
+  S('#membershipApp *', { boxSizing: 'border-box' });
+  S('#membershipApp', {
+    fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif",
+    color: C.text, fontSize: '14px', lineHeight: '1.6', maxWidth: '880px',
+    margin: '0.5rem auto', padding: '1.1rem 1.15rem 2.5rem',
+    background: C.appBg, borderRadius: '18px', border: '1px solid ' + C.appEdge
+  });
+
+  /* header - a burgundy hero band so the page opens with real color */
+  S('#membershipApp .mhead', { textAlign: 'center', margin: '0 0 1.75rem', padding: '1.9rem 1.2rem 2rem', background: 'linear-gradient(140deg, #4a1226 0%, #7a1f3d 60%, #93314f 100%)', borderRadius: '14px', boxShadow: '0 12px 26px rgba(92,23,48,0.25)' });
+  S('#membershipApp .mhead h1', { fontSize: '24px', fontWeight: '700', margin: '0 0 0.4rem', color: '#ffffff', letterSpacing: '-0.01em' });
+  S('#membershipApp .mhead p', { margin: '0', color: 'rgba(255,255,255,0.85)', fontSize: '14px' });
+  S('#membershipApp .seclabel', { fontSize: '11px', fontWeight: '600', letterSpacing: '0.08em', textTransform: 'uppercase', color: C.text3, margin: '0 0 0.6rem 0.15rem' });
+
+  /* household selector */
+  S('#membershipApp .hh-grid', { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px', marginBottom: '1.4rem' });
+  S('#membershipApp .hh-card', { borderRadius: '12px', padding: '0.9rem 0.6rem', textAlign: 'center', cursor: 'pointer', transition: 'all 0.15s ease', boxShadow: '0 1px 2px rgba(0,0,0,0.04)' });
+  S('#membershipApp .hh-title', { fontWeight: '600', fontSize: '15px', color: C.text });
+  S('#membershipApp .hh-sub', { fontSize: '12px', color: C.text3, marginTop: '0.15rem' });
+
+  /* children stepper */
+  /* note: no display here - kept hidden by inline display:none until Family is chosen (selectHousehold sets flex) */
+  S('#membershipApp .kids-card', { alignItems: 'center', justifyContent: 'space-between', border: '1px solid ' + C.borderSub, background: C.cardBg, borderRadius: '12px', padding: '0.85rem 1rem', marginBottom: '1.4rem' });
+  S('#membershipApp .kids-label', { fontSize: '14px', color: C.text2 });
+  /* parents-in-the-home pills: always side by side - on narrow phones the
+     pair wraps below the label as one row instead of stacking vertically */
+  S('#membershipApp #familyParents', { flexWrap: 'wrap', rowGap: '0.5rem' });
+  S('#membershipApp #familyParents .seg', { flexWrap: 'nowrap' });
+  S('#membershipApp #familyParents .seg-opt span', { whiteSpace: 'nowrap' });
+  S('#membershipApp .stepper', { display: 'flex', alignItems: 'center', gap: '0.85rem' });
+  S('#membershipApp .step-btn', { width: '34px', height: '34px', borderRadius: '50%', border: '1px solid ' + C.borderHair, background: C.cardBgSoft, color: C.text, fontSize: '18px', lineHeight: '1', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.15s ease' });
+  S('#membershipApp .step-num', { fontSize: '16px', fontWeight: '600', minWidth: '22px', textAlign: 'center' });
+
+  /* tier cards */
+  S('#membershipApp .tier-grid', { display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px', paddingTop: '14px', marginBottom: '1.5rem' });
+  S('#membershipApp .tier-card', { position: 'relative', borderRadius: '12px', padding: '1.1rem 1rem 1.2rem', cursor: 'pointer', transition: 'all 0.15s ease', boxShadow: '0 1px 2px rgba(0,0,0,0.04)' });
+  S('#membershipApp .tier-badge', { position: 'absolute', top: '-11px', left: '16px', padding: '3px 10px', background: C.accent, color: '#fff', fontSize: '10px', fontWeight: '600', borderRadius: '999px', whiteSpace: 'nowrap', letterSpacing: '0.02em' });
+  S('#membershipApp .tier-name', { fontSize: '12px', fontWeight: '600', color: C.text3, textTransform: 'uppercase', letterSpacing: '0.05em' });
+  S('#membershipApp .tier-price', { marginTop: '0.3rem' });
+  S('#membershipApp .tier-price-num', { fontSize: '28px', fontWeight: '700', color: C.text });
+  S('#membershipApp .tier-per', { fontSize: '14px', color: C.text3, marginLeft: '2px' });
+  S('#membershipApp .tier-annual', { fontSize: '12px', color: C.text3, marginTop: '0.1rem' });
+  S('#membershipApp .tier-benefits', { listStyle: 'none', margin: '12px 0 0', padding: '0', fontSize: '12.5px', color: C.text2, lineHeight: '1.7' });
+
+  /* continue + footer */
+  S('#membershipApp .continue-btn', { width: '100%', padding: '1rem', border: 'none', borderRadius: '12px', background: C.accent, color: '#fff', fontSize: '15px', fontWeight: '600', fontFamily: 'inherit', cursor: 'pointer', transition: 'all 0.15s ease', marginBottom: '1.5rem' });
+  /* sits directly on the tinted page bg, so it gets the white card treatment */
+  S('#membershipApp .turned-away', { background: C.cardBg, borderRadius: '12px', padding: '1.1rem 1.2rem', border: '1px solid ' + C.borderSub });
+  S('#membershipApp .turned-away b', { display: 'block', marginBottom: '0.35rem', color: C.text, fontSize: '14px' });
+  S('#membershipApp .turned-away span', { color: C.text2, fontSize: '13px' });
+
+  /* screen 2 */
+  S('#membershipApp .s2-top', { display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.25rem' });
+  S('#membershipApp .back-btn', { border: '1px solid ' + C.borderHair, background: C.cardBg, color: C.text, borderRadius: '8px', padding: '0.4rem 0.7rem', fontSize: '13px', fontFamily: 'inherit', cursor: 'pointer', transition: 'all 0.15s ease' });
+  S('#membershipApp .s2-top h1', { fontSize: '20px', fontWeight: '700', margin: '0' });
+  S('#membershipApp .scard', { background: C.cardBg, border: '1px solid ' + C.borderSub, borderRadius: '12px', padding: '1.25rem', marginBottom: '1.25rem', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' });
+  S('#membershipApp .scard h2', { fontSize: '16px', fontWeight: '600', margin: '0 0 0.35rem', color: C.text });
+  S('#membershipApp .scard-sub', { fontSize: '12px', color: C.text3, margin: '0 0 1.1rem' });
+  S('#membershipApp .field', { marginBottom: '1rem' });
+  S('#membershipApp .flabel', { display: 'block', fontSize: '13px', fontWeight: '600', color: C.text, marginBottom: '0.4rem' });
+  S('#membershipApp .req', { color: C.accent, marginLeft: '2px' });
+  S('#membershipApp .helper', { fontSize: '11px', color: C.text3, marginTop: '0.3rem' });
+  S('#membershipApp .row2', { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' });
+
+  /* text/date/number inputs + selects (skip the hidden seg radios and checkboxes) */
+  document.querySelectorAll('#membershipApp .field input, #membershipApp .field select').forEach(function (el) {
+    if (el.type === 'radio') { return; }
+    if (el.type === 'checkbox') { return; }
+    el.style.width = '100%'; el.style.padding = '0.7rem 0.8rem';
+    el.style.background = C.cardBgSoft; el.style.border = '1px solid ' + C.borderSub;
+    el.style.borderRadius = '8px'; el.style.color = C.text; el.style.fontSize = '14px';
+    el.style.fontFamily = 'inherit'; el.style.transition = 'border-color 0.15s ease';
+    el.style.colorScheme = 'light';
+  });
+
+  /* segmented controls */
+  S('#membershipApp .seg', { display: 'flex', flexWrap: 'wrap', gap: '0.5rem' });
+  S('#membershipApp .seg-opt', { position: 'relative' });
+  S('#membershipApp .seg-opt input', { position: 'absolute', opacity: '0', width: '0', height: '0', pointerEvents: 'none' });
+  S('#membershipApp .seg-opt span', { display: 'block', borderRadius: '8px', fontSize: '13px', cursor: 'pointer', transition: 'all 0.15s ease' });
+  S('#membershipApp .heb-name-group .seg', { marginBottom: '0.55rem' });
+  S('#membershipApp .heb-display', { padding: '0.7rem 0.8rem', background: C.accentTint, borderRadius: '8px', fontSize: '14px', color: C.text, minHeight: '2.6em' });
+
+  /* child panels + convert block + error banner */
+  S('#membershipApp .child-panel', { background: C.cardBgSoft, border: '1px solid ' + C.borderSub, borderRadius: '12px', padding: '1.1rem', marginBottom: '1rem' });
+  S('#membershipApp .child-num', { fontSize: '14px', fontWeight: '600', color: C.accent, margin: '0 0 0.9rem' });
+  S('#membershipApp .yz-slot', { marginTop: '0.5rem' });
+  S('#membershipApp .convert-block', { display: 'none', marginTop: '0.85rem', padding: '0.95rem 1rem', background: C.accentTint, border: '1px solid ' + C.accentFaint, borderRadius: '8px' });
+  S('#membershipApp .cb-note', { fontSize: '12px', color: C.text2, margin: '0 0 0.85rem', lineHeight: '1.55' });
+
+  /* yahrzeits */
+  S('#membershipApp .yz-add', { marginTop: '0.2rem', border: '1px dashed ' + C.accentFaint, background: C.accentTint, color: C.accent, borderRadius: '8px', padding: '0.55rem 0.9rem', fontSize: '13px', fontWeight: '600', cursor: 'pointer', fontFamily: 'inherit' });
+  S('#membershipApp .yz-panel', { border: '1px solid ' + C.borderSub, borderRadius: '10px', padding: '1rem', marginBottom: '0.6rem', background: C.cardBgSoft });
+  S('#membershipApp .yz-head', { display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.7rem' });
+  S('#membershipApp .yz-title', { fontWeight: '600', fontSize: '14px', color: C.text });
+  S('#membershipApp .yz-remove', { border: '1px solid ' + C.borderSub, background: '#ffffff', color: C.danger, borderRadius: '6px', padding: '0.25rem 0.6rem', fontSize: '12px', cursor: 'pointer', fontFamily: 'inherit' });
+  S('#membershipApp .yz-sunset', { display: 'block', fontSize: '13px', color: C.text2, marginTop: '0.6rem', cursor: 'pointer' });
+  S('#membershipApp .row3', { display: 'grid', gridTemplateColumns: '80px 1fr 120px', gap: '0.5rem' });
+
+  /* screen 3: checkboxes, summary, payment */
+  S('#membershipApp .chk', { display: 'flex', alignItems: 'flex-start', gap: '0.55rem', fontSize: '13px', color: C.text2, marginBottom: '0.5rem', cursor: 'pointer', lineHeight: '1.45' });
+  document.querySelectorAll('#membershipApp .chk input[type="checkbox"]').forEach(function (el) {
+    el.style.width = '17px'; el.style.height = '17px'; el.style.marginTop = '1px';
+    el.style.accentColor = C.accent; el.style.cursor = 'pointer'; el.style.flexShrink = '0';
+  });
+  S('#membershipApp .sum-card', { background: C.cardBgSoft, border: '1px solid ' + C.borderSub, borderRadius: '10px', padding: '0.9rem 1rem', marginBottom: '1.1rem' });
+  S('#membershipApp .sum-row', { display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', fontSize: '13px', color: C.text2, padding: '0.3rem 0' });
+  S('#membershipApp .sum-row span:last-child', { color: C.text, fontWeight: '600' });
+  S('#membershipApp .sum-total', { borderTop: '1px solid ' + C.borderSub, marginTop: '0.25rem', paddingTop: '0.55rem' });
+  S('#membershipApp .sum-total span', { fontSize: '17px', color: C.text });
+  S('#membershipApp .pay-notice', { fontSize: '13px', color: C.text3, background: C.cardBgSoft, border: '1px solid ' + C.borderSub, borderRadius: '8px', padding: '0.7rem 0.9rem', textAlign: 'center' });
+  S('#membershipApp .code-row', { display: 'flex', gap: '0.5rem' });
+  S('#membershipApp .code-btn', { border: '1px solid ' + C.accent, background: C.accentTint, color: C.accent, borderRadius: '8px', padding: '0 1rem', fontSize: '13px', fontWeight: '600', cursor: 'pointer', fontFamily: 'inherit', whiteSpace: 'nowrap' });
+
+  /* screen 4: confirmation */
+  S('#membershipApp .conf-card', { textAlign: 'center' });
+  S('#membershipApp .conf-check', { width: '64px', height: '64px', borderRadius: '50%', background: C.accent, margin: '0.25rem auto 1rem', display: 'flex', alignItems: 'center', justifyContent: 'center' });
+  S('#membershipApp .conf-tick', { display: 'block', width: '14px', height: '26px', borderRight: '4px solid #ffffff', borderBottom: '4px solid #ffffff', transform: 'rotate(45deg)', marginTop: '-6px' });
+  S('#membershipApp .conf-card h2', { fontSize: '20px', textAlign: 'center', margin: '0 0 0.5rem' });
+  S('#membershipApp .conf-lead', { color: C.text2, fontSize: '14px', margin: '0 0 1.3rem', lineHeight: '1.6' });
+  S('#membershipApp .conf-next', { color: C.text3, fontSize: '12.5px', margin: '1.1rem 0 0', lineHeight: '1.6' });
+  S('#membershipApp .s2-err', { display: 'none', color: C.dangerText, fontSize: '13px', marginBottom: '1rem', padding: '0.7rem 0.9rem', background: 'rgba(239,68,68,0.1)', borderRadius: '8px' });
+
+  /* resting dynamic states */
+  document.querySelectorAll('#membershipApp .hh-card').forEach(restyleHh);
+  document.querySelectorAll('#membershipApp .tier-card').forEach(restyleTier);
+  restyleAllSegs();
+}
+
+/* ---- dynamic state restyle helpers ---- */
+function restyleHh(el) {
+  if (el.classList.contains('selected')) { el.style.border = '2px solid ' + C.accent; el.style.background = C.accentTint; }
+  else { el.style.border = '1px solid ' + C.borderSub; el.style.background = C.cardBg; }
+}
+function restyleTier(el) {
+  if (el.classList.contains('selected')) { el.style.border = '2px solid ' + C.accent; el.style.background = C.accentTint; }
+  else if (el.classList.contains('popular')) { el.style.border = '1px solid ' + C.accentFaint; el.style.background = C.cardBg; }
+  else { el.style.border = '1px solid ' + C.borderSub; el.style.background = C.cardBg; }
+  el.style.transform = 'none';
+}
+function segStyleSpan(span, on, invalid) {
+  span.style.padding = '0.55rem 0.9rem';
+  if (invalid) { span.style.border = '1px solid ' + C.danger; }
+  else if (on) { span.style.border = '2px solid ' + C.accent; }
+  else { span.style.border = '1px solid ' + C.borderSub; }
+  if (on) { span.style.background = C.accentTint; span.style.color = C.text; }
+  else { span.style.background = C.cardBgSoft; span.style.color = C.text2; }
+}
+function restyleGroup(name) {
+  if (!name) { return; }
+  document.querySelectorAll('input[name="' + name + '"]').forEach(function (r) {
+    var span = r.nextElementSibling;
+    if (span) { segStyleSpan(span, r.checked, false); }
+  });
+}
+function restyleAllSegs() {
+  document.querySelectorAll('#membershipApp .seg-opt input').forEach(function (r) {
+    var span = r.nextElementSibling;
+    if (span) { segStyleSpan(span, r.checked, false); }
+  });
+}
+
+/* ---- Helpers ---- */
+function money(n) { return '$' + n.toLocaleString('en-US'); }
+
+function monthlyFor(tier, type, kids, parents) {
+  var p = PRICING[tier];
+  if (type === 'single') { return p.single; }
+  if (type === 'couple') { return p.couple; }
+  /* family: base is the couple rate, or the single rate for a single parent */
+  var base = (parents === 'one') ? p.single : p.couple;
+  return base + (p.child * kids);
+}
+
+/* ---- Render tier prices for the current household ---- */
+function updatePrices() {
+  var type = state.household.type;
+  var kids = state.household.kidsCount;
+  var parents = state.household.parents;
+  TIERS.forEach(function (t) {
+    var m = monthlyFor(t, type, kids, parents);
+    var priceEl = document.getElementById('price-' + t);
+    var annualEl = document.getElementById('annual-' + t);
+    if (priceEl) { priceEl.textContent = money(m); }
+    if (annualEl) { annualEl.textContent = money(m * 12) + ' / year'; }
+  });
+}
+
+/* ---- Household selection ---- */
+function selectHousehold(type) {
+  state.household.type = type;
+  var cards = document.querySelectorAll('#screen1 .hh-card');
+  cards.forEach(function (c) {
+    if (c.getAttribute('data-hh') === type) { c.classList.add('selected'); }
+    else { c.classList.remove('selected'); }
+    restyleHh(c);
+  });
+  /* Show parents toggle + kids stepper only for family */
+  var stepper = document.getElementById('kidsStepper');
+  var fparents = document.getElementById('familyParents');
+  if (type === 'family') { stepper.style.display = 'flex'; fparents.style.display = 'flex'; }
+  else { stepper.style.display = 'none'; fparents.style.display = 'none'; }
+  updatePrices();
+  updateContinue();
+}
+
+/* ---- Family: two parents vs single parent ---- */
+function setParents(p) {
+  state.household.parents = p;
+  updatePrices();
+  updateContinue();
+}
+
+/* True when a spouse section applies: couple, or a two-parent family. */
+function hasSpouse() {
+  if (state.household.type === 'couple') { return true; }
+  if (state.household.type === 'family') { return state.household.parents === 'two'; }
+  return false;
+}
+
+/* ---- Children stepper ---- */
+function changeKids(delta) {
+  var n = state.household.kidsCount + delta;
+  if (1 > n) { n = 1; }
+  if (n > 10) { n = 10; }
+  state.household.kidsCount = n;
+  document.getElementById('kidsNum').textContent = n;
+  updatePrices();
+  updateContinue();
+}
+
+/* ---- Tier selection ---- */
+function selectTier(tier) {
+  state.household.tier = tier;
+  var cards = document.querySelectorAll('#screen1 .tier-card');
+  cards.forEach(function (c) {
+    if (c.getAttribute('data-tier') === tier) { c.classList.add('selected'); }
+    else { c.classList.remove('selected'); }
+    restyleTier(c);
+  });
+  updateContinue();
+}
+
+/* ---- Continue button state + label ---- */
+function updateContinue() {
+  var btn = document.getElementById('continueBtn');
+  var tier = state.household.tier;
+  if (!tier) {
+    btn.disabled = true;
+    btn.style.opacity = '0.4';
+    btn.style.cursor = 'not-allowed';
+    btn.textContent = 'Select a tier to continue';
+    state.household.monthly = 0;
+    state.household.annual = 0;
+    return;
+  }
+  var m = monthlyFor(tier, state.household.type, state.household.kidsCount, state.household.parents);
+  state.household.monthly = m;
+  state.household.annual = m * 12;
+  btn.disabled = false;
+  btn.style.opacity = '1';
+  btn.style.cursor = 'pointer';
+  var hhlabel = HH_LABEL[state.household.type];
+  if (state.household.type === 'family') { if (state.household.parents === 'one') { hhlabel = 'Single-parent family'; } }
+  btn.textContent = 'Continue as ' + hhlabel + ' - ' + TIER_LABEL[tier] + ' - ' + money(m) + '/mo';
+}
+
+/* ============================================================
+   SCREEN NAVIGATION
+   ============================================================ */
+function showScreen(n) {
+  document.getElementById('screen1').style.display = (n === 1) ? 'block' : 'none';
+  document.getElementById('screen2').style.display = (n === 2) ? 'block' : 'none';
+  var s3 = document.getElementById('screen3');
+  if (s3) { s3.style.display = (n === 3) ? 'block' : 'none'; }
+  var s4 = document.getElementById('screen4');
+  if (s4) { s4.style.display = (n === 4) ? 'block' : 'none'; }
+  window.scrollTo(0, 0);
+}
+
+/* Screen 1 -> Screen 2: configure conditional sections, then show. */
+function goToScreen2() {
+  if (!state.household.tier) { return; }
+  var type = state.household.type;
+
+  /* Spouse: shown for a couple or a two-parent family (not a single parent) */
+  var spouse = document.getElementById('spouseSection');
+  spouse.style.display = hasSpouse() ? 'block' : 'none';
+
+  /* Children: shown for family only */
+  var wrap = document.getElementById('childrenWrap');
+  if (type === 'family') {
+    wrap.style.display = 'block';
+    buildChildren(state.household.kidsCount);
+  } else {
+    wrap.style.display = 'none';
+    document.getElementById('childrenContainer').textContent = '';
+  }
+
+  showScreen(2);
+}
+
+/* ============================================================
+   CHILDREN - clone the hidden template once per child.
+   Uses cloneNode + setAttribute only (no innerHTML markup),
+   so the strict-XML CMS paste stays safe.
+   ============================================================ */
+function childIdxs() {
+  var a = [];
+  var i = 0;
+  var n = state.household.kidsCount;
+  while (n > i) { a.push(i); i = i + 1; }
+  return a;
+}
+
+function buildChildren(n) {
+  var container = document.getElementById('childrenContainer');
+  container.textContent = '';
+  var tpl = document.getElementById('childTemplate');
+  var idxs = [];
+  var i = 0;
+  while (n > i) { idxs.push(i); i = i + 1; }
+
+  idxs.forEach(function (idx) {
+    var clone = tpl.cloneNode(true);
+    clone.id = 'child_' + idx;
+    clone.style.display = 'block';
+    clone.removeAttribute('aria-hidden');
+
+    var heading = clone.querySelector('.child-num');
+    if (heading) { heading.textContent = 'Child ' + (idx + 1); }
+
+    /* Give every data-field element a unique id like c0_firstName */
+    var fields = clone.querySelectorAll('[data-field]');
+    fields.forEach(function (el) {
+      el.id = 'c' + idx + '_' + el.getAttribute('data-field');
+    });
+
+    /* Give each radio group a unique name like c0_gender */
+    var radios = clone.querySelectorAll('input[type="radio"]');
+    radios.forEach(function (r) {
+      var grp = r.getAttribute('data-group');
+      if (grp) { r.setAttribute('name', 'c' + idx + '_' + grp); }
+    });
+
+    container.appendChild(clone);
+  });
+
+  /* Repaint segmented controls for the freshly cloned panels */
+  restyleAllSegs();
+}
+
+/* ============================================================
+   DELEGATED UI BEHAVIOR (works for primary, spouse, and clones)
+   ============================================================ */
+document.getElementById('membershipApp').addEventListener('change', function (e) {
+  var t = e.target;
+
+  /* Any segmented radio: repaint its group's selected highlight */
+  if (t.type === 'radio') { restyleGroup(t.name); }
+
+  /* Hebrew-name radio: reveal the text input only when "enter" is chosen */
+  if (t.classList.contains('hebOpt')) {
+    var grp = t.closest('.heb-name-group');
+    if (grp) {
+      var inp = grp.querySelector('.hebInput');
+      if (inp) { inp.style.display = (t.value === 'enter') ? 'block' : 'none'; }
+    }
+  }
+
+  /* Gender changed: refresh tribe asterisk + convert lineage (ben/bas) */
+  if (t.classList.contains('genderRadio')) {
+    applyJewishnessRules(t.name.split('_')[0]);
+  }
+
+  /* Jewishness: reveal conversion-documents block for converts,
+     and the family-conversion question for those Jewish from birth */
+  if (t.classList.contains('jewRadio')) {
+    var jcard = t.closest('.scard');
+    if (jcard) {
+      var block = jcard.querySelector('.convert-block:not(.birthconv-block)');
+      if (block) { block.style.display = (t.value === 'convert') ? 'block' : 'none'; }
+      var bblock = jcard.querySelector('.birthconv-block');
+      if (bblock) { bblock.style.display = (t.value === 'birth') ? 'block' : 'none'; }
+    }
+    applyJewishnessRules(t.name.split('_')[0]);
+  }
+
+  /* Family conversions: reveal the "who" checkboxes only when Yes */
+  if (t.classList.contains('famConvRadio')) {
+    var fcb = t.closest('.birthconv-block');
+    if (fcb) {
+      var who = fcb.querySelector('.famconv-who');
+      if (who) { who.style.display = (t.value === 'yes') ? 'block' : 'none'; }
+    }
+  }
+
+  /* "Other" relative: reveal its free-text field */
+  if (t.classList.contains('fcOther')) {
+    var whoWrap = t.closest('.famconv-who');
+    if (whoWrap) {
+      var ot = whoWrap.querySelector('.fcOtherText');
+      if (ot) { ot.style.display = t.checked ? 'block' : 'none'; }
+    }
+  }
+
+  /* Child DOB or gender changed: recompute Hebrew birthday + bar/bat mitzvah */
+  if (t.getAttribute) {
+    var df = t.getAttribute('data-field');
+    var dg = t.getAttribute('data-group');
+    if (df === 'dob' || df === 'dobSunset' || dg === 'gender') {
+      var cpanel = t.closest('.child-panel');
+      if (cpanel) {
+        var cm = cpanel.id.match(/child_(\d+)/);
+        if (cm) { recalcChild(cm[1]); }
+      }
+    }
+  }
+
+  /* Anything inside a yahrzeit panel changed: recompute the converted date */
+  var yzPanel = t.closest ? t.closest('.yz-panel') : null;
+  if (yzPanel) {
+    if (yzPanel.id !== 'yzTemplate') { recalcYahrzeit(yzPanel); }
+  }
+});
+
+/* ============================================================
+   JEWISHNESS-DRIVEN FIELD RULES (prefix 'p' = primary, 's' = spouse)
+   - Convert: tribe auto-locked to Yisroel; lineage auto "ben/bas
+     Avraham Avinu" and locked.
+   - From birth: tribe selectable (required only for males); lineage
+     is free text. A born Jew with family conversions is NOT treated
+     as a convert here, so these auto-fills do not apply to them.
+   - Not Jewish: no Hebrew lineage and no Hebrew birthday.
+   ============================================================ */
+function applyJewishnessRules(prefix) {
+  var jew = radioVal(prefix + '_jewishness');
+  var gender = radioVal(prefix + '_gender');
+  var isConvert = (jew === 'convert');
+  var isNot = (jew === 'not');
+
+  /* Tribe: auto Yisroel + locked for a convert; freely chosen otherwise */
+  document.querySelectorAll('input[name="' + prefix + '_tribe"]').forEach(function (r) {
+    r.disabled = isConvert;
+    if (isConvert) { r.checked = (r.value === 'Yisroel'); }
+  });
+  restyleGroup(prefix + '_tribe');
+
+  /* Tribe: hidden for a non-Jew; asterisk only for a male Jewish from birth */
+  var tribeField = fieldByName(prefix + '_tribe');
+  if (tribeField) {
+    tribeField.style.display = isNot ? 'none' : 'block';
+    var star = tribeField.querySelector('.tribe-req');
+    if (star) { star.style.display = (gender === 'M') ? ((jew === 'birth') ? 'inline' : 'none') : 'none'; }
+  }
+
+  /* Hebrew lineage: auto + locked for a convert; hidden for a non-Jew */
+  var lin = document.getElementById(prefix + '_lineage');
+  if (lin) {
+    if (isConvert) {
+      lin.value = (gender === 'F') ? 'bas Avraham Avinu' : 'ben Avraham Avinu';
+      lin.readOnly = true;
+    } else {
+      if (lin.readOnly) { lin.value = ''; }
+      lin.readOnly = false;
+    }
+    var linField = lin.closest('.field');
+    if (linField) { linField.style.display = isNot ? 'none' : 'block'; }
+  }
+
+  /* Mother's Hebrew name: auto "Sara Imeinu" + locked for a convert;
+     hidden for a non-Jew */
+  var mh = document.getElementById(prefix + '_motherHeb');
+  if (mh) {
+    if (isConvert) {
+      mh.value = 'Sara Imeinu';
+      mh.readOnly = true;
+    } else {
+      if (mh.readOnly) { mh.value = ''; }
+      mh.readOnly = false;
+    }
+    var mhField = mh.closest('.field');
+    if (mhField) { mhField.style.display = isNot ? 'none' : 'block'; }
+  }
+
+  /* Hebrew birthday: hidden for a non-Jew */
+  var hd = document.getElementById(prefix + '_hebDob');
+  var hdField = hd ? hd.closest('.field') : null;
+  if (hdField) { hdField.style.display = isNot ? 'none' : 'block'; }
+}
+
+/* ---- Hover / focus styling (no CSS pseudo-classes available) ---- */
+function isSegSpan(el) {
+  if (el.tagName !== 'SPAN') { return false; }
+  var par = el.parentNode;
+  if (!par) { return false; }
+  return par.classList.contains('seg-opt');
+}
+document.getElementById('membershipApp').addEventListener('mouseover', function (e) {
+  var el = e.target;
+  var hh = el.closest ? el.closest('.hh-card') : null;
+  if (hh) { if (!hh.classList.contains('selected')) { hh.style.borderColor = C.borderHair; } return; }
+  var tier = el.closest('.tier-card');
+  if (tier) { if (!tier.classList.contains('selected')) { tier.style.borderColor = C.borderHair; } tier.style.transform = 'translateY(-1px)'; return; }
+  var sb = el.closest('.step-btn'); if (sb) { sb.style.borderColor = C.accent; sb.style.color = C.accent; return; }
+  var bb = el.closest('.back-btn'); if (bb) { bb.style.borderColor = C.accent; bb.style.color = C.accent; return; }
+  var cb = el.closest('.continue-btn'); if (cb) { if (!cb.disabled) { cb.style.background = C.accentStrong; } return; }
+  if (isSegSpan(el)) {
+    var inp = el.previousElementSibling;
+    var on = inp ? inp.checked : false;
+    if (!on) { el.style.borderColor = C.borderHair; }
+  }
+});
+document.getElementById('membershipApp').addEventListener('mouseout', function (e) {
+  var el = e.target;
+  var hh = el.closest ? el.closest('.hh-card') : null;
+  if (hh) { restyleHh(hh); return; }
+  var tier = el.closest('.tier-card'); if (tier) { restyleTier(tier); return; }
+  var sb = el.closest('.step-btn'); if (sb) { sb.style.borderColor = C.borderHair; sb.style.color = C.text; return; }
+  var bb = el.closest('.back-btn'); if (bb) { bb.style.borderColor = C.borderHair; bb.style.color = C.text; return; }
+  var cb = el.closest('.continue-btn'); if (cb) { if (!cb.disabled) { cb.style.background = C.accent; } return; }
+  if (isSegSpan(el)) {
+    var inp = el.previousElementSibling;
+    segStyleSpan(el, inp ? inp.checked : false, false);
+  }
+});
+document.getElementById('membershipApp').addEventListener('focusin', function (e) {
+  var el = e.target;
+  if (el.tagName === 'INPUT') { if (el.type !== 'radio') { el.style.borderColor = C.accent; el.style.outline = 'none'; } }
+});
+document.getElementById('membershipApp').addEventListener('focusout', function (e) {
+  var el = e.target;
+  if (el.tagName === 'INPUT') {
+    if (el.type !== 'radio') {
+      var f = el.closest('.field');
+      var bad = f ? f.classList.contains('invalid') : false;
+      el.style.borderColor = bad ? C.danger : C.borderSub;
+    }
+  }
+});
+
+/* ============================================================
+   FIELD HELPERS
+   ============================================================ */
+function val(id) { var e = document.getElementById(id); return e ? e.value.trim() : ''; }
+function disp(id) { var e = document.getElementById(id); var v = e ? e.textContent.trim() : ''; return (v === '-') ? '' : v; }
+function radioVal(name) {
+  var v = '';
+  document.querySelectorAll('input[name="' + name + '"]').forEach(function (r) { if (r.checked) { v = r.value; } });
+  return v;
+}
+function fieldEl(id) { var e = document.getElementById(id); return e ? e.closest('.field') : null; }
+function fieldByName(name) { var e = document.querySelector('input[name="' + name + '"]'); return e ? e.closest('.field') : null; }
+function flag(node, bad) {
+  if (!node) { return; }
+  if (bad) { node.classList.add('invalid'); } else { node.classList.remove('invalid'); }
+  node.querySelectorAll('input').forEach(function (inp) {
+    if (inp.type === 'radio') { return; }
+    inp.style.borderColor = bad ? C.danger : C.borderSub;
+  });
+  node.querySelectorAll('.seg-opt span').forEach(function (sp) {
+    var inp = sp.previousElementSibling;
+    segStyleSpan(sp, inp ? inp.checked : false, bad);
+  });
+}
+
+/* ============================================================
+   VALIDATION (Screen 2 required fields)
+   ============================================================ */
+/* Real email shape check - the backend refuses to send to junk addresses,
+   so catch them here where the person can fix the typo. */
+function emailOk(s) {
+  s = String(s || '').trim();
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s);
+}
+
+function validateScreen2() {
+  var ok = true;
+
+  /* Primary text/date required (email must also look like an email) */
+  ['p_firstName', 'p_lastName', 'p_dob', 'p_email', 'p_cell'].forEach(function (id) {
+    var bad = (id === 'p_email') ? !emailOk(val(id)) : (val(id) === '');
+    flag(fieldEl(id), bad);
+    if (bad) { ok = false; }
+  });
+  /* Primary radio required */
+  ['p_gender', 'p_jewishness', 'p_maritalStatus'].forEach(function (name) {
+    var bad = (radioVal(name) === '');
+    flag(fieldByName(name), bad);
+    if (bad) { ok = false; }
+  });
+  /* Tribe required only for a male who is Jewish from birth (optional for
+     women; auto Yisroel for converts; not asked of non-Jews) */
+  var pTribeReq = (radioVal('p_gender') === 'M') ? (radioVal('p_jewishness') === 'birth') : false;
+  if (pTribeReq) {
+    var badT = (radioVal('p_tribe') === '');
+    flag(fieldByName('p_tribe'), badT);
+    if (badT) { ok = false; }
+  } else { flag(fieldByName('p_tribe'), false); }
+  /* Conversion authority required when Convert */
+  if (radioVal('p_jewishness') === 'convert') {
+    var badC = (val('p_convertAuthority') === '');
+    flag(fieldEl('p_convertAuthority'), badC);
+    if (badC) { ok = false; }
+  } else { flag(fieldEl('p_convertAuthority'), false); }
+
+  /* Spouse (couple or two-parent family) */
+  if (hasSpouse()) {
+    ['s_firstName', 's_lastName', 's_dob', 's_anniversary'].forEach(function (id) {
+      var bad = (val(id) === '');
+      flag(fieldEl(id), bad);
+      if (bad) { ok = false; }
+    });
+    /* Spouse email is optional, but if entered it must be a real address */
+    var sEmailBad = (val('s_email') === '') ? false : !emailOk(val('s_email'));
+    flag(fieldEl('s_email'), sEmailBad);
+    if (sEmailBad) { ok = false; }
+    ['s_gender', 's_jewishness'].forEach(function (name) {
+      var bad = (radioVal(name) === '');
+      flag(fieldByName(name), bad);
+      if (bad) { ok = false; }
+    });
+    var sTribeReq = (radioVal('s_gender') === 'M') ? (radioVal('s_jewishness') === 'birth') : false;
+    if (sTribeReq) {
+      var badST = (radioVal('s_tribe') === '');
+      flag(fieldByName('s_tribe'), badST);
+      if (badST) { ok = false; }
+    } else { flag(fieldByName('s_tribe'), false); }
+    if (radioVal('s_jewishness') === 'convert') {
+      var badSC = (val('s_convertAuthority') === '');
+      flag(fieldEl('s_convertAuthority'), badSC);
+      if (badSC) { ok = false; }
+    } else { flag(fieldEl('s_convertAuthority'), false); }
+  }
+
+  /* Children (family) */
+  if (state.household.type === 'family') {
+    childIdxs().forEach(function (idx) {
+      ['firstName', 'dob'].forEach(function (f) {
+        var id = 'c' + idx + '_' + f;
+        var bad = (val(id) === '');
+        flag(fieldEl(id), bad);
+        if (bad) { ok = false; }
+      });
+    });
+  }
+
+  return ok;
+}
+
+/* ============================================================
+   COLLECT Screen 2 into state
+   ============================================================ */
+/* Which relatives converted - only meaningful for members Jewish from birth */
+function collectFamConv(prefix) {
+  if (radioVal(prefix + '_famConv') !== 'yes') { return []; }
+  var who = [];
+  [['mother', 'Mother'], ['father', 'Father'], ['grandmother', 'Grandmother'], ['grandfather', 'Grandfather']].forEach(function (p) {
+    if (chk(prefix + '_fc_' + p[0])) { who.push(p[1]); }
+  });
+  if (chk(prefix + '_fc_other')) {
+    var ot = val(prefix + '_fc_otherText');
+    who.push(ot ? ('Other: ' + ot) : 'Other');
+  }
+  return who;
+}
+
+function readAdult(prefix) {
+  return {
+    firstName: val(prefix + '_firstName'),
+    lastName: val(prefix + '_lastName'),
+    hebOpt: radioVal(prefix + '_hebOpt'),
+    hebName: val(prefix + '_hebName'),
+    gender: radioVal(prefix + '_gender'),
+    tribe: (radioVal(prefix + '_jewishness') === 'not') ? '' : radioVal(prefix + '_tribe'),
+    lineage: (radioVal(prefix + '_jewishness') === 'not') ? '' : val(prefix + '_lineage'),
+    motherHeb: (radioVal(prefix + '_jewishness') === 'not') ? '' : val(prefix + '_motherHeb'),
+    jewishness: radioVal(prefix + '_jewishness'),
+    convertAuthority: val(prefix + '_convertAuthority'),
+    convertDate: val(prefix + '_convertDate'),
+    famConv: radioVal(prefix + '_famConv'),
+    famConvWho: collectFamConv(prefix),
+    famConvDetails: (radioVal(prefix + '_famConv') === 'yes') ? val(prefix + '_fc_details') : '',
+    dobEng: val(prefix + '_dob'),
+    dobHeb: (radioVal(prefix + '_jewishness') === 'not') ? '' : disp(prefix + '_hebDob'),
+    occupation: val(prefix + '_occupation'),
+    email: val(prefix + '_email'),
+    cell: val(prefix + '_cell'),
+    work: val(prefix + '_work'),
+    home: val(prefix + '_home'),
+    yahrzeits: []
+  };
+}
+
+function collectScreen2() {
+  state.primary = readAdult('p');
+  state.primary.yahrzeits = collectYahrzeits('p');
+  state.household.maritalStatus = radioVal('p_maritalStatus');
+
+  state.address = {
+    street: val('addr_street'), city: val('addr_city'), state: val('addr_state'),
+    zip: val('addr_zip'), country: val('addr_country')
+  };
+
+  if (hasSpouse()) {
+    state.spouse = readAdult('s');
+    state.spouse.yahrzeits = collectYahrzeits('s');
+    state.spouse.anniversaryEng = val('s_anniversary');
+    state.spouse.anniversaryHeb = disp('s_hebAnniv');
+  } else {
+    state.spouse = null;
+  }
+
+  state.children = [];
+  if (state.household.type === 'family') {
+    childIdxs().forEach(function (idx) {
+      state.children.push({
+        firstName: val('c' + idx + '_firstName'),
+        hebOpt: radioVal('c' + idx + '_hebOpt'),
+        hebName: val('c' + idx + '_hebName'),
+        gender: radioVal('c' + idx + '_gender'),
+        dobEng: val('c' + idx + '_dob'),
+        dobHeb: disp('c' + idx + '_hebDob'),
+        bmitzvah: disp('c' + idx + '_bmitzvah'),
+        bmLessons: chk('c' + idx + '_bmLessons'),
+        school: val('c' + idx + '_school')
+      });
+    });
+  }
+}
+
+/* ============================================================
+   Hebcal hooks - wired in Phase 3 (stubs for now)
+   ============================================================ */
+/* ============================================================
+   HEBCAL date conversion. Hebcal sends "Access-Control-Allow-Origin: *",
+   so a plain fetch() works (this is exactly what Meal Form.html does in
+   this same CMS). Cached client-side in hebCache (no localStorage here).
+   AMP holds an ampersand built via escape, to keep the source clean.
+   ============================================================ */
+var AMP = '\x26';
+var hebCache = {};
+
+function hebFetch(url, key, cb) {
+  if (key) { if (hebCache[key]) { cb(hebCache[key]); return; } }
+  fetch(url)
+    .then(function (r) { return r.json(); })
+    .then(function (d) { if (key) { hebCache[key] = d; } cb(d); })
+    .catch(function () { cb(null); });
+}
+
+/* Gregorian (YYYY-MM-DD) -> Hebrew. afterSunset adds gs=on. cb gets {hd, hm, hy, hebrew} or null. */
+function g2h(iso, afterSunset, cb) {
+  if (!iso) { cb(null); return; }
+  var key = 'g2h|' + iso + '|' + (afterSunset ? '1' : '0');
+  var p = iso.split('-');
+  var url = 'https://www.hebcal.com/converter?cfg=json' + AMP + 'gy=' + Number(p[0]) + AMP + 'gm=' + Number(p[1]) + AMP + 'gd=' + Number(p[2]) + AMP + 'g2h=1';
+  if (afterSunset) { url = url + AMP + 'gs=on'; }
+  hebFetch(url, key, cb);
+}
+
+/* Hebrew (hy, hmName, hd) -> Gregorian. cb gets {gy, gm, gd} or null. */
+function h2g(hy, hm, hd, cb) {
+  var key = 'h2g|' + hy + '|' + hm + '|' + hd;
+  var url = 'https://www.hebcal.com/converter?cfg=json' + AMP + 'hy=' + hy + AMP + 'hm=' + encodeURIComponent(hm) + AMP + 'hd=' + hd + AMP + 'h2g=1';
+  hebFetch(url, key, cb);
+}
+
+function hebStr(d) {
+  if (!d) { return 'Could not convert'; }
+  var s = d.hd + ' ' + d.hm + ' ' + d.hy;
+  if (d.hebrew) { s = s + '  (' + d.hebrew + ')'; }
+  return s;
+}
+function engStr(d) {
+  if (!d) { return 'Could not convert'; }
+  var mm = ('0' + d.gm).slice(-2);
+  var dd = ('0' + d.gd).slice(-2);
+  return mm + '/' + dd + '/' + d.gy;
+}
+
+/* hebcal {gy,gm,gd} -> ISO YYYY-MM-DD */
+function gIso(g) {
+  if (!g) { return ''; }
+  var mm = ('0' + g.gm).slice(-2);
+  var dd = ('0' + g.gd).slice(-2);
+  return g.gy + '-' + mm + '-' + dd;
+}
+
+/* ISO date advanced by n days, returned as ISO */
+function addDaysIso(iso, n) {
+  var p = iso.split('-');
+  var dt = new Date(Number(p[0]), Number(p[1]) - 1, Number(p[2]));
+  dt.setDate(dt.getDate() + n);
+  return isoLocal(dt);
+}
+
+/* Torah portion for the week of a date, or the major holiday when the date
+   itself falls on one. cb gets a display string ('' if none / on failure).
+   Uses the hebcal calendar API (maj=on for major holidays, s=on for sedra). */
+function parshaForDate(iso, cb) {
+  if (!iso) { cb(''); return; }
+  var key = 'parsha|' + iso;
+  var url = 'https://www.hebcal.com/hebcal?v=1' + AMP + 'cfg=json' + AMP + 'maj=on' + AMP + 'min=off' + AMP + 'mod=off' + AMP + 'nx=off' + AMP + 'mf=off' + AMP + 'ss=off' + AMP + 'c=off' + AMP + 's=on' + AMP + 'start=' + iso + AMP + 'end=' + addDaysIso(iso, 7);
+  hebFetch(url, key, function (data) {
+    if (!data) { cb(''); return; }
+    if (!data.items) { cb(''); return; }
+    var holiday = '';
+    var parsha = '';
+    data.items.forEach(function (it) {
+      if (it.category === 'holiday') {
+        if (it.date === iso) { if (!holiday) { holiday = it.title; } }
+      }
+      if (it.category === 'parashat') {
+        if (!parsha) { parsha = it.title; }
+      }
+    });
+    if (holiday) { cb('Holiday: ' + holiday); return; }
+    if (parsha) {
+      var nm = (parsha.indexOf('Parashat ') === 0) ? parsha.slice(9) : parsha;
+      cb('Parsha: ' + nm);
+      return;
+    }
+    cb('');
+  });
+}
+
+/* Primary/spouse Hebrew birthday (after-sunset shifts the Hebrew date +1 day) */
+function onDobChange(prefix) {
+  var iso = val(prefix + '_dob');
+  var out = document.getElementById(prefix + '_hebDob');
+  if (!out) { return; }
+  if (!iso) { out.textContent = '-'; return; }
+  var sunset = chk(prefix + '_dobSunset');
+  out.textContent = 'Converting...';
+  g2h(iso, sunset, function (d) { out.textContent = hebStr(d); });
+}
+
+/* Spouse Hebrew anniversary */
+function onAnnivChange() {
+  var iso = val('s_anniversary');
+  var out = document.getElementById('s_hebAnniv');
+  if (!out) { return; }
+  if (!iso) { out.textContent = '-'; return; }
+  out.textContent = 'Converting...';
+  g2h(iso, false, function (d) { out.textContent = hebStr(d); });
+}
+
+/* Child Hebrew birthday + bar/bat mitzvah (13 male / 12 female Hebrew years) */
+function recalcChild(idx) {
+  var iso = val('c' + idx + '_dob');
+  var hebOut = document.getElementById('c' + idx + '_hebDob');
+  var bmOut = document.getElementById('c' + idx + '_bmitzvah');
+  if (!iso) {
+    if (hebOut) { hebOut.textContent = '-'; }
+    if (bmOut) { bmOut.textContent = '-'; }
+    return;
+  }
+  var sunset = chk('c' + idx + '_dobSunset');
+  if (hebOut) { hebOut.textContent = 'Converting...'; }
+  g2h(iso, sunset, function (d) {
+    if (hebOut) { hebOut.textContent = hebStr(d); }
+    if (!d) { return; }
+    var gender = radioVal('c' + idx + '_gender');
+    if (!gender) { if (bmOut) { bmOut.textContent = 'Select gender for bar/bat mitzvah date'; } return; }
+    var addYears = (gender === 'M') ? 13 : 12;
+    if (bmOut) { bmOut.textContent = 'Converting...'; }
+    h2g(Number(d.hy) + addYears, d.hm, d.hd, function (g) {
+      var lbl = (gender === 'M') ? 'Bar mitzvah: ' : 'Bat mitzvah: ';
+      var base = lbl + engStr(g);
+      if (bmOut) { bmOut.textContent = base; }
+      var giso = gIso(g);
+      if (!giso) { return; }
+      parshaForDate(giso, function (pp) {
+        if (!bmOut) { return; }
+        if (!pp) { return; }
+        /* only append if a newer recalc hasn't replaced the line */
+        if (bmOut.textContent === base) { bmOut.textContent = base + '  (' + pp + ')'; }
+      });
+    });
+  });
+}
+
+/* ============================================================
+   YAHRZEITS (repeatable; clone the hidden template per add)
+   ============================================================ */
+var yzN = 0;
+
+function panelRadio(panel, group) {
+  var v = '';
+  panel.querySelectorAll('input[data-group="' + group + '"]').forEach(function (r) { if (r.checked) { v = r.value; } });
+  return v;
+}
+
+function addYahrzeit(owner) {
+  var container = document.getElementById(owner + '_yahrzeits');
+  if (!container) { return; }
+  var tpl = document.getElementById('yzTemplate');
+  yzN = yzN + 1;
+  var clone = tpl.cloneNode(true);
+  clone.id = 'yz_' + yzN;
+  clone.style.display = 'block';
+  clone.removeAttribute('aria-hidden');
+  clone.setAttribute('data-owner', owner);
+
+  /* unique radio names so each panel's groups are independent */
+  clone.querySelectorAll('input[type="radio"]').forEach(function (r) {
+    var g = r.getAttribute('data-group');
+    if (g) { r.setAttribute('name', 'yzr_' + yzN + '_' + g); }
+  });
+
+  var rm = clone.querySelector('.yz-remove');
+  if (rm) { rm.onclick = function () { if (clone.parentNode) { clone.parentNode.removeChild(clone); } }; }
+
+  container.appendChild(clone);
+  restyleAllSegs();
+}
+
+/* Yahrzeit Hebrew date - same Gregorian -> Hebrew conversion the birthday uses */
+function recalcYahrzeit(panel) {
+  var out = panel.querySelector('[data-yf="result"]');
+  if (!out) { return; }
+  var sunset = panel.querySelector('[data-yf="afterSunset"]').checked;
+  var iso = panel.querySelector('[data-yf="dateEng"]').value;
+  if (!iso) { out.textContent = '-'; return; }
+  out.textContent = 'Converting...';
+  g2h(iso, sunset, function (d) { out.textContent = hebStr(d); });
+}
+
+function collectYahrzeits(owner) {
+  var arr = [];
+  var container = document.getElementById(owner + '_yahrzeits');
+  if (!container) { return arr; }
+  container.querySelectorAll('.yz-panel').forEach(function (panel) {
+    var resultTxt = panel.querySelector('[data-yf="result"]').textContent;
+    var rec = {
+      nameEng: panel.querySelector('[data-yf="nameEng"]').value.trim(),
+      nameHeb: panel.querySelector('[data-yf="nameHeb"]').value.trim(),
+      rel: panel.querySelector('[data-yf="rel"]').value,
+      gender: panelRadio(panel, 'yzgender'),
+      afterSunset: panel.querySelector('[data-yf="afterSunset"]').checked,
+      memorial: panel.querySelector('[data-yf="memorial"]').checked,
+      dateEng: panel.querySelector('[data-yf="dateEng"]').value,
+      dateHeb: (resultTxt === '-' || resultTxt === 'Converting...') ? '' : resultTxt
+    };
+    arr.push(rec);
+  });
+  return arr;
+}
+
+/* Screen 2 -> Screen 3 */
+function goToScreen3() {
+  var err = document.getElementById('screen2Err');
+  if (!validateScreen2()) {
+    err.style.display = 'block';
+    var firstBad = document.querySelector('#screen2 .field.invalid');
+    if (firstBad) { firstBad.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+    return;
+  }
+  err.style.display = 'none';
+  collectScreen2();
+  setupScreen3();
+  showScreen(3);
+}
+
+/* ============================================================
+   SCREEN 3 - preferences + payment
+   ============================================================ */
+function moneyFmt(n) {
+  var v = Number(n || 0);
+  if (v % 1 !== 0) { return '$' + v.toFixed(2); }   /* discounted prices can have cents */
+  return '$' + v.toLocaleString('en-US');
+}
+
+function isHighTier() {
+  var t = state.household.tier;
+  return (t === 'silver') ? true : (t === 'gold');
+}
+
+/* Chai tier and up (everything except Basic) */
+function isChaiOrUp() {
+  var t = state.household.tier;
+  if (!t) { return false; }
+  return t !== 'basic';
+}
+
+/* Default start date = today; max = today + 30 days. */
+function setupScreen3() {
+  /* Donor wall only for Chai and up; Kiddush dedication only for Silver/Gold;
+     hide the whole Preferences card for Basic (nothing to show there) */
+  var chaiUp = isChaiOrUp();
+  var dwf = document.getElementById('donorWallField');
+  if (dwf) { dwf.style.display = chaiUp ? 'block' : 'none'; }
+  var kf = document.getElementById('kiddushField');
+  if (kf) { kf.style.display = isHighTier() ? 'block' : 'none'; }
+  var pc = document.getElementById('prefsCard');
+  if (pc) { pc.style.display = chaiUp ? 'block' : 'none'; }
+
+  /* Start date bounds */
+  var sd = document.getElementById('pay_startDate');
+  if (sd) {
+    var now = new Date();
+    var todayIso = isoLocal(now);
+    var max = new Date();
+    max.setDate(max.getDate() + 30);
+    sd.setAttribute('min', todayIso);
+    sd.setAttribute('max', isoLocal(max));
+    if (!sd.value) { sd.value = todayIso; }
+    state.household.startDate = sd.value;
+  }
+
+  refreshSummary();
+  updatePayState();
+}
+
+function isoLocal(d) {
+  var mm = ('0' + (d.getMonth() + 1)).slice(-2);
+  var dd = ('0' + d.getDate()).slice(-2);
+  return d.getFullYear() + '-' + mm + '-' + dd;
+}
+
+function refreshSummary() {
+  var h = state.household;
+  setText('sum_tier', TIER_LABEL[h.tier] || '-');
+  var hh = HH_LABEL[h.type] || '-';
+  if (h.type === 'family') {
+    var who = (h.parents === 'one') ? 'single parent, ' : '';
+    hh = hh + ' (' + who + h.kidsCount + ' ' + (h.kidsCount === 1 ? 'child' : 'children') + ')';
+  }
+  setText('sum_household', hh);
+  setText('sum_start', h.startDate || '-');
+  /* prices reflect an applied discount code */
+  var dm = applyDiscount(h.monthly);
+  var da = applyDiscount(h.annual);
+  setText('sum_monthly', moneyFmt(dm) + ' / mo');
+  setText('sum_annual', moneyFmt(da) + ' / yr');
+
+  /* Memorial board: show the choice block + summary row when any plaque is selected */
+  var mc = memorialCount();
+  var mt = mc * MEMORIAL_FEE;
+  var memField = document.getElementById('memorialPayField');
+  var memRow = document.getElementById('sum_memorial_row');
+  var resolved = memorialBillingResolved();
+  var compedMem = state.payment ? state.payment.comped : false;
+  if (mc > 0) {
+    var plural = (mc === 1) ? 'plaque' : 'plaques';
+    setText('memorial_fee_label', 'Memorial board (' + mc + ' ' + plural + ')');
+    setText('memorial_fee_help', mc + ' ' + plural + ' x ' + moneyFmt(MEMORIAL_FEE) + ' = ' + moneyFmt(mt) + ', one-time.');
+    /* the "add to first payment" choice is moot when membership is comped */
+    if (memField) { memField.style.display = compedMem ? 'none' : 'block'; }
+    setText('sum_memorial', (resolved === 'first') ? (moneyFmt(mt) + ' (added below)') : (moneyFmt(mt) + ' - billed separately'));
+    if (memRow) { memRow.style.display = 'flex'; }
+  } else {
+    if (memField) { memField.style.display = 'none'; }
+    if (memRow) { memRow.style.display = 'none'; }
+  }
+
+  /* "You pay" line reflects the billing choice, comp code, and a memorial fee
+     added to the first payment */
+  var comped = state.payment ? state.payment.comped : false;
+  var addFirst = (resolved === 'first') ? mt : 0;
+  var billedTxt;
+  if (comped) {
+    billedTxt = 'Covered - no charge';
+  } else if (billingMode() === 'annual') {
+    if (addFirst) {
+      billedTxt = moneyFmt(da + addFirst) + ' now, then ' + moneyFmt(da) + ' a year';
+    } else {
+      billedTxt = moneyFmt(da) + ' once a year';
+    }
+  } else {
+    if (addFirst) {
+      billedTxt = moneyFmt(dm + addFirst) + ' first month, then ' + moneyFmt(dm) + ' a month';
+    } else {
+      billedTxt = moneyFmt(dm) + ' a month';
+    }
+  }
+  if (activeDiscount()) { if (!comped) { billedTxt = billedTxt + ' (code applied)'; } }
+  setText('sum_billed', billedTxt);
+}
+function setText(id, txt) { var e = document.getElementById(id); if (e) { e.textContent = txt; } }
+
+function onStartDateChange() {
+  var sd = document.getElementById('pay_startDate');
+  if (sd) { state.household.startDate = sd.value; refreshSummary(); }
+}
+
+function billingMode() { return radioVal('pay_billing') || 'monthly'; }
+
+/* ---- Memorial board (one-time $360 per plaque) ---- */
+function memorialCount() {
+  var n = 0;
+  function countList(list) {
+    if (!list) { return; }
+    list.forEach(function (y) { if (y.memorial) { n = n + 1; } });
+  }
+  if (state.primary) { countList(state.primary.yahrzeits); }
+  if (state.spouse) { countList(state.spouse.yahrzeits); }
+  return n;
+}
+function memorialTotal() { return memorialCount() * MEMORIAL_FEE; }
+function memorialPayChoice() { return radioVal('pay_memorial') || 'first'; }
+/* Resolved billing for the fee: comped members always pay it separately. */
+function memorialBillingResolved() {
+  if (memorialCount() === 0) { return 'none'; }
+  var comped = state.payment ? state.payment.comped : false;
+  if (comped) { return 'separate'; }
+  return memorialPayChoice();
+}
+function onMemorialPayChange() { refreshSummary(); }
+
+function onBillingChange() {
+  var lbl = document.getElementById('terms_label');
+  if (lbl) {
+    lbl.textContent = (billingMode() === 'annual')
+      ? 'I authorize the annual recurring billing shown above until I cancel.'
+      : 'I authorize the monthly recurring billing shown above until I cancel.';
+  }
+  refreshSummary();
+}
+
+function collectPreferences() {
+  state.preferences = {
+    donorWall: isChaiOrUp() ? val('pref_donorWall') : '',
+    kiddushDedication: isHighTier() ? val('pref_kiddush') : ''
+  };
+}
+function chk(id) { var e = document.getElementById(id); return e ? e.checked : false; }
+
+/* ============================================================
+   PAYPAL SUBSCRIPTIONS (monthly or annual) + comp codes.
+   Two base plans (created by make-paypal-plan.js): a MONTHLY plan
+   and an ANNUAL plan. The exact amount is overridden per subscriber
+   at checkout, so each plan covers every price. The SDK loads only
+   after the member accepts the billing terms.
+   ============================================================ */
+var PAYPAL_CLIENT_ID = 'AZF-mE2fd4BhaiSEsPuLcEWzsMMhACeMhErPDDRt_JiOeoCZY_RGIdPjh4cVy1T8jm6KG35JLi5J0x-V';
+var PAYPAL_PLAN_ID_MONTHLY = 'P-4LJ28566DC929290SNJPEHBI';
+var PAYPAL_PLAN_ID_ANNUAL  = 'P-7R80393900362843ANJPEHBI';
+
+/* Discount codes live in the "Codes" tab of the membership Google Sheet and
+   are checked live via the backend (?action=checkCode), so new codes can be
+   added or turned off in the sheet without ever re-pasting this form.
+   Kinds: free (fully covered) / percent (e.g. 10 = 10% off every payment) /
+   amount (dollars off each payment). FREE_CODES below is an emergency local
+   fallback that keeps working even if the backend is unreachable. */
+var FREE_CODES = ['LOCAL100'];
+
+var paypalSdkLoaded = false;
+var paypalRendered = false;
+
+/* ---- Discount math ---- */
+function activeDiscount() {
+  if (state.payment) { if (state.payment.discount) { return state.payment.discount; } }
+  return null;
+}
+/* The amount actually charged after any applied code (never below 0). */
+function applyDiscount(amount) {
+  var v = Number(amount || 0);
+  var d = activeDiscount();
+  if (d) {
+    if (d.kind === 'percent') { v = v * (1 - Number(d.value || 0) / 100); }
+    if (d.kind === 'amount') { v = v - Number(d.value || 0); }
+    if (d.kind === 'free') { v = 0; }
+  }
+  if (0 > v) { v = 0; }
+  return Math.round(v * 100) / 100;
+}
+
+/* Returns the plan id, amount, and number of cycles for the chosen billing. */
+function resolvePlan() {
+  if (billingMode() === 'annual') {
+    return { id: PAYPAL_PLAN_ID_ANNUAL, amount: applyDiscount(state.household.annual).toFixed(2), cycles: 1 };
+  }
+  return { id: PAYPAL_PLAN_ID_MONTHLY, amount: applyDiscount(state.household.monthly).toFixed(2), cycles: 12 };
+}
+
+function onTermsChange() { updatePayState(); }
+
+function updatePayState() {
+  if (state.payment) { if (state.payment.comped) { return; } }
+  var ok = chk('pay_terms');
+  var notice = document.getElementById('paypal-notice');
+  var container = document.getElementById('paypal-button-container');
+  if (!ok) {
+    if (notice) { notice.style.display = 'block'; notice.textContent = 'Please accept the billing authorization above to enable payment.'; }
+    if (container) { container.style.display = 'none'; }
+    return;
+  }
+  if (notice) { notice.style.display = 'none'; }
+  if (container) { container.style.display = 'block'; }
+  loadPayPal();
+}
+
+function loadPayPal() {
+  if (PAYPAL_CLIENT_ID === 'REPLACE_WITH_PAYPAL_CLIENT_ID') {
+    showPayNotice('Payment is not yet configured. Add your PayPal client id to finish setup.');
+    return;
+  }
+  var plan = resolvePlan();
+  if (!plan.id) { showPayNotice('This billing option is not configured yet.'); return; }
+  if (plan.id.indexOf('REPLACE') === 0) {
+    showPayNotice('This billing option is not set up yet. Try the other option, or contact the office.');
+    return;
+  }
+  if (paypalSdkLoaded) { renderPayPal(); return; }
+  var s = document.createElement('script');
+  s.src = 'https://www.paypal.com/sdk/js?client-id=' + PAYPAL_CLIENT_ID + AMP + 'vault=true' + AMP + 'intent=subscription';
+  s.onload = function () { paypalSdkLoaded = true; renderPayPal(); };
+  s.onerror = function () { showPayNotice('Could not load PayPal. Please refresh and try again.'); };
+  document.body.appendChild(s);
+}
+
+function showPayNotice(msg) {
+  var notice = document.getElementById('paypal-notice');
+  if (notice) { notice.style.display = 'block'; notice.textContent = msg; }
+}
+
+function renderPayPal() {
+  if (paypalRendered) { return; }
+  if (!window.paypal) { return; }
+  var container = document.getElementById('paypal-button-container');
+  if (container) { container.textContent = ''; }
+  paypalRendered = true;
+  window.paypal.Buttons({
+    style: { layout: 'vertical', color: 'black', shape: 'pill', label: 'subscribe' },
+    createSubscription: function (data, actions) {
+      var plan = resolvePlan();
+      /* Override the base plan's price with this member's exact amount. */
+      var planObj = {
+        billing_cycles: [{
+          sequence: 1,
+          total_cycles: plan.cycles,
+          pricing_scheme: { fixed_price: { value: plan.amount, currency_code: 'USD' } }
+        }]
+      };
+      /* Memorial board fee added to the first payment becomes a one-time
+         setup fee charged when the subscription is created. */
+      if (memorialBillingResolved() === 'first') {
+        planObj.payment_preferences = {
+          setup_fee: { value: Number(memorialTotal()).toFixed(2), currency_code: 'USD' },
+          setup_fee_failure_action: 'CANCEL'
+        };
+      }
+      return actions.subscription.create({ plan_id: plan.id, plan: planObj });
+    },
+    onApprove: function (data) {
+      var mc = memorialCount();
+      state.payment = {
+        provider: 'paypal', subscriptionId: data.subscriptionID, billing: billingMode(),
+        memorialPlaques: mc, memorialFee: mc * MEMORIAL_FEE, memorialBilling: memorialBillingResolved()
+      };
+      collectPreferences();
+      goToScreen4();
+    },
+    onError: function () { showPayNotice('Payment error. Please try again or contact the office.'); }
+  }).render('#paypal-button-container');
+}
+
+/* ---- Membership / discount codes (validated against the backend) ---- */
+function applyCode() {
+  var code = (val('pay_code') || '').trim();
+  var msg = document.getElementById('code_msg');
+  if (!code) { rejectCode('Enter a code first.'); return; }
+  /* the local fallback list works even with no network */
+  var local = false;
+  FREE_CODES.forEach(function (c) {
+    if (c) { if (c.toUpperCase() === code.toUpperCase()) { local = true; } }
+  });
+  if (local) { acceptCode(code, 'free', 100); return; }
+  if (!SUBMIT_URL) { rejectCode('That code is not valid.'); return; }
+  if (msg) { msg.textContent = 'Checking code...'; msg.style.color = C.accent; }
+  fetch(SUBMIT_URL + '?action=checkCode' + AMP + 'code=' + encodeURIComponent(code))
+    .then(function (r) { return r.json(); })
+    .then(function (j) {
+      var valid = false;
+      if (j) { if (j.ok) { if (j.valid) { valid = true; } } }
+      if (valid) { acceptCode(code, j.kind, j.value); }
+      else { rejectCode('That code is not valid.'); }
+    })
+    .catch(function () { rejectCode('Could not check the code - please try again.'); });
+}
+
+function acceptCode(code, kind, value) {
+  var msg = document.getElementById('code_msg');
+  if (!state.payment) { state.payment = { provider: 'paypal', subscriptionId: '' }; }
+  state.payment.discount = { code: code, kind: kind, value: Number(value || 0) };
+  state.payment.code = code;
+  /* fully covered when the code is free/100%, or it discounts both prices to 0 */
+  var full = false;
+  if (kind === 'free') { full = true; }
+  if (kind === 'percent') { if (Number(value || 0) > 99.999) { full = true; } }
+  if (!full) {
+    if (applyDiscount(state.household.monthly) === 0) {
+      if (applyDiscount(state.household.annual) === 0) { full = true; }
+    }
+  }
+  state.payment.comped = full;
+  if (msg) {
+    msg.textContent = full
+      ? 'Code applied - your membership is fully covered.'
+      : 'Code applied - ' + discountText(kind, value) + '.';
+    msg.style.color = '#16a34a';
+  }
+  setCompUI(full);
+  refreshSummary();
+}
+
+function rejectCode(text) {
+  if (state.payment) { state.payment.comped = false; state.payment.discount = null; state.payment.code = ''; }
+  var msg = document.getElementById('code_msg');
+  if (msg) { msg.textContent = text; msg.style.color = C.danger; }
+  setCompUI(false);
+  refreshSummary();
+}
+
+function discountText(kind, value) {
+  if (kind === 'percent') { return Number(value || 0) + '% off'; }
+  if (kind === 'amount') { return moneyFmt(Number(value || 0)) + ' off each payment'; }
+  return 'discount applied';
+}
+
+function setCompUI(on) {
+  var termsF = document.getElementById('termsField');
+  var notice = document.getElementById('paypal-notice');
+  var cont = document.getElementById('paypal-button-container');
+  var fin = document.getElementById('compFinishBtn');
+  if (on) {
+    if (termsF) { termsF.style.display = 'none'; }
+    if (notice) { notice.style.display = 'none'; }
+    if (cont) { cont.style.display = 'none'; }
+    if (fin) { fin.style.display = 'block'; }
+  } else {
+    if (termsF) { termsF.style.display = 'block'; }
+    if (fin) { fin.style.display = 'none'; }
+    updatePayState();
+  }
+}
+
+function finishComped() {
+  var mc = memorialCount();
+  var old = state.payment || {};
+  state.payment = { provider: 'comp', subscriptionId: old.code || 'COMP', billing: 'comped', code: old.code || '', comped: true, discount: old.discount || null };
+  state.payment.memorialPlaques = mc;
+  state.payment.memorialFee = mc * MEMORIAL_FEE;
+  state.payment.memorialBilling = (mc > 0) ? 'separate' : 'none';
+  goToScreen4();
+}
+
+/* ============================================================
+   SCREEN 4 - confirmation + XML serialization + submit
+   ============================================================ */
+
+/* Optional backend (e.g. a Google Apps Script web app) that receives the
+   XML, sends the welcome email, and notifies the Rabbi. Leave '' to skip
+   the network send (the confirmation still shows; XML is in state.xml). */
+var SUBMIT_URL = 'https://script.google.com/macros/s/AKfycbyazKHuf7eTEV39gwRBy0M6m8efxPIC3Wb9UrRg05iqVvmiH8NiXxIQec01MO56YiaV/exec';
+
+var LT = '\x3C';   /* a less-than char, built via escape so it is not a literal here */
+var GT = '>';
+
+/* XML-escape a value for use in element text or an attribute. Order matters:
+   escape the ampersand first. AMP/LT hold the runtime ampersand and less-than. */
+function xmlEsc(v) {
+  var s = String((v === null) ? '' : (v === undefined ? '' : v));
+  s = s.split(AMP).join(AMP + 'amp;');
+  s = s.split(LT).join(AMP + 'lt;');
+  s = s.split(GT).join(AMP + 'gt;');
+  s = s.split('"').join(AMP + 'quot;');
+  return s;
+}
+function at(k, v) { return ' ' + k + '="' + xmlEsc(v) + '"'; }
+function el(name, text) { return LT + name + GT + xmlEsc(text) + LT + '/' + name + GT; }
+function selfEl(name, attrs) { return LT + name + attrs + ' /' + GT; }
+
+function hebNameValue(m) {
+  if (m.hebOpt === 'enter') { return m.hebName; }
+  if (m.hebOpt === 'same') { return (m.firstName + ' ' + m.lastName).trim(); }
+  return '';
+}
+
+function yahrzeitsXml(list) {
+  if (!list) { return LT + 'yahrzeits /' + GT; }
+  if (!list.length) { return LT + 'yahrzeits /' + GT; }
+  var s = LT + 'yahrzeits' + GT;
+  list.forEach(function (y) {
+    s += selfEl('yahrzeit', at('nameEng', y.nameEng) + at('nameHeb', y.nameHeb) + at('rel', y.rel) +
+      at('gender', y.gender) + at('dateEng', y.dateEng) + at('dateHeb', y.dateHeb) +
+      at('afterSunset', y.afterSunset ? 'true' : 'false') +
+      at('memorialBoard', y.memorial ? 'true' : 'false'));
+  });
+  s += LT + '/yahrzeits' + GT;
+  return s;
+}
+
+function adultMemberXml(m, role, withAddress) {
+  var s = LT + 'member role="' + role + '"' + GT;
+  s += selfEl('name', at('eng', (m.firstName + ' ' + m.lastName).trim()) + at('heb', hebNameValue(m)));
+  s += el('gender', m.gender);
+  s += el('tribe', m.tribe);
+  s += el('lineage', m.lineage);
+  s += el('motherHeb', m.motherHeb);
+  s += el('jewishness', m.jewishness);
+  if (m.jewishness === 'convert') {
+    s += selfEl('convert', at('authority', m.convertAuthority) + at('date', m.convertDate));
+  }
+  if (m.jewishness === 'birth') {
+    s += selfEl('familyConversions', at('any', m.famConv === 'yes' ? 'true' : 'false') + at('who', (m.famConvWho || []).join(', ')) + at('details', m.famConvDetails || ''));
+  }
+  s += selfEl('dob', at('eng', m.dobEng) + at('heb', m.dobHeb));
+  if (m.anniversaryEng) { s += selfEl('anniversary', at('eng', m.anniversaryEng) + at('heb', m.anniversaryHeb)); }
+  s += el('occupation', m.occupation);
+  s += selfEl('contact', at('email', m.email) + at('cell', m.cell) + at('work', m.work) + at('home', m.home));
+  if (withAddress) {
+    var a = state.address;
+    s += selfEl('address', at('street', a.street) + at('city', a.city) + at('state', a.state) + at('zip', a.zip) + at('country', a.country));
+  }
+  s += yahrzeitsXml(m.yahrzeits);
+  s += LT + '/member' + GT;
+  return s;
+}
+
+function childMemberXml(c) {
+  var s = LT + 'member role="child"' + GT;
+  s += selfEl('name', at('eng', c.firstName) + at('heb', hebNameValue({ hebOpt: c.hebOpt, hebName: c.hebName, firstName: c.firstName, lastName: '' })));
+  s += el('gender', c.gender);
+  s += selfEl('dob', at('eng', c.dobEng) + at('heb', c.dobHeb));
+  s += el('barBatMitzvah', c.bmitzvah);
+  s += el('barBatMitzvahLessons', c.bmLessons ? 'true' : 'false');
+  s += el('school', c.school);
+  s += LT + '/member' + GT;
+  return s;
+}
+
+function preferencesXml(p) {
+  var s = LT + 'preferences' + GT;
+  s += el('donorWall', p.donorWall);
+  s += el('kiddushDedication', p.kiddushDedication);
+  s += LT + '/preferences' + GT;
+  return s;
+}
+
+function buildMembershipXml() {
+  var h = state.household;
+  var s = LT + 'membership' + GT;
+  s += LT + 'household' + at('type', h.type) + at('parents', h.parents) + at('maritalStatus', h.maritalStatus) +
+    at('tier', h.tier) + at('monthly', h.monthly) + at('annual', h.annual) + at('startDate', h.startDate) + GT;
+  s += adultMemberXml(state.primary, 'primary', true);
+  if (state.spouse) { s += adultMemberXml(state.spouse, 'spouse', false); }
+  (state.children || []).forEach(function (c) { s += childMemberXml(c); });
+  s += preferencesXml(state.preferences);
+  var disc = (state.payment ? state.payment.discount : null) || {};
+  s += selfEl('payment', at('provider', state.payment.provider) + at('subscriptionId', state.payment.subscriptionId) + at('billing', state.payment.billing || 'monthly') + at('code', state.payment.code || '') +
+    at('discountKind', disc.kind || '') + at('discountValue', (disc.value === undefined) ? '' : disc.value) +
+    at('discountedMonthly', applyDiscount(h.monthly)) + at('discountedAnnual', applyDiscount(h.annual)) +
+    at('memorialPlaques', state.payment.memorialPlaques || 0) + at('memorialFee', state.payment.memorialFee || 0) + at('memorialBilling', state.payment.memorialBilling || 'none'));
+  s += LT + '/household' + GT;
+  s += LT + '/membership' + GT;
+  return s;
+}
+
+/* POST the XML to the backend (welcome email + Rabbi notification happen there).
+   text/plain avoids a CORS preflight so it works with an Apps Script web app. */
+function submitMembership(xml) {
+  if (!SUBMIT_URL) { return; }
+  try {
+    fetch(SUBMIT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: xml
+    }).catch(function () { });
+  } catch (e) { }
+}
+
+function goToScreen4() {
+  collectPreferences();
+  var xml = buildMembershipXml();
+  state.xml = xml;
+  submitMembership(xml);
+
+  /* Fill the confirmation summary */
+  var h = state.household;
+  var name = state.primary ? (state.primary.firstName || '') : '';
+  setText('conf_title', name ? ('Welcome, ' + name + '!') : 'Welcome to our Chabad family!');
+  setText('conf_tier', (TIER_LABEL[h.tier] || '-') + ' membership');
+  var hh = HH_LABEL[h.type] || '-';
+  if (h.type === 'family') {
+    var who = (h.parents === 'one') ? 'single parent, ' : '';
+    hh = hh + ' (' + who + h.kidsCount + ' ' + (h.kidsCount === 1 ? 'child' : 'children') + ')';
+  }
+  setText('conf_household', hh);
+  setText('conf_start', h.startDate || '-');
+  setText('conf_monthly', moneyFmt(h.monthly) + ' / mo');
+  setText('conf_annual', moneyFmt(h.annual) + ' / yr');
+  setText('conf_sub', state.payment.subscriptionId || '-');
+
+  /* Memorial board line on the confirmation */
+  var mp = state.payment.memorialPlaques || 0;
+  var mrow = document.getElementById('conf_memorial_row');
+  if (mp > 0) {
+    var mfee = moneyFmt(state.payment.memorialFee || 0);
+    var mtxt = (state.payment.memorialBilling === 'first') ? (mfee + ' (paid with first payment)') : (mfee + ' - the office will be in touch');
+    setText('conf_memorial', mtxt);
+    if (mrow) { mrow.style.display = 'flex'; }
+  } else {
+    if (mrow) { mrow.style.display = 'none'; }
+  }
+
+  showScreen(4);
+}
+
+/* Remove a stray ">>" (or arrow) text that the CMS page renders OUTSIDE this
+   form. It is not part of the form (the form has zero ">"), but it sits next
+   to it on the page, so we clean it up on load. Only removes standalone nodes
+   whose entire text is just an arrow, and never touches anything inside the form. */
+function removeStrayArrows() {
+  try {
+    var app = document.getElementById('membershipApp');
+    var arrows = { '>>': 1 };
+    arrows[String.fromCharCode(187)] = 1; arrows[String.fromCharCode(8250)] = 1;
+    if (document.createTreeWalker) {
+      var walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
+      var hits = [];
+      var node = walker.nextNode();
+      while (node) {
+        var inForm = app ? app.contains(node) : false;
+        if (!inForm) {
+          var tn = (node.nodeValue || '').replace(/\s/g, '');
+          if (arrows[tn]) { hits.push(node); }
+        }
+        node = walker.nextNode();
+      }
+      hits.forEach(function (n) { if (n.parentNode) { n.parentNode.removeChild(n); } });
+    }
+    /* also catch a leaf span element that holds only arrow characters */
+    var els = document.body ? document.body.querySelectorAll('*') : [];
+    els.forEach(function (e) {
+      var inForm2 = app ? app.contains(e) : false;
+      if (inForm2) { return; }
+      if (e.children.length === 0) {
+        var te = (e.textContent || '').replace(/\s/g, '');
+        if (arrows[te]) { e.style.display = 'none'; }
+      }
+    });
+  } catch (err) { }
+}
+
+/* ---- Init ---- */
+styleInit();
+updatePrices();
+updateContinue();
+removeStrayArrows();
+if (window.addEventListener) { window.addEventListener('load', removeStrayArrows); }
+setTimeout(removeStrayArrows, 600);
+setTimeout(removeStrayArrows, 1800);
+setTimeout(removeStrayArrows, 4000);
+</script>

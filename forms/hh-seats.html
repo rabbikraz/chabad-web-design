@@ -1,0 +1,138 @@
+<!-- High Holiday Seat Reservations: paste as the ChabadOne form page body.
+     Styling: Custom Header Code (style.css section 19, #sb-hh scope).
+     Behavior: Custom Footer Code (script.js, initHHSeats).
+     The name attributes are the contract with the form processor:
+     x_* fields feed the payment gateway, everything else lands in the
+     notification email. Never rename an x_* field. -->
+<div id="sb-hh">
+
+    <div class="sb-hh-intro">
+        <p class="sb-hh-free">There is no charge to attend our services. Everyone is welcome.</p>
+        <p class="sb-hh-sub">The suggested donation is $100 per adult and $50 per child, and no one is ever turned away due to lack of funds.</p>
+        <p style="margin:0 0 14px;font-size:16px;"><a href="https://maps.google.com/?q=301+Washington+Ave+Miami+Beach+FL+33139" style="color:#0E464B;font-weight:600;text-decoration:underline;text-underline-offset:3px;">All services take place at The Jewish Museum of Florida, 301 Washington Ave &#8599;</a></p>
+        <p class="sb-hh-alt"><a href="/Article.asp?AID=5284216">Become a member</a><span class="sb-hh-dot">·</span><a href="/tools/events/default_cdo/aid/418840/jewish/Event-Reservations.htm">Reserve Rosh Hashanah dinner &amp; meals</a></p>
+    </div>
+
+    <div class="sb-hh-card">
+        <p class="sb-hh-step">Step 1 of 4</p>
+        <h3 class="sb-hh-h">Your Information</h3>
+        <div class="sb-hh-grid">
+            <label class="sb-hh-field"><span class="sb-hh-lab">First Name</span><input autocomplete="given-name" class="sb-hh-in" name="x_first_name" required="true" type="text" /></label>
+            <label class="sb-hh-field"><span class="sb-hh-lab">Last Name</span><input autocomplete="family-name" class="sb-hh-in" name="x_last_name" required="true" type="text" /></label>
+            <label class="sb-hh-field sb-hh-wide"><span class="sb-hh-lab">Address</span><input autocomplete="street-address" class="sb-hh-in" name="x_address" required="true" type="text" /></label>
+            <label class="sb-hh-field"><span class="sb-hh-lab">City</span><input autocomplete="address-level2" class="sb-hh-in" name="City" required="true" type="text" /></label>
+            <div class="sb-hh-field sb-hh-split"><label class="sb-hh-field-half"><span class="sb-hh-lab">State</span><input autocomplete="address-level1" class="sb-hh-in" name="State" required="true" type="text" /></label><label class="sb-hh-field-half"><span class="sb-hh-lab">Zip Code</span><input autocomplete="postal-code" class="sb-hh-in" inputmode="numeric" name="x_zip" required="true" type="text" /></label></div>
+            <label class="sb-hh-field"><span class="sb-hh-lab">Email</span><input autocomplete="email" class="sb-hh-in" name="x_email" required="true" type="email" /></label>
+            <label class="sb-hh-field"><span class="sb-hh-lab">Phone <em class="sb-hh-opt">optional</em></span><input autocomplete="tel" class="sb-hh-in" name="Phone" type="tel" /></label>
+        </div>
+    </div>
+
+    <div class="sb-hh-card">
+        <p class="sb-hh-step">Step 2 of 4</p>
+        <h3 class="sb-hh-h">Reserve Your Seats</h3>
+        <div class="sb-hh-seats">
+            <div class="sb-hh-seatcol" id="sb-hh-adults">
+                <label class="sb-hh-field"><span class="sb-hh-lab">Adults</span><span class="sb-hh-hint">suggested donation $100 each</span><select class="sb-hh-in sb-hh-count" name="Adult Attendees Amount">
+                    <option value="0">0</option>
+                    <option selected="selected" value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                </select></label>
+                <div class="sb-hh-names">
+                    <label class="sb-hh-field sb-hh-name"><span class="sb-hh-lab">Adult Name 1</span><input class="sb-hh-in" name="Adult Name 1" type="text" /></label>
+                    <label class="sb-hh-field sb-hh-name"><span class="sb-hh-lab">Adult Name 2</span><input class="sb-hh-in" name="Adult Name 2" type="text" /></label>
+                    <label class="sb-hh-field sb-hh-name"><span class="sb-hh-lab">Adult Name 3</span><input class="sb-hh-in" name="Adult Name 3" type="text" /></label>
+                    <label class="sb-hh-field sb-hh-name"><span class="sb-hh-lab">Adult Name 4</span><input class="sb-hh-in" name="Adult Name 4" type="text" /></label>
+                    <label class="sb-hh-field sb-hh-name"><span class="sb-hh-lab">Adult Name 5</span><input class="sb-hh-in" name="Adult Name 5" type="text" /></label>
+                    <label class="sb-hh-field sb-hh-name"><span class="sb-hh-lab">Adult Name 6</span><input class="sb-hh-in" name="Adult Name 6" type="text" /></label>
+                </div>
+            </div>
+            <div class="sb-hh-seatcol" id="sb-hh-children">
+                <label class="sb-hh-field"><span class="sb-hh-lab">Children</span><span class="sb-hh-hint">suggested donation $50 each</span><select class="sb-hh-in sb-hh-count" name="Children Attendees Amount">
+                    <option selected="selected" value="0">0</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                </select></label>
+                <div class="sb-hh-names">
+                    <label class="sb-hh-field sb-hh-name"><span class="sb-hh-lab">Child Name 1</span><input class="sb-hh-in" name="Child Name 1" type="text" /></label>
+                    <label class="sb-hh-field sb-hh-name"><span class="sb-hh-lab">Child Name 2</span><input class="sb-hh-in" name="Child Name 2" type="text" /></label>
+                    <label class="sb-hh-field sb-hh-name"><span class="sb-hh-lab">Child Name 3</span><input class="sb-hh-in" name="Child Name 3" type="text" /></label>
+                    <label class="sb-hh-field sb-hh-name"><span class="sb-hh-lab">Child Name 4</span><input class="sb-hh-in" name="Child Name 4" type="text" /></label>
+                    <label class="sb-hh-field sb-hh-name"><span class="sb-hh-lab">Child Name 5</span><input class="sb-hh-in" name="Child Name 5" type="text" /></label>
+                    <label class="sb-hh-field sb-hh-name"><span class="sb-hh-lab">Child Name 6</span><input class="sb-hh-in" name="Child Name 6" type="text" /></label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="sb-hh-card">
+        <p class="sb-hh-step">Step 3 of 4</p>
+        <h3 class="sb-hh-h">Add a Donation <em class="sb-hh-opt">optional</em></h3>
+        <p class="sb-hh-blurb">Help Chabad bring more light to the community with your generous contribution.</p>
+        <div class="sb-hh-pills" role="radiogroup" aria-label="Donation amount">
+            <label class="sb-hh-pill"><input name="Donation Amount" type="radio" value="54" /><span>$54</span></label>
+            <label class="sb-hh-pill"><input name="Donation Amount" type="radio" value="100" /><span>$100</span></label>
+            <label class="sb-hh-pill"><input name="Donation Amount" type="radio" value="180" /><span>$180</span></label>
+            <label class="sb-hh-pill"><input name="Donation Amount" type="radio" value="360" /><span>$360</span></label>
+            <label class="sb-hh-pill"><input name="Donation Amount" type="radio" value="500" /><span>$500</span></label>
+            <label class="sb-hh-pill"><input name="Donation Amount" type="radio" value="1000" /><span>$1,000</span></label>
+            <label class="sb-hh-pill"><input name="Donation Amount" type="radio" value="1800" /><span>$1,800</span></label>
+            <label class="sb-hh-pill sb-hh-pill-other"><span>Other&nbsp;$</span><input class="sb-hh-otherin" inputmode="decimal" name="Other Amount" size="6" type="text" /></label>
+        </div>
+    </div>
+
+    <div class="sb-hh-card">
+        <p class="sb-hh-step">Step 4 of 4</p>
+        <h3 class="sb-hh-h">Payment</h3>
+        <div class="sb-hh-paychoice" role="radiogroup" aria-label="Payment preference">
+            <label class="sb-hh-choice"><input checked="checked" name="Payment Choice" type="radio" value="Suggested amount" /><span>Pay the suggested amount</span></label>
+            <label class="sb-hh-choice"><input name="Payment Choice" type="radio" value="Custom amount" /><span>Choose my own amount</span></label>
+            <label class="sb-hh-choice"><input name="Payment Choice" type="radio" value="No payment at this time" /><span>I&#39;m unable to contribute right now</span></label>
+        </div>
+        <div class="sb-hh-totalrow"><label class="sb-hh-field"><span class="sb-hh-lab">Total Amount</span><input class="sb-hh-in sb-hh-total" inputmode="decimal" name="x_amount" type="text" /></label>
+        <p class="sb-hh-paynote" id="sb-hh-paynote">Calculated from your selections.</p></div>
+        <div class="sb-hh-summary" id="sb-hh-summary" aria-live="polite"></div>
+        <div class="sb-hh-paywrap" id="sb-hh-paywrap">
+        <div class="sb-hh-grid">
+            <label class="sb-hh-field sb-hh-wide"><span class="sb-hh-lab">Card Number</span><input autocomplete="cc-number" class="sb-hh-in" inputmode="numeric" name="x_card_num" type="text" /></label>
+            <label class="sb-hh-field"><span class="sb-hh-lab">Expiration</span><span class="sb-hh-exp"><select autocomplete="cc-exp-month" class="sb-hh-in" name="x_exp_month">
+                <option selected="selected" value="">Month</option>
+                <option value="1">01</option>
+                <option value="2">02</option>
+                <option value="3">03</option>
+                <option value="4">04</option>
+                <option value="5">05</option>
+                <option value="6">06</option>
+                <option value="7">07</option>
+                <option value="8">08</option>
+                <option value="9">09</option>
+                <option value="10">10</option>
+                <option value="11">11</option>
+                <option value="12">12</option>
+            </select><select autocomplete="cc-exp-year" class="sb-hh-in" name="x_exp_year">
+                <option selected="selected" value="">Year</option>
+                <option value="2026">2026</option>
+                <option value="2027">2027</option>
+                <option value="2028">2028</option>
+                <option value="2029">2029</option>
+                <option value="2030">2030</option>
+                <option value="2031">2031</option>
+                <option value="2032">2032</option>
+                <option value="2033">2033</option>
+                <option value="2034">2034</option>
+                <option value="2035">2035</option>
+            </select></span></label>
+            <label class="sb-hh-field"><span class="sb-hh-lab">CVV Code</span><input autocomplete="cc-csc" class="sb-hh-in sb-hh-cvv" inputmode="numeric" name="x_card_code" size="6" type="text" /></label>
+        </div>
+        </div>
+        <p class="sb-hh-guestnote" id="sb-hh-guestnote">Nothing will be charged. We look forward to celebrating the High Holidays with you!</p>
+    </div>
+
+</div>

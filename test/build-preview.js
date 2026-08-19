@@ -40,6 +40,8 @@ const LIVE_CSS = {
   'css/sections/events/events.css': 'events.css',
   'css/Cco/Templates/donate/main.css': 'donate-main.css',
   'css/cco/fundraising/FundraisingTickerltr.css': 'FundraisingTicker.css',
+  'css/cco/templates/forms/formCss2.css': 'formCss2.css',
+  'css/cco/templates/forms/themes/nova.css': 'nova.css',
 };
 
 const PAGE_SET = [
@@ -74,6 +76,40 @@ window.addEventListener('load', function () {
 });
 </scr` + `ipt>`,
   },
+  // high holiday seats form: synthetic article shell + the real paste block
+  {
+    src: 'hh-form.html',
+    out: 'preview-hh-form.html',
+    snapshot: '20251013120914',
+    include: { token: '<!--SB_FORM_INCLUDE-->', file: 'forms/hh-seats.html' },
+  },
+  // membership form: same shell pattern as the HH seats form
+  {
+    src: 'membership-form.html',
+    out: 'preview-membership.html',
+    snapshot: '20251013120914',
+    include: { token: '<!--SB_FORM_INCLUDE-->', file: 'forms/membership.html' },
+  },
+  // LIVE membership form (form builder, aid 7464689) — trimmed real markup
+  {
+    src: 'membership-builder.html',
+    out: 'preview-membership-builder.html',
+    snapshot: '20251013120914',
+  },
+  // high holidays landing page (three link-cards)
+  {
+    src: 'hh-landing.html',
+    out: 'preview-hh-landing.html',
+    snapshot: '20251013120914',
+    include: { token: '<!--SB_FORM_INCLUDE-->', file: 'forms/hh-landing.html' },
+  },
+  // high holiday schedule page (self-contained inline-styled paste)
+  {
+    src: 'hh-schedule.html',
+    out: 'preview-hh-schedule.html',
+    snapshot: '20251013120914',
+    include: { token: '<!--SB_FORM_INCLUDE-->', file: 'forms/hh-schedule.html' },
+  },
 ];
 
 const headerBlock = fs.readFileSync(path.join(DIST, 'header-code.html'), 'utf8');
@@ -86,6 +122,11 @@ for (const page of PAGE_SET) {
     continue;
   }
   let html = fs.readFileSync(srcPath, 'utf8');
+
+  if (page.include) {
+    const inc = fs.readFileSync(path.join(ROOT, page.include.file), 'utf8');
+    html = html.replace(page.include.token, () => inc);
+  }
 
   const archived = `https://web.archive.org/web/${page.snapshot}`;
   html = html.replace(/(href|src)="(\/[^"/][^"]*)"/g, (m, attr, url) => {

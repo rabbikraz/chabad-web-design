@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<!-- saved from url=(0253)https://bc941440-90e7-4767-bce2-be8534ff58aa.frame.claudeusercontent.com/_f/1787017332-9fb2/?__frame_t=sB3bpyd_qdUTgoaXy7jtnfCt.8e7ef24f-de6c-429c-9df5-3837a5a81db0.65badf02-df9a-47fd-9e3d-af4d13ad0960.1787020932&__frame_v=manifest.adf4d434a4a8615f.json -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><!-- frame-runtime --><!--<base href="/_f/1787017332-9fb2/">--><base href="."><script>window.__FRAME_PREAMBLE={"capabilities":{"artifact":"artifact.BWD0CGLd.js","assets":"assets.BkxVItX2.js","comments":"comments.CqCXYViZ.js","db":"db.5PgiKS-2.js","downloads":"downloads.C3GSvEDP.js","mcp":"mcp.D3B2EyQu.js","permissions":"permissions.BNySkLV5.js","room":"room.BgXZkiYR.js","sample":"sample.B5DdHYz7.js","self":"artifact.BWD0CGLd.js","user":"user.BpKav-Rf.js"},"transforms":"_transforms.BI3gXbbT.js","comments":"_comments.DOfpa5nr.js","translate":"_translate.5HCW4BJh.js"}</script><script>(function(){"use strict";var ce=["light","dark","system"],ue=/^[A-Za-z0-9_-]{1,64}$/,V=/^[a-zA-Z_:][a-zA-Z0-9_:.-]{0,127}$/,fe=new Set(["class","hidden","value","checked"]);function de(e){const t=e.toLowerCase();return t.startsWith("data-")||t.startsWith("aria-")||fe.has(t)}var pe="http://www.w3.org/1999/xhtml",me="http://www.w3.org/2000/svg",ge=new Set(["script","style","iframe","noscript","noframes","noembed","xmp","plaintext","template","title","textarea","object","embed"]),_e=new Set(["script","style"]);function ve(e){const t=e.localName.toLowerCase();return e.namespaceURI===pe?!ge.has(t):e.namespaceURI===me?!_e.has(t):!1}function he(e){if(e===null||typeof e!="object")return!1;const t=e.__frame_patch;if(t===null||typeof t!="object")return!1;const{seq:n,elements:a}=t;if(typeof n!="number"||!Number.isSafeInteger(n)||!Array.isArray(a)||a.length===0||a.length>64)return!1;for(const i of a){if(i===null||typeof i!="object")return!1;const r=i;if(typeof r.target!="string"||!ue.test(r.target)||r.text!==void 0&&typeof r.text!="string")return!1;if(r.attrsSet!==void 0){if(r.attrsSet===null||typeof r.attrsSet!="object")return!1;for(const[l,c]of Object.entries(r.attrsSet))if(!V.test(l)||typeof c!="string")return!1}if(r.attrsRemoved!==void 0){if(!Array.isArray(r.attrsRemoved))return!1;for(const l of r.attrsRemoved)if(typeof l!="string"||!V.test(l))return!1}}return!0}function ye(e){if(e===null||typeof e!="object")return!1;const t=e.__frame_init;return t!==null&&typeof t=="object"}function be(e){return e!==null&&typeof e=="object"&&e.__frame_size_poke===!0}function Ee(e){if(e===null||typeof e!="object")return!1;const t=e.__frame_theme;if(t===null||typeof t!="object")return!1;const n=t.theme;return typeof n=="string"&&ce.includes(n)}function we(e){try{typeof reportError=="function"?reportError(e):setTimeout(()=>{throw e},0)}catch{}}var X=["#62744c","#b04e72","#5b7596","#a3651f","#7a6ba8","#3f7a75"];function J(e){let t=0;for(let n=0;n<e.length;n++)t=t*31+e.charCodeAt(n)>>>0;return X[t%X.length]??"#788c5d"}var Z="#c7c9d1",Ae=["data:image","/svg+xml,"].join("");function Q(e){return Ae+"%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 2 2'%3E%3Ccircle cx='1' cy='1' r='1' fill='"+encodeURIComponent(e)+"'/%3E%3C/svg%3E"}var Se=Object.freeze({id:null,name:"",avatarUrl:Q(Z),color:Z,email:null,isOwner:!1,canEdit:!1});function je(...e){const t=e[0],n=typeof t=="string"?[t]:Array.isArray(t)?t.filter(i=>typeof i=="string"):[],a=Object.create(null);for(const i of n)a[i]={id:i,name:"",avatarUrl:Q(J(i)),color:J(i),email:null,isMe:!1};return a}var ee=Object.freeze(Object.assign(Object.create(null),{user:Object.freeze(Object.assign(Object.create(null),{id:null,isOwner:!1,canEdit:!1,me:Se,profiles:je,name:"",avatarUrl:null,search:Object.freeze([]),email:null}))})),Re={sample:"sample"};function te(){const e=new Uint8Array(20);try{crypto.getRandomValues(e)}catch{for(let n=0;n<e.length;n++)e[n]=Math.floor(Math.random()*256)}let t="";for(const n of e)t+=(n%36).toString(36);return t}function Oe(e,t){const n=r=>{const l={path:r},c=r.split("/");return{id:c[c.length-1],path:r,get:()=>t("get",[l]),set:d=>t("set",[l,d]),update:d=>t("update",[l,d]),delete:()=>t("delete",[l]),acquire:d=>t("acquire",[l,d]),onSnapshot:(d,E)=>t("subscribe",[l,d,E]),collection:d=>i(r+"/"+String(d))}},a=r=>({where:(l,c,d)=>a({...r,where:[...r.where??[],{f:String(l),op:String(c),v:d}]}),orderBy:(l,c)=>a({...r,orderBy:{f:String(l),dir:c===void 0?"asc":String(c)}}),limit:l=>a({...r,limit:Number(l)}),get:()=>t("query",[r]),onSnapshot:(l,c)=>t("subscribe",[r,l,c])}),i=r=>({...a({collection:r}),path:r,doc:l=>n(r+"/"+(l===void 0?te():String(l))),add:l=>{const c=n(r+"/"+te());return Promise.resolve(c.set(l)).then(()=>c)}});e.doc=r=>n(String(r)),e.collection=r=>i(String(r))}var Pe=Object.freeze([]);function Te(e,t){let n=null,a=null;const i=()=>e.__settled;e.peers=()=>Pe,e.connected=()=>!1,e.emit=()=>i()?.()??Promise.resolve(),e.presence=r=>{const l=i();if(l)return l();let c=null;if(r!==null&&typeof r=="object")try{Array.isArray(r)||(c={...r})}catch{}return c===null?Promise.reject({code:"invalid_argument",message:"presence takes an object"}):(n===null&&(n=Object.create(null),a=Promise.resolve(t("presence",[n]))),Object.assign(n,c),a)}}var B="__frame_scroll",Me=150,Le=310,ke=160,Ce=3e4;function Ne(){let e=0,t=!1,n=!1,a=!1,i=0,r=null;const l=u=>{try{sessionStorage.setItem(B,JSON.stringify({y:u}))}catch{}},c=()=>{if(clearTimeout(e),r===null)return;const u=r;r=null,l(u)},d=()=>{if(t){t=!1;return}n=!0,r=scrollY,clearTimeout(e),e=setTimeout(c,Me)};try{addEventListener("scroll",d,{passive:!0}),addEventListener("pagehide",c)}catch{}const E=()=>{let u;try{u=sessionStorage.getItem(B)}catch{return null}if(u===null)return null;let g;try{g=JSON.parse(u)}catch{g=null}const f=g?.y;if(!(typeof f=="number"&&Number.isFinite(f)&&f>=0)){try{sessionStorage.removeItem(B)}catch{}return null}return f};let T=!1;const h=u=>{try{const g=scrollY;scrollTo({top:u,left:0,behavior:"instant"}),i=u,a=!0,clearTimeout(e),r=null,l(u);const f=scrollY;f!==g&&(t=!0),f!==u&&!T&&(T=!0,addEventListener("load",()=>{try{if(scrollY===f){const p=E();h(p!==null?p:i)}}catch{}},{once:!0}))}catch{}},R=()=>{try{return!!location.hash}catch{return!0}};let A=!1;const O=()=>{try{if(A||innerWidth>Le||innerHeight>ke)return;A=!0;const u=Date.now(),g=()=>{try{removeEventListener("resize",g)}catch{}if(Date.now()-u>Ce||n||R())return;const f=E();h(f!==null?f:i)};addEventListener("resize",g)}catch{}};let M=!1,o=!1;return{restore(){if(M||(M=!0,R()))return;const u=E();u!==null&&(h(u),O())},promoted(){if(o||(o=!0,R()))return;const u=E();u!==null?(h(u),O()):a&&h(i)}}}var Ye="modulepreload",We=function(e){return"/"+e},Ke={},Ue=function(t,n,a){let i=Promise.resolve();function r(l){const c=new Event("vite:preloadError",{cancelable:!0});if(c.payload=l,window.dispatchEvent(c),!c.defaultPrevented)throw l}return i.then(l=>{for(const c of l||[])c.status==="rejected"&&r(c.reason);return t().catch(r)})};(function(){const e=Object.defineProperty,t=globalThis,n=["RTCPeerConnection","webkitRTCPeerConnection","RTCDataChannel","RTCIceCandidate","RTCSessionDescription","RTCRtpSender","RTCRtpReceiver"];let a=0;for(let i=0;i<n.length;i++){const r=n[i];try{e(t,r,{value:void 0,writable:!1,configurable:!1})}catch{try{delete t[r]}catch{}try{e(t,r,{value:void 0,writable:!1,configurable:!0})}catch{}}typeof t[r]=="function"&&a++}if(a&&window!==top)try{parent.postMessage({__frame_rtc_lockdown_failed:a},"*")}catch{}})();var qe=1e4,Ie=Object.freeze([...window.__FRAME_PREAMBLE?.origins??["https://claude.ai","https://preview.claude.ai"]]);function re(e){for(const t of Ie)if(t.endsWith(":*"))try{const n=new URL(e);if(`${n.protocol}//${n.hostname}:*`===t)return!0}catch{}else if(e===t)return!0;return!1}var k=Object.freeze({...window.__FRAME_PREAMBLE?.capabilities}),x=window.__FRAME_PREAMBLE?.transforms,$=window.__FRAME_PREAMBLE?.comments,z=window.__FRAME_PREAMBLE?.translate,q=/^[\w.-]+\.js$/,De=/^[a-z][a-z0-9_-]{0,63}$/;function I(e){return Ue(()=>import("/_runtime/"+e),void 0)}function Be(e,t){return{contract:e.contract,changes:new Set(e.changes??[]),flags:new Set(e.flags??[]),capabilities:e.capabilities??{},capBudgets:e.capBudgets??{},transforms:new Map,shellOrigin:t,mount:Y,pipe:()=>({wrap:(n,a)=>(...i)=>{try{return a(...i)}catch(r){return Promise.reject(r)}}})}}var ne=null,C=null;function F(e,t,n){try{Object.defineProperty(e,t,{value:n,writable:!1,configurable:!1,enumerable:!0})}catch{try{Object.defineProperty(e,t,{value:n,writable:!1,configurable:!0,enumerable:!0})}catch{}}}var H=!1;function xe(e,t){const n=[];for(const a of e.elements){const i=document.querySelector(`[data-id="${a.target}"]`);if(!i){parent.postMessage({__frame_patch_miss:{seq:e.seq}},t);return}if([...Object.keys(a.attrsSet??{}),...a.attrsRemoved??[]].some(r=>!de(r))){parent.postMessage({__frame_patch_miss:{seq:e.seq}},t);return}if(a.text!==void 0&&!ve(i)){parent.postMessage({__frame_patch_miss:{seq:e.seq}},t);return}for(const[r,l]of Object.entries(a.attrsSet??{}))if(!oe(i,r)){try{i.setAttribute(r,l)}catch{}se(i,r,l)}for(const r of a.attrsRemoved??[])oe(i,r)||(i.removeAttribute(r),se(i,r,null));typeof a.text=="string"&&(i.textContent=a.text),n.push(a.target)}try{document.dispatchEvent(new CustomEvent("claude:edit",{detail:{seq:e.seq,targets:n}}))}catch{}}function se(e,t,n){if(!(e instanceof HTMLInputElement))return;const a=t.toLowerCase();a==="checked"?e.checked=n!==null:a==="value"&&e.type!=="file"&&(e.value=n??"")}function oe(e,t){const n=t.toLowerCase(),a=e;return n==="data-id"||(n==="value"||n==="checked")&&(a.__artifactSecret===!0||/^(password|hidden|file)$/.test(a.type??"")||/(^|\s)(cc-|one-time-code|current-password|new-password)/i.test(`${e.getAttribute("autocomplete")??""} ${a.autocomplete??""}`))}function ae(e){const t=document.documentElement;e==="light"||e==="dark"?(t.dataset.theme=e,t.style.colorScheme=e,H=!0):H&&(delete t.dataset.theme,t.style.colorScheme="",H=!1)}var ie=256,N=Object.assign(Object.create(null),{mcp:Object.assign(Object.create(null),{watchTool:{handlerArg:3}}),db:Object.assign(Object.create(null),{subscribe:{handlerArg:1,errArg:2}}),room:Object.assign(Object.create(null),{on:{handlerArg:1,errArg:2},onPeers:{handlerArg:0,errArg:1},onConnection:{handlerArg:0,errArg:1}})}),$e=Object.assign(Object.create(null),{db:(e,t)=>Oe(e,t),room:(e,t,n)=>Te(e,n)}),j=new Map;function Y(e,t){const n=j.get(e);if(!n)return;const a=Object.assign(Object.create(null),t);Object.assign(n.impl,a),n.r(n.ns),n.impl.__settled=()=>Promise.reject({code:"capability_removed",message:`${e}: method not in this runtime`});const i=n.queue;n.queue=[];for(const r of i){const l=a[r.method];if(l)if(N[e]?.[r.method])try{r.resolve(l(...r.args))}catch{U(r,N[e][r.method],{code:"transform_error",message:`${e}.${r.method} rejected its arguments`})}else l(...r.args).then(r.resolve,r.reject);else{const c={code:"capability_removed",message:`${e}.${r.method} is not in this runtime`},d=N[e]?.[r.method];if(d){U(r,d,c);continue}r.reject(c)}}}function ze(e,t){const n=j.get(e);if(!n)return;n.impl.__settled=()=>Promise.reject(t),n.r(null);const a=n.queue;n.queue=[];for(const i of a){const r=N[e]?.[i.method];if(r){U(i,r,t);continue}i.reject(t)}}function le(e,t){if(typeof e=="function")try{return e(...t)}catch{return Object.create(null)}return Array.isArray(e)?[...e]:e!==null&&typeof e=="object"?{...e}:e}function D(e,t){const n=ee[e];if(!n){ze(e,t);return}j.get(e)?.r(null),Y(e,Object.fromEntries(Object.entries(n).map(([a,i])=>[a,(...r)=>Promise.resolve(le(i,r))])))}function U(e,t,n){if(e.syncState?.dead)return;const a=t.errArg===void 0?void 0:e.args[t.errArg],i=t.errArg===void 0?e.args[t.handlerArg]:a;typeof i=="function"&&queueMicrotask(()=>{if(!e.syncState?.dead)try{i(t.errArg===void 0?{type:"error",error:n}:n)}catch(r){we(r)}})}var W=Object.getOwnPropertyDescriptor(window,"claude");if(window!==top&&!(W&&W.writable===!1)){const e=x&&q.test(x)?I(x).catch(()=>{}):Promise.resolve(void 0),t=o=>{if(o.type==="auxclick"&&o.button!==1)return;const u=o.target,g=u&&u.closest?u.closest("a[href],area[href]"):null;if(!g)return;const f=g.getAttribute("href");if(!f)return;let p,P;try{p=new URL(f,document.baseURI),P=new URL(document.baseURI).origin}catch{return}if((p.protocol==="http:"||p.protocol==="https:")&&p.origin!==P){o.preventDefault();const w=(g.getAttribute("target")??"").toLowerCase(),y=o.type==="auxclick"||o.metaKey||o.ctrlKey||o.shiftKey||o.altKey||!["","_self","_top","_parent"].includes(w);parent.postMessage({__frame_nav:!0,url:p.href,newTab:y},"*")}};addEventListener("click",t,!0),addEventListener("auxclick",t,!0);const n={},a=o=>{o.isTrusted&&(n.pointer=!0)},i=o=>{o.isTrusted&&(n.click=!0)};addEventListener("pointermove",a,{capture:!0,passive:!0}),addEventListener("click",i,{capture:!0,passive:!0}),e.then(o=>{o?.wireNav&&(o.wireNav(),removeEventListener("click",t,!0),removeEventListener("auxclick",t,!0),removeEventListener("pointermove",a,!0),removeEventListener("click",i,!0),o.wireEngagement?.(n))});let r=null;try{r=Ne()}catch{}const l=W?.value??{};F(window,"claude",l);const c=o=>{let u;const g=new Promise(v=>{u=v}),f={impl:Object.create(null),queue:[],u:g,r:u,ns:null};j.set(o,f);const p=f.impl,P=v=>({code:"queue_overflow",message:`${o}.${v}: pre-init call queue is full`}),w=(v,s)=>{if(f.queue.length>=ie){const m=ee[o];return m&&v in m?Promise.resolve(le(m[v],s)):Promise.reject(P(v))}return new Promise((m,_)=>{f.queue.push({method:v,args:s,resolve:m,reject:_})})},y=Re[o],L=new Proxy(y===void 0?p:(()=>{}),{apply:(v,s,m)=>{const _=y,b=p[_]??p.__settled;return b?b(...m):w(_,m)},get:(v,s)=>{if(typeof s!="string"||s==="then"||s==="toJSON"||s==="valueOf")return;if(s==="toString")return Object.prototype.toString;if(y!==void 0&&(s==="call"||s==="apply"||s==="bind"))return Function.prototype[s];const m=N[o]?.[s];return m?(..._)=>{if(typeof _[m.handlerArg]!="function")throw new TypeError(`${o}.${s} requires a handler function`);const b=p[s];if(b)return b(..._);if(p.__settled){const S={dead:!1},Fe={args:[..._],syncState:S};return p.__settled().catch(He=>U(Fe,m,He)),()=>{S.dead=!0}}if(f.queue.length>=ie){const S={dead:!1};return U({args:[..._],syncState:S},m,P(s)),()=>{S.dead=!0}}let K=null;const G={dead:!1};return f.queue.push({method:s,args:_,resolve:S=>{K=typeof S=="function"?S:null,G.dead&&K?.()},reject:()=>{},syncState:G}),()=>{G.dead=!0,K?.()}}:(..._)=>{const b=p[s]??p.__settled;return b?b(..._):w(s,_)}},set:()=>!1});$e[o]?.(p,(v,s)=>L[v](...s),w),f.ns=L,F(l,o,L)};for(const o of Object.keys(k)){if(l[o]!==void 0){F(l,o,l[o]);continue}c(o)}if(l.use===void 0){const o=u=>{if(typeof u!="string"||!Object.hasOwn(k,u))return Promise.resolve(null);const g=j.get(u);return g?g.u:Promise.resolve(l[u]??null)};try{Object.defineProperty(l,"use",{value:o,writable:!0,configurable:!0,enumerable:!1})}catch{}}let d=null,E=null,T=0;const h=o=>{o.source!==parent||!re(o.origin)||ye(o.data)&&(d=o.data.__frame_init,C=o.origin,removeEventListener("message",h),clearTimeout(T),E?.())};addEventListener("message",h),parent.postMessage({__frame_connect:!0},"*");const R=new Promise(o=>{E=o,T=setTimeout(()=>{removeEventListener("message",h),o()},qe)}),A=document.readyState==="loading"?new Promise(o=>document.addEventListener("DOMContentLoaded",()=>o(),{once:!0})):Promise.resolve();A.then(()=>{try{r?.restore()}catch{}});const O={cb:null},M=o=>{if(!(o.source!==parent||!re(o.origin))&&be(o.data)){try{r?.promoted()}catch{}O.cb?.()}};addEventListener("message",M),R.then(async()=>{if(!d||!C){for(const s of j.keys())D(s,{code:"not_granted",message:"frame initialization did not arrive - capability unavailable"});return}ae(d.theme);const o=C;let u=!1,g=!1;addEventListener("message",s=>{if(s.source!==parent||s.origin!==o)return;Ee(s.data)&&ae(s.data.__frame_theme.theme),he(s.data)&&xe(s.data.__frame_patch,o);const m=s.data?.__fc_mode;m&&typeof m=="object"&&!u&&$&&q.test($)&&(u=!0,I($).then(b=>b.install?.(o,m.on===!0)).catch(()=>{}));const _=s.data?.__ft_cmd;_&&typeof _=="object"&&!g&&z&&q.test(z)&&(g=!0,I(z).then(b=>b.install?.(o,_)).catch(()=>{}))});const f=Object.keys(d.capabilities??{});for(const s of f)Object.hasOwn(k,s)||De.test(s)&&l[s]===void 0&&(c(s),D(s,{code:"capability_disabled",message:"capability not in this runtime generation"}));const p=f.filter(s=>Object.hasOwn(k,s)).map(s=>[s,k[s]]).filter(s=>typeof s[1]=="string"&&q.test(s[1])),P=await Promise.allSettled(p.map(([,s])=>I(s))),w=await e,y=C;w?.buildBoot||parent.postMessage({__frame_cap_telemetry:{kind:"cap-load-error",cap:"_transforms"}},y),ne=w?.buildBoot?w.buildBoot(d,w.TRANSFORMS??{},{shellOrigin:y,mount:Y},s=>parent.postMessage({__frame_cap_telemetry:s},y)):Be(d,y);const L=s=>parent.postMessage({__frame_cap_telemetry:{kind:"cap-load-error",cap:s}},y),v=ne;P.forEach((s,m)=>{const _=p[m][0];if(s.status!=="fulfilled"){L(_);return}try{s.value?.install?.(v)}catch{L(_)}});for(const[s,m]of j)if(m.impl.__settled===void 0){if(f.includes(s)){D(s,{code:"capability_disabled",message:"capability not available in this session"});continue}D(s,{code:"not_granted",message:"capability not available in this session"})}await A,parent.postMessage({__frame_ready:!0},C),e.then(s=>s?.installSizeReporter?.(y,O))})}})();</script><!-- /frame-runtime --><meta name="viewport" content="width=device-width,initial-scale=1"><style>:root{color-scheme:light}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}</style></head><body>
+<title>Membership Form Playbook (Copy)</title>
+<style>
+  :root {
+    --ground: #FBF5E9;
+    --panel: #FFFFFF;
+    --panel-soft: #F8EDD6;
+    --ink: #17232E;
+    --ink-2: #4E5B66;
+    --teal: #0E464B;
+    --teal-deep: #202C38;
+    --gold: #C08A2E;
+    --gold-bright: #E2C179;
+    --line: #EFDAAE;
+    --line-soft: #F2E4C4;
+    --chip-bg: #F2F7F6;
+    --chip-ink: #0E464B;
+    --paste-bg: #202C38;
+    --paste-ink: #EAF1F0;
+    --ok: #3E7248;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground: #131C24;
+      --panel: #1B2733;
+      --panel-soft: #22303D;
+      --ink: #EDE5D4;
+      --ink-2: #A7B0B8;
+      --teal: #8FC1BC;
+      --teal-deep: #0F171F;
+      --gold: #D9A94E;
+      --gold-bright: #E2C179;
+      --line: #35424E;
+      --line-soft: #2A3742;
+      --chip-bg: #24333C;
+      --chip-ink: #A9D2CD;
+      --paste-bg: #0F171F;
+      --paste-ink: #DCE6E4;
+      --ok: #8CC996;
+    }
+  }
+  :root[data-theme="dark"] {
+    --ground: #131C24;
+    --panel: #1B2733;
+    --panel-soft: #22303D;
+    --ink: #EDE5D4;
+    --ink-2: #A7B0B8;
+    --teal: #8FC1BC;
+    --teal-deep: #0F171F;
+    --gold: #D9A94E;
+    --gold-bright: #E2C179;
+    --line: #35424E;
+    --line-soft: #2A3742;
+    --chip-bg: #24333C;
+    --chip-ink: #A9D2CD;
+    --paste-bg: #0F171F;
+    --paste-ink: #DCE6E4;
+    --ok: #8CC996;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+  }
+  .wrap { max-width: 840px; margin: 0 auto; padding: 40px 22px 90px; }
+
+  /* masthead — same navy band as the brand emails */
+  .mast {
+    background: var(--teal-deep);
+    border-radius: 14px;
+    padding: 40px 40px 36px;
+    text-align: center;
+    margin: 0 0 14px;
+  }
+  .mast .eyebrow {
+    font-size: 11px;
+    letter-spacing: .3em;
+    color: var(--gold-bright);
+    text-transform: uppercase;
+    margin: 0 0 12px;
+  }
+  .mast h1 {
+    font-family: Georgia, "Times New Roman", serif;
+    font-weight: 400;
+    font-size: clamp(30px, 5vw, 42px);
+    color: #F3E8D3;
+    margin: 0 0 12px;
+    text-wrap: balance;
+  }
+  .mast .dek {
+    color: rgba(243, 232, 211, .78);
+    font-size: 16.5px;
+    max-width: 56ch;
+    margin: 0 auto;
+  }
+
+  /* the three ideas the whole form rests on */
+  .keys {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin: 0 0 34px;
+  }
+  .key {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-top: 4px solid var(--gold);
+    border-radius: 12px;
+    padding: 18px 20px;
+  }
+  .key h3 {
+    font-family: Georgia, serif;
+    font-weight: 400;
+    font-size: 18px;
+    margin: 0 0 6px;
+  }
+  .key p { font-size: 14px; color: var(--ink-2); margin: 0; }
+
+  /* step sections */
+  .step { margin: 0 0 30px; }
+  .step-head { display: flex; align-items: baseline; gap: 14px; margin: 0 0 12px; }
+  .step-num {
+    font-family: Georgia, serif;
+    font-size: 30px;
+    color: var(--gold);
+    min-width: 34px;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+  .step-head h2 {
+    font-family: Georgia, serif;
+    font-weight: 400;
+    font-size: 26px;
+    margin: 0;
+    text-wrap: balance;
+  }
+  .step-body {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 24px 28px;
+  }
+  .step-body > p:first-child { margin-top: 0; }
+  .step-body > :last-child { margin-bottom: 0; }
+  .step-body p { max-width: 68ch; }
+  .step-body ul, .step-body ol { padding-left: 22px; max-width: 68ch; }
+  .step-body li { margin: 0 0 6px; }
+
+  h4.sect {
+    font-size: 12.5px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin: 26px 0 10px;
+  }
+  h4.sect:first-child { margin-top: 0; }
+
+  /* literal strings to type into the admin */
+  .chip {
+    font-family: ui-monospace, Consolas, Menlo, monospace;
+    font-size: 13.5px;
+    background: var(--chip-bg);
+    color: var(--chip-ink);
+    border: 1px solid var(--line-soft);
+    border-radius: 6px;
+    padding: 1px 7px;
+    white-space: nowrap;
+  }
+
+  /* field spec rows — read like the form itself */
+  .fields { display: grid; gap: 8px; margin: 0 0 6px; }
+  .field {
+    display: grid;
+    grid-template-columns: minmax(190px, 240px) 1fr;
+    gap: 4px 18px;
+    border: 1px solid var(--line-soft);
+    border-left: 4px solid var(--line);
+    border-radius: 8px;
+    padding: 11px 16px;
+    background: var(--panel);
+  }
+  .field.req { border-left-color: var(--gold); }
+  .field .flabel {
+    font-family: ui-monospace, Consolas, Menlo, monospace;
+    font-size: 14px;
+    color: var(--ink);
+    font-weight: 600;
+    overflow-wrap: anywhere;
+  }
+  .field .fmeta { font-size: 13px; color: var(--ink-2); }
+  .field .fmeta b { color: var(--teal); font-weight: 600; }
+  .tag {
+    display: inline-block;
+    font-size: 11px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    border-radius: 999px;
+    padding: 1px 9px;
+    margin-left: 8px;
+    vertical-align: 1px;
+  }
+  .tag.must { background: var(--gold); color: #FFF; }
+  .tag.opt { background: var(--chip-bg); color: var(--ink-2); border: 1px solid var(--line-soft); }
+  .tag.cond { background: transparent; color: var(--gold); border: 1.5px solid var(--gold); }
+  .field.cond { border-left-color: var(--gold); border-left-style: dashed; }
+  :root[data-theme="dark"] .tag.must { color: #131C24; }
+
+  /* copy-paste blocks */
+  .paste {
+    background: var(--paste-bg);
+    color: var(--paste-ink);
+    border-radius: 10px;
+    padding: 16px 18px;
+    margin: 10px 0 4px;
+    position: relative;
+  }
+  .paste pre {
+    margin: 0;
+    font-family: ui-monospace, Consolas, Menlo, monospace;
+    font-size: 13px;
+    line-height: 1.55;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+  .paste.oneline pre { white-space: pre; overflow-x: auto; }
+  .paste .copy {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font: 600 12px/1 -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+    color: var(--gold-bright);
+    background: rgba(255, 255, 255, .07);
+    border: 1px solid rgba(226, 193, 121, .45);
+    border-radius: 999px;
+    padding: 6px 14px;
+    cursor: pointer;
+  }
+  .paste .copy:hover { background: rgba(226, 193, 121, .18); }
+  .paste .copy:focus-visible { outline: 2px solid var(--gold-bright); outline-offset: 2px; }
+
+  /* callouts */
+  .note {
+    border: 1px solid var(--line);
+    background: var(--panel-soft);
+    border-radius: 10px;
+    padding: 13px 17px;
+    font-size: 14.5px;
+    margin: 16px 0 0;
+    max-width: none;
+  }
+  .note b:first-child { color: var(--teal); }
+
+  /* pricing table */
+  table.price { border-collapse: collapse; width: 100%; margin: 4px 0 2px; font-size: 14.5px; }
+  table.price th, table.price td { border: 1px solid var(--line-soft); padding: 8px 12px; text-align: left; }
+  table.price th {
+    background: var(--panel-soft);
+    font-size: 12px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--teal);
+  }
+  table.price td:not(:first-child) { font-variant-numeric: tabular-nums; }
+  .tablewrap { overflow-x: auto; }
+
+  /* checklist */
+  .check { list-style: none; padding: 0; margin: 0; }
+  .check li { padding-left: 30px; position: relative; margin: 0 0 9px; max-width: 68ch; }
+  .check li:before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 4px;
+    width: 15px;
+    height: 15px;
+    border: 2px solid var(--gold);
+    border-radius: 4px;
+  }
+
+  .foot { text-align: center; color: var(--ink-2); font-size: 13.5px; margin-top: 44px; }
+  .foot .mosad { font-family: Georgia, serif; font-size: 16px; color: var(--ink); }
+
+  a { color: var(--teal); }
+
+  @media (max-width: 680px) {
+    .keys { grid-template-columns: 1fr; }
+    .field { grid-template-columns: 1fr; }
+    .step-body { padding: 20px 18px; }
+    .mast { padding: 30px 22px 28px; }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .paste .copy { transition: background 140ms ease; }
+  }
+</style>
+
+<div class="wrap">
+
+  <div class="mast">
+    <p class="eyebrow">Chabad in South Beach · ChabadOne Admin</p>
+    <h1>Membership Form Playbook</h1>
+    <p class="dek">Every field, option, and setting for building the membership signup in the ChabadOne form builder — in the order you'll click them.</p>
+  </div>
+
+  <div class="keys">
+    <div class="key">
+      <h3>Prices live in the text</h3>
+      <p>The builder can't calculate, so the pricing table sits in the form's intro and the member types their own first payment from it. Simple, and it works.</p>
+    </div>
+    <div class="key">
+      <h3>The form bills the schedule</h3>
+      <p>The payment section lets the member choose monthly or annual billing at checkout, and the gateway renews it automatically. The office's job is verifying the typed amount matches the table (step 9).</p>
+    </div>
+    <div class="key">
+      <h3>Blank fields disappear</h3>
+      <p>Empty fields are dropped from the notification email and the receipt, so one form serves every household. Spouse and children details ARE required when they exist — the labels say so, and the office verifies (step 9), since the builder can't enforce it per household.</p>
+    </div>
+  </div>
+
+  <!-- STEP 1 -->
+  <div class="step">
+    <div class="step-head"><span class="step-num">1</span><h2>Create the form page</h2></div>
+    <div class="step-body">
+      <p>Make a new page of the same type as the High Holiday reservations page (<span class="chip">/546190</span>) — that's the page type that has the form builder plus a <b>Form Settings</b> area for payment, notifications, and the receipt.</p>
+      <ul>
+        <li>Page title: <span class="chip">Membership</span> — set it in the page settings right away (the HH page sat as "Untitled" for a while).</li>
+        <li>If there's no obvious "add form page" option, duplicating the HH form page and removing its fields gets you the same thing.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="step">
+    <div class="step-head"><span class="step-num">2</span><h2>Paste the intro text</h2></div>
+    <div class="step-body">
+      <p>Put this at the top of the form (the builder's text/description block). It carries the pricing table, so keep it word-for-word or adjust prices deliberately:</p>
+      <div class="paste"><button class="copy" type="button">Copy</button><pre>Become a partner in our Chabad.
+
+Choose the membership that fits your household. Members enjoy reserved High Holiday seating, event discounts, and their family's special days on our community calendar.
+
+MONTHLY PRICING
+Basic — Single $50 · Couple $80 · Family $80 + $20 per child
+Chai — Single $180 · Couple $300 · Family $300 + $90 per child
+Silver — Single $500 · Couple $800 · Family $800 + $250 per child
+Gold — Single $1,000 · Couple $1,800 · Family $1,800 + $360 per child
+
+Example: a family with 2 children on Chai is $300 + $90 + $90 = $480/month. Single-parent families start from the Single rate instead of the Couple rate (same example as a single parent: $180 + $90 + $90 = $360/month). You will choose Monthly or Annual billing in the payment section — annual billing is 12 x the monthly amount, paid once a year.
+
+BENEFITS
+Basic: your special days on the community calendar, 5% off all events and programs, reserved High Holiday seat.
+Chai (most popular): 10% off all events and programs, listed on the Chai donor wall, 20% off Lulav &amp; Esrog set.
+Silver: annual mezuzah checking, 1 co-sponsored Kiddush per year, VIP High Holiday seating, 50% off Lulav &amp; Esrog set, listed on the Silver donor wall.
+Gold: annual mezuzah &amp; tefillin checking, 1 co-sponsored Kiddush per year, Lulav &amp; Esrog set provided, listed on the Gold donor wall.</pre></div>
+      <div class="note"><b>Reference:</b> the same pricing, as a table — handy while you type option labels in the next step.</div>
+      <div class="tablewrap">
+        <table class="price">
+          <tbody><tr><th>Level</th><th>Single</th><th>Couple</th><th>Per child</th><th>Family, 2 kids</th><th>Single parent, 2 kids</th></tr>
+          <tr><td>Basic</td><td>$50/mo</td><td>$80/mo</td><td>+$20/mo</td><td>$120/mo</td><td>$90/mo</td></tr>
+          <tr><td>Chai</td><td>$180/mo</td><td>$300/mo</td><td>+$90/mo</td><td>$480/mo</td><td>$360/mo</td></tr>
+          <tr><td>Silver</td><td>$500/mo</td><td>$800/mo</td><td>+$250/mo</td><td>$1,300/mo</td><td>$1,000/mo</td></tr>
+          <tr><td>Gold</td><td>$1,000/mo</td><td>$1,800/mo</td><td>+$360/mo</td><td>$2,520/mo</td><td>$1,720/mo</td></tr>
+        </tbody></table>
+        <p style="font-size:13.5px;color:var(--ink-2);margin:8px 0 0;">Family = couple rate + per-child rate for each child (single parents start from the single rate). Annual billing = 12 × the monthly amount.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 3 -->
+  <div class="step">
+    <div class="step-head"><span class="step-num">3</span><h2>Add the membership fields</h2></div>
+    <div class="step-body">
+      <p>Field labels become the row names in the notification email and the receipt — so type them exactly as written here. Three kinds of rows: <span class="tag must">Required</span> for everyone, <span class="tag opt">Optional</span> for everyone, and <span class="tag cond">Required if it applies</span> — mandatory for the households they apply to, but left un-ticked in the builder so other households can still submit (how that's enforced is in step 5).</p>
+      <div class="fields">
+        <div class="field req">
+          <span class="flabel">I am joining as<span class="tag must">Required</span></span>
+          <span class="fmeta"><b>Radio buttons</b> — options: <span class="chip">Single (one adult)</span> <span class="chip">Couple (two adults)</span> <span class="chip">Family (parents &amp; children)</span></span>
+        </div>
+        <div class="field cond">
+          <span class="flabel">Parents at Home<span class="tag cond">Families</span></span>
+          <span class="fmeta"><b>Radio buttons</b> — options: <span class="chip">Two parents</span> <span class="chip">Single parent</span>. Help text: <i>Required for families.</i></span>
+        </div>
+        <div class="field cond">
+          <span class="flabel">Number of Children at Home<span class="tag cond">Families</span></span>
+          <span class="fmeta"><b>Drop-down</b> — first choice blank, then <span class="chip">1</span>–<span class="chip">6</span>. The blank first choice keeps a junk row out of singles' receipts. Help text: <i>Required for families.</i></span>
+        </div>
+        <div class="field req">
+          <span class="flabel">Membership Level<span class="tag must">Required</span></span>
+          <span class="fmeta"><b>Radio buttons</b> — options: <span class="chip">Basic</span> <span class="chip">Chai</span> <span class="chip">Silver</span> <span class="chip">Gold</span>. Keep the option labels to one word — they print in the receipt. The prices and benefits are already in the intro above.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 4 -->
+  <div class="step">
+    <div class="step-head"><span class="step-num">4</span><h2>Add the contact fields</h2></div>
+    <div class="step-body">
+      <p>These identify the member and give the gateway its billing details.</p>
+      <div class="note" style="margin: 0 0 14px;"><b>Check first:</b> if enabling credit-card payment (step 6) makes the form show its own billing block that already asks for name, address, zip, and email — use that block and skip the duplicates here. Only add what the payment block doesn't ask for.</div>
+      <div class="fields">
+        <div class="field req"><span class="flabel">First Name<span class="tag must">Required</span></span><span class="fmeta"><b>Text box</b></span></div>
+        <div class="field req"><span class="flabel">Last Name<span class="tag must">Required</span></span><span class="fmeta"><b>Text box</b></span></div>
+        <div class="field req"><span class="flabel">Address<span class="tag must">Required</span></span><span class="fmeta"><b>Text box</b></span></div>
+        <div class="field req"><span class="flabel">City<span class="tag must">Required</span></span><span class="fmeta"><b>Text box</b></span></div>
+        <div class="field req"><span class="flabel">State<span class="tag must">Required</span></span><span class="fmeta"><b>Text box</b></span></div>
+        <div class="field req"><span class="flabel">Zip Code<span class="tag must">Required</span></span><span class="fmeta"><b>Text box</b></span></div>
+        <div class="field req"><span class="flabel">Email<span class="tag must">Required</span></span><span class="fmeta"><b>Text box</b> (email type if offered)</span></div>
+        <div class="field req"><span class="flabel">Cell Phone<span class="tag must">Required</span></span><span class="fmeta"><b>Text box</b></span></div>
+        <div class="field"><span class="flabel">Hebrew Name<span class="tag opt">Optional</span></span><span class="fmeta"><b>Text box</b></span></div>
+        <div class="field"><span class="flabel">Birthday<span class="tag opt">Optional</span></span><span class="fmeta"><b>Text box</b> — help text: <i>MM/DD/YYYY</i>. A plain text box is safer than a date picker here; the old date widget is clumsy on phones.</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 5 -->
+  <div class="step">
+    <div class="step-head"><span class="step-num">5</span><h2>Add the family fields</h2></div>
+    <div class="step-body">
+      <p>Spouse and children details are <b>mandatory for the households that have them</b> — a couple must give their spouse's details, a family must list every child. Add a text block above this group that says exactly that:</p>
+      <div class="paste"><button class="copy" type="button">Copy</button><pre>Couples and families: please complete this section — spouse details are required, and every child at home must be listed.</pre></div>
+      <div class="fields" style="margin-top:14px;">
+        <div class="field cond"><span class="flabel">Spouse First Name<span class="tag cond">Couples &amp; families</span></span><span class="fmeta"><b>Text box</b> — help text: <i>Required for couples and two-parent families.</i></span></div>
+        <div class="field cond"><span class="flabel">Spouse Last Name<span class="tag cond">Couples &amp; families</span></span><span class="fmeta"><b>Text box</b> — help text: <i>Required for couples and two-parent families.</i></span></div>
+        <div class="field"><span class="flabel">Spouse Hebrew Name<span class="tag opt">Optional</span></span><span class="fmeta"><b>Text box</b></span></div>
+        <div class="field"><span class="flabel">Spouse Email<span class="tag opt">Optional</span></span><span class="fmeta"><b>Text box</b></span></div>
+        <div class="field cond"><span class="flabel">Spouse Birthday<span class="tag cond">Couples &amp; families</span></span><span class="fmeta"><b>Text box</b> — help text: <i>MM/DD/YYYY — required for couples and two-parent families.</i></span></div>
+        <div class="field cond"><span class="flabel">Anniversary<span class="tag cond">Couples &amp; families</span></span><span class="fmeta"><b>Text box</b> — help text: <i>MM/DD/YYYY — required for married couples.</i></span></div>
+        <div class="field cond"><span class="flabel">Child 1<span class="tag cond">Families</span></span><span class="fmeta"><b>Text box</b> — help text: <i>Name &amp; birthday — every child at home must be listed.</i> One box per child keeps the form short; repeat for <span class="chip">Child 2</span> through <span class="chip">Child 6</span>.</span></div>
+        <div class="field"><span class="flabel">Anything Else<span class="tag opt">Optional</span></span><span class="fmeta"><b>Paragraph text</b> — help text: <i>Hebrew names, yahrzeits, how you'd like to be listed on the donor wall, questions for the Rabbi — anything we should know.</i> This one field replaces a page of questionnaire; the Rabbi follows up personally.</span></div>
+      </div>
+      <div class="note"><b>Why these stay un-ticked in the builder:</b> ticking Required would demand a spouse from singles too — the builder can't make a field required for one household type only. So the requirement is enforced three ways: the labels and the text block above ask for it plainly, the office checks every couple/family signup and collects anything missing before setting up billing (step 9), and once the form is live the site's script layer can enforce it automatically in the browser — blocking submission when a couple or family leaves spouse or child boxes empty. Send the page URL when it's published and that enforcement gets wired in.</div>
+    </div>
+  </div>
+
+  <!-- STEP 6 -->
+  <div class="step">
+    <div class="step-head"><span class="step-num">6</span><h2>Billing &amp; payment</h2></div>
+    <div class="step-body">
+      <div class="fields">
+        <div class="field req">
+          <span class="flabel">Membership Amount<span class="tag must">Required</span></span>
+          <span class="fmeta"><b>The payment Amount field</b> (use the builder's own amount field if payment settings provide one). Help text: <i>From the table above — your monthly amount if you choose monthly billing, or 12x if you choose annual.</i></span>
+        </div>
+      </div>
+      <h4 class="sect">Payment settings</h4>
+      <ul>
+        <li>Enable <b>credit card</b> payment with the same gateway the High Holiday form uses — the card number, expiration, and CVV fields come with it.</li>
+        <li>Turn on <b>recurrence</b> and offer <b>Monthly</b> and <b>Annually</b>. If the settings allow it, turn one-time payment <b>off</b> — a membership should always renew; without a one-time option nobody can accidentally pay a single month and lapse.</li>
+        <li>No separate "Billing" question is needed on the form — the member picks the frequency right in the payment section, and it recurs automatically.</li>
+        <li>If the amount field the gateway adds has its own label, that label replaces "Membership Amount" — fine either way, as long as its help text points at the pricing table.</li>
+        <li>If option prices / auto-totaling is offered on choice fields, skip it — the price depends on household size, so the typed amount stays the source of truth.</li>
+      </ul>
+      <div class="note"><b>The amount recurs:</b> whatever number the member types is what the gateway bills every cycle, forever. That's why step 9 has the office verify each new membership's amount against the pricing table — a typo would otherwise repeat every month.</div>
+    </div>
+  </div>
+
+  <!-- STEP 7 -->
+  <div class="step">
+    <div class="step-head"><span class="step-num">7</span><h2>Notifications, receipt &amp; response</h2></div>
+    <div class="step-body">
+      <p>All in <b>Form Settings</b>, same as the High Holiday form:</p>
+      <ul>
+        <li><b>Notification email</b> → the office address. Every filled-in field arrives as a labeled row.</li>
+        <li><b>Receipt subject</b> → set it (the default is a generic "Form Submission Confirmation"):</li>
+      </ul>
+      <div class="paste"><button class="copy" type="button">Copy</button><pre>Welcome to Chabad in South Beach — Your Membership</pre></div>
+      <ul style="margin-top:16px;">
+        <li><b>Receipt / response custom message</b> → paste the branded receipt below. It doubles as the on-screen thank-you after submitting. The admin's warning is real: the HTML must stay on <b>one single line</b> — copy it exactly, don't let an editor re-wrap it. (It also lives in the project at <span class="chip">forms/membership-receipt.html</span>.)</li>
+      </ul>
+      <div class="paste oneline"><button class="copy" type="button">Copy</button><pre>&lt;table width="100%" border="0" cellpadding="0" cellspacing="0" style="background-color:#FBF5E9;"&gt;&lt;tr&gt;&lt;td&gt;&lt;div&gt;&amp;nbsp;&lt;/div&gt;&lt;/td&gt;&lt;td width="640" style="padding:24px 10px 34px;"&gt;&lt;table width="100%" border="0" cellpadding="0" cellspacing="0" style="max-width:640px;background-color:#202C38;"&gt;&lt;tr&gt;&lt;td style="padding:24px 30px 22px;text-align:center;"&gt;&lt;div style="font-family:Georgia,'Times New Roman',serif;font-size:24px;line-height:1.25;color:#F3E8D3;"&gt;Chabad in South Beach&lt;/div&gt;&lt;div style="font-family:Arial,Helvetica,sans-serif;font-size:11px;letter-spacing:3px;color:#E2C179;padding-top:6px;"&gt;MEMBERSHIP&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;table width="100%" border="0" cellpadding="0" cellspacing="0" style="max-width:640px;background-color:#FFFFFF;border-top:6px solid #C08A2E;"&gt;&lt;tr&gt;&lt;td style="padding:30px 30px 8px;"&gt;&lt;div style="font-family:Georgia,'Times New Roman',serif;font-size:26px;line-height:1.3;color:#17232E;"&gt;Welcome to our Chabad family!&lt;/div&gt;&lt;div style="font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.6;color:#17232E;padding-top:10px;"&gt;Thank you for becoming a partner in our Chabad. Your membership billing is set up on the schedule you chose and will renew automatically. Our office will review everything and be in touch to welcome you personally. Here is a summary of your submission; please keep it for your records.&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style="padding:18px 30px 6px;"&gt;&lt;table width="100%" border="0" cellpadding="0" cellspacing="0" style="border:1px solid #EFDAAE;"&gt;&lt;fieldlist&gt;&lt;tr&gt;&lt;td width="38%" style="padding:9px 14px;background-color:#F8EDD6;border-bottom:1px solid #EFDAAE;font-family:Arial,Helvetica,sans-serif;font-size:13px;font-weight:bold;color:#0E464B;"&gt;&lt;fieldname /&gt;&lt;/td&gt;&lt;td style="padding:9px 14px;border-bottom:1px solid #EFDAAE;font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#17232E;"&gt;&lt;fieldvalue /&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/fieldlist&gt;&lt;/table&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style="padding:14px 30px 30px;"&gt;&lt;div style="font-family:Arial,Helvetica,sans-serif;font-size:13.5px;line-height:1.6;color:#5C6670;"&gt;No one is ever turned away — if anything about your membership needs adjusting, simply reply to this email or reach out to the Rabbi privately.&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;table width="100%" border="0" cellpadding="0" cellspacing="0" style="max-width:640px;"&gt;&lt;tr&gt;&lt;td style="padding:22px 20px 0;text-align:center;"&gt;&lt;div style="font-family:Georgia,'Times New Roman',serif;font-size:17px;color:#17232E;font-weight:bold;"&gt;&amp;lt;&amp;lt;mosad_name&amp;gt;&amp;gt;&lt;/div&gt;&lt;div style="font-family:Arial,Helvetica,sans-serif;font-size:13px;line-height:1.7;color:#5C6670;padding-top:6px;"&gt;320 Meridian Avenue · Miami Beach, FL 33139&lt;br /&gt;786-920-2302 · www.chabadinsouthbeach.com&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/td&gt;&lt;td&gt;&lt;div&gt;&amp;nbsp;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</pre></div>
+      <div class="note"><b>How the tokens work:</b> <span class="chip">&lt;fieldlist&gt;</span> repeats its row once per <i>filled-in</i> field, with <span class="chip">&lt;fieldname /&gt;</span> and <span class="chip">&lt;fieldvalue /&gt;</span> swapped in. Empty fields are skipped automatically — that's why the optional family fields cost nothing.</div>
+    </div>
+  </div>
+
+  <!-- TEST -->
+  <div class="step">
+    <div class="step-head"><span class="step-num">8</span><h2>Test before announcing</h2></div>
+    <div class="step-body">
+      <ul class="check">
+        <li>Submit a real test: <b>Single · Basic</b>, amount <b>$1</b>, <b>monthly</b> recurrence, with "TEST" in Anything Else. Then in the gateway: confirm a recurring subscription was actually created (not a one-time charge), <b>cancel it</b>, and refund the $1.</li>
+        <li>Open the notification email: every field you filled is there, labels read cleanly, nothing landed under the wrong name.</li>
+        <li>Open the receipt: branded layout intact (if it arrives as raw code, the HTML got line-wrapped — re-paste it), subject line correct.</li>
+        <li>Submit once more as <b>Family · Chai</b> choosing <b>annual</b> billing in the payment section, with spouse and 2 children filled in — confirm every spouse and child row appears in the email and receipt, the singles-only test had none, and the gateway shows a yearly subscription. Cancel and refund it too.</li>
+        <li>Fill it once on a phone. Everything reachable, nothing clipped.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- OFFICE -->
+  <div class="step">
+    <div class="step-head"><span class="step-num">9</span><h2>When a membership arrives</h2></div>
+    <div class="step-body">
+      <p>The office routine for each notification email:</p>
+      <ol>
+        <li><b>Check for missing family details first:</b> a Couple signup without spouse rows, or a Family signup whose children rows don't match the number of children — reply and collect what's missing before anything else. Spouse and children information is mandatory when they exist.</li>
+        <li><b>Verify the amount and frequency</b> in the gateway — members type their own number, and whatever they typed now recurs automatically. Check the new subscription against the pricing table for their level and household (monthly amount on monthly billing, 12x on annual). If it's off, correct it in the gateway and let them know.</li>
+        <li><b>Reply to welcome</b> the member — the receipt tells them to expect a personal note from the office.</li>
+        <li><b>Calendar the special days</b> — birthdays, anniversary, children — onto the community calendar.</li>
+        <li><b>Read Anything Else</b> for yahrzeits, donor wall wording, or questions, and pass them to the Rabbi.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="foot">
+    <div class="mosad">Chabad in South Beach</div>
+    <div>The custom-coded version of this form is parked in the project at <span class="chip">forms/membership.html</span> if it's ever wanted. Once the builder form is live, send the page URL and the site theme can be extended to style it.</div>
+  </div>
+
+</div>
+
+<script>
+  document.querySelectorAll('.paste .copy').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var pre = btn.parentElement.querySelector('pre');
+      var text = pre.textContent;
+      function done() {
+        btn.textContent = 'Copied';
+        setTimeout(function () { btn.textContent = 'Copy'; }, 1600);
+      }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done, function () { fallback(); });
+      } else { fallback(); }
+      function fallback() {
+        var range = document.createRange();
+        range.selectNodeContents(pre);
+        var sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+        try { document.execCommand('copy'); done(); } catch (e) {}
+      }
+    });
+  });
+</script>
+
+</body></html>

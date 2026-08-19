@@ -5,17 +5,9 @@ body.dir_rtl {
 /* ==========================================================================
    Theme palettes
    ==========================================================================
-   Each site skin maps to one set of form colours. Setting --primary-form-color
-   is what switches the restyle on: everything below is wrapped in
-   `@container style(--primary-form-color)`, so a skin we do not recognise gets
-   no --primary-form-color, the container query fails, and the form keeps its
-   original appearance rather than being half-restyled with the wrong colours.
+   Each site skin maps to one set of form colours. Setting --primary-form-color is what switches the restyle on: everything below is wrapped in `@container style(--primary-form-color)`, so an unrecognised skin gets no --primary-form-color, the query fails, and the form keeps its original appearance rather than being half-restyled in the wrong colours.
 
-   :where() keeps all of this at zero specificity, so a page is free to override
-   any of it with a plain declaration.
-
-   Only what actually differs between skins is listed per skin; the values every
-   skin shares are set once, below. */
+   :where() keeps this at zero specificity, so a page can override any of it with a plain declaration. Only per-skin differences are listed here; shared values are set once below. */
 
 :where(html:has(link[href*="/css/sites6/"], link[href*="/template5/skins/"])) {
 	--border-form-color: #dddddd;
@@ -178,30 +170,13 @@ html[lang="uk"] {
 /* ==========================================================================
    Everything below is scoped to a form page we are restyling
    ==========================================================================
-   The wrapper contributes (0,2,2) of specificity to every rule nested in it, so
-   a rule written as `.form-all .form-textbox` effectively weighs (0,4,2). The
-   strongest rival in the system is `.co_body .content .form-all .form-line` at
-   (0,4,0), and `:not(:has(#sublabel_area, ...))` pulls an ID into the count.
-   That is why almost nothing here needs `!important` to win.
+   The wrapper contributes (0,2,2) to every rule nested in it, so `.form-all .form-textbox` effectively weighs (0,4,2). The strongest rival in the system is (0,4,0), which is why almost nothing here needs `!important` to win.
 
    NEVER put `!important` on `display` or `visibility`.
    ------------------------------------------------------
-   `!important` is the only thing in CSS that can beat an inline style, and the
-   form system hides fields with inline styles in three different places:
+   `!important` is the only thing in CSS that beats an inline style, and the form system hides fields inline in three places: build_source.js emits conditional fields as `style="display:none;"` with no class to key off, userform.js hides `#cid_<qid>` at runtime, and JotForm bakes `style="display: none"` onto disabled address rows.
 
-     - build_source.js emits a conditional field as `<li class="form-line"
-       style="display:none;">`, with no class to key off
-     - userform.js hides `#cid_<qid>` at runtime with element.hide()
-     - JotForm bakes `style="display: none"` onto disabled address rows
-
-   So `display: flex !important` on a row does not just override a stylesheet,
-   it overrides the author's decision to disable the field, and it renders
-   something that was meant to be invisible. That was the Address-Line-2 bug.
-   A plain declaration is enough: an inline hide then wins, as it should, and we
-   still beat every rival stylesheet on specificity.
-
-   The same trap in reverse applies to `display: none` — an `!important` there
-   would stop userform.js from ever showing the field. */
+   So `display: flex !important` on a row overrides the author's decision to disable the field and renders something meant to be invisible — that was the Address-Line-2 bug. A plain declaration is enough: the inline hide wins, as it should, and we still beat every rival stylesheet on specificity. The same trap in reverse applies to `display: none`: `!important` there would stop userform.js ever showing the field. */
 
 @container style(--primary-form-color) {
 	html:has(script[src*="form-redesign/form-script.js"]):not(:has(.ct-container, #footer-links)) {
@@ -241,13 +216,7 @@ html[lang="uk"] {
 			width: 100%;
 		}
 
-		/* .form-input and .form-input-wide are the SAME wrapper. build_source.js picks between
-		   them purely by label alignment - `cname = 'form-input-wide'` when the label is on top,
-		   `'form-input'` otherwise - so a rule keyed on only one silently stops applying the moment
-		   a form author sets Label Align to Top. That is what made top-aligned labels look broken:
-		   on such a form every `.form-input > …` rule of ours matched nothing (0 .form-input vs 25
-		   .form-input-wide). Always name both; `:is()` takes the specificity of its most specific
-		   argument - one class here - so pairing them changes no cascade decision. */
+		/* .form-input and .form-input-wide are the SAME wrapper: build_source.js emits wide when the label is on top OR the field has no label, plain otherwise. Always name both, or the rule silently stops applying on those forms. */
 		.form-all .form-input:not(.form-field-hidden, .always-hidden),
 		.form-all .form-input-wide:not(.form-field-hidden, .always-hidden) {
 			display: flex;
@@ -307,16 +276,7 @@ html[lang="uk"] {
 			white-space: normal;
 		}
 
-		/* Label Align, honoured logically so it reads correctly in every language.
-		   `start`/`end` rather than `left`/`right` because the class names are physical but the
-		   author's intent is not: the Form Builder UI is LTR-centric, yet a Hebrew form defaults
-		   to Align Right (verified - all 16 labels on the Hebrew sample are .form-label-right).
-
-		   The RTL override is not our invention; it mirrors what formCss2 already does for
-		   `.form-all.dir_rtl :is(.form-label-left, .form-label-right)`, which forces BOTH to
-		   `text-align: right` - i.e. in RTL the physical name is ignored
-		   and everything aligns to the reading start. Mapping right -> `end` without this would
-		   put every Hebrew label on the left, contradicting both the system and the author. */
+		/* Label Align is honoured logically, not physically: the class names are physical but the intent is not. A Hebrew form defaults to Align Right, and formCss2 already forces both left and right to the reading start in RTL. So `right -> end` on its own would put every Hebrew label on the wrong side - the RTL override below mirrors the system and is not optional. */
 		.form-all .form-label-right {
 			text-align: end;
 		}
@@ -325,33 +285,27 @@ html[lang="uk"] {
 			text-align: start;
 		}
 
-		/* Top is the one choice that carries no meaning in this design - every label is already
-		   above its field - so it is free to mean "centred". */
+		/* Top is the one choice that carries no meaning in this design - every label is already above its field - so it is free to mean "centred". */
 		.form-all .form-label-top {
 			text-align: center;
 		}
 
+		img.form-image {
+			max-width: 100%;
+			height: auto;
+		}
 
-		/* THE EXCEPTIONS ARE EXCLUDED HERE, NOT OVERRIDDEN BELOW.
-		   A date segment and an "other" free-text box both carry `.form-textbox`, so this block
-		   used to style them and then be undone by a narrower rule further down. That is what kept
-		   `!important` alive across most of this stylesheet: the declarations here have to keep it
-		   to beat the inline `width="60"`/`font-size:14px` JotForm bakes into its markup, and an
-		   inline-beating !important can only be outranked by ANOTHER !important - so every narrower
-		   rule that overrode one of these properties was forced to carry !important too, and so was
-		   anything competing with those. Not matching them in the first place breaks the chain.
+		/* Image Align arrives as an inline `text-align` on a div around the <img>, and as no wrapper at all for Left. The flex row shrank that div to the image's own width, leaving text-align no free space to distribute, so Center and Right both rendered flush left. */
+		.form-all :is(.form-input, .form-input-wide)>div:has(>img.form-image) {
+			flex: 1 1 100%;
+			min-width: 0;
+		}
 
-		   `:not(:where(...))` and not `:not(...)`: :not() takes the specificity of its argument, so
-		   a plain :not() would push this branch to (0,3,1) and it would start beating the
-		   `:not(textarea, select)` height/padding rule below. :where() is always zero, so the
-		   branch stays exactly (0,2,0) and every existing balance is preserved.
+		/* THE EXCEPTIONS ARE EXCLUDED HERE, NOT OVERRIDDEN BELOW. These declarations keep !important to beat the `width="60"`/`font-size:14px` JotForm bakes inline, and an inline-beating !important can only be outranked by ANOTHER !important - so every narrower rule that overrode one was forced to carry !important too. Not matching them in the first place breaks that chain.
 
-		   The block is SPLIT rather than simply narrowed. The exceptions override only some of
-		   what this block sets - a date segment gets its own border, padding, height and width, but
-		   nothing of ours ever gives it `box-sizing`, `border-radius`, `transition` or `max-width`.
-		   Excluding them from the whole block would silently take those four away, which the
-		   equivalence check would have caught but only after the fact. So: everything they DO
-		   inherit stays in a shared block, and only the properties they override are scoped. */
+		   `:not(:where(...))` and not `:not(...)`: :not() takes the specificity of its argument, so a plain :not() would push this branch to (0,3,1) and it would start beating the height/padding rule below. :where() is always zero.
+
+		   The block is SPLIT rather than narrowed. The exceptions override only some of what it sets - nothing of ours otherwise gives them box-sizing, border-radius, transition or max-width - so excluding them from the whole block would silently take those away. */
 		.form-all .form-textbox,
 		.form-all .form-textarea,
 		.form-all .form-dropdown {
@@ -380,21 +334,8 @@ html[lang="uk"] {
 			opacity: 1;
 		}
 
-		/* `select` is excluded from the .form-textbox branch, not merely added to the other one.
-		   A <select class="form-textbox"> matches BOTH branches, and `:not(textarea)` pulls a type
-		   selector in that makes that branch (0,2,1) - more specific than the (0,2,0) dropdown block
-		   below, so its `padding: 0 15px !important` shorthand beat our `padding-inline-end: 40px`
-		   longhand and the arrow had nothing to sit in. Excluding selects here lets the dropdown
-		   block own their padding, without resorting to a specificity hack. */
-		/* NO exclusion here, deliberately, and it is worth knowing why before adding one.
-		   This rule is (0,2,1). The other-input rule below is (0,2,0), so THIS is what actually
-		   gives `#input_7` and `#input_22` their 50px height and 15px side padding - their own
-		   `height: 100% !important; padding: 0 !important` loses to it and is dead code for them.
-		   It is live only for `#input_partial`, which carries an ID and weighs (1,1,0).
-		   Excluding them here therefore does not free a declaration, it hands them the dead
-		   values: measured, 50px -> 30px and 15px -> 0px on six elements.
-		   Date segments need no exclusion either - `.form-all .date-fields input` is also (0,2,1)
-		   and comes later, so it already wins on source order. */
+		/* `select` is EXCLUDED from the .form-textbox branch, not merely added to the other one. A <select class="form-textbox"> matches BOTH, and `:not(textarea)` pulls in a type selector that makes this branch (0,2,1) - more specific than the (0,2,0) dropdown block below, so its `padding: 0 15px !important` shorthand beat our longhand and the arrow had nothing to sit in. */
+		/* NO exclusion here, deliberately. This rule is (0,2,1) and the other-input rule below is (0,2,0), so THIS is what gives the other-inputs their height and side padding - their own `height: 100% !important; padding: 0 !important` loses to it and is dead code. Excluding them here would not free a declaration, it would hand them those dead values. Date segments need no exclusion either: `.form-all .date-fields input` is also (0,2,1) and comes later, so it already wins on source order. */
 		.form-all .form-textbox:not(textarea, select),
 		.form-all :is(.form-dropdown, select) {
 			height: 50px !important;
@@ -411,16 +352,7 @@ html[lang="uk"] {
 			border-color: var(--accent-form-color) !important;
 		}
 
-		/* `select`, not just `.form-dropdown`. The generator does not give every <select> that class:
-		   the credit-card expiry month and year come out as `<select class="form-textbox">`, so they
-		   were picking up the text-input styling and keeping the browser's NATIVE arrow, with 15px
-		   padding on both sides and no room reserved for it. 92 selects across all 46 forms are in
-		   that state - two per form - so this was never Hebrew-specific, just most visible in RTL.
-
-		   `:is()` takes the specificity of its most specific argument, `.form-dropdown` at (0,1,0),
-		   so the weight is exactly what it was and no existing dropdown changes. There are no
-		   `select[multiple]` or `.form-list` elements on any form, so every <select> here really is
-		   a single-line dropdown that wants this treatment. */
+		/* `select`, not just `.form-dropdown`: the generator does not give every <select> that class. Credit-card expiry month and year come out as `<select class="form-textbox">`, so they picked up the text-input styling and kept the browser's NATIVE arrow, with padding on both sides and no room reserved for it. Two per form - never RTL-specific, just most visible there. */
 		.form-all :is(.form-dropdown, select) {
 			-webkit-appearance: none;
 			appearance: none;
@@ -431,22 +363,9 @@ html[lang="uk"] {
 			padding-inline-end: 40px !important;
 		}
 
-		/* RTL and LTR markers coexist on the same page, so neither can be taken at face value.
-		   Two separate faults made this rule dead everywhere:
+		/* RTL and LTR markers coexist on the same page, so neither can be taken at face value. On a fully RTL site it is `body.dir_rtl`; on an RTL form embedded in an LTR page the body reads `dir_ltr` and only the form carries `.form-all.dir_rtl`, so keying on the body alone misses that case. The `.dir_ltr` exclusion must also be scoped INSIDE the form: that same body carries `dir_ltr`, so a bare `.dir_ltr *` matches every element in the document and the rule can never fire.
 
-		   1. RTL is marked in two different places. On a fully RTL site it is `body.dir_rtl`; on an
-		      RTL form embedded in an LTR page - which is what the Hebrew sample is - the body reads
-		      `lang_en dir_ltr` and only the form carries `dir="rtl" class="form-all dir_rtl"`.
-		      Keying on the body alone missed that case entirely.
-		   2. The `.dir_ltr` exclusion has to be scoped INSIDE the form. That same body carries
-		      `dir_ltr`, so a bare `.dir_ltr *` matches every one of the 1198 elements in the
-		      document and the rule can never fire, whatever the root says.
-
-		   `:dir(rtl)` is not usable here: the inner containers carry classes, not `dir` attributes,
-		   so all 9 dropdowns report `:dir(rtl)` while only 3 compute `direction: rtl`.
-
-		   `:where()` keeps the exclusion at zero specificity, so the whole selector stays at
-		   (0,3,1) - exactly what `body.dir_rtl .form-all .form-dropdown` weighed. */
+		   `:dir(rtl)` is not usable here: the inner containers carry classes, not `dir` attributes. `:where()` keeps the exclusion at zero specificity. */
 		:is(body.dir_rtl .form-all, .form-all.dir_rtl) :is(.form-dropdown, select):not(:where(.dir_ltr, .form-all .dir_ltr *)) {
 			background-position: left 15px center;
 		}
@@ -532,17 +451,12 @@ html[lang="uk"] {
 			margin-top: 0;
 		}
 
-		/* We draw the separator with ::after on each segment instead. userform.js stopped
-		   emitting .date-separate and now hides any it finds, so this only matters for forms
-		   saved before that change. */
+		/* We draw the separator with ::after on each segment instead. userform.js stopped emitting .date-separate and now hides any it finds, so this only matters for forms saved before that change. */
 		.form-all .date-fields>span.date-separate {
 			display: none;
 		}
 
-		/* Sized to their content rather than a third of the card each, so the date reads as
-		   one group instead of three numbers stranded across the full width. width: auto is
-		   required: the site themes set .form-sub-label-container to width:100% under 600px,
-		   which a flex-basis of auto would otherwise defer to. */
+		/* Sized to their content rather than a third of the card each, so the date reads as one group instead of three numbers stranded across the full width. width: auto is required: the site themes set .form-sub-label-container to width:100% on narrow viewports, which a flex-basis of auto would otherwise defer to. */
 		.form-all .date-fields .form-sub-label-container:not(:has(#sublabel_area, #sublabel_phone)) {
 			margin: 0;
 			min-width: 0;
@@ -572,14 +486,7 @@ html[lang="uk"] {
 			margin-inline-end: 0;
 		}
 
-		/* ch keeps these in step with the font: room for the digits and nothing more.
-
-		   `font-size` is declared HERE rather than inherited from the .form-textbox block, because
-		   these inputs are now excluded from that block. It has to keep !important for the original
-		   reason that block did: JotForm bakes `font-size: 14px` inline onto the date segments, and
-		   only !important beats an inline style. Dropping it silently took the segments to 14px,
-		   and since the width is `2.75ch` they shrank with it and every height above them moved -
-		   5944 computed-style diffs, which is how this was caught. */
+		/* ch keeps these in step with the font: room for the digits and nothing more. font-size is declared HERE rather than inherited, because these inputs are excluded from the .form-textbox block, and it keeps !important for that block's original reason - JotForm bakes `font-size: 14px` inline onto the date segments. Dropping it shrinks them (the width is in ch) and moves every height above them. */
 		.form-all .date-fields input {
 			font-size: 16px;
 			border: none !important;
@@ -621,8 +528,7 @@ html[lang="uk"] {
 			flex-shrink: 0;
 		}
 
-		/* jscalendar appends the picker to <body>, so these rules are deliberately not
-		   scoped to .form-all. It still inherits the theme custom properties. */
+		/* jscalendar appends the picker to <body>, so these rules are deliberately not scoped to .form-all. It still inherits the theme custom properties. */
 		div.calendar {
 			font-family: var(--font-form-main);
 			color: var(--text-form-dark);
@@ -631,10 +537,7 @@ html[lang="uk"] {
 			overflow: hidden;
 		}
 
-		/* jscalendar drops the popup 100px below the picker icon, which is what formCss2.css
-		   is cancelling with -100px — except that lands it back on top of the field. The
-		   icon sits 17px above the bottom of the 50px card, so -77px clears the card by 6px
-		   and the popup hangs below it like a normal dropdown. */
+		/* jscalendar drops the popup 100px below the picker icon, which formCss2 cancels with -100px - except that lands it back on top of the field. The icon sits 17px above the bottom of the 50px card, so -77px clears the card by 6px and the popup hangs below it like a normal dropdown. */
 		div.calendar.popup {
 			margin: -77px 0 0 -24px;
 			z-index: 100000;
@@ -707,8 +610,7 @@ html[lang="uk"] {
 			background-color: var(--accent-form-light) !important;
 		}
 
-		/* Today is outlined, the chosen day is filled; when they are the same day the fill
-		   wins because it comes last. */
+		/* Today is outlined, the chosen day is filled; when they are the same day the fill wins because it comes last. */
 		div.calendar tr.days td.today {
 			background-color: var(--accent-form-light) !important;
 			color: var(--accent-form-color);
@@ -772,9 +674,7 @@ html[lang="uk"] {
 			}
 		}
 
-		/* .field-no-label is added by form-redesign.js. A label the form author left blank is
-		   still needed by screen readers, so it is visually hidden rather than removed, and the
-		   required marker moves onto the first choice instead. */
+		/* .field-no-label is added by form-redesign.js. A label the author left blank is still needed by screen readers, so it is visually hidden rather than removed, and the required marker moves onto the first choice. */
 		.form-all .form-line.field-no-label {
 			gap: 0 !important;
 		}
@@ -812,8 +712,7 @@ html[lang="uk"] {
 			box-sizing: border-box;
 		}
 
-		/* width: auto resets the hardcoded 180px from formCss2.css; flex-shrink: 0 keeps a
-		   long option from being squeezed into wrapping just to fit a neighbour. */
+		/* width: auto resets the hardcoded 180px from formCss2.css; flex-shrink: 0 keeps a long option from being squeezed into wrapping just to fit a neighbour. */
 		.form-all .form-multiple-column :is(.form-radio-item, .form-checkbox-item) {
 			flex: 1 0 max-content;
 			width: auto;
@@ -822,33 +721,28 @@ html[lang="uk"] {
 			white-space: normal;
 		}
 
-		/* Rules below are same-specificity, so source order decides: equalized and
-		   measuring override the base, and the other-field row overrides both. */
+		/* Rules below are same-specificity, so source order decides: equalized and measuring override the base, and the other-field row overrides both. */
 		.form-all .form-multiple-column.choices-equalized :is(.form-radio-item, .form-checkbox-item) {
 			flex: 0 0 var(--choice-basis);
 		}
 
-		/* max-width: none keeps the measured width intrinsic instead of clamped to the
-		   probe, so it stays valid at any container width and can be cached. */
+		/* max-width: none keeps the measured width intrinsic instead of clamped to the probe, so it stays valid at any container width and can be cached. */
 		.form-all .form-multiple-column.measuring-choices :is(.form-radio-item, .form-checkbox-item) {
 			flex: 0 0 max-content;
 			max-width: none;
 		}
 
-		/* The other-field takes its own row unless the script worked out that it fits beside
-		   the options. Excluded while measuring so the probe reports its intrinsic width. */
+		/* The other-field takes its own row unless the script worked out that it fits beside the options. Excluded while measuring so the probe reports its intrinsic width. */
 		.form-all .form-multiple-column:not(.choices-other-inline, .measuring-choices) :is(.form-radio-item, .form-checkbox-item):has(:is(.form-radio-other-input, .form-checkbox-other-input, #input_partial)) {
 			flex: 1 0 100%;
 		}
 
-		/* Inline: a zero basis keeps it on the options' last row, then grow hands it exactly
-		   the slots they left empty. */
+		/* Inline: a zero basis keeps it on the options' last row, then grow hands it exactly the slots they left empty. */
 		.form-all .form-multiple-column.choices-other-inline :is(.form-radio-item, .form-checkbox-item):has(:is(.form-radio-other-input, .form-checkbox-other-input, #input_partial)) {
 			flex: 1 0 0%;
 		}
 
-		/* A single column stacks vertically, so the shared other-field rule's flex-basis of
-		   100% would land on the height and fight the card's own height. */
+		/* A single column stacks vertically, so the shared other-field rule's flex-basis of 100% would land on the height and fight the card's own height. */
 		.form-all .form-single-column :is(.form-radio-item, .form-checkbox-item):has(:is(.form-radio-other-input, .form-checkbox-other-input, #input_partial)) {
 			flex: 0 0 auto;
 		}
@@ -996,9 +890,7 @@ html[lang="uk"] {
 
 
 
-		/* The whole card is the hit target, so the radio itself is not shown. .form-product-item
-		   is JotForm's payment-products markup: userform.js still reads it, but no current
-		   emitter produces it, so this only reaches forms saved long ago. */
+		/* The whole card is the hit target, so the radio itself is not shown. .form-product-item is JotForm's payment-products markup: still read by userform.js but no longer emitted, so it only reaches forms saved long ago. */
 
 		.form-all .form-radio-item label:has(.form-radio-other-input),
 		.form-all .form-radio-item label:has(#input_partial) {
@@ -1045,24 +937,18 @@ html[lang="uk"] {
 		}
 
 
-		/* formCss2.css pins the other-input to 115px and the span JotForm wraps it in won't
-		   grow, so the box only filled a fraction of its card. #input_partial is not listed
-		   because it sits in a label that already stretches. */
-		.form-all :is(.form-radio-item, .form-checkbox-item) > span:has(> :is(.form-radio-other-input, .form-checkbox-other-input)) {
+		/* formCss2.css pins the other-input to 115px and the span JotForm wraps it in won't grow, so the box only filled a fraction of its card. #input_partial is not listed because it sits in a label that already stretches. */
+		.form-all :is(.form-radio-item, .form-checkbox-item)>span:has(> :is(.form-radio-other-input, .form-checkbox-other-input)) {
 			flex: 1 1 auto;
 			min-width: 0;
 		}
 
 		/* Stray <br> is a flex item; it only contributes an extra trailing gap. */
-		.form-all :is(.form-radio-item, .form-checkbox-item) > br {
+		.form-all :is(.form-radio-item, .form-checkbox-item)>br {
 			display: none;
 		}
 
-		/* An other-input carries BOTH .form-radio-other-input and .form-textbox, so this rule
-		   competes with the .form-textbox rule above. That one has to keep `font-size:
-		   16px !important` to beat JotForm's inline font-size, and an inline-beating !important
-		   can only be outranked by another !important - so this one needs it too. The
-		   #payformWrapper variant below does not: an extra ID already outranks .form-textbox. */
+		/* An other-input carries BOTH .form-radio-other-input and .form-textbox, so this competes with the .form-textbox rule above. That one must keep `font-size: 16px !important` to beat JotForm's inline font-size, and an inline-beating !important can only be outranked by another - so this one needs it too. The #payformWrapper variant below does not: an extra ID already outranks .form-textbox. */
 		.form-all .form-radio-other-input,
 		.form-all .form-checkbox-other-input,
 		.form-all #input_partial {
@@ -1088,18 +974,9 @@ html[lang="uk"] {
 			min-width: 80px;
 		}
 
-		/* display not !important, so JotForm's inline display:none still hides this when no
-		   payment is due. The old [style*="none"] child rule that used to patch that is gone:
-		   it also matched unrelated inline values like `border: none`.
+		/* display is NOT !important, so JotForm's inline display:none still hides this when no payment is due. The old [style*="none"] child rule that patched that is gone: it also matched unrelated inline values like `border: none`.
 
-		   The consequence, measured: userform.js writes the inline display in BOTH directions -
-		   `display: none` to hide the block (13 forms) and `display: block` to show it (29) - and
-		   an inline style beats any declaration that is not !important. So on every form where
-		   this block is actually visible, `display: flex` loses and the box is a block box. A
-		   flex `gap` here would therefore never once apply, which is why the spacing between the
-		   options is a sibling margin below instead: margins behave the same in block and in flex
-		   layout, so they never need to outrank the inline style, and nothing has to risk
-		   re-opening the un-hide bug to get the layout right. */
+		   Consequence: userform.js writes the inline display in BOTH directions, so wherever this block is actually visible `display: flex` loses to it and the box is a block box. A flex `gap` would therefore never apply, which is why the spacing between options is a sibling margin below - margins behave the same in block and in flex, so they never need to outrank the inline style. */
 		.form-all #payformWrapper {
 			display: flex;
 			flex-direction: column;
@@ -1107,9 +984,7 @@ html[lang="uk"] {
 			width: 100%;
 		}
 
-		/* !important only to outrank OUR OWN `.form-all .form-radio-item { margin: 0 !important }`
-		   above, which exists to clear formCss2's `margin-bottom: 6px`. Nothing outside competes
-		   here; with both marked, the higher specificity - (1,3,0) against (0,2,0) - decides. */
+		/* !important only to outrank OUR OWN `.form-radio-item { margin: 0 !important }` above, which clears formCss2's margin-bottom. Nothing outside competes here; with both marked, the higher specificity decides. */
 		.form-all #payformWrapper .form-radio-item+.form-radio-item {
 			margin-top: 10px;
 		}
@@ -1291,19 +1166,9 @@ html[lang="uk"] {
 			pointer-events: none;
 		}
 
-		/* .form-payment-total has no emitter; userform.js only ever reads it, on the
-		   coupon/discount path. Kept so older saved forms still get the styling. */
+		/* .form-payment-total has no emitter; userform.js only ever reads it, on the coupon/discount path. Kept so older saved forms still get the styling. */
 
-		/* NO container styling on the Total Amount row. It was tried, on
-		   `.form-line:has(#total_amount)`, and reverted: `#total_amount` is not alone in its
-		   `<li>`. When Partial Payments is enabled the same row also holds the whole
-		   "I would like to pay today" block - the full/minimum/other radios and the
-		   processing-fee checkbox - so the card wrapped all of it and `space-between` stranded
-		   the "Total" label in the middle of a tall empty column.
-
-		   Anything keyed on the ROW is therefore wrong by construction: the row is not the total,
-		   it is the payment section. Style `#total_amount` itself, below, and leave the <li>
-		   to the ordinary form-line rules. */
+		/* NO container styling on the Total Amount row. It was tried and reverted: `#total_amount` is not alone in its <li>. With Partial Payments enabled the same row also holds the whole "I would like to pay today" block, so the card wrapped all of it and `space-between` stranded the "Total" label in a tall empty column. Anything keyed on the ROW is wrong by construction - the row is the payment section, not the total. Style `#total_amount` itself, below. */
 
 		.form-all #total_amount {
 			font-family: var(--font-form-main);

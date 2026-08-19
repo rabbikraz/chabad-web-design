@@ -1,0 +1,179 @@
+<!-- Membership Signup: paste as the ChabadOne form page body.
+     Styling: Custom Header Code (style.css section 20, #sb-mem scope).
+     Behavior: Custom Footer Code (script.js, initMembership).
+     The name attributes are the contract with the form processor:
+     x_* fields feed the payment gateway, everything else lands in the
+     notification email. Never rename an x_* field.
+     The processor charges x_amount ONCE: the first month (or the full
+     year); the "Billing" field in the email tells the office which
+     recurring schedule to set up.
+     Form-editor rule: every input gets its own label (one label, one
+     input); the editor strips inputs from any other structure. -->
+<div id="sb-mem">
+
+    <div class="sb-mem-intro">
+        <p class="sb-mem-free">Become a partner in our Chabad.</p>
+        <p class="sb-mem-sub">Choose the membership that fits your household. Pricing updates as you choose. Members enjoy reserved High Holiday seating, event discounts, and their family&#39;s special days on our community calendar.</p>
+        <p class="sb-mem-alt"><a href="/546190">Reserve High Holiday seats</a></p>
+    </div>
+
+    <div class="sb-mem-card">
+        <p class="sb-mem-step">Step 1 of 4</p>
+        <h3 class="sb-mem-h">Your Membership</h3>
+        <p class="sb-mem-grouplab">I am joining as</p>
+        <div class="sb-mem-choices" role="radiogroup" aria-label="Household">
+            <label class="sb-mem-choice"><input checked="checked" name="Household" type="radio" value="Single" /><span>Single (one adult)</span></label>
+            <label class="sb-mem-choice"><input name="Household" type="radio" value="Couple" /><span>Couple (two adults)</span></label>
+            <label class="sb-mem-choice"><input name="Household" type="radio" value="Family" /><span>Family (parents &amp; children)</span></label>
+        </div>
+        <div class="sb-mem-familyopts" id="sb-mem-familyopts">
+            <div class="sb-mem-famblock">
+                <span class="sb-mem-lab">Parents at Home</span>
+                <div class="sb-mem-choices" role="radiogroup" aria-label="Parents at home">
+                    <label class="sb-mem-choice"><input checked="checked" name="Parents at Home" type="radio" value="Two parents" /><span>Two parents</span></label>
+                    <label class="sb-mem-choice"><input name="Parents at Home" type="radio" value="Single parent" /><span>Single parent</span></label>
+                </div>
+            </div>
+            <label class="sb-mem-field sb-mem-kidcount"><span class="sb-mem-lab">Children at Home</span><select class="sb-mem-in" name="Number of Children">
+                <option selected="selected" value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+            </select></label>
+        </div>
+        <p class="sb-mem-grouplab">Membership level</p>
+        <div class="sb-mem-tiers" role="radiogroup" aria-label="Membership level">
+            <div class="sb-mem-tier">
+                <label class="sb-mem-tier-pick"><input name="Membership Level" type="radio" value="Basic" /><span class="sb-mem-tier-name">Basic</span><span class="sb-mem-tier-amt"><span class="sb-mem-tier-price" id="sb-mem-price-Basic">$50</span><span class="sb-mem-tier-per">/month</span></span><span class="sb-mem-tier-year" id="sb-mem-year-Basic">$600 a year</span></label>
+                <ul class="sb-mem-perks">
+                    <li>Your special days on the community calendar</li>
+                    <li>5% off all events and programs</li>
+                    <li>Reserved High Holiday seat</li>
+                </ul>
+            </div>
+            <div class="sb-mem-tier sb-mem-tier-popular">
+                <span class="sb-mem-tier-badge">Most popular</span>
+                <label class="sb-mem-tier-pick"><input name="Membership Level" type="radio" value="Chai" /><span class="sb-mem-tier-name">Chai</span><span class="sb-mem-tier-amt"><span class="sb-mem-tier-price" id="sb-mem-price-Chai">$180</span><span class="sb-mem-tier-per">/month</span></span><span class="sb-mem-tier-year" id="sb-mem-year-Chai">$2,160 a year</span></label>
+                <ul class="sb-mem-perks">
+                    <li>10% off all events and programs</li>
+                    <li>Listed on the Chai donor wall</li>
+                    <li>20% off Lulav &amp; Esrog set</li>
+                </ul>
+            </div>
+            <div class="sb-mem-tier">
+                <label class="sb-mem-tier-pick"><input name="Membership Level" type="radio" value="Silver" /><span class="sb-mem-tier-name">Silver</span><span class="sb-mem-tier-amt"><span class="sb-mem-tier-price" id="sb-mem-price-Silver">$500</span><span class="sb-mem-tier-per">/month</span></span><span class="sb-mem-tier-year" id="sb-mem-year-Silver">$6,000 a year</span></label>
+                <ul class="sb-mem-perks">
+                    <li>Annual mezuzah checking</li>
+                    <li>1 co-sponsored Kiddush per year</li>
+                    <li>VIP High Holiday seating</li>
+                    <li>50% off Lulav &amp; Esrog set</li>
+                    <li>Listed on the Silver donor wall</li>
+                </ul>
+            </div>
+            <div class="sb-mem-tier">
+                <label class="sb-mem-tier-pick"><input name="Membership Level" type="radio" value="Gold" /><span class="sb-mem-tier-name">Gold</span><span class="sb-mem-tier-amt"><span class="sb-mem-tier-price" id="sb-mem-price-Gold">$1,000</span><span class="sb-mem-tier-per">/month</span></span><span class="sb-mem-tier-year" id="sb-mem-year-Gold">$12,000 a year</span></label>
+                <ul class="sb-mem-perks">
+                    <li>Annual mezuzah &amp; tefillin checking</li>
+                    <li>1 co-sponsored Kiddush per year</li>
+                    <li>Lulav &amp; Esrog set provided</li>
+                    <li>Listed on the Gold donor wall</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="sb-mem-card">
+        <p class="sb-mem-step">Step 2 of 4</p>
+        <h3 class="sb-mem-h">Your Information</h3>
+        <div class="sb-mem-grid">
+            <label class="sb-mem-field"><span class="sb-mem-lab">First Name</span><input autocomplete="given-name" class="sb-mem-in" name="x_first_name" required="true" type="text" /></label>
+            <label class="sb-mem-field"><span class="sb-mem-lab">Last Name</span><input autocomplete="family-name" class="sb-mem-in" name="x_last_name" required="true" type="text" /></label>
+            <label class="sb-mem-field sb-mem-wide"><span class="sb-mem-lab">Address</span><input autocomplete="street-address" class="sb-mem-in" name="x_address" required="true" type="text" /></label>
+            <label class="sb-mem-field"><span class="sb-mem-lab">City</span><input autocomplete="address-level2" class="sb-mem-in" name="City" required="true" type="text" /></label>
+            <div class="sb-mem-field sb-mem-split"><label class="sb-mem-field-half"><span class="sb-mem-lab">State</span><input autocomplete="address-level1" class="sb-mem-in" name="State" required="true" type="text" /></label><label class="sb-mem-field-half"><span class="sb-mem-lab">Zip Code</span><input autocomplete="postal-code" class="sb-mem-in" inputmode="numeric" name="x_zip" required="true" type="text" /></label></div>
+            <label class="sb-mem-field"><span class="sb-mem-lab">Email</span><input autocomplete="email" class="sb-mem-in" name="x_email" required="true" type="email" /></label>
+            <label class="sb-mem-field"><span class="sb-mem-lab">Cell Phone</span><input autocomplete="tel" class="sb-mem-in" name="Phone" required="true" type="tel" /></label>
+            <label class="sb-mem-field"><span class="sb-mem-lab">Hebrew Name <em class="sb-mem-opt">optional</em></span><input class="sb-mem-in" name="Hebrew Name" type="text" /></label>
+            <label class="sb-mem-field"><span class="sb-mem-lab">Birthday <em class="sb-mem-opt">optional</em></span><input class="sb-mem-in" name="Birthday" placeholder="MM/DD/YYYY" type="text" /></label>
+            <label class="sb-mem-field sb-mem-wide"><span class="sb-mem-lab">Anything Else <em class="sb-mem-opt">optional</em></span><span class="sb-mem-hint">Hebrew names, yahrzeits, how you&#39;d like to be listed on the donor wall, questions for the Rabbi, anything we should know.</span><textarea class="sb-mem-in" name="Notes" rows="3"></textarea></label>
+        </div>
+    </div>
+
+    <div class="sb-mem-card" id="sb-mem-familycard">
+        <p class="sb-mem-step">Step 3 of 4</p>
+        <h3 class="sb-mem-h">Your Family</h3>
+        <div class="sb-mem-spousewrap" id="sb-mem-spousewrap">
+            <h4 class="sb-mem-sub">Spouse</h4>
+            <div class="sb-mem-grid">
+                <label class="sb-mem-field"><span class="sb-mem-lab">Spouse First Name</span><input class="sb-mem-in" name="Spouse First Name" type="text" /></label>
+                <label class="sb-mem-field"><span class="sb-mem-lab">Spouse Last Name</span><input class="sb-mem-in" name="Spouse Last Name" type="text" /></label>
+                <label class="sb-mem-field"><span class="sb-mem-lab">Spouse Hebrew Name <em class="sb-mem-opt">optional</em></span><input class="sb-mem-in" name="Spouse Hebrew Name" type="text" /></label>
+                <label class="sb-mem-field"><span class="sb-mem-lab">Spouse Email <em class="sb-mem-opt">optional</em></span><input class="sb-mem-in" name="Spouse Email" type="email" /></label>
+                <label class="sb-mem-field"><span class="sb-mem-lab">Spouse Birthday <em class="sb-mem-opt">optional</em></span><input class="sb-mem-in" name="Spouse Birthday" placeholder="MM/DD/YYYY" type="text" /></label>
+                <label class="sb-mem-field"><span class="sb-mem-lab">Anniversary <em class="sb-mem-opt">optional</em></span><input class="sb-mem-in" name="Anniversary" placeholder="MM/DD/YYYY" type="text" /></label>
+            </div>
+        </div>
+        <div class="sb-mem-kidswrap" id="sb-mem-kidswrap">
+            <h4 class="sb-mem-sub">Children at Home</h4>
+            <div class="sb-mem-kids" id="sb-mem-kids">
+                <div class="sb-mem-kidrow sb-mem-split"><label class="sb-mem-field-half"><span class="sb-mem-lab">Child 1 Name</span><input class="sb-mem-in" name="Child 1 Name" type="text" /></label><label class="sb-mem-field-half"><span class="sb-mem-lab">Child 1 Birthday</span><input class="sb-mem-in" name="Child 1 Birthday" placeholder="MM/DD/YYYY" type="text" /></label></div>
+                <div class="sb-mem-kidrow sb-mem-split"><label class="sb-mem-field-half"><span class="sb-mem-lab">Child 2 Name</span><input class="sb-mem-in" name="Child 2 Name" type="text" /></label><label class="sb-mem-field-half"><span class="sb-mem-lab">Child 2 Birthday</span><input class="sb-mem-in" name="Child 2 Birthday" placeholder="MM/DD/YYYY" type="text" /></label></div>
+                <div class="sb-mem-kidrow sb-mem-split"><label class="sb-mem-field-half"><span class="sb-mem-lab">Child 3 Name</span><input class="sb-mem-in" name="Child 3 Name" type="text" /></label><label class="sb-mem-field-half"><span class="sb-mem-lab">Child 3 Birthday</span><input class="sb-mem-in" name="Child 3 Birthday" placeholder="MM/DD/YYYY" type="text" /></label></div>
+                <div class="sb-mem-kidrow sb-mem-split"><label class="sb-mem-field-half"><span class="sb-mem-lab">Child 4 Name</span><input class="sb-mem-in" name="Child 4 Name" type="text" /></label><label class="sb-mem-field-half"><span class="sb-mem-lab">Child 4 Birthday</span><input class="sb-mem-in" name="Child 4 Birthday" placeholder="MM/DD/YYYY" type="text" /></label></div>
+                <div class="sb-mem-kidrow sb-mem-split"><label class="sb-mem-field-half"><span class="sb-mem-lab">Child 5 Name</span><input class="sb-mem-in" name="Child 5 Name" type="text" /></label><label class="sb-mem-field-half"><span class="sb-mem-lab">Child 5 Birthday</span><input class="sb-mem-in" name="Child 5 Birthday" placeholder="MM/DD/YYYY" type="text" /></label></div>
+                <div class="sb-mem-kidrow sb-mem-split"><label class="sb-mem-field-half"><span class="sb-mem-lab">Child 6 Name</span><input class="sb-mem-in" name="Child 6 Name" type="text" /></label><label class="sb-mem-field-half"><span class="sb-mem-lab">Child 6 Birthday</span><input class="sb-mem-in" name="Child 6 Birthday" placeholder="MM/DD/YYYY" type="text" /></label></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="sb-mem-card">
+        <p class="sb-mem-step">Step 4 of 4</p>
+        <h3 class="sb-mem-h">Payment</h3>
+        <div class="sb-mem-choices" role="radiogroup" aria-label="Billing">
+            <label class="sb-mem-choice"><input checked="checked" name="Billing" type="radio" value="Monthly" /><span>Monthly</span></label>
+            <label class="sb-mem-choice"><input name="Billing" type="radio" value="Annual" /><span>Annual (pay the year now)</span></label>
+        </div>
+        <div class="sb-mem-summary" id="sb-mem-summary" aria-live="polite"></div>
+        <div class="sb-mem-totalrow"><label class="sb-mem-field"><span class="sb-mem-lab">Charged Today</span><input class="sb-mem-in sb-mem-total" inputmode="decimal" name="x_amount" type="text" /></label></div>
+        <p class="sb-mem-paynote" id="sb-mem-paynote">Your first payment is charged today. We set up the ongoing billing you chose and confirm everything by email.</p>
+        <div class="sb-mem-grid">
+            <label class="sb-mem-field sb-mem-wide"><span class="sb-mem-lab">Card Number</span><input autocomplete="cc-number" class="sb-mem-in" inputmode="numeric" name="x_card_num" type="text" /></label>
+            <label class="sb-mem-field"><span class="sb-mem-lab">Expiration</span><span class="sb-mem-exp"><select autocomplete="cc-exp-month" class="sb-mem-in" name="x_exp_month">
+                <option selected="selected" value="">Month</option>
+                <option value="1">01</option>
+                <option value="2">02</option>
+                <option value="3">03</option>
+                <option value="4">04</option>
+                <option value="5">05</option>
+                <option value="6">06</option>
+                <option value="7">07</option>
+                <option value="8">08</option>
+                <option value="9">09</option>
+                <option value="10">10</option>
+                <option value="11">11</option>
+                <option value="12">12</option>
+            </select><select autocomplete="cc-exp-year" class="sb-mem-in" name="x_exp_year">
+                <option selected="selected" value="">Year</option>
+                <option value="2026">2026</option>
+                <option value="2027">2027</option>
+                <option value="2028">2028</option>
+                <option value="2029">2029</option>
+                <option value="2030">2030</option>
+                <option value="2031">2031</option>
+                <option value="2032">2032</option>
+                <option value="2033">2033</option>
+                <option value="2034">2034</option>
+                <option value="2035">2035</option>
+            </select></span></label>
+            <label class="sb-mem-field"><span class="sb-mem-lab">CVV Code</span><input autocomplete="cc-csc" class="sb-mem-in sb-mem-cvv" inputmode="numeric" name="x_card_code" size="6" type="text" /></label>
+        </div>
+    </div>
+
+    <div class="sb-mem-away">
+        <p class="sb-mem-away-h">No one is ever turned away</p>
+        <p class="sb-mem-away-p">If membership is not within reach right now, please reach out to the Rabbi privately. Every Jew has a place at our table.</p>
+    </div>
+
+</div>

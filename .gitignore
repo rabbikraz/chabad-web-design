@@ -1,2 +1,6 @@
 test/preview-home.html
 test/preview-register.html
+node_modules/
+test/preview-*.html
+test/probe-*.html
+package-lock.json
