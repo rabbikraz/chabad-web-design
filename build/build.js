@@ -31,7 +31,7 @@ const GOOGLE_FONTS =
    reorders rules. Compression only (colors, zeros, whitespace) is safe. */
 const csso = require('csso');
 function minifyCssHard(css) {
-  return csso.minify(css, { restructure: true, comments: false }).css;
+  return csso.minify(css, { restructure: false, comments: false }).css;
 }
 function minifyCss(css) {
   return css
