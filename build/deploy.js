@@ -1,49 +1,56 @@
 /**
  * One-command deploy:  node build/deploy.js "what changed"
  *
- * Builds dist/, commits everything, pushes to GitHub, then purges the
- * jsDelivr cache so the live site picks up dist/site.css + dist/site.js
- * within seconds. (The ChabadOne header/footer boxes only hold <link> and
- * <script> tags pointing at these files — they never need editing again.)
+ * Flow (version-pinned — see header-code-cdn.html):
+ *   1. build dist/
+ *   2. commit + push               → commit sha S now carries the new assets
+ *   3. write dist/version.txt = S  → commit + push the pin
+ *   4. best-effort jsDelivr purge of the @redesign fallback URLs
+ *
+ * The ChabadOne boxes read version.txt from raw.githubusercontent.com
+ * (fresh within ~5 min) and load site.css/site.js pinned to @S — immutable
+ * jsDelivr URLs that can never be stale-wrong. jsDelivr's mutable @redesign
+ * URLs proved regionally stale despite successful purges; they remain only
+ * as the bootstrap's fallback.
  */
 'use strict';
 
 const { execSync } = require('child_process');
 const https = require('https');
+const fs = require('fs');
 const path = require('path');
 
 const ROOT = path.join(__dirname, '..');
 const REF = 'gh/rabbikraz/chabad-web-design@redesign';
 
-function sh(cmd) {
+function sh(cmd, opts) {
   console.log('$ ' + cmd);
-  execSync(cmd, { cwd: ROOT, stdio: 'inherit' });
+  return execSync(cmd, Object.assign({ cwd: ROOT, stdio: 'pipe' }, opts)).toString().trim();
 }
 
 function purge(file) {
   return new Promise((resolve) => {
     https.get('https://purge.jsdelivr.net/' + REF + '/' + file, (res) => {
-      let body = '';
-      res.on('data', (d) => { body += d; });
-      res.on('end', () => {
-        console.log('purge ' + file + ': ' + res.statusCode + ' ' + body.slice(0, 120));
-        resolve();
-      });
-    }).on('error', (e) => { console.log('purge ' + file + ' failed: ' + e.message); resolve(); });
+      res.resume();
+      res.on('end', () => { console.log('purge ' + file + ': ' + res.statusCode); resolve(); });
+    }).on('error', () => resolve());
   });
 }
 
 (async function () {
-  const msg = process.argv.slice(2).join(' ') || 'Site update';
+  const msg = (process.argv.slice(2).join(' ') || 'Site update').replace(/"/g, "'");
   sh('node build/build.js');
   sh('git add -A');
-  try {
-    sh('git commit -m "' + msg.replace(/"/g, "'") + '"');
-  } catch (e) {
-    console.log('(nothing to commit — pushing/purging anyway)');
-  }
+  try { sh('git commit -m "' + msg + '"'); } catch (e) { console.log('(nothing new to commit)'); }
+  sh('git push');
+  const sha = sh('git rev-parse HEAD');
+  fs.writeFileSync(path.join(ROOT, 'dist', 'version.txt'), sha + '\n');
+  sh('git add dist/version.txt');
+  try { sh('git commit -m "Pin assets to ' + sha.slice(0, 10) + '"'); } catch (e) { }
   sh('git push');
   await purge('dist/site.css');
   await purge('dist/site.js');
-  console.log('\nDeployed. Live within seconds; a viewer with a cached copy may need Ctrl+Shift+R.');
+  await purge('dist/version.txt');
+  console.log('\nDeployed and pinned to ' + sha.slice(0, 10) +
+    '. Browsers pick it up within ~5-10 minutes; Ctrl+Shift+R for instant.');
 })();
