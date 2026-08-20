@@ -2192,9 +2192,21 @@
 
   // site.js is loaded at the FOOTER position (boot-footer.js) so it runs
   // after the CMS legacy stack - the proven ordering. Do not move to head.
+  // Placement-proof scheduling: the CMS's Userform engine (pricing +
+  // conditions) initializes in jQuery's ready queue and breaks if we
+  // rearrange the form first. Queueing behind jQuery ready + one tick
+  // guarantees we run AFTER the legacy stack whether this file loads in
+  // the head or the footer, on fast or slow pages.
+  function afterLegacy() {
+    if (window.jQuery && window.jQuery.fn) {
+      window.jQuery(function () { setTimeout(init, 0); });
+    } else {
+      setTimeout(init, 250);
+    }
+  }
   if (document.readyState !== 'loading') {
-    init();
+    afterLegacy();
   } else {
-    document.addEventListener('DOMContentLoaded', init);
+    document.addEventListener('DOMContentLoaded', afterLegacy);
   }
 })();
