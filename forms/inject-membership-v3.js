@@ -245,11 +245,18 @@
 
   /* ================= 5. yahrzeits + preferences ================= */
   rHead(/^yahrzeits$/i, 'Yahrzeits');
-  rArea(/^yahrzeits$/i, 'Yahrzeits',
-    'For each yahrzeit you observe: name (English and Hebrew), your relationship, date of passing, and whether it was after sunset. We will include them in our prayers and remind you each year.');
-  reuse(/^memorial board$/i, 'control_checkbox', function () {
-    return checkbox('Memorial Board', "I'm interested in a permanent memorial board plaque, lit each year on the yahrzeit ($360 one-time - the office will follow up)");
-  });
+  /* three structured yahrzeit slots: REAL fields (real date fields) in
+     the submission; the page overlay renders them as repeatable panels */
+  for (var y = 1; y <= 3; y++) {
+    rText(new RegExp('^yahrzeit ' + y + ' name \\(english\\)$', 'i'), 'Yahrzeit ' + y + ' Name (English)');
+    rText(new RegExp('^yahrzeit ' + y + ' hebrew name$', 'i'), 'Yahrzeit ' + y + ' Hebrew Name');
+    rText(new RegExp('^yahrzeit ' + y + ' relationship$', 'i'), 'Yahrzeit ' + y + ' Relationship');
+    rText(new RegExp('^yahrzeit ' + y + ' gender$', 'i'), 'Yahrzeit ' + y + ' Gender');
+    rDate(new RegExp('^yahrzeit ' + y + ' date of passing$', 'i'), 'Yahrzeit ' + y + ' Date of Passing');
+    rText(new RegExp('^yahrzeit ' + y + ' after sunset$', 'i'), 'Yahrzeit ' + y + ' After Sunset');
+    rText(new RegExp('^yahrzeit ' + y + ' hebrew date$', 'i'), 'Yahrzeit ' + y + ' Hebrew Date');
+    rText(new RegExp('^yahrzeit ' + y + ' memorial plaque$', 'i'), 'Yahrzeit ' + y + ' Memorial Plaque');
+  }
   rHead(/^preferences$/i, 'Preferences');
   rText(/^donor wall display name$/i, 'Donor Wall Display Name', { description: "How you want your family listed - e.g. 'The Cohen Family'. Enter 'Anonymous' to stay private." });
   var KIDDUSH = rText(/^kiddush sponsorship dedication$/i, 'Kiddush Sponsorship Dedication', { description: 'Included with Silver and Gold membership - e.g. In memory of...' });
@@ -291,6 +298,14 @@
     }
     if (flat[id + '_type'] === 'control_button') {
       report.push('REMOVED ' + id + ': duplicate submit button');
+      return;
+    }
+    if (/^yahrzeits$/i.test(lbl(id)) && flat[id + '_type'] === 'control_textarea') {
+      report.push('REMOVED ' + id + ': legacy Yahrzeits text box (replaced by structured slots)');
+      return;
+    }
+    if (/^memorial board$/i.test(lbl(id)) && flat[id + '_type'] === 'control_checkbox') {
+      report.push('REMOVED ' + id + ': standalone Memorial Board (now per-yahrzeit)');
       return;
     }
     console.warn('Field ' + id + ' (' + (lbl(id) || flat[id + '_type']) + ') was not in the plan - KEPT at the end so nothing is lost.');

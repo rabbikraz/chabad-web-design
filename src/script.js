@@ -1399,6 +1399,7 @@
       if (/^membership level/.test(raw) || /^\((basic|chai|silver|gold)( annual)?\)/.test(raw) || /^\(discount\)/i.test(raw)) return 'engine';
       var lbl = labelOf(li);
       if (/^(i am joining as|parents at home|number of children|billing frequency)/.test(lbl)) return 'engine';
+      if (/^yahrzeit \d+ /.test(lbl)) return 'engine';
       if (/^(spouse |anniversary$)/.test(lbl)) return 'spouse';
       if (/^(child \d+ |children)/.test(lbl)) return 'children';
       if (/^(yahrzeits|memorial board|donor wall|kiddush|anything else)/.test(lbl)) return 'extras';
@@ -1944,34 +1945,59 @@
     try { upgradeDates(); } catch (e) { }
 
     /* Yahrzeits exactly like the original form: repeatable panels with
-       English + Hebrew name, relationship dropdown, gender of the
-       deceased, date-of-passing picker with after-sunset, the converted
-       Hebrew date, and a per-yahrzeit memorial-plaque checkbox. The
-       builder's own textarea stays hidden and carries the serialized
-       rows so the office email is unchanged. */
+       English + Hebrew name, relationship, gender, date-of-passing picker
+       with after-sunset, the converted Hebrew date, and a per-yahrzeit
+       memorial-plaque checkbox.
+       Data model: if the form has structured "Yahrzeit N ..." slot fields
+       (injection v3), every panel syncs into its slot - REAL fields with a
+       REAL date in the submission. On older forms the panels serialize
+       into the legacy Yahrzeits textarea instead. */
     function initYahrzeits() {
-      var li = lisByLabel(/^yahrzeits$/)[0];
-      if (!li) return;
-      var ta = li.querySelector('textarea');
-      if (!ta || li.querySelector('.sb-mw-yz')) return;
-      li.classList.add('sb-mw-yzli');
-      // the standalone Memorial Board question is redundant now that each
-      // yahrzeit row carries its own plaque checkbox - hide it and drive
-      // it from the rows so the office email still gets the field
+      var slots = [];
+      for (var n = 1; n <= 9; n++) {
+        var nameLi = lisByLabel(new RegExp('^yahrzeit ' + n + ' name'))[0];
+        if (!nameLi) break;
+        slots.push({
+          name: nameLi,
+          heb: lisByLabel(new RegExp('^yahrzeit ' + n + ' hebrew name$'))[0],
+          rel: lisByLabel(new RegExp('^yahrzeit ' + n + ' relationship$'))[0],
+          gender: lisByLabel(new RegExp('^yahrzeit ' + n + ' gender$'))[0],
+          date: lisByLabel(new RegExp('^yahrzeit ' + n + ' date of passing$'))[0],
+          sunset: lisByLabel(new RegExp('^yahrzeit ' + n + ' after sunset$'))[0],
+          hebdate: lisByLabel(new RegExp('^yahrzeit ' + n + ' hebrew date$'))[0],
+          memorial: lisByLabel(new RegExp('^yahrzeit ' + n + ' memorial'))[0]
+        });
+      }
+      var taLi = lisByLabel(/^yahrzeits$/)[0] || null;
+      var ta = taLi ? taLi.querySelector('textarea') : null;
+      if (!slots.length && !ta) return;
+      if (root.querySelector('.sb-mw-yz')) return;
+      var box = div('sb-mw-yz');
+      if (taLi) {
+        taLi.classList.add('sb-mw-yzli');
+        (taLi.querySelector('.form-input') || taLi).appendChild(box);
+      } else {
+        var yzCard = div('sb-mw-card');
+        extrasCard.parentNode.insertBefore(yzCard, extrasCard);
+        var yzh = div('sb-mw-card-h');
+        yzh.textContent = 'Yahrzeits';
+        yzCard.appendChild(yzh);
+        var yzsub = el('p', 'sb-mw-card-sub');
+        yzsub.textContent = 'We will include them in our prayers and remind you each year.';
+        yzCard.appendChild(yzsub);
+        yzCard.appendChild(box);
+      }
       var memLi = lisByLabel(/^memorial board$/)[0];
       if (memLi) memLi.style.display = 'none';
-      var box = div('sb-mw-yz');
-      (li.querySelector('.form-input') || li).appendChild(box);
       var list = div('sb-mw-yzlist');
       box.appendChild(list);
       var add = btn('sb-mw-yzadd', '+ Add yahrzeit');
       box.appendChild(add);
-      var seq = 0;
       function field(cls, labelText, inner) {
         return '<div class="sb-mw-yzfield ' + (cls || '') + '"><span class="sb-mw-yzlab">' + labelText + '</span>' + inner + '</div>';
       }
       function addRow() {
-        seq++;
+        if (slots.length && $all('.sb-mw-yzrow', list).length >= slots.length) return null;
         var r = div('sb-mw-yzrow');
         r.innerHTML =
           '<div class="sb-mw-yzhead"><span class="sb-mw-yztitle">Yahrzeit</span><button type="button" class="sb-mw-yzdel">Remove</button></div>' +
@@ -1990,7 +2016,13 @@
             '<div class="sb-mw-heb sb-mw-yzheb">-</div>') +
           '<label class="sb-mw-yzmem"><input type="checkbox" data-yz="memorial"> Add their name to our memorial board - a permanent plaque, lit each year on the yahrzeit ($360, one-time - the office will follow up)</label>';
         list.appendChild(r);
+        capAdd();
         return r;
+      }
+      function capAdd() {
+        if (slots.length) {
+          add.style.display = $all('.sb-mw-yzrow', list).length >= slots.length ? 'none' : '';
+        }
       }
       function rowVal(r, k) {
         var e = r.querySelector('[data-yz="' + k + '"]');
@@ -2002,22 +2034,61 @@
         var on = r.querySelector('[data-yz="gseg"] .sb-mw-segopt.sb-on');
         return on ? on.getAttribute('data-g') : '';
       }
-      function serialize() {
-        ta.value = $all('.sb-mw-yzrow', list).map(function (r) {
-          var name = rowVal(r, 'name');
-          var d = rowVal(r, 'date');
-          if (!name && !d && !rowVal(r, 'nameheb')) return '';
-          var heb = r.querySelector('.sb-mw-yzheb').getAttribute('data-heb') || '';
-          return [name || '(no name given)',
-            rowVal(r, 'nameheb') ? '(Hebrew: ' + rowVal(r, 'nameheb') + ')' : '',
-            rowVal(r, 'rel'),
-            rowGender(r),
-            d ? 'passed ' + d : '',
-            rowVal(r, 'sunset') ? 'after sunset' : '',
-            heb ? 'Hebrew date: ' + heb : '',
-            rowVal(r, 'memorial') ? 'MEMORIAL BOARD PLAQUE REQUESTED ($360)' : ''
-          ].filter(Boolean).join(' - ');
-        }).filter(Boolean).join('\n');
+      function setSlotText(li, v) {
+        if (!li) return;
+        var i = li.querySelector('input, textarea');
+        if (i && i.value !== String(v)) { i.value = String(v); fire(i, ['input', 'change']); }
+      }
+      function setSlotDate(li, iso) {
+        if (!li) return;
+        var sels = $all('select', li);
+        if (sels.length < 3) return;
+        function toSel(sel, v) {
+          var sv = v === '' ? '' : String(Number(v));
+          if (sv !== '' && !$all('option', sel).some(function (o) { return o.value === sv; })) {
+            var o = document.createElement('option');
+            o.value = sv; o.textContent = sv;
+            sel.appendChild(o);
+          }
+          if (sel.value !== sv) { sel.value = sv; fire(sel, ['change']); }
+        }
+        if (!iso) { toSel(sels[0], ''); toSel(sels[1], ''); toSel(sels[2], ''); return; }
+        toSel(sels[0], iso.slice(5, 7));
+        toSel(sels[1], iso.slice(8, 10));
+        toSel(sels[2], iso.slice(0, 4));
+      }
+      function syncOut() {
+        var rows = $all('.sb-mw-yzrow', list);
+        slots.forEach(function (slot, i) {
+          var r = rows[i];
+          var name = r ? rowVal(r, 'name') : '';
+          var d = r ? rowVal(r, 'date') : '';
+          var empty = !r || (!name && !d && !rowVal(r, 'nameheb'));
+          setSlotText(slot.name, empty ? '' : (name || '(no name given)'));
+          setSlotText(slot.heb, empty ? '' : rowVal(r, 'nameheb'));
+          setSlotText(slot.rel, empty ? '' : rowVal(r, 'rel'));
+          setSlotText(slot.gender, empty ? '' : rowGender(r));
+          setSlotDate(slot.date, empty ? '' : d);
+          setSlotText(slot.sunset, empty ? '' : (rowVal(r, 'sunset') ? 'Yes' : 'No'));
+          setSlotText(slot.hebdate, empty || !r ? '' : (r.querySelector('.sb-mw-yzheb').getAttribute('data-heb') || ''));
+          setSlotText(slot.memorial, empty ? '' : (rowVal(r, 'memorial') ? 'Yes - $360 plaque requested' : ''));
+        });
+        if (ta) {
+          ta.value = rows.map(function (r) {
+            var name = rowVal(r, 'name');
+            var d = rowVal(r, 'date');
+            if (!name && !d && !rowVal(r, 'nameheb')) return '';
+            var heb = r.querySelector('.sb-mw-yzheb').getAttribute('data-heb') || '';
+            return [name || '(no name given)',
+              rowVal(r, 'nameheb') ? '(Hebrew: ' + rowVal(r, 'nameheb') + ')' : '',
+              rowVal(r, 'rel'), rowGender(r),
+              d ? 'passed ' + d : '',
+              rowVal(r, 'sunset') ? 'after sunset' : '',
+              heb ? 'Hebrew date: ' + heb : '',
+              rowVal(r, 'memorial') ? 'MEMORIAL BOARD PLAQUE REQUESTED ($360)' : ''
+            ].filter(Boolean).join(' - ');
+          }).filter(Boolean).join('\n');
+        }
         if (memLi) {
           var want = $all('.sb-mw-yzrow [data-yz="memorial"]', list).some(function (c) { return c.checked; });
           var mc = memLi.querySelector('input[type="checkbox"]');
@@ -2030,7 +2101,7 @@
         if (!d) {
           out.textContent = '-';
           out.removeAttribute('data-heb');
-          serialize();
+          syncOut();
           return;
         }
         out.textContent = 'Converting...';
@@ -2038,13 +2109,13 @@
           if (!dta || !dta.hd) {
             out.textContent = '-';
             out.removeAttribute('data-heb');
-            serialize();
+            syncOut();
             return;
           }
-          var s = dta.hd + ' ' + dta.hm + ' ' + dta.hy + (dta.hebrew ? ' (' + dta.hebrew + ')' : '');
-          out.textContent = s;
-          out.setAttribute('data-heb', s);
-          serialize();
+          var hs = dta.hd + ' ' + dta.hm + ' ' + dta.hy + (dta.hebrew ? ' (' + dta.hebrew + ')' : '');
+          out.textContent = hs;
+          out.setAttribute('data-heb', hs);
+          syncOut();
         });
       }
       add.addEventListener('click', function () { addRow(); });
@@ -2054,19 +2125,20 @@
           var r = t.closest('.sb-mw-yzrow');
           if (r) r.parentNode.removeChild(r);
           if (!list.querySelector('.sb-mw-yzrow')) addRow();
-          serialize();
+          capAdd();
+          syncOut();
           return;
         }
         if (t && t.classList.contains('sb-mw-segopt') && t.closest('[data-yz="gseg"]')) {
           $all('.sb-mw-segopt', t.parentNode).forEach(function (b) { b.classList.toggle('sb-on', b === t); });
-          serialize();
+          syncOut();
         }
       });
       box.addEventListener('change', function (e) {
         var r = e.target && e.target.closest ? e.target.closest('.sb-mw-yzrow') : null;
         if (r) convertRow(r);
       });
-      box.addEventListener('input', serialize);
+      box.addEventListener('input', syncOut);
       addRow();
     }
     try { initYahrzeits(); } catch (e) { }
