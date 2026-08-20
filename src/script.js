@@ -2124,7 +2124,6 @@
         if (t && t.classList.contains('sb-mw-yzdel')) {
           var r = t.closest('.sb-mw-yzrow');
           if (r) r.parentNode.removeChild(r);
-          if (!list.querySelector('.sb-mw-yzrow')) addRow();
           capAdd();
           syncOut();
           return;
@@ -2139,7 +2138,7 @@
         if (r) convertRow(r);
       });
       box.addEventListener('input', syncOut);
-      addRow();
+      // starts collapsed: the panel appears only when Add yahrzeit is tapped
     }
     try { initYahrzeits(); } catch (e) { }
 
