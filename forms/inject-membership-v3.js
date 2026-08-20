@@ -245,9 +245,9 @@
 
   /* ================= 5. yahrzeits + preferences ================= */
   rHead(/^yahrzeits$/i, 'Yahrzeits');
-  /* three structured yahrzeit slots: REAL fields (real date fields) in
+  /* four structured yahrzeit slots: REAL fields (real date fields) in
      the submission; the page overlay renders them as repeatable panels */
-  for (var y = 1; y <= 3; y++) {
+  for (var y = 1; y <= 4; y++) {
     rText(new RegExp('^yahrzeit ' + y + ' name \\(english\\)$', 'i'), 'Yahrzeit ' + y + ' Name (English)');
     rText(new RegExp('^yahrzeit ' + y + ' hebrew name$', 'i'), 'Yahrzeit ' + y + ' Hebrew Name');
     rText(new RegExp('^yahrzeit ' + y + ' relationship$', 'i'), 'Yahrzeit ' + y + ' Relationship');
