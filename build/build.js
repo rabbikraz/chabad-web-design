@@ -154,7 +154,11 @@ async function build() {
      then paste the -cdn box files instead; pushing to GitHub deploys. ---- */
   const CDN_BASE = process.env.SB_CDN_BASE || 'https://cdn.jsdelivr.net/gh/rabbikraz/chabad-web-design@redesign';
   const siteCss = minifyCssHard(css);
-  const siteJs = (await minifyJsTerser(registerJs)) + '\n' + (await minifyJsTerser(js));
+  // run-once guard: if a stale CDN edge still serves the old header boot.js
+  // (which loaded site.js in the head), the first execution claims the page
+  // and the second becomes a no-op instead of a duelling double-init.
+  const siteJs = 'if(!window.__SB_SITE_LOADED){window.__SB_SITE_LOADED=1;\n' +
+    (await minifyJsTerser(registerJs)) + '\n' + (await minifyJsTerser(js)) + '\n}';
   fs.writeFileSync(path.join(DIST, 'site.css'), siteCss);
   fs.writeFileSync(path.join(DIST, 'site.js'), siteJs);
   // boot.js: the version-resolving loader as a STATIC file. It lives at the
