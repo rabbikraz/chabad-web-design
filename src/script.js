@@ -2190,17 +2190,11 @@
     safe('membership-builder', initMembershipBuilder);
   }
 
-  // ORDER MATTERS: this bundle now loads in the <head> (boot.js), so our
-  // DOMContentLoaded listener registers BEFORE jQuery's ready listener.
-  // The CMS's Userform engine (pricing + show/hide conditions) initializes
-  // in that ready queue and chokes if the wizard has already rearranged
-  // the form - killing the Total and the child-row conditions site-wide.
-  // Deferring by one macrotask lands our init AFTER the entire legacy
-  // ready queue, restoring the footer-era ordering that always worked.
-  function scheduleInit() { setTimeout(init, 150); }
+  // site.js is loaded at the FOOTER position (boot-footer.js) so it runs
+  // after the CMS legacy stack - the proven ordering. Do not move to head.
   if (document.readyState !== 'loading') {
-    scheduleInit();
+    init();
   } else {
-    document.addEventListener('DOMContentLoaded', scheduleInit);
+    document.addEventListener('DOMContentLoaded', init);
   }
 })();
