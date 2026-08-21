@@ -4018,6 +4018,7 @@ html:not(#sbx):not(#sbx2):not(#sbx3) body.cco_body form.sb-mf .sb-mw-billrow {
   flex-wrap: wrap;
   margin: 0 0 1rem;
 }
+html:not(#sbx):not(#sbx2):not(#sbx3) body.cco_body form.sb-mf li.sb-mf-nolabel .form-label-left { display: none !important; }
 html:not(#sbx):not(#sbx2):not(#sbx3) body.cco_body form.sb-mf .sb-mw-billlab {
   font-size: 14px;
   font-weight: 600;

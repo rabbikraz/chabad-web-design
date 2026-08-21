@@ -1633,6 +1633,10 @@
     allLis().forEach(function (li) {
       if (li.querySelector('input[id^="first_"]')) li.classList.add('sb-mf-namerow');
     });
+    // checkbox-only rows say it all in the checkbox text - drop the label
+    lisByLabel(/^child d+ mitzvah lessons$/).forEach(function (li) {
+      li.classList.add('sb-mf-nolabel');
+    });
 
     /* Jewishness rules, same as the original form, for BOTH adults:
        Not Jewish -> tribe / lineage / mother's Hebrew name / Hebrew
