@@ -57,7 +57,11 @@ const { minify: terserMinify } = require('terser');
 async function minifyJsTerser(js) {
   const res = await terserMinify(js, {
     ecma: 2020,
-    compress: { passes: 4, drop_console: true, unsafe: true, unsafe_arrows: true, unsafe_methods: true, booleans_as_integers: true, pure_getters: true },
+    // conservative on purpose: booleans_as_integers turned [false,true]
+    // into [0,1] and broke strict comparisons against runtime booleans
+    // (killed the wizard tier sync for a day). Size stopped mattering when
+    // assets moved to the CDN - never re-add unsafe flags for bytes.
+    compress: { passes: 3, drop_console: true },
     mangle: true,
     format: { comments: false },
   });
