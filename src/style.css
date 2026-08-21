@@ -1045,7 +1045,8 @@ body.cco_body #tabContentMain .co_menu_item.donate_link span.parent a:hover {
     padding: 16px 0 !important;
     border-radius: 0;
     background: none !important;
-    justify-content: space-between;
+    justify-content: flex-start;
+    gap: 8px;
     white-space: normal !important;
   }
   /* leave room for the expand arrow so long labels never run under it */
@@ -1175,13 +1176,16 @@ body.cco_body #tabContentMain .co_menu_item.donate_link span.parent a:hover {
   #tabContentMain .co_menu_item.arrow .co_submenu_container a.item:hover span { color: var(--sb-accent-300); }
 
   body.cco_body #tabContentMain .co_menu_item.donate_link { margin: 18px 0 0; border-bottom: none; }
-  body.cco_body #tabContentMain .co_menu_item.donate_link span.parent a {
-    display: flex;
-    justify-content: center;
-    width: 100%;
-    padding: 16px 0;
-    font-family: var(--sb-font-body);
-    font-size: 17px;
+  body.cco_body #header #tabContentMain .co_menu_item.donate_link span.parent a {
+    display: flex !important;
+    justify-content: center !important;
+    width: 100% !important;
+    padding: 16px 0 !important;
+    font-family: var(--sb-font-body) !important;
+    font-size: 17px !important;
+    background: var(--sb-accent) !important;
+    color: #fff !important;
+    border-radius: 999px !important;
   }
   .mobile-menu-bottom-links {
     display: flex;

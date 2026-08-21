@@ -106,6 +106,17 @@
 
   function $(sel, ctx) { return (ctx || document).querySelector(sel); }
   function $all(sel, ctx) { return Array.prototype.slice.call((ctx || document).querySelectorAll(sel)); }
+  // The platform's customized jquery.cycle (Aug 2026 build) swaps every
+  // slide img src to /images/global/spacer.gif and moves the real URL
+  // into an inline background style - recover it from there.
+  function slideImgSrc(img) {
+    if (!img) return '';
+    var src = img.getAttribute('src') || '';
+    if (src && !/spacer\.gif/i.test(src)) return src;
+    var bg = (img.style && (img.style.backgroundImage || img.style.background)) || '';
+    var m = /url\((['\"]?)(.*?)\1\)/.exec(bg);
+    return m ? m[2] : '';
+  }
   function el(tag, cls, html) {
     var n = document.createElement(tag);
     if (cls) n.className = cls;
@@ -391,7 +402,7 @@
       }
       var more = cap ? cap.querySelector('a.readMore') : null;
       return {
-        img: img ? (img.getAttribute('src') || '') : '',
+        img: slideImgSrc(img),
         href: a ? (a.getAttribute('href') || '#') : '#',
         title: title,
         body: body,
@@ -2169,9 +2180,9 @@
         // prefer a photo (jpg) over graphic flyers (png) for the arched crop
         var imgs = $all('.hp-row-first .promo_slider .slide_wrapper img');
         var photo = imgs.filter(function (im) {
-          return /\.jpe?g(\?|$)/i.test(im.getAttribute('src') || '');
+          return /\.jpe?g(\?|$)/i.test(slideImgSrc(im));
         })[0] || imgs[0];
-        heroImg = photo ? photo.getAttribute('src') : null;
+        heroImg = photo ? slideImgSrc(photo) : null;
         buildHero();
       });
       safe('welcome', function () { buildWelcome(heroImg); });
