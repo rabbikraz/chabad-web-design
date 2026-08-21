@@ -255,6 +255,7 @@
   }
   var CHILDNOTES = rArea(/^children - anything else$/i, 'Children - Anything Else',
     'Anything else about your children we should know.');
+  out[CHILDNOTES + '_message'] = 'Anything about your children we should know.';
   var FAMCONV = rRadio(/^any conversions in the family\?$/i, 'Any Conversions in the Family?', 'Yes|No');
   var FAMCONVDET = rArea(/^conversion details$/i, 'Conversion Details',
     'Who converted, when, and with which Beit Din. We need conversion documents on file - please email a copy to the Rabbi.');

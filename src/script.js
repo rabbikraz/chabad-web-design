@@ -1637,6 +1637,12 @@
     lisByLabel(/^child d+ mitzvah lessons$/).forEach(function (li) {
       li.classList.add('sb-mf-nolabel');
     });
+    // the per-child fields now cover Hebrew names / school / lessons
+    (function () {
+      var cn = lisByLabel(/^children - anything else$/)[0];
+      var msg = cn && cn.querySelector('.form-label-left .label-message');
+      if (msg) msg.textContent = ' Anything about your children we should know.';
+    })();
 
     /* Jewishness rules, same as the original form, for BOTH adults:
        Not Jewish -> tribe / lineage / mother's Hebrew name / Hebrew

@@ -4019,6 +4019,22 @@ html:not(#sbx):not(#sbx2):not(#sbx3) body.cco_body form.sb-mf .sb-mw-billrow {
   margin: 0 0 1rem;
 }
 html:not(#sbx):not(#sbx2):not(#sbx3) body.cco_body form.sb-mf li.sb-mf-nolabel .form-label-left { display: none !important; }
+html:not(#sbx):not(#sbx2):not(#sbx3) body.cco_body form.sb-mf .form-checkbox-item input.form-checkbox {
+  -webkit-appearance: checkbox !important;
+  appearance: auto !important;
+  width: 18px !important;
+  height: 18px !important;
+  min-height: 0 !important;
+  border: none !important;
+  background: none !important;
+  box-shadow: none !important;
+  position: static !important;
+}
+html:not(#sbx):not(#sbx2):not(#sbx3) body.cco_body form.sb-mf .form-checkbox-item input.form-checkbox::after,
+html:not(#sbx):not(#sbx2):not(#sbx3) body.cco_body form.sb-mf .form-checkbox-item input.form-checkbox::before {
+  content: none !important;
+  display: none !important;
+}
 html:not(#sbx):not(#sbx2):not(#sbx3) body.cco_body form.sb-mf .sb-mw-billlab {
   font-size: 14px;
   font-weight: 600;
