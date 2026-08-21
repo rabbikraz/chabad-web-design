@@ -1410,7 +1410,7 @@
       if (/^membership level/.test(raw) || /^\((basic|chai|silver|gold)( annual)?\)/.test(raw) || /^\(discount\)/i.test(raw)) return 'engine';
       var lbl = labelOf(li);
       if (/^(i am joining as|parents at home|number of children|billing frequency)/.test(lbl)) return 'engine';
-      if (/^yahrzeit \d+ /.test(lbl)) return 'engine';
+      if (/^yahrzeit \d+ /.test(lbl) || /^number of yahrzeits$/.test(lbl)) return 'engine';
       if (/^(spouse |anniversary$)/.test(lbl)) return 'spouse';
       if (/^(child \d+ |children)/.test(lbl)) return 'children';
       if (/^(yahrzeits|memorial board|donor wall|kiddush|anything else|any conversions|conversion details)/.test(lbl)) return 'extras';
@@ -2032,6 +2032,9 @@
           memorial: lisByLabel(new RegExp('^yahrzeit ' + n + ' memorial'))[0]
         });
       }
+      // hidden counter gating the slot conditions - keeps unused slots
+      // out of the response/notification field list (blank-row fix)
+      var countLi = lisByLabel(/^number of yahrzeits$/)[0] || null;
       var taLi = lisByLabel(/^yahrzeits$/)[0] || null;
       var ta = taLi ? taLi.querySelector('textarea') : null;
       if (!slots.length && !ta) return;
@@ -2137,6 +2140,13 @@
           setSlotText(slot.hebdate, empty || !r ? '' : (r.querySelector('.sb-mw-yzheb').getAttribute('data-heb') || ''));
           setSlotText(slot.memorial, empty ? '' : (rowVal(r, 'memorial') ? 'Yes - $360 plaque requested' : ''));
         });
+        if (countLi) {
+          var shown = 0;
+          rows.forEach(function (r, i) {
+            if (rowVal(r, 'name') || rowVal(r, 'date') || rowVal(r, 'nameheb')) shown = i + 1;
+          });
+          setSlotText(countLi, shown);
+        }
         if (ta) {
           ta.value = rows.map(function (r) {
             var name = rowVal(r, 'name');

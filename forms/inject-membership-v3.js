@@ -211,23 +211,29 @@
   rText(/^home phone$/i, 'Home Phone');
 
   /* ================= 3. spouse ================= */
+  /* Every spouse field is collected so a condition can gate the whole
+     block on Couple / two-parent Family - condition-hidden fields are
+     the ONLY ones the response/notification field list skips, so
+     without this a Single submission shows 14 blank spouse rows. */
   rHead(/^spouse$/i, 'Spouse');
-  rText(/^spouse first name$/i, 'Spouse First Name');
-  rText(/^spouse last name$/i, 'Spouse Last Name');
-  rText(/^spouse hebrew name$/i, 'Spouse Hebrew Name');
-  rRadio(/^spouse gender$/i, 'Spouse Gender', 'Male|Female');
+  var SPOUSE_FIELDS = [];
+  SPOUSE_FIELDS.push(rText(/^spouse first name$/i, 'Spouse First Name'));
+  SPOUSE_FIELDS.push(rText(/^spouse last name$/i, 'Spouse Last Name'));
+  SPOUSE_FIELDS.push(rText(/^spouse hebrew name$/i, 'Spouse Hebrew Name'));
+  SPOUSE_FIELDS.push(rRadio(/^spouse gender$/i, 'Spouse Gender', 'Male|Female'));
   var SJEW = rRadio(/^spouse jewishness$/i, 'Spouse Jewishness', 'Jewish from birth|Convert|Not Jewish');
+  SPOUSE_FIELDS.push(SJEW);
   var SCONVAUTH = rText(/^spouse supervising rabbi/i, 'Spouse Supervising Rabbi / Beit Din');
   var SCONVDATE = rDate(/^spouse date of conversion$/i, 'Spouse Date of Conversion');
-  rRadio(/^spouse tribe$/i, 'Spouse Tribe', 'Kohen|Levi|Yisroel|Not sure');
-  rText(/^spouse hebrew lineage/i, 'Spouse Hebrew Lineage (ben/bas ___)');
-  rText(/^spouse mother's hebrew name$/i, "Spouse Mother's Hebrew Name");
-  rText(/^spouse email$/i, 'Spouse Email');
-  rText(/^spouse cell phone$/i, 'Spouse Cell Phone');
-  rText(/^spouse occupation$/i, 'Spouse Occupation');
-  rDate(/^spouse birthday$/i, 'Spouse Birthday');
-  rRadio(/^spouse born after sunset\?$/i, 'Spouse Born After Sunset?', 'Yes|No|Not sure');
-  rDate(/^anniversary$/i, 'Anniversary');
+  SPOUSE_FIELDS.push(rRadio(/^spouse tribe$/i, 'Spouse Tribe', 'Kohen|Levi|Yisroel|Not sure'));
+  SPOUSE_FIELDS.push(rText(/^spouse hebrew lineage/i, 'Spouse Hebrew Lineage (ben/bas ___)'));
+  SPOUSE_FIELDS.push(rText(/^spouse mother's hebrew name$/i, "Spouse Mother's Hebrew Name"));
+  SPOUSE_FIELDS.push(rText(/^spouse email$/i, 'Spouse Email'));
+  SPOUSE_FIELDS.push(rText(/^spouse cell phone$/i, 'Spouse Cell Phone'));
+  SPOUSE_FIELDS.push(rText(/^spouse occupation$/i, 'Spouse Occupation'));
+  SPOUSE_FIELDS.push(rDate(/^spouse birthday$/i, 'Spouse Birthday'));
+  SPOUSE_FIELDS.push(rRadio(/^spouse born after sunset\?$/i, 'Spouse Born After Sunset?', 'Yes|No|Not sure'));
+  SPOUSE_FIELDS.push(rDate(/^anniversary$/i, 'Anniversary'));
 
   /* ================= 4. children ================= */
   rHead(/^children$/i, 'Children');
@@ -264,15 +270,24 @@
   rHead(/^yahrzeits$/i, 'Yahrzeits');
   /* four structured yahrzeit slots: REAL fields (real date fields) in
      the submission; the page overlay renders them as repeatable panels */
+  /* hidden counter the page overlay drives; each slot's fields are
+     condition-shown only when the counter passes it, so unused slots
+     never appear as blank rows in the response / notification emails */
+  var YZCOUNT = reuse(/^number of yahrzeits$/i, 'control_number', function () {
+    return number('Number of Yahrzeits', 0, '4', { defaultValue: '0', description: 'Set automatically by the yahrzeit panels - do not edit.' });
+  });
+  var YZ_ROWS = [];
   for (var y = 1; y <= 4; y++) {
-    rText(new RegExp('^yahrzeit ' + y + ' name \\(english\\)$', 'i'), 'Yahrzeit ' + y + ' Name (English)');
-    rText(new RegExp('^yahrzeit ' + y + ' hebrew name$', 'i'), 'Yahrzeit ' + y + ' Hebrew Name');
-    rText(new RegExp('^yahrzeit ' + y + ' relationship$', 'i'), 'Yahrzeit ' + y + ' Relationship');
-    rText(new RegExp('^yahrzeit ' + y + ' gender$', 'i'), 'Yahrzeit ' + y + ' Gender');
-    rDate(new RegExp('^yahrzeit ' + y + ' date of passing$', 'i'), 'Yahrzeit ' + y + ' Date of Passing');
-    rText(new RegExp('^yahrzeit ' + y + ' after sunset$', 'i'), 'Yahrzeit ' + y + ' After Sunset');
-    rText(new RegExp('^yahrzeit ' + y + ' hebrew date$', 'i'), 'Yahrzeit ' + y + ' Hebrew Date');
-    rText(new RegExp('^yahrzeit ' + y + ' memorial plaque$', 'i'), 'Yahrzeit ' + y + ' Memorial Plaque');
+    var yrow = [];
+    yrow.push(rText(new RegExp('^yahrzeit ' + y + ' name \\(english\\)$', 'i'), 'Yahrzeit ' + y + ' Name (English)'));
+    yrow.push(rText(new RegExp('^yahrzeit ' + y + ' hebrew name$', 'i'), 'Yahrzeit ' + y + ' Hebrew Name'));
+    yrow.push(rText(new RegExp('^yahrzeit ' + y + ' relationship$', 'i'), 'Yahrzeit ' + y + ' Relationship'));
+    yrow.push(rText(new RegExp('^yahrzeit ' + y + ' gender$', 'i'), 'Yahrzeit ' + y + ' Gender'));
+    yrow.push(rDate(new RegExp('^yahrzeit ' + y + ' date of passing$', 'i'), 'Yahrzeit ' + y + ' Date of Passing'));
+    yrow.push(rText(new RegExp('^yahrzeit ' + y + ' after sunset$', 'i'), 'Yahrzeit ' + y + ' After Sunset'));
+    yrow.push(rText(new RegExp('^yahrzeit ' + y + ' hebrew date$', 'i'), 'Yahrzeit ' + y + ' Hebrew Date'));
+    yrow.push(rText(new RegExp('^yahrzeit ' + y + ' memorial plaque$', 'i'), 'Yahrzeit ' + y + ' Memorial Plaque'));
+    YZ_ROWS.push(yrow);
   }
   rHead(/^preferences$/i, 'Preferences');
   rText(/^donor wall display name$/i, 'Donor Wall Display Name', { description: "How you want your family listed - e.g. 'The Cohen Family'. Enter 'Anonymous' to stay private." });
@@ -352,6 +367,20 @@
       COUNTS.map(function (cq) { return [cq, 'greaterThan', i]; }),
       row
     ));
+  });
+  /* spouse block appears for Couple, or Family with two parents at home */
+  var HHQS = TIERS.map(function (t) { return TRIO[t.name].hh; })
+    .concat(TIERS.map(function (t) { return ATRIO[t.name].hh; }));
+  var PARQS = TIERS.map(function (t) { return TRIO[t.name].par; })
+    .concat(TIERS.map(function (t) { return ATRIO[t.name].par; }));
+  conds.push(show(
+    HHQS.map(function (q) { return [q, 'equals', 'Couple']; })
+      .concat(PARQS.map(function (q) { return [q, 'equals', 'Two parents']; })),
+    SPOUSE_FIELDS
+  ));
+  /* each yahrzeit slot appears only once the page's counter reaches it */
+  YZ_ROWS.forEach(function (row, i) {
+    conds.push(show([[YZCOUNT, 'greaterThan', i]], row));
   });
   conds.push(show([[FAMCONV, 'equals', 'Yes']], [FAMCONVDET]));
   conds.push(show(COUNTS.map(function (cq) { return [cq, 'greaterThan', 0]; }), [CHILDNOTES]));
