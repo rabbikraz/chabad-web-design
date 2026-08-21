@@ -231,17 +231,33 @@
 
   /* ================= 4. children ================= */
   rHead(/^children$/i, 'Children');
-  var CHILD_NAMES = [], CHILD_BDAYS = [];
+  /* full per-child block, matching the original form: English name,
+     Hebrew name, gender, birthday + after-sunset, auto bar/bat mitzvah
+     date (page fills it), lessons interest, school/yeshiva */
+  var CHILD_ROWS = [];
   for (var c = 1; c <= 6; c++) {
     (function (n) {
-      CHILD_NAMES.push(reuse(new RegExp('^(\\((basic)\\) )?child ' + n + ' name$', 'i'), 'control_textbox', function () {
+      var row = [];
+      row.push(reuse(new RegExp('^(\\((basic)\\) )?child ' + n + ' name$', 'i'), 'control_textbox', function () {
         return textbox('Child ' + n + ' Name');
       }, 'Child ' + n + ' Name'));
-      CHILD_BDAYS.push(rDate(new RegExp('^child ' + n + ' birthday$', 'i'), 'Child ' + n + ' Birthday'));
+      row.push(rText(new RegExp('^child ' + n + ' hebrew name$', 'i'), 'Child ' + n + ' Hebrew Name'));
+      row.push(rRadio(new RegExp('^child ' + n + ' gender$', 'i'), 'Child ' + n + ' Gender', 'Male|Female'));
+      row.push(rDate(new RegExp('^child ' + n + ' birthday$', 'i'), 'Child ' + n + ' Birthday'));
+      row.push(rRadio(new RegExp('^child ' + n + ' born after sunset', 'i'), 'Child ' + n + ' Born After Sunset?', 'Yes|No|Not sure'));
+      row.push(rText(new RegExp('^child ' + n + ' bar/bat mitzvah$', 'i'), 'Child ' + n + ' Bar/Bat Mitzvah', { description: 'Calculated automatically from the Hebrew birthday.' }));
+      row.push(reuse(new RegExp('^child ' + n + ' mitzvah lessons$', 'i'), 'control_checkbox', function () {
+        return checkbox('Child ' + n + ' Mitzvah Lessons', "We're interested in bar/bat mitzvah lessons");
+      }));
+      row.push(rText(new RegExp('^child ' + n + ' school / yeshiva$', 'i'), 'Child ' + n + ' School / Yeshiva'));
+      CHILD_ROWS.push(row);
     })(c);
   }
   var CHILDNOTES = rArea(/^children - anything else$/i, 'Children - Anything Else',
-    'Hebrew names, school / yeshiva, interest in bar or bat mitzvah lessons - anything about your children we should know.');
+    'Anything else about your children we should know.');
+  var FAMCONV = rRadio(/^any conversions in the family\?$/i, 'Any Conversions in the Family?', 'Yes|No');
+  var FAMCONVDET = rArea(/^conversion details$/i, 'Conversion Details',
+    'Who converted, when, and with which Beit Din. We need conversion documents on file - please email a copy to the Rabbi.');
 
   /* ================= 5. yahrzeits + preferences ================= */
   rHead(/^yahrzeits$/i, 'Yahrzeits');
@@ -263,6 +279,7 @@
   rArea(/^anything else$/i, 'Anything Else', "Hebrew names, yahrzeits, anything you'd like to be listed on the donor wall, questions for the Rabbi, or anything else we should know.");
 
   /* ================= 6. payment ================= */
+  var MEMSTART = rDate(/^membership start date$/i, 'Membership Start Date', { description: 'Optional - when should your membership begin? Defaults to today.' });
   rHead(/^payment$/i, 'Payment');
   reuse(null, 'control_totalamount', function () {
     return addQ('control_totalamount', { labelAlign: 'Auto', text: 'Total', partialPayEnabled: 'No', partialPayType: 'dollar', partialPayMinimum: 0, required: 'No', offsetGiftEnabled: 'No', offsetGift: 3 });
@@ -329,12 +346,13 @@
   });
   var COUNTS = TIERS.map(function (t) { return TRIO[t.name].kids; })
     .concat(TIERS.map(function (t) { return ATRIO[t.name].kids; }));
-  CHILD_NAMES.forEach(function (nameId, i) {
+  CHILD_ROWS.forEach(function (row, i) {
     conds.push(show(
       COUNTS.map(function (cq) { return [cq, 'greaterThan', i]; }),
-      [nameId, CHILD_BDAYS[i]]
+      row
     ));
   });
+  conds.push(show([[FAMCONV, 'equals', 'Yes']], [FAMCONVDET]));
   conds.push(show(COUNTS.map(function (cq) { return [cq, 'greaterThan', 0]; }), [CHILDNOTES]));
   conds.push(show([[JEW, 'equals', 'Convert']], [CONVAUTH, CONVDATE]));
   conds.push(show([[SJEW, 'equals', 'Convert']], [SCONVAUTH, SCONVDATE]));

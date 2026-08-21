@@ -1413,7 +1413,8 @@
       if (/^yahrzeit \d+ /.test(lbl)) return 'engine';
       if (/^(spouse |anniversary$)/.test(lbl)) return 'spouse';
       if (/^(child \d+ |children)/.test(lbl)) return 'children';
-      if (/^(yahrzeits|memorial board|donor wall|kiddush|anything else)/.test(lbl)) return 'extras';
+      if (/^(yahrzeits|memorial board|donor wall|kiddush|anything else|any conversions|conversion details)/.test(lbl)) return 'extras';
+      if (/^membership start date/.test(lbl)) return 'pay';
       if (/^(total|payment)/.test(lbl)) return 'pay';
       if ($all('input', li).some(function (f) { return /paymentrecurrence/.test(f.name || ''); })) return 'pay';
       return 'info';
@@ -1882,8 +1883,9 @@
       attachHeb(lisByLabel(/^birth date$/)[0], /^born after sunset/, 'Hebrew birthday', 'Member');
       attachHeb(lisByLabel(/^spouse birthday$/)[0], /^spouse born after sunset/, 'Hebrew birthday', 'Spouse');
       attachHeb(lisByLabel(/^anniversary$/)[0], null, 'Hebrew anniversary', 'Anniversary');
-      lisByLabel(/^child \d+ birthday$/).forEach(function (li) {
-        attachHeb(li, null, 'Hebrew birthday', labelOf(li).replace(/ birthday$/, ''));
+      lisByLabel(/^child (\d+) birthday$/).forEach(function (li) {
+        var num = (/child (\d+) birthday/.exec(labelOf(li)) || [])[1];
+        attachHeb(li, new RegExp('^child ' + num + ' born after sunset'), 'Hebrew birthday', 'Child ' + num);
       });
     } catch (e) { if (window.console) console.warn('[sb-mw] converter skipped:', e); }
     // the display boxes don't post with the form, so the results ride
@@ -1953,6 +1955,47 @@
         }
       });
     }
+    /* Bar/Bat mitzvah date, like the original: Hebrew birthday + 13 years
+       (12 for girls), converted back to the civil calendar and written
+       into the Child N Bar/Bat Mitzvah field for the office. */
+    function h2g(hy, hm, hd, cb) {
+      var key = 'h' + hy + '|' + hm + '|' + hd;
+      if (hebCache[key]) { cb(hebCache[key]); return; }
+      fetch('https://www.hebcal.com/converter?cfg=json&h2g=1&hy=' + hy + '&hm=' + encodeURIComponent(hm) + '&hd=' + hd)
+        .then(function (r) { return r.json(); })
+        .then(function (d) { hebCache[key] = d; cb(d); })
+        .catch(function () { cb(null); });
+    }
+    function calcMitzvah(n) {
+      var bmLi = lisByLabel(new RegExp('^child ' + n + ' bar/bat mitzvah$'))[0];
+      if (!bmLi) return;
+      var bmIn = bmLi.querySelector('input');
+      var bdayLi = lisByLabel(new RegExp('^child ' + n + ' birthday$'))[0];
+      var sels = bdayLi ? $all('select', bdayLi) : [];
+      var gli = lisByLabel(new RegExp('^child ' + n + ' gender$'))[0];
+      var gender = checkedIn(gli);
+      function put(v) { if (bmIn && bmIn.value !== v) { bmIn.value = v; fire(bmIn, ['input', 'change']); } }
+      if (sels.length < 3 || !sels[0].value || !sels[1].value || !sels[2].value || !gender) { put(''); return; }
+      var sunset = false;
+      var sli = lisByLabel(new RegExp('^child ' + n + ' born after sunset'))[0];
+      if (sli) sunset = /yes/i.test(checkedIn(sli));
+      var iso = sels[2].value + '-' + pad2(sels[0].value) + '-' + pad2(sels[1].value);
+      g2h(iso, sunset, function (hb) {
+        if (!hb || !hb.hy) { put(''); return; }
+        var years = /female/i.test(gender) ? 12 : 13;
+        h2g(hb.hy + years, hb.hm, hb.hd, function (g) {
+          if (!g || !g.gy) { put(''); return; }
+          put(pad2(g.gm) + '/' + pad2(g.gd) + '/' + g.gy + ' (' + hb.hd + ' ' + hb.hm + ' ' + (hb.hy + years) + ')');
+        });
+      });
+    }
+    root.addEventListener('change', function (e) {
+      var li = e.target && e.target.closest ? e.target.closest('li.form-line') : null;
+      if (!li) return;
+      var m = /^child (\d+) (birthday|born after sunset|gender)/.exec(labelOf(li));
+      if (m) { try { calcMitzvah(m[1]); } catch (err) { } }
+    });
+
     try { upgradeDates(); } catch (e) { }
 
     /* Yahrzeits exactly like the original form: repeatable panels with
