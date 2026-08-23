@@ -346,19 +346,23 @@
   });
 
   /* ================= conditions (full deterministic rebuild) ================= */
-  function show(terms, fields) {
+  function show(terms, fields, link) {
     return {
-      type: 'field', link: 'Any',
+      type: 'field', link: link || 'Any',
       terms: terms.map(function (t) { return { field: String(t[0]), operator: t[1], value: String(t[2]) }; }),
       actions: fields.map(function (f) { return { field: String(f), visibility: 'Show' }; })
     };
   }
   var conds = [];
+  /* trio visibility is AND-gated on tier AND billing: a priced field that
+     stays condition-visible keeps its cached amount in the platform total
+     (the real charge) and prints as a blank row in the receipt emails, so
+     only the one active trio may ever be condition-visible */
   TIERS.forEach(function (t) {
-    conds.push(show([[TIERQ, 'equals', t.name]], [TRIO[t.name].hh]));
-    conds.push(show([[TRIO[t.name].hh, 'equals', 'Family']], [TRIO[t.name].par, TRIO[t.name].kids]));
-    conds.push(show([[BILLING, 'equals', 'Annual']], [ATRIO[t.name].hh]));
-    conds.push(show([[ATRIO[t.name].hh, 'equals', 'Family']], [ATRIO[t.name].par, ATRIO[t.name].kids]));
+    conds.push(show([[TIERQ, 'equals', t.name], [BILLING, 'equals', 'Monthly']], [TRIO[t.name].hh], 'All'));
+    conds.push(show([[TRIO[t.name].hh, 'equals', 'Family'], [TIERQ, 'equals', t.name], [BILLING, 'equals', 'Monthly']], [TRIO[t.name].par, TRIO[t.name].kids], 'All'));
+    conds.push(show([[BILLING, 'equals', 'Annual'], [TIERQ, 'equals', t.name]], [ATRIO[t.name].hh], 'All'));
+    conds.push(show([[ATRIO[t.name].hh, 'equals', 'Family'], [TIERQ, 'equals', t.name], [BILLING, 'equals', 'Annual']], [ATRIO[t.name].par, ATRIO[t.name].kids], 'All'));
   });
   var COUNTS = TIERS.map(function (t) { return TRIO[t.name].kids; })
     .concat(TIERS.map(function (t) { return ATRIO[t.name].kids; }));

@@ -1344,7 +1344,23 @@
         if (f.type === 'radio' || f.type === 'checkbox') { if (f.checked) { f.checked = false; any = true; } }
         else if (f.value) { f.value = ''; any = true; }
       });
-      if (any) fire(li.querySelector('input') || li, ['change']);
+      if (any) { zeroPrice(li); fire(li.querySelector('input') || li, ['change']); }
+    }
+    /* the engine's updateValue only writes a radio group's price when it
+       finds a CHECKED option, so a group cleared programmatically keeps its
+       old amount in the price cache (global selectedElements, key cid_<qid>)
+       and the member gets charged for it - zero the entry ourselves */
+    function zeroPrice(li) {
+      var se = window.selectedElements;
+      var m = /^id_(\d+)$/.exec((li && li.id) || '');
+      if (se && m && ('cid_' + m[1]) in se) se['cid_' + m[1]] = 0;
+    }
+    function refreshTotals() {
+      allLis().forEach(function (li) {
+        var boxes = $all('input', li).filter(function (f) { return f.type === 'radio' || f.type === 'checkbox'; });
+        if (boxes.length && !boxes.some(function (b) { return b.checked; })) zeroPrice(li);
+      });
+      try { if (typeof window.updateTotals === 'function') window.updateTotals(); } catch (e) { }
     }
 
     /* the builder's field trio for each tier, matched by raw label */
@@ -1398,6 +1414,7 @@
         var want = !annualMode;
         if (rc.checked !== want) { rc.checked = want; fire(rc, ['change']); }
       }
+      refreshTotals();
     }
 
     /* ---- sort every question into a wizard slot ---- */
@@ -1911,14 +1928,43 @@
       ta.value = lines.length ? (base ? base + '\n\n' : '') + MARK + '\n' + lines.join('\n') : base;
     }
 
+    // the engine total is what actually gets charged; refuse to submit if
+    // it disagrees with the wizard's own math (a stale cached price would
+    // silently overcharge the member)
+    function totalGuard() {
+      if (!st.tier) return null;
+      var elT = root.querySelector('[id="total_amount"]');
+      if (!elT) return null;
+      function shown() { return parseFloat(String(elT.textContent).replace(/[^0-9.\-]/g, '')) || 0; }
+      var per = st.billing === 'annual' ? monthlyFor(st.tier) * 12 : monthlyFor(st.tier);
+      var want = applyDisc(per);
+      // a processing-fee offset gift may legitimately raise the total a
+      // few percent, so only a shortfall or a clear overshoot counts
+      function off() { var d = shown() - want; return d < -0.5 || d > Math.max(1, want * 0.06); }
+      if (!off()) return null;
+      refreshTotals();
+      if (!off()) return null;
+      if (window.console) console.warn('[sb-mw] blocked submit: engine total ' + shown() + ' vs expected ' + want);
+      return 'The payment total shown does not match your membership selection, so the form was not submitted. Please tap Back, re-select your membership level and billing choice, and try again.';
+    }
+
     // final submit: everything again, shown in the payment card's error bar
     document.addEventListener('submit', function (event) {
       if (event.target !== root) return;
       var bad = null;
       try { bad = validateScreen2(); } catch (e) { return; }
       if (!bad) {
-        errbar.classList.remove('sb-on');
-        try { stuffHebrewDates(); } catch (e) { }
+        var msg = null;
+        try { msg = totalGuard(); } catch (e) { }
+        if (!msg) {
+          errbar.classList.remove('sb-on');
+          try { stuffHebrewDates(); } catch (e) { }
+          return;
+        }
+        event.preventDefault();
+        event.stopPropagation();
+        errbar.textContent = msg;
+        errbar.classList.add('sb-on');
         return;
       }
       event.preventDefault();
