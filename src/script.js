@@ -883,6 +883,62 @@
      src/register-autofill.js (ships in the HEADER block: the footer
      code box refuses to save past ~63KB url-encoded) */
 
+  /* ---------------- donate page: "Donate via" payment-app buttons ---------------- */
+  /* The donate admin strips <a>/<img> from the intro text, and the old
+     logo.clearbit.com API is gone (domain no longer resolves) — so the
+     icons live in the repo (assets/pay/*.svg, pinned via jsDelivr like
+     every other asset) and get injected here. If the intro text already
+     carries a "Donate via:" line, the row hangs right after it;
+     otherwise the block (label + row) is added under the intro. */
+
+  function initDonatePayVia() {
+    var wrap = document.getElementById('donate-wrapper');
+    if (!wrap || wrap.querySelector('.sb-payvia')) return;
+    var APPS = [
+      { name: 'Zelle',    file: 'zelle',   href: 'https://chabadsobe.com/zelle' },
+      { name: 'PayPal',   file: 'paypal',  href: 'https://paypal.me/chabadsofi' },
+      { name: 'Venmo',    file: 'venmo',   href: 'https://venmo.com/u/ChabadofSouthBeach' },
+      { name: 'Cash App', file: 'cashapp', href: 'https://cash.app/$chabadsobe' }
+    ];
+    var base = 'https://cdn.jsdelivr.net/gh/rabbikraz/chabad-web-design@' +
+               (window.SB_ASSET_V || 'redesign') + '/assets/pay/';
+    var row = document.createElement('span');
+    row.className = 'sb-payvia';
+    APPS.forEach(function (app) {
+      var a = document.createElement('a');
+      a.href = app.href;
+      a.target = '_blank';
+      a.rel = 'noopener';
+      a.title = 'Donate with ' + app.name;
+      a.setAttribute('aria-label', 'Donate with ' + app.name);
+      var img = document.createElement('img');
+      img.src = base + app.file + '.svg';
+      img.alt = app.name;
+      a.appendChild(img);
+      row.appendChild(a);
+    });
+    var intro = wrap.querySelector('.intro-wrapper') || wrap.querySelector('main') || wrap;
+    // deepest element whose own line ends with "Donate via:" (the CMS
+    // nests/flattens <p> unpredictably, so hunt by text, not structure)
+    var matches = $all('*', intro).filter(function (el) {
+      return /donate\s+via:?\s*$/i.test((el.textContent || '').trim());
+    });
+    var host = null;
+    matches.forEach(function (el) {
+      var hasInner = matches.some(function (m) { return m !== el && el.contains(m); });
+      if (!hasInner) host = el;
+    });
+    if (host) {
+      host.insertAdjacentElement('afterend', row);
+    } else {
+      var label = document.createElement('span');
+      label.className = 'sb-payvia-label';
+      label.textContent = 'All donations are tax-deductible, 501(c)(3). Donate via:';
+      intro.appendChild(label);
+      intro.appendChild(row);
+    }
+  }
+
   /* ---------------- sponsorship tiers (event registration pages) ---------------- */
 
   function initSponsorTiers() {
@@ -2306,6 +2362,7 @@
     safe('feedback-bar', relocateFeedbackBar);
     safe('event-hero', buildEventHero);
     safe('sponsor-tiers', initSponsorTiers);
+    safe('donate-payvia', initDonatePayVia);
     safe('hh-seats', initHHSeats);
     safe('membership-builder', initMembershipBuilder);
   }

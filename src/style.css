@@ -2940,6 +2940,35 @@ div#confirm-wrapper::after { content: none !important; display: none !important;
 }
 #donate-wrapper .intro-wrapper p.description p { margin: 0 0 6px; }
 
+/* "Donate via" payment-app buttons (row injected by script.js;
+   icons = assets/pay/*.svg in the repo, served pinned via jsDelivr) */
+#donate-wrapper .sb-payvia {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin: 12px auto 4px;
+}
+#donate-wrapper .sb-payvia a {
+  display: block;
+  width: 42px;
+  height: 42px;
+  border-radius: 11px;
+  box-shadow: 0 2px 6px rgba(23, 35, 46, .18);
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+#donate-wrapper .sb-payvia a:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 12px rgba(23, 35, 46, .28);
+}
+#donate-wrapper .sb-payvia img { display: block; width: 100%; height: 100%; }
+#donate-wrapper .sb-payvia-label {
+  display: block;
+  margin-top: 14px;
+  font-family: var(--sb-font-body);
+  font-size: 15px;
+  color: rgba(23, 35, 46, .75);
+}
+
 /* amount pills — match the sponsorship tier buttons */
 #donate-wrapper main .amounts button {
   background-color: #fff;
