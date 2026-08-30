@@ -921,26 +921,39 @@
       a.appendChild(img);
       row.appendChild(a);
     });
-    var intro = wrap.querySelector('.intro-wrapper') || wrap.querySelector('main') || wrap;
-    // deepest element whose own line ends with "Donate via:" (the CMS
-    // nests/flattens <p> unpredictably, so hunt by text, not structure)
-    var matches = $all('*', intro).filter(function (el) {
-      return /donate\s+via:?\s*$/i.test((el.textContent || '').trim());
-    });
-    var host = null;
-    matches.forEach(function (el) {
-      var hasInner = matches.some(function (m) { return m !== el && el.contains(m); });
-      if (!hasInner) host = el;
-    });
-    if (host) {
-      host.insertAdjacentElement('afterend', row);
-    } else {
-      var label = document.createElement('span');
-      label.className = 'sb-payvia-label';
-      label.textContent = 'All donations are tax-deductible, 501(c)(3). Donate via:';
-      intro.appendChild(label);
-      intro.appendChild(row);
+    // the block lives at the BOTTOM of the donate card (below the form,
+    // so it shows on both the amounts and details screens); the intro
+    // keeps only the tax-deductible line
+    var intro = wrap.querySelector('.intro-wrapper');
+    if (intro) {
+      // drop a now-dangling trailing "Donate via:" text line (plus the
+      // <br> before it) left over in the CMS intro message
+      var matches = $all('*', intro).filter(function (el) {
+        return /donate\s+via:?\s*$/i.test((el.textContent || '').trim());
+      });
+      matches.forEach(function (el) {
+        var kids = Array.prototype.slice.call(el.childNodes);
+        for (var i = kids.length - 1; i >= 0; i--) {
+          var n = kids[i];
+          if (n.nodeType === 3 && /^\s*$/.test(n.nodeValue)) { el.removeChild(n); continue; }
+          if (n.nodeType === 3 && /^\s*donate\s+via:?\s*$/i.test(n.nodeValue)) {
+            el.removeChild(n);
+            var prev = el.lastElementChild;
+            if (prev && prev.tagName === 'BR') el.removeChild(prev);
+          }
+          break;
+        }
+      });
     }
+    var box = document.createElement('div');
+    box.className = 'sb-payvia-box';
+    var label = document.createElement('span');
+    label.className = 'sb-payvia-label';
+    label.textContent = 'More ways to donate';
+    box.appendChild(label);
+    box.appendChild(row);
+    var main = wrap.querySelector('main.donate-content') || wrap;
+    main.appendChild(box);
 
     // Zelle has no profile links - bank apps need the enrolled address,
     // so show it under the icons with tap-to-copy.
@@ -973,7 +986,7 @@
       } catch (e) { done(); }
     });
     note.appendChild(copyBtn);
-    row.insertAdjacentElement('afterend', note);
+    box.appendChild(note);
   }
 
   /* ---------------- sponsorship tiers (event registration pages) ---------------- */
