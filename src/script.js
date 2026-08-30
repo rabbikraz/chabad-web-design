@@ -897,7 +897,11 @@
     var APPS = [
       { name: 'Zelle',    file: 'zelle',   href: 'https://chabadsobe.com/zelle' },
       { name: 'PayPal',   file: 'paypal',  href: 'https://paypal.me/chabadsofi' },
-      { name: 'Venmo',    file: 'venmo',   href: 'https://venmo.com/u/ChabadofSouthBeach' },
+      /* business profiles fail the app's /u/ name-search deep link
+         ("can't find this person") — use the QR-style user_id link that
+         Venmo's own al:ios/android metadata advertises; web redirects it
+         to the profile page (verified 2026-08-30) */
+      { name: 'Venmo',    file: 'venmo',   href: 'https://account.venmo.com/code?user_id=3667332215866766364' },
       { name: 'Cash App', file: 'cashapp', href: 'https://cash.app/$chabadsobe' }
     ];
     var base = 'https://cdn.jsdelivr.net/gh/rabbikraz/chabad-web-design@' +
@@ -937,6 +941,39 @@
       intro.appendChild(label);
       intro.appendChild(row);
     }
+
+    // Zelle has no profile links - bank apps need the enrolled address,
+    // so show it under the icons with tap-to-copy.
+    var ZELLE_ADDR = 'rabbimann@gmail.com';
+    var note = document.createElement('span');
+    note.className = 'sb-payvia-note';
+    note.appendChild(document.createTextNode('Zelle: '));
+    var copyBtn = document.createElement('button');
+    copyBtn.type = 'button';
+    copyBtn.className = 'sb-payvia-copy';
+    copyBtn.textContent = ZELLE_ADDR;
+    copyBtn.title = 'Copy Zelle address';
+    copyBtn.addEventListener('click', function () {
+      var done = function () {
+        copyBtn.textContent = 'Copied!';
+        setTimeout(function () { copyBtn.textContent = ZELLE_ADDR; }, 1600);
+      };
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(ZELLE_ADDR).then(done, done);
+        } else {
+          var tmp = document.createElement('textarea');
+          tmp.value = ZELLE_ADDR;
+          document.body.appendChild(tmp);
+          tmp.select();
+          document.execCommand('copy');
+          document.body.removeChild(tmp);
+          done();
+        }
+      } catch (e) { done(); }
+    });
+    note.appendChild(copyBtn);
+    row.insertAdjacentElement('afterend', note);
   }
 
   /* ---------------- sponsorship tiers (event registration pages) ---------------- */
