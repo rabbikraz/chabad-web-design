@@ -1615,7 +1615,10 @@ body.cco_body:not(.sb-js) .widget-4.candlelighting .widget_header h5 { font-size
 .sb-time-big { font-family: var(--sb-font-heading); font-size: clamp(30px, 3vw, 42px); line-height: 1; color: var(--sb-bg); white-space: nowrap; }
 .sb-time-big small { font-size: .55em; margin-left: 6px; }
 .sb-time-label { font-size: 16.5px; color: rgba(251, 245, 233, .78); }
-body.cco_body .sb-shabbat-col h3 { font-size: clamp(28px, 3vw, 42px); margin: 0 0 12px; color: var(--sb-bg); }
+/* line-height must be explicit: the CMS theme sets fixed-px h3 line
+   heights, which overlap when a long parshah name (Nitzavim-Vayelech)
+   wraps to two lines */
+body.cco_body .sb-shabbat-col h3 { font-size: clamp(28px, 3vw, 42px); line-height: 1.15 !important; margin: 0 0 12px; color: var(--sb-bg); }
 body.cco_body .sb-shabbat-col h3 a { color: inherit; }
 .sb-shabbat-col p { font-size: 17px; line-height: 1.55; margin: 0 0 16px; color: rgba(251, 245, 233, .82); }
 .sb-shabbat-col .sb-link-caps { color: var(--sb-accent-300) !important; }
