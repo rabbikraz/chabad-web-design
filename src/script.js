@@ -926,21 +926,33 @@
     // keeps only the tax-deductible line
     var intro = wrap.querySelector('.intro-wrapper');
     if (intro) {
-      // drop a now-dangling trailing "Donate via:" text line (plus the
-      // <br> before it) left over in the CMS intro message
-      var matches = $all('*', intro).filter(function (el) {
-        return /donate\s+via:?\s*$/i.test((el.textContent || '').trim());
+      // the CMS intro message may still carry the original paste: dead
+      // logo.clearbit.com <img>s (render as broken-image icons on mobile)
+      // and a "Donate via:" line that now has nothing under it — remove
+      // both, then trim leftover trailing <br>s/whitespace
+      var dirty = [];
+      $all('img', intro).forEach(function (im) {
+        if (!/logo\.clearbit\.com/i.test(im.getAttribute('src') || '')) return;
+        var node = im;
+        while (node.parentNode && node.parentNode !== intro &&
+               node.parentNode.tagName === 'A') node = node.parentNode;
+        var p = node.parentNode;
+        if (p) {
+          p.removeChild(node);
+          if (dirty.indexOf(p) < 0) dirty.push(p);
+        }
       });
-      matches.forEach(function (el) {
-        var kids = Array.prototype.slice.call(el.childNodes);
-        for (var i = kids.length - 1; i >= 0; i--) {
-          var n = kids[i];
+      $all('*', intro).forEach(function (el) {
+        if (/donate\s+via:?\s*$/i.test((el.textContent || '').trim()) &&
+            dirty.indexOf(el) < 0) dirty.push(el);
+      });
+      dirty.forEach(function (el) {
+        for (;;) {
+          var n = el.lastChild;
+          if (!n) break;
           if (n.nodeType === 3 && /^\s*$/.test(n.nodeValue)) { el.removeChild(n); continue; }
-          if (n.nodeType === 3 && /^\s*donate\s+via:?\s*$/i.test(n.nodeValue)) {
-            el.removeChild(n);
-            var prev = el.lastElementChild;
-            if (prev && prev.tagName === 'BR') el.removeChild(prev);
-          }
+          if (n.nodeType === 1 && n.tagName === 'BR') { el.removeChild(n); continue; }
+          if (n.nodeType === 3 && /^\s*donate\s+via:?\s*$/i.test(n.nodeValue)) { el.removeChild(n); continue; }
           break;
         }
       });
