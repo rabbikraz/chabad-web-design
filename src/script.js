@@ -896,14 +896,32 @@
     if (!wrap || wrap.querySelector('.sb-payvia')) return;
     var APPS = [
       { name: 'Zelle',    file: 'zelle',   href: 'https://chabadsobe.com/zelle' },
-      { name: 'PayPal',   file: 'paypal',  href: 'https://paypal.me/chabadsofi' },
+      { name: 'PayPal',   file: 'paypal',  href: 'https://paypal.me/chabadsofi',
+        pkg: 'com.paypal.android.p2pmobile' },
       /* business profiles fail the app's /u/ name-search deep link
          ("can't find this person") — use the QR-style user_id link that
          Venmo's own al:ios/android metadata advertises; web redirects it
          to the profile page (verified 2026-08-30) */
-      { name: 'Venmo',    file: 'venmo',   href: 'https://account.venmo.com/code?user_id=3667332215866766364' },
-      { name: 'Cash App', file: 'cashapp', href: 'https://cash.app/$chabadsobe' }
+      { name: 'Venmo',    file: 'venmo',   href: 'https://account.venmo.com/code?user_id=3667332215866766364',
+        pkg: 'com.venmo' },
+      { name: 'Cash App', file: 'cashapp', href: 'https://cash.app/$chabadsobe',
+        pkg: 'com.squareup.cash' }
     ];
+    /* open the installed app instead of the website on phones:
+       - Android Chromium (Chrome/Brave/Edge/Samsung): intent:// URL names
+         the app package and carries a web fallback for when it's absent
+       - iOS: https universal links already do app-or-website natively,
+         but only on a plain same-tab tap - so no target=_blank there
+       Zelle has no pkg: it lives inside bank apps, link stays as-is. */
+    var ua = navigator.userAgent || '';
+    var isAndroid = /android/i.test(ua);
+    var isIOS = /iphone|ipad|ipod/i.test(ua);
+    var isChromium = /chrome|crios|crmo|edga|samsungbrowser/i.test(ua) || !!window.chrome;
+    function intentUrl(httpsUrl, pkg) {
+      return 'intent://' + httpsUrl.replace(/^https:\/\//i, '') +
+        '#Intent;scheme=https;package=' + pkg +
+        ';S.browser_fallback_url=' + encodeURIComponent(httpsUrl) + ';end';
+    }
     var base = 'https://cdn.jsdelivr.net/gh/rabbikraz/chabad-web-design@' +
                (window.SB_ASSET_V || 'redesign') + '/assets/pay/';
     var row = document.createElement('span');
@@ -911,7 +929,11 @@
     APPS.forEach(function (app) {
       var a = document.createElement('a');
       a.href = app.href;
-      a.target = '_blank';
+      if (app.pkg && isAndroid && isChromium) {
+        a.href = intentUrl(app.href, app.pkg);
+      } else if (!(app.pkg && isIOS)) {
+        a.target = '_blank';
+      }
       a.rel = 'noopener';
       a.title = 'Donate with ' + app.name;
       a.setAttribute('aria-label', 'Donate with ' + app.name);
