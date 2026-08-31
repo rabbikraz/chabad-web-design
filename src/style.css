@@ -3162,6 +3162,13 @@ div#confirm-wrapper::after { content: none !important; display: none !important;
   box-sizing: border-box;
 }
 
+/* the donate app's main.css hides the whole intro text below 1000px
+   (display:none) — bring the tax-deductible line back on phones.
+   Scoped to screen-1 so its separate screen-2 hide stays in effect. */
+@media (max-width: 1000px) {
+  #donate-wrapper #donate.screen-1 .intro-wrapper p.description { display: block !important; }
+}
+
 /* donate on phones: tighter card, calmer type */
 @media (max-width: 700px) {
   /* the theme's .co_body flex layout sizes the column shrink-to-fit, which
