@@ -3150,6 +3150,9 @@ div#confirm-wrapper::after { content: none !important; display: none !important;
 #donate-wrapper main form .content-box .row.pay-with { font-family: var(--sb-font-body); color: var(--sb-text); }
 #donate-wrapper main form .content-box .row.pay-with label:has(input:checked) { --current-tab-color: var(--sb-teal-700); }
 #donate-wrapper .footnotes a { color: var(--sb-teal-700); }
+/* the app's main.css appends a "." after the disclaimer via ::after —
+   it wraps to an orphan line on phones (long email address) */
+#donate-wrapper .footnotes .disclaimer::after { content: none; }
 #donate-wrapper .footnotes .disclaimer { color: rgba(23, 35, 46, .75); }
 #donate-wrapper .footnotes .note { color: rgba(23, 35, 46, .6); }
 
