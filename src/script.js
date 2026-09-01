@@ -991,7 +991,7 @@
 
     // Zelle has no profile links - bank apps need the enrolled address,
     // so show it under the icons with tap-to-copy.
-    var ZELLE_ADDR = 'rabbimann@gmail.com';
+    var ZELLE_ADDR = 'chabadsobe';
     var note = document.createElement('span');
     note.className = 'sb-payvia-note';
     note.appendChild(document.createTextNode('Zelle: '));

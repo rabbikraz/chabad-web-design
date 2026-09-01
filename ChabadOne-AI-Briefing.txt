@@ -1,0 +1,242 @@
+BRIEFING: WORKING ON A CHABADONE (CHABAD.ORG) WEBSITE
+======================================================
+
+How to use this file: paste the whole thing as the first message in a new
+chat with your AI assistant, then describe your specific problem underneath
+it (start with the form you want fixed).
+
+
+1. WHAT YOU ARE WORKING WITH
+----------------------------
+ChabadOne is chabad.org's hosted CMS for Chabad centers. There is NO server
+access: no FTP, no templates you can edit, no build pipeline, no database.
+The platform cannot be replaced or self-hosted. Everything you do goes
+through a small set of injection points:
+
+- Page content: the article editor (each page is an "article") and the form
+  builder for form pages. You can paste custom HTML into a page body.
+- Two site-wide admin code boxes, usually called Custom Header Code and
+  Custom Footer Code. Whatever is saved there is injected into every page on
+  the site. This is where site-wide CSS and JavaScript live.
+- Form Settings: each form has a settings area including the response /
+  receipt-email message, which accepts HTML.
+- Site settings: logo, default social-share image, menus, page titles.
+
+Everything else on the page (the theme stylesheets, jQuery, the CMS's own
+scripts) is served by chabad.org and is out of your control. You work
+AROUND it, mostly with CSS overrides and small scripts.
+
+
+2. THE WORKING MODEL: YOU AND THE HUMAN
+---------------------------------------
+You cannot log into the admin, and the live site sits behind Cloudflare,
+which blocks automated fetches, so assume you CANNOT reliably fetch live
+pages yourself. The human is your browser and your hands. Establish this
+loop and keep to it:
+
+1. You produce a complete, paste-ready block of code and say exactly where
+   it goes.
+2. The human pastes it, saves, publishes, and reports back.
+3. To see the result, ask the human for: the page's full view-source
+   (Ctrl+U, select all, copy, paste to you), a screenshot, and the exact
+   text of any error.
+
+NEVER GUESS WHAT THE LIVE MARKUP LOOKS LIKE. Before writing any CSS or JS
+against a page, ask for its Ctrl+U source. The CMS generates markup you
+would never predict (tables for layout, inputs with no type attribute,
+scripts that rewrite the DOM after load), and code written against imagined
+markup fails silently.
+
+Assume the human is not a developer. Give one action at a time, with exact
+click paths where you know them; where you don't know the admin's menu
+names, describe what to look for and ask them to report what they see.
+Always tell them how to undo the step you just gave them.
+
+
+3. SET UP A LOCAL PROJECT FIRST
+-------------------------------
+Before pasting anything into the CMS, have the human (or you, if you can
+run commands on their machine) create a local folder that is a git
+repository. Every paste block should exist as a committed file BEFORE it
+goes into the admin, so any change can be rolled back by re-pasting an
+earlier version. A sensible structure:
+
+- src/style.css and src/script.js: the readable source for the site-wide
+  code boxes.
+- forms/: one file per custom page or form paste.
+- dist/: the exact text that gets pasted (minified if needed).
+- snapshots/: saved copies of live view-source and of the code boxes'
+  current contents, dated.
+
+A GitHub repo is optional at the start, but becomes necessary if the code
+outgrows the boxes (see the CDN section). Commit after every verified
+change with a message saying what it fixed.
+
+FIRST SAFETY STEP, before touching anything: have the human copy the
+current contents of both code boxes and the form's current settings to you,
+and save them as snapshot files. Existing contents (analytics tags, prior
+customizations) must be preserved: append your code below what's there;
+never replace a box wholesale.
+
+
+4. HEADER BOX VS FOOTER BOX
+---------------------------
+- Header box: CSS, inside a <style> tag, so styles apply before the page
+  paints. Small configuration scripts (plain data assignments) are fine
+  here too. This box tolerates large payloads (100K+ characters).
+- Footer box: JavaScript, inside a <script> tag, so the DOM exists when it
+  runs. Still wrap logic in a DOM-ready check. This box has a much smaller
+  size limit (see traps).
+
+Write footer JS defensively: feature-check before using anything, wrap
+independent features in their own try/catch so one failure doesn't kill the
+rest, and make every function idempotent (safe to run twice), because the
+CMS sometimes re-runs or re-renders things.
+
+
+5. PLATFORM TRAPS
+-----------------
+These were all learned the hard way on a real ChabadOne site. Treat each as
+a rule, not a suggestion.
+
+TRAP: ENTITIES DECODED ON SAVE
+The admin decodes HTML entities inside the code boxes when it saves. A
+literal &#39; or &amp; in your JavaScript turns into the raw character and
+can syntax-error the entire script. Never put HTML entities in pasted
+script or style blocks; if you need such a character as a string, build it
+with String.fromCharCode(...).
+
+TRAP: FOOTER SIZE LIMIT
+Saving the footer box fails with a generic "Database Error" page when the
+payload gets large: roughly 50,000 characters, and the real ceiling tracks
+the URL-encoded size (~63K encoded). Minify anything sizable. If you keep
+hitting the ceiling, move CSS/JS to external hosting; ChabadOne's own
+support recommends this.
+
+TRAP: PAGE CACHE ~3 DAYS
+Rendered pages are cached for about three days (look for a BEGIN CACHE
+comment banner in view-source with created/expires timestamps). After any
+change, verify with a cache-busting query string like ?x=1, incrementing
+the number each check. Never conclude "the paste didn't work" from a
+possibly-cached page.
+
+TRAP: FORM EDITOR STRIPS INPUTS
+When custom HTML is pasted into a form page, the editor strips <input>
+elements that aren't in a simple one-label-one-input structure. Every input
+gets its own label element; put two fields side by side with a wrapper div
+holding two labels. Never nest multiple inputs inside one label.
+
+TRAP: THE CMS OWNS THE <form>
+On a form page, the CMS wraps your pasted content in its own <form> and
+appends its own Submit (and sometimes Reset) buttons. Don't add your own
+form tag or submit button; style and script the ones the CMS provides.
+
+TRAP: x_* FIELDS FEED THE PAYMENT GATEWAY
+In custom form pastes, field names starting with x_ (x_amount, x_card_num,
+x_first_name, x_email, ...) are read by the payment processor. Every other
+named field simply lands as a row in the notification email and receipt:
+the field's name/label becomes the row label, and EMPTY FIELDS ARE OMITTED
+(useful: a blank first option on a dropdown means unanswered questions
+produce no junk rows).
+
+TRAP: RECEIPT HTML MUST BE ONE LINE
+The Form Settings response/receipt message accepts HTML but must contain NO
+line breaks: flatten it to a single line. It supports server tokens:
+<fieldlist> containing <fieldname /> and <fieldvalue /> (that row template
+repeats once per non-empty submitted field).
+
+TRAP: THEME CSS HAS INFLATED SPECIFICITY
+The platform's stylesheets fight back: hard-coded widths, !important
+everywhere, and chabad.org's newer form theme nests all its rules under an
+html:has(...):not(:has(...)) parent that gives every rule ID-level
+specificity. To beat it, prefix your own selectors with a harmless
+html:not(#x) (which adds ID-level weight) and expect to need !important on
+contested properties. When a style "doesn't apply," check computed styles
+for what beat it before escalating.
+
+TRAP: INPUTS WITH NO TYPE ATTRIBUTE
+Some CMS scripts emit <input> with no type attribute. A selector like
+input[type="text"] misses them; include input:not([type]) wherever you
+target text inputs.
+
+TRAP: MARKUP BUILT BY JAVASCRIPT
+Parts of form pages (attendee rows, pickers) are rendered at runtime from
+templates inside the CMS's own JS files; they aren't in view-source. If
+styling something that appears only after interaction, ask the human for a
+screenshot plus a right-click > Inspect > copy-outerHTML of that element,
+or fetch the CMS script that builds it.
+
+TRAP: RICH-TEXT EDITORS STRIP ATTRIBUTES
+The "advanced" (CKEditor) content editor strips custom attributes and
+restructures pasted markup on save. Before building on any pasted page,
+have the human save it, reload, and send fresh view-source: verify your
+markup survived the round-trip.
+
+
+6. VERIFICATION DISCIPLINE
+--------------------------
+Never report something as fixed until it is confirmed on the live site:
+cache-busted URL, fresh view-source showing your code intact, and a
+screenshot. For anything touching payment: run one zero-dollar/free
+submission and one small real charge, confirm both the notification email
+and the receipt look right, then refund or cancel the test charge. If a
+paste saves but nothing changes, the order of suspects is: page cache, then
+the entity-decoding trap (a syntax error kills the whole script; have the
+human check the browser console via F12), then specificity.
+
+
+7. IF CODE OUTGROWS THE BOXES: GITHUB + CDN
+-------------------------------------------
+When the footer box hits its size limit, host the assets externally: push
+the repo to GitHub (public) and serve dist/site.css and dist/site.js
+through jsDelivr (https://cdn.jsdelivr.net/gh/USER/REPO@REF/dist/site.css).
+The code boxes then hold only a small <link> and <script src> and never
+change again.
+
+CRITICAL CAVEAT: pointing jsDelivr at a mutable branch name goes regionally
+stale for hours or days, even after using its purge API. Pin URLs to a
+specific commit sha instead (immutable, never stale), and update the sha on
+each deploy: either by re-pasting the tags, or with a tiny bootstrap script
+in the box that reads a version file from raw.githubusercontent.com (short
+cache, CORS-open) and loads the sha-pinned assets. Never trust a
+mutable-CDN purge; always verify which file the page actually loaded.
+
+
+8. THE FIRST TASK: FIXING ONE FORM
+----------------------------------
+1. Gather before touching anything. Ask the human for: the form page's URL;
+   its full Ctrl+U view-source pasted in; the current contents of both code
+   boxes; a screenshot of the form as it looks now; and a plain-language
+   description of what "fixed" means to them. Save all of it as snapshot
+   files and commit.
+2. Diagnose from the real markup only. Identify the form's id, the field
+   structure, which theme stylesheets the page loads, and whether the
+   problem is content (wrong fields/labels/prices), styling, or behavior.
+3. Prefer builder-native fixes. If the problem can be solved inside the
+   form builder itself (labels, required flags, option pricing, field
+   order, conditions), walk the human through doing that in the admin
+   before writing any custom code. Builder-native changes survive platform
+   updates; custom code is a liability to be spent deliberately.
+4. Styling fixes go in the header box as CSS scoped tightly to this form
+   (scope to the form's id or the page's body class so nothing leaks to
+   other pages), appended below the box's existing content, with the
+   specificity prefix from the traps section.
+5. Behavior fixes go in the footer box: DOM-ready, defensive, idempotent,
+   and scoped so the script exits immediately on pages where the form isn't
+   present.
+6. Deploy and verify: paste, publish, cache-bust, fresh view-source,
+   screenshot, and a real test submission if the form takes payment. Only
+   then call it done.
+7. Commit the working version with a message describing the fix.
+
+One fix at a time. Resist bundling several changes into one paste: when
+something breaks, a single-change paste tells you exactly what did it.
+
+
+---
+Distilled from months of hands-on ChabadOne work. Platform behavior can
+change; when the live site contradicts this guide, believe the live site.
+
+---
+MY SPECIFIC PROBLEM (filled in by me, the human):
+
