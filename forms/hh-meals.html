@@ -26,50 +26,55 @@
 #sb-hhm h3.hm-h { font-family: Georgia, 'Times New Roman', serif; font-weight: 700; font-size: 26px; line-height: 1.2; color: #F1E6D2; margin: 0 0 18px; text-transform: none; letter-spacing: 0; }
 #sb-hhm .hm-blurb { font-size: 15.5px; color: #E3CFB4; margin: -8px 0 18px; }
 #sb-hhm .hm-center { text-align: center; }
-#sb-hhm .hm-hide { display: none; }
+#sb-hhm .hm-hide { display: none !important; }
 #sb-hhm .hm-where-box { display: flex; flex-wrap: wrap; gap: 10px; margin: 0 0 18px; }
-#sb-hhm .hm-where { flex: 1 1 200px; background: rgba(0,0,0,0.14); border-radius: 12px; padding: 12px 16px; font-size: 14px; line-height: 1.5; color: #E3CFB4; }
-#sb-hhm .hm-where b { display: block; font-size: 11.5px; letter-spacing: 2px; text-transform: uppercase; color: #F1E6D2; margin: 0 0 3px; }
+#sb-hhm .hm-where { flex: 1 1 200px; background: #F1E6D2; border-radius: 12px; padding: 12px 16px; font-size: 14px; line-height: 1.5; color: #4A3A3F; }
+#sb-hhm .hm-where b { display: block; font-size: 11.5px; letter-spacing: 2px; text-transform: uppercase; color: #5D0A23; margin: 0 0 3px; }
 
 /* meal cards */
-#sb-hhm .hm-meal { border: 2px solid rgba(241,230,210,0.22); border-radius: 14px; margin: 0 0 14px; background: rgba(0,0,0,0.12); overflow: hidden; transition: border-color 160ms ease, background 160ms ease; }
-#sb-hhm .hm-meal.hm-on { border-color: #F1E6D2; background: rgba(241,230,210,0.07); }
-#sb-hhm .hm-meal.hm-featured { border-color: rgba(241,230,210,0.55); }
+#sb-hhm .hm-meal { border: 2px solid #E3CFB4; border-radius: 14px; margin: 0 0 14px; background: #F1E6D2; overflow: hidden; transition: border-color 160ms ease, background 160ms ease; }
+#sb-hhm .hm-meal.hm-on { border-color: #C08A2E; background: #FBF3E3; box-shadow: 0 0 0 1px #C08A2E; }
+#sb-hhm .hm-meal.hm-featured { border-color: #D9B76A; }
 #sb-hhm .hm-meal.hm-soldout { opacity: 0.55; }
 #sb-hhm .hm-meal-head { display: flex; align-items: center; gap: 16px; padding: 16px 18px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
 #sb-hhm .hm-soldout .hm-meal-head { cursor: default; }
 #sb-hhm .hm-meal-text { flex: 1; min-width: 0; }
-#sb-hhm .hm-badge { display: inline-block; background: #F1E6D2; color: #5D0A23; font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; border-radius: 999px; padding: 4px 11px; margin: 0 0 8px; }
-#sb-hhm .hm-meal-title { display: block; font-family: Georgia, 'Times New Roman', serif; font-size: 22px; line-height: 1.2; color: #F1E6D2; }
+#sb-hhm .hm-badge { display: inline-block; background: #5D0A23; color: #F1E6D2; font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; border-radius: 999px; padding: 4px 11px; margin: 0 0 8px; }
+#sb-hhm .hm-meal-title { display: block; font-family: Georgia, 'Times New Roman', serif; font-size: 22px; line-height: 1.2; color: #5D0A23; }
 #sb-hhm .hm-featured .hm-meal-title { font-size: 26px; }
-#sb-hhm .hm-meal-when { display: block; font-size: 15px; color: #E3CFB4; margin: 4px 0 0; }
-#sb-hhm .hm-meal-where { display: block; font-size: 13.5px; color: #C9A3AE; margin: 3px 0 0; }
-#sb-hhm .hm-meal-price { display: block; font-size: 13px; letter-spacing: 1px; text-transform: uppercase; color: #C9A3AE; margin: 6px 0 0; }
-#sb-hhm .hm-check { flex: none; width: 30px; height: 30px; border: 2px solid rgba(241,230,210,0.5); border-radius: 999px; position: relative; }
-#sb-hhm .hm-on .hm-check { background: #F1E6D2; border-color: #F1E6D2; }
-#sb-hhm .hm-on .hm-check:after { content: ''; position: absolute; left: 9px; top: 4px; width: 7px; height: 13px; border-right: 3px solid #5D0A23; border-bottom: 3px solid #5D0A23; transform: rotate(45deg); }
-#sb-hhm .hm-meal-body { display: none; padding: 4px 18px 16px; border-top: 1px solid rgba(241,230,210,0.14); }
+#sb-hhm .hm-meal-when { display: block; font-size: 15px; color: #3F2A2F; margin: 4px 0 0; }
+#sb-hhm .hm-meal-where { display: block; font-size: 13.5px; color: #6B5560; margin: 3px 0 0; }
+#sb-hhm .hm-meal-price { display: block; font-size: 13px; letter-spacing: 1px; text-transform: uppercase; color: #8A5F16; margin: 6px 0 0; }
+#sb-hhm .hm-check { flex: none; width: 30px; height: 30px; border: 2px solid #8A3A50; border-radius: 999px; position: relative; }
+#sb-hhm .hm-on .hm-check { background: #5D0A23; border-color: #5D0A23; }
+#sb-hhm .hm-on .hm-check:after { content: ''; position: absolute; left: 9px; top: 4px; width: 7px; height: 13px; border-right: 3px solid #F1E6D2; border-bottom: 3px solid #F1E6D2; transform: rotate(45deg); }
+#sb-hhm .hm-meal-body { display: none; padding: 4px 18px 16px; border-top: 1px solid rgba(93,10,35,0.18); }
 #sb-hhm .hm-on .hm-meal-body { display: block; }
-#sb-hhm .hm-tier { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 12px 0; border-bottom: 1px solid rgba(241,230,210,0.1); }
+#sb-hhm .hm-tier { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 12px 0; border-bottom: 1px solid rgba(93,10,35,0.12); }
 #sb-hhm .hm-tier:last-child { border-bottom: none; }
-#sb-hhm .hm-tier-name { display: block; font-size: 16.5px; font-weight: 700; color: #F1E6D2; }
-#sb-hhm .hm-tier-price { display: block; font-size: 14px; color: #C9A3AE; }
+#sb-hhm .hm-tier-name { display: block; font-size: 16.5px; font-weight: 700; color: #17232E; }
+#sb-hhm .hm-tier-price { display: block; font-size: 14px; color: #6B5560; }
 #sb-hhm .hm-qty { display: flex; align-items: center; gap: 10px; flex: none; }
-#sb-hhm button.hm-qbtn { width: 38px; height: 38px; border-radius: 999px; border: 2px solid rgba(241,230,210,0.5); background: transparent; color: #F1E6D2; font-size: 22px; line-height: 1; cursor: pointer; padding: 0; font-family: Arial, Helvetica, sans-serif; }
-#sb-hhm button.hm-qbtn:hover { background: rgba(241,230,210,0.12); }
-#sb-hhm .hm-qval { min-width: 26px; text-align: center; font-size: 18px; font-weight: 700; color: #F1E6D2; }
+#sb-hhm button.hm-qbtn { width: 38px; height: 38px; border-radius: 999px; border: 2px solid #5D0A23; background: transparent; color: #5D0A23; font-size: 22px; line-height: 1; cursor: pointer; padding: 0; font-family: Arial, Helvetica, sans-serif; }
+#sb-hhm button.hm-qbtn:hover { background: rgba(93,10,35,0.08); }
+#sb-hhm .hm-qval { min-width: 26px; text-align: center; font-size: 18px; font-weight: 700; color: #17232E; }
 #sb-hhm .hm-tiernote { font-size: 13.5px; color: #C9A3AE; margin: 8px 0 0; }
 
 /* collapsed Yom Kippur add-on */
 #sb-hhm .hm-more { margin: 22px 0 0; padding: 18px 0 0; border-top: 1px solid rgba(241,230,210,0.14); }
-#sb-hhm button.hm-more-btn { width: 100%; display: flex; align-items: center; gap: 12px; text-align: left; background: transparent; border: 1px dashed rgba(241,230,210,0.45); border-radius: 12px; padding: 12px 16px; color: #F1E6D2; cursor: pointer; font-family: Arial, Helvetica, sans-serif; }
-#sb-hhm button.hm-more-btn:hover { background: rgba(241,230,210,0.08); }
+#sb-hhm button.hm-more-btn { width: 100%; display: flex; align-items: center; gap: 12px; text-align: left; background: #F1E6D2; border: 1px dashed #8A3A50; border-radius: 12px; padding: 12px 16px; color: #5D0A23; cursor: pointer; font-family: Arial, Helvetica, sans-serif; }
+#sb-hhm button.hm-more-btn:hover { background: #E3CFB4; }
 #sb-hhm .hm-more-text { flex: 1; min-width: 0; }
-#sb-hhm .hm-more-title { display: block; font-size: 15px; font-weight: 700; color: #F1E6D2; }
-#sb-hhm .hm-more-sub { display: block; font-size: 13px; color: #C9A3AE; margin: 2px 0 0; }
-#sb-hhm .hm-more-act { flex: none; font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #F1E6D2; border: 1.5px solid rgba(241,230,210,0.6); border-radius: 999px; padding: 6px 12px; }
-#sb-hhm .hm-more.hm-open button.hm-more-btn { border-style: solid; border-color: rgba(241,230,210,0.25); }
+#sb-hhm .hm-more-title { display: block; font-size: 15px; font-weight: 700; color: #5D0A23; }
+#sb-hhm .hm-more-sub { display: block; font-size: 13px; color: #6B5560; margin: 2px 0 0; }
+#sb-hhm .hm-more-act { flex: none; font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #5D0A23; border: 1.5px solid #5D0A23; border-radius: 999px; padding: 6px 12px; }
+#sb-hhm .hm-more.hm-open button.hm-more-btn { border-style: solid; border-color: #C08A2E; }
 #sb-hhm .hm-meal.hm-meal-sm { margin: 12px 0 0; }
+#sb-hhm button.hm-allbtn { margin: 0 0 16px; }
+#sb-hhm .hm-meal.hm-all { border-color: #C08A2E; background: #FBF3E3; box-shadow: 0 0 0 1px #C08A2E; }
+#sb-hhm .hm-all .hm-meal-head { cursor: default; }
+#sb-hhm button.hm-back { width: 100%; margin: 14px 0 4px; padding: 11px 14px; background: transparent; border: 1.5px solid #5D0A23; border-radius: 10px; color: #5D0A23; font-size: 14px; font-weight: 700; cursor: pointer; font-family: Arial, Helvetica, sans-serif; }
+#sb-hhm button.hm-back:hover { background: rgba(93,10,35,0.08); }
 #sb-hhm .hm-meal-sm .hm-meal-title { font-size: 18px; }
 #sb-hhm .hm-meal-sm .hm-meal-head { padding: 13px 16px; }
 
@@ -158,6 +163,30 @@
       <div class="hm-where-box">
         <div class="hm-where"><b>Services &amp; New Year's Dinner</b>The Jewish Museum of Florida, 301 Washington Ave</div>
         <div class="hm-where"><b>All other meals</b>Chabad in South Beach, 320 Meridian Ave</div>
+      </div>
+
+      <button type="button" class="hm-more-btn hm-allbtn" id="hmAllBtn">
+        <span class="hm-more-text"><span class="hm-more-title">Coming to every Rosh Hashana meal?</span><span class="hm-more-sub">One click: the same headcount for all four meals (2 dinners + 2 lunches)</span></span>
+        <span class="hm-more-act">Select all</span>
+      </button>
+
+      <div class="hm-meal hm-all hm-on hm-hide" id="hmMeal0">
+        <div class="hm-meal-head">
+          <span class="hm-meal-text">
+            <span class="hm-badge">All Four Meals</span>
+            <span class="hm-meal-title">All Rosh Hashana Meals</span>
+            <span class="hm-meal-when">New Year&#39;s Dinner, Day One Lunch, Second Night Dinner, Day Two Lunch</span>
+            <span class="hm-meal-where">New Year&#39;s Dinner at the Jewish Museum; the other meals at Chabad, 320 Meridian Ave</span>
+            <span class="hm-meal-price" id="hmPrice0">$278 adult &#8226; $180 subsidized &#8226; $108 child, all meals included</span>
+          </span>
+          <span class="hm-check"></span>
+        </div>
+        <div class="hm-meal-body">
+          <div class="hm-tier"><span><span class="hm-tier-name">Adult</span><span class="hm-tier-price">$278 per person, all four meals</span></span><span class="hm-qty"><button type="button" class="hm-qbtn" data-qty="0A" data-delta="-1">&#8722;</button><span class="hm-qval" id="q0A">0</span><button type="button" class="hm-qbtn" data-qty="0A" data-delta="1">+</button></span></div>
+          <div class="hm-tier"><span><span class="hm-tier-name">Adult (Subsidized)</span><span class="hm-tier-price">$180 per person, all four meals</span></span><span class="hm-qty"><button type="button" class="hm-qbtn" data-qty="0S" data-delta="-1">&#8722;</button><span class="hm-qval" id="q0S">0</span><button type="button" class="hm-qbtn" data-qty="0S" data-delta="1">+</button></span></div>
+          <div class="hm-tier"><span><span class="hm-tier-name">Child</span><span class="hm-tier-price">$108 per child, all four meals</span></span><span class="hm-qty"><button type="button" class="hm-qbtn" data-qty="0C" data-delta="-1">&#8722;</button><span class="hm-qval" id="q0C">0</span><button type="button" class="hm-qbtn" data-qty="0C" data-delta="1">+</button></span></div>
+          <button type="button" class="hm-back" id="hmAllBack">Back to choosing individual meals</button>
+        </div>
       </div>
 
       <div id="hmRhMeals">
@@ -360,6 +389,7 @@
   var remaining = {};
   var eventOpen = { rh: true, yk: true };
   var ykShown = false;
+  var allMode = false;   // one headcount applied to every Rosh Hashana meal
   var discountCodes = [
     { code: 'FREEEE', type: 'percent',      value: 100 },
     { code: 'CHAI',   type: 'cap_per_head', value: 18  }
@@ -475,15 +505,40 @@
   });
 
   // ===== TOTALS =====
+  // In all-meals mode every Rosh Hashana meal is on and uses the shared counts (slot '0').
+  function isOn(slot) {
+    var m = mealBy(slot);
+    if (allMode && m && m.ev === 'rh') return eventOpen.rh;
+    return !!active[slot];
+  }
+  function cnt(slot, tier) {
+    var m = mealBy(slot);
+    if (allMode && m && m.ev === 'rh') return qty('0', tier);
+    return qty(slot, tier);
+  }
   function slotCost(slot) {
-    if (!active[slot]) return 0;
+    if (!isOn(slot)) return 0;
     var p = PRICE[mealBy(slot).kind];
-    return qty(slot, 'A') * p.A + qty(slot, 'S') * p.S + qty(slot, 'C') * p.C;
+    return cnt(slot, 'A') * p.A + cnt(slot, 'S') * p.S + cnt(slot, 'C') * p.C;
   }
   function slotHeads(slot) {
-    if (!active[slot]) return 0;
-    return qty(slot, 'A') + qty(slot, 'S') + qty(slot, 'C');
+    if (!isOn(slot)) return 0;
+    return cnt(slot, 'A') + cnt(slot, 'S') + cnt(slot, 'C');
   }
+  function setAllMode(on) {
+    allMode = !!on;
+    show($('hmMeal0'), allMode);
+    show($('hmRhMeals'), !allMode);
+    show($('hmAllBtn'), !allMode);
+    if (allMode) {
+      if (qty('0', 'A') + qty('0', 'S') + qty('0', 'C') === 0) setQty('0', 'A', 1);
+    } else {
+      setQty('0', 'A', 0); setQty('0', 'S', 0); setQty('0', 'C', 0);
+    }
+    updateTotals();
+  }
+  $('hmAllBtn').addEventListener('click', function (e) { e.preventDefault(); setAllMode(true); });
+  $('hmAllBack').addEventListener('click', function (e) { e.preventDefault(); setAllMode(false); });
   function eventCost(ev) { var g = 0, ms = mealsOf(ev); for (var i = 0; i < ms.length; i++) g += slotCost(ms[i].slot); return g; }
   function eventHeads(ev) { var h = 0, ms = mealsOf(ev); for (var i = 0; i < ms.length; i++) h += slotHeads(ms[i].slot); return h; }
   function partySize() {
@@ -512,9 +567,13 @@
   function updateTotals() {
     clearValidationError();
     var lines = '';
+    if (allMode && eventHeads('rh') > 0) {
+      lines += '<div class="hm-sumline"><span>All Rosh Hashana Meals \u00D7 ' + slotHeads('1') + '</span><span>$' + eventCost('rh') + '</span></div>';
+    }
     for (var i = 0; i < MEALS.length; i++) {
       var m = MEALS[i];
-      if (!active[m.slot]) continue;
+      if (allMode && m.ev === 'rh') continue;
+      if (!isOn(m.slot)) continue;
       var heads = slotHeads(m.slot);
       lines += '<div class="hm-sumline"><span>' + esc(m.name) + (heads ? ' \u00D7 ' + heads : '') + '</span><span>$' + slotCost(m.slot) + '</span></div>';
     }
@@ -616,6 +675,7 @@
             var rem = cap - (counts[key] || 0);
             remaining[ms[j].slot] = rem > 0 ? rem : 0;
             if (rem <= 0) {
+              if (ev === 'rh') { if (allMode) setAllMode(false); show($('hmAllBtn'), false); }
               soldOut[ms[j].slot] = true;
               active[ms[j].slot] = false;
               setQty(ms[j].slot, 'A', 0); setQty(ms[j].slot, 'S', 0); setQty(ms[j].slot, 'C', 0);
@@ -633,7 +693,7 @@
     var anyActive = false;
     for (var i = 0; i < MEALS.length; i++) {
       var m = MEALS[i];
-      if (!active[m.slot]) continue;
+      if (!isOn(m.slot)) continue;
       anyActive = true;
       var heads = slotHeads(m.slot);
       if (heads === 0) return 'Each selected meal needs at least 1 person (Adult, Subsidized or Child).';
@@ -671,8 +731,8 @@
     var grand = 0;
     for (var i = 0; i < ms.length; i++) {
       var m = ms[i];
-      var on = active[m.slot];
-      var a = on ? qty(m.slot, 'A') : 0, s = on ? qty(m.slot, 'S') : 0, c = on ? qty(m.slot, 'C') : 0;
+      var on = isOn(m.slot);
+      var a = on ? cnt(m.slot, 'A') : 0, s = on ? cnt(m.slot, 'S') : 0, c = on ? cnt(m.slot, 'C') : 0;
       meals.push({ id: 'slot' + (i + 1), label: m.label + ' ' + m.sub, date: m.date, kind: m.kind, isShabbat: m.isShabbat, adult: a, sub: s, child: c });
       if (m.kind === 'dinner') { dinnerA += a; dinnerS += s; dinnerC += c; }
       else { lunchA += a; lunchS += s; lunchC += c; }
@@ -803,6 +863,9 @@
       setQty(ms[i].slot, 'A', 0); setQty(ms[i].slot, 'S', 0); setQty(ms[i].slot, 'C', 0);
       paintMeal(ms[i].slot);
     }
+    if (allMode) setAllMode(false);
+    show($('hmAllBtn'), false);
+    show($('hmMeal0'), false);
     show($('hmRhMeals'), false);
     $('hmCutoff').innerHTML = html;
     show($('hmCutoff'), true);

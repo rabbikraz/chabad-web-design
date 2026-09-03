@@ -1,61 +1,34 @@
-<!-- High Holidays landing page (the email, as a web page). Fully self-contained
-     paste: every style inline, pure ASCII, no CSS custom properties. The first
-     line flags the page for the burgundy header/footer theme in site.css.
-     Meals link goes to /hhmeals (set that alias on the Rosh Hashana meals page). -->
+<!-- High Holidays landing page: fully self-contained paste (every style
+     is inline; needs NOTHING from the header/footer code boxes). Burgundy/cream
+     palette of the High Holidays email; the first line flags the page for the
+     site theme (header/footer/title).
+     Responsive without media queries: the flex-wrap row with flex-basis
+     260px cards gives 3-across on desktop and a single column on phones. -->
 <script>document.documentElement.className += ' sb-hh';</script>
-<div style="max-width:660px;margin:0 auto;font-family:Arial,Helvetica,sans-serif;color:#F1E6D2;text-align:center;">
-
-    <p style="font-size:14px;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:#F1E6D2;margin:0 0 12px;">At the Jewish Museum</p>
-    <p style="font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:21px;line-height:1.5;color:#E3CFB4;margin:0 auto 30px;max-width:520px;">There is no charge to attend &#8212; and no one is ever turned away.</p>
-
-    <div style="display:flex;flex-wrap:wrap;gap:14px;margin:0 0 30px;">
-        <div style="flex:1 1 220px;background:#660E29;border:1px solid rgba(241,230,210,0.16);border-radius:16px;padding:22px 18px;">
-            <div style="font-size:19px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#F1E6D2;">Rosh Hashana</div>
-            <div style="font-size:16px;letter-spacing:2px;text-transform:uppercase;color:#E3CFB4;margin:6px 0 0;">September 11&#8211;13</div>
-        </div>
-        <div style="flex:1 1 220px;background:#660E29;border:1px solid rgba(241,230,210,0.16);border-radius:16px;padding:22px 18px;">
-            <div style="font-size:19px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#F1E6D2;">Yom Kippur</div>
-            <div style="font-size:16px;letter-spacing:2px;text-transform:uppercase;color:#E3CFB4;margin:6px 0 0;">September 20&#8211;21</div>
-        </div>
+<div style="max-width:1040px;margin:0 auto;font-family:Arial,Helvetica,sans-serif;">
+    <p style="text-align:center;font-size:18px;line-height:1.6;color:#E3CFB4;max-width:640px;margin:4px auto 32px;">Everything you need for the High Holidays with Chabad in South Beach. Everyone is welcome.</p>
+    <a href="https://maps.google.com/?q=301+Washington+Ave+Miami+Beach+FL+33139" style="display:block;background:#4A0719;border:1px solid rgba(241,230,210,0.16);border-radius:16px;box-shadow:0 10px 28px rgba(0,0,0,0.18);padding:20px 26px;margin:0 0 26px;text-align:center;text-decoration:none;">
+        <span style="display:block;font-family:Georgia,&#39;Times New Roman&#39;,serif;font-size:19px;line-height:1.35;color:#F1E6D2;margin:0 0 4px;">All High Holiday services take place at The Jewish Museum of Florida</span>
+        <span style="display:block;font-size:14.5px;color:#E3CFB4;">301 Washington Ave, Miami Beach &#183; Get directions &#8599;</span>
+    </a>
+    <div style="display:flex;flex-wrap:wrap;gap:22px;align-items:stretch;">
+        <a href="/hhmeals" style="flex:1 1 260px;min-width:250px;display:flex;flex-direction:column;background:#660E29;border:1px solid rgba(241,230,210,0.16);border-top:3px solid #E3CFB4;border-radius:18px;box-shadow:0 10px 28px rgba(0,0,0,0.18);padding:26px 26px 28px;text-decoration:none;color:#F1E6D2;">
+            <span style="display:block;font-size:12px;letter-spacing:0.18em;text-transform:uppercase;font-weight:700;color:#C9A3AE;margin:0 0 10px;">Dining</span>
+            <span style="display:block;font-family:Georgia,'Times New Roman',serif;font-size:24px;line-height:1.25;color:#F1E6D2;margin:0 0 10px;">Holiday Meals</span>
+            <span style="display:block;font-size:15.5px;line-height:1.6;color:#E3CFB4;flex:1;margin:0 0 20px;">Celebrate around the table. Reserve your place at our festive Rosh Hashanah dinners and holiday meals.</span>
+            <span style="align-self:flex-start;background:#F1E6D2;color:#5D0A23;border-radius:999px;padding:10px 24px;font-size:15px;font-weight:600;">Reserve meals</span>
+        </a>
+        <a href="/7442141" style="flex:1 1 260px;min-width:250px;display:flex;flex-direction:column;background:#660E29;border:1px solid rgba(241,230,210,0.16);border-top:3px solid #E3CFB4;border-radius:18px;box-shadow:0 10px 28px rgba(0,0,0,0.18);padding:26px 26px 28px;text-decoration:none;color:#F1E6D2;">
+            <span style="display:block;font-size:12px;letter-spacing:0.18em;text-transform:uppercase;font-weight:700;color:#C9A3AE;margin:0 0 10px;">Services</span>
+            <span style="display:block;font-family:Georgia,'Times New Roman',serif;font-size:24px;line-height:1.25;color:#F1E6D2;margin:0 0 10px;">Reserve Your Seats</span>
+            <span style="display:block;font-size:15.5px;line-height:1.6;color:#E3CFB4;flex:1;margin:0 0 20px;">Join us for Rosh Hashanah and Yom Kippur services. There is no charge to attend, and no one is ever turned away.</span>
+            <span style="align-self:flex-start;background:#F1E6D2;color:#5D0A23;border-radius:999px;padding:10px 24px;font-size:15px;font-weight:600;">Reserve seats</span>
+        </a>
+        <a href="/7472654" style="flex:1 1 260px;min-width:250px;display:flex;flex-direction:column;background:#660E29;border:1px solid rgba(241,230,210,0.16);border-top:3px solid #E3CFB4;border-radius:18px;box-shadow:0 10px 28px rgba(0,0,0,0.18);padding:26px 26px 28px;text-decoration:none;color:#F1E6D2;">
+            <span style="display:block;font-size:12px;letter-spacing:0.18em;text-transform:uppercase;font-weight:700;color:#C9A3AE;margin:0 0 10px;">Schedule</span>
+            <span style="display:block;font-family:Georgia,'Times New Roman',serif;font-size:24px;line-height:1.25;color:#F1E6D2;margin:0 0 10px;">Service Times</span>
+            <span style="display:block;font-size:15.5px;line-height:1.6;color:#E3CFB4;flex:1;margin:0 0 20px;">The full schedule of High Holiday services and programs, from Rosh Hashanah through Yom Kippur.</span>
+            <span style="align-self:flex-start;background:#F1E6D2;color:#5D0A23;border-radius:999px;padding:10px 24px;font-size:15px;font-weight:600;">View schedule</span>
+        </a>
     </div>
-
-    <div style="max-width:440px;margin:0 auto 36px;">
-        <a href="/7472654" style="display:block;background:#F1E6D2;color:#5D0A23;text-decoration:none;border-radius:8px;padding:17px 18px;font-size:15px;font-weight:700;letter-spacing:3px;text-transform:uppercase;margin:0 0 14px;">View the Full Schedule</a>
-        <a href="/7442141" style="display:block;background:#F1E6D2;color:#5D0A23;text-decoration:none;border-radius:8px;padding:17px 18px;font-size:15px;font-weight:700;letter-spacing:3px;text-transform:uppercase;margin:0 0 14px;">Reserve Your Seats</a>
-        <a href="/hhmeals" style="display:block;background:#F1E6D2;color:#5D0A23;text-decoration:none;border-radius:8px;padding:17px 18px;font-size:15px;font-weight:700;letter-spacing:3px;text-transform:uppercase;margin:0 0 14px;">Holiday Meal Reservations</a>
-        <a href="/Article.asp?AID=5284216" style="display:block;background:transparent;border:2px solid #F1E6D2;color:#F1E6D2;text-decoration:none;border-radius:8px;padding:15px 18px;font-size:15px;font-weight:700;letter-spacing:3px;text-transform:uppercase;">Become a Member</a>
-    </div>
-
-    <div style="height:1px;background:#8A3A50;max-width:380px;margin:0 auto 32px;"></div>
-
-    <p style="font-size:13px;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:#F1E6D2;margin:0 0 22px;">Schedule Highlights</p>
-
-    <div style="display:flex;flex-wrap:wrap;gap:24px 34px;justify-content:center;text-align:center;margin:0 0 30px;">
-        <div style="flex:1 1 260px;max-width:320px;">
-            <div style="font-family:Georgia,'Times New Roman',serif;font-size:24px;font-weight:700;color:#F1E6D2;margin:0 0 12px;">Rosh Hashana</div>
-
-            <div style="font-size:15.5px;font-weight:700;color:#F1E6D2;margin:8px 0 2px;">Friday, Sept 11</div>
-            <div style="font-size:15.5px;line-height:1.65;color:#E3CFB4;">Evening services <span style="white-space:nowrap;">7:15 pm</span><br />Community dinner <span style="white-space:nowrap;">8:00 pm</span></div>
-
-            <div style="font-size:15.5px;font-weight:700;color:#F1E6D2;margin:14px 0 2px;">Shabbat, Sept 12</div>
-            <div style="font-size:15.5px;line-height:1.65;color:#E3CFB4;">Morning services <span style="white-space:nowrap;">9:30 am</span><br />Lunch <span style="white-space:nowrap;">2:00 pm</span><br />Dinner <span style="white-space:nowrap;">8:15 pm</span></div>
-
-            <div style="font-size:15.5px;font-weight:700;color:#F1E6D2;margin:14px 0 2px;">Sunday, Sept 13</div>
-            <div style="font-size:15.5px;line-height:1.65;color:#E3CFB4;">Shofar sounding <span style="white-space:nowrap;">12:00 pm</span><br />Lunch <span style="white-space:nowrap;">2:00 pm</span><br />Tashlich <span style="white-space:nowrap;">3:00 pm</span></div>
-        </div>
-        <div style="flex:1 1 260px;max-width:320px;">
-            <div style="font-family:Georgia,'Times New Roman',serif;font-size:24px;font-weight:700;color:#F1E6D2;margin:0 0 12px;">Yom Kippur</div>
-
-            <div style="font-size:15.5px;font-weight:700;color:#F1E6D2;margin:8px 0 2px;">Sunday, Sept 20</div>
-            <div style="font-size:15.5px;line-height:1.65;color:#E3CFB4;">Fast begins <span style="white-space:nowrap;">7:01 pm</span><br />Kol Nidrei <span style="white-space:nowrap;">7:15 pm</span></div>
-
-            <div style="font-size:15.5px;font-weight:700;color:#F1E6D2;margin:14px 0 2px;">Monday, Sept 21</div>
-            <div style="font-size:15.5px;line-height:1.65;color:#E3CFB4;">Yizkor <span style="white-space:nowrap;">1:00 pm</span><br />Neilah <span style="white-space:nowrap;">6:30 pm</span><br />Fast ends <span style="white-space:nowrap;">7:52 pm</span></div>
-        </div>
-    </div>
-
-    <div style="font-size:14.5px;line-height:1.6;color:#E3CFB4;margin:0 0 8px;">All High Holiday services at<br />
-        <a href="https://maps.google.com/?q=The+Jewish+Museum+of+Florida,+301+Washington+Ave,+Miami+Beach,+FL" style="color:#F1E6D2;font-weight:700;text-decoration:underline;text-underline-offset:3px;">The Jewish Museum of Florida<br />301 Washington Ave, Miami Beach &#8599;</a>
-    </div>
-
 </div>
