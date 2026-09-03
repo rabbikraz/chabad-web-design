@@ -1,0 +1,819 @@
+<!-- HIGH HOLIDAY MEALS: paste as the body of a REGULAR article page (not a
+     form page) in Source mode, then Save without switching to the visual view.
+     Fixed-event version of the Shabbat/holiday meal form: same Apps Script
+     backend, same payload shape, same sheet tabs ("Rosh Hashana - Sep 11-13, 2026"
+     and "Yom Kippur - Sep 21, 2026"), so reservations from here and from the
+     general form land together. A booking that includes the Yom Kippur pre-fast
+     meal posts a second reservation into the Yom Kippur tab.
+     Paste rules: pure ASCII, CDATA-wrapped script, no CSS custom properties,
+     no hidden inputs (the editor strips them), no inline confirm/alert handlers. -->
+<script>document.documentElement.className += ' sb-hh';</script>
+<style>
+#sb-hhm { max-width: 680px; margin: 0 auto; font-family: Arial, Helvetica, sans-serif; color: #F1E6D2; font-size: 17px; line-height: 1.6; }
+#sb-hhm * { box-sizing: border-box; }
+#sb-hhm .hm-lead { text-align: center; padding: 0 8px 26px; }
+#sb-hhm .hm-eyebrow { font-size: 13px; font-weight: 700; letter-spacing: 4px; text-transform: uppercase; color: #F1E6D2; margin: 0 0 12px; }
+#sb-hhm .hm-italic { font-family: Georgia, 'Times New Roman', serif; font-style: italic; font-size: 20px; line-height: 1.5; color: #E3CFB4; margin: 0 0 12px; }
+#sb-hhm .hm-small { font-size: 14px; color: #C9A3AE; margin: 0; }
+#sb-hhm .hm-nav { display: flex; flex-wrap: wrap; gap: 12px; margin: 0 0 26px; }
+#sb-hhm a.hm-navcard { flex: 1 1 180px; min-width: 160px; display: flex; flex-direction: column; position: relative; background: #F1E6D2; color: #5D0A23; text-decoration: none; border-radius: 12px; padding: 14px 44px 14px 18px; transition: background 160ms ease, transform 160ms ease; }
+#sb-hhm a.hm-navcard:hover { background: #E3CFB4; transform: translateY(-1px); text-decoration: none; }
+#sb-hhm .hm-navlabel { font-size: 11px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: #8A3A50; margin: 0 0 3px; }
+#sb-hhm .hm-navtitle { font-family: Georgia, 'Times New Roman', serif; font-size: 18px; line-height: 1.2; color: #5D0A23; }
+#sb-hhm .hm-navarrow { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); font-size: 20px; color: #8A3A50; }
+#sb-hhm .hm-card { background: #660E29; border: 1px solid rgba(241,230,210,0.16); border-top: 3px solid #E3CFB4; border-radius: 18px; padding: 26px 28px 30px; margin: 0 0 22px; box-shadow: 0 10px 28px rgba(0,0,0,0.18); }
+#sb-hhm .hm-step { font-size: 12px; letter-spacing: 3px; text-transform: uppercase; font-weight: 700; color: #C9A3AE; margin: 0 0 4px; }
+#sb-hhm h3.hm-h { font-family: Georgia, 'Times New Roman', serif; font-weight: 700; font-size: 26px; line-height: 1.2; color: #F1E6D2; margin: 0 0 18px; text-transform: none; letter-spacing: 0; }
+#sb-hhm .hm-blurb { font-size: 15.5px; color: #E3CFB4; margin: -8px 0 18px; }
+#sb-hhm .hm-center { text-align: center; }
+#sb-hhm .hm-hide { display: none; }
+#sb-hhm .hm-where-box { display: flex; flex-wrap: wrap; gap: 10px; margin: 0 0 18px; }
+#sb-hhm .hm-where { flex: 1 1 200px; background: rgba(0,0,0,0.14); border-radius: 12px; padding: 12px 16px; font-size: 14px; line-height: 1.5; color: #E3CFB4; }
+#sb-hhm .hm-where b { display: block; font-size: 11.5px; letter-spacing: 2px; text-transform: uppercase; color: #F1E6D2; margin: 0 0 3px; }
+
+/* meal cards */
+#sb-hhm .hm-meal { border: 2px solid rgba(241,230,210,0.22); border-radius: 14px; margin: 0 0 14px; background: rgba(0,0,0,0.12); overflow: hidden; transition: border-color 160ms ease, background 160ms ease; }
+#sb-hhm .hm-meal.hm-on { border-color: #F1E6D2; background: rgba(241,230,210,0.07); }
+#sb-hhm .hm-meal.hm-featured { border-color: rgba(241,230,210,0.55); }
+#sb-hhm .hm-meal.hm-soldout { opacity: 0.55; }
+#sb-hhm .hm-meal-head { display: flex; align-items: center; gap: 16px; padding: 16px 18px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+#sb-hhm .hm-soldout .hm-meal-head { cursor: default; }
+#sb-hhm .hm-meal-text { flex: 1; min-width: 0; }
+#sb-hhm .hm-badge { display: inline-block; background: #F1E6D2; color: #5D0A23; font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; border-radius: 999px; padding: 4px 11px; margin: 0 0 8px; }
+#sb-hhm .hm-meal-title { display: block; font-family: Georgia, 'Times New Roman', serif; font-size: 22px; line-height: 1.2; color: #F1E6D2; }
+#sb-hhm .hm-featured .hm-meal-title { font-size: 26px; }
+#sb-hhm .hm-meal-when { display: block; font-size: 15px; color: #E3CFB4; margin: 4px 0 0; }
+#sb-hhm .hm-meal-where { display: block; font-size: 13.5px; color: #C9A3AE; margin: 3px 0 0; }
+#sb-hhm .hm-meal-price { display: block; font-size: 13px; letter-spacing: 1px; text-transform: uppercase; color: #C9A3AE; margin: 6px 0 0; }
+#sb-hhm .hm-check { flex: none; width: 30px; height: 30px; border: 2px solid rgba(241,230,210,0.5); border-radius: 999px; position: relative; }
+#sb-hhm .hm-on .hm-check { background: #F1E6D2; border-color: #F1E6D2; }
+#sb-hhm .hm-on .hm-check:after { content: ''; position: absolute; left: 9px; top: 4px; width: 7px; height: 13px; border-right: 3px solid #5D0A23; border-bottom: 3px solid #5D0A23; transform: rotate(45deg); }
+#sb-hhm .hm-meal-body { display: none; padding: 4px 18px 16px; border-top: 1px solid rgba(241,230,210,0.14); }
+#sb-hhm .hm-on .hm-meal-body { display: block; }
+#sb-hhm .hm-tier { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 12px 0; border-bottom: 1px solid rgba(241,230,210,0.1); }
+#sb-hhm .hm-tier:last-child { border-bottom: none; }
+#sb-hhm .hm-tier-name { display: block; font-size: 16.5px; font-weight: 700; color: #F1E6D2; }
+#sb-hhm .hm-tier-price { display: block; font-size: 14px; color: #C9A3AE; }
+#sb-hhm .hm-qty { display: flex; align-items: center; gap: 10px; flex: none; }
+#sb-hhm button.hm-qbtn { width: 38px; height: 38px; border-radius: 999px; border: 2px solid rgba(241,230,210,0.5); background: transparent; color: #F1E6D2; font-size: 22px; line-height: 1; cursor: pointer; padding: 0; font-family: Arial, Helvetica, sans-serif; }
+#sb-hhm button.hm-qbtn:hover { background: rgba(241,230,210,0.12); }
+#sb-hhm .hm-qval { min-width: 26px; text-align: center; font-size: 18px; font-weight: 700; color: #F1E6D2; }
+#sb-hhm .hm-tiernote { font-size: 13.5px; color: #C9A3AE; margin: 8px 0 0; }
+
+/* collapsed Yom Kippur add-on */
+#sb-hhm .hm-more { margin: 22px 0 0; padding: 18px 0 0; border-top: 1px solid rgba(241,230,210,0.14); }
+#sb-hhm button.hm-more-btn { width: 100%; display: flex; align-items: center; gap: 12px; text-align: left; background: transparent; border: 1px dashed rgba(241,230,210,0.45); border-radius: 12px; padding: 12px 16px; color: #F1E6D2; cursor: pointer; font-family: Arial, Helvetica, sans-serif; }
+#sb-hhm button.hm-more-btn:hover { background: rgba(241,230,210,0.08); }
+#sb-hhm .hm-more-text { flex: 1; min-width: 0; }
+#sb-hhm .hm-more-title { display: block; font-size: 15px; font-weight: 700; color: #F1E6D2; }
+#sb-hhm .hm-more-sub { display: block; font-size: 13px; color: #C9A3AE; margin: 2px 0 0; }
+#sb-hhm .hm-more-act { flex: none; font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #F1E6D2; border: 1.5px solid rgba(241,230,210,0.6); border-radius: 999px; padding: 6px 12px; }
+#sb-hhm .hm-more.hm-open button.hm-more-btn { border-style: solid; border-color: rgba(241,230,210,0.25); }
+#sb-hhm .hm-meal.hm-meal-sm { margin: 12px 0 0; }
+#sb-hhm .hm-meal-sm .hm-meal-title { font-size: 18px; }
+#sb-hhm .hm-meal-sm .hm-meal-head { padding: 13px 16px; }
+
+/* fields */
+#sb-hhm .hm-field { margin: 0 0 16px; }
+#sb-hhm .hm-lab { display: block; font-size: 12.5px; letter-spacing: 2px; text-transform: uppercase; font-weight: 700; color: #E3CFB4; margin: 0 0 7px; }
+#sb-hhm .hm-opt { font-weight: 400; letter-spacing: 1px; color: #C9A3AE; }
+#content #sb-hhm input.hm-in, #content #sb-hhm textarea.hm-in { width: 100%; min-height: 48px; padding: 11px 14px; border: 1px solid rgba(241,230,210,0.3); border-radius: 10px; background: #FBF5E9; color: #17232E; font-family: Arial, Helvetica, sans-serif; font-size: 16px; }
+#content #sb-hhm input.hm-in:focus, #content #sb-hhm textarea.hm-in:focus { outline: none; border-color: #F1E6D2; box-shadow: 0 0 0 3px rgba(241,230,210,0.25); }
+#content #sb-hhm input.hm-in::placeholder { color: rgba(23,35,46,0.45); }
+#sb-hhm .hm-guests input { margin: 0 0 10px; }
+
+/* donation pills */
+#sb-hhm .hm-pills { display: flex; flex-wrap: wrap; gap: 10px; margin: 0 0 14px; }
+#sb-hhm button.hm-pill { border: 2px solid rgba(241,230,210,0.5); background: transparent; color: #F1E6D2; border-radius: 999px; padding: 10px 20px; font-size: 16px; font-weight: 700; cursor: pointer; font-family: Arial, Helvetica, sans-serif; }
+#sb-hhm button.hm-pill:hover { background: rgba(241,230,210,0.12); }
+#sb-hhm button.hm-pill.hm-pill-on { background: #F1E6D2; color: #5D0A23; border-color: #F1E6D2; }
+#sb-hhm .hm-row2 { display: flex; gap: 10px; }
+#sb-hhm .hm-row2 input.hm-in { flex: 1; text-transform: uppercase; }
+#sb-hhm button.hm-apply { flex: none; border: 2px solid #F1E6D2; background: transparent; color: #F1E6D2; border-radius: 10px; padding: 0 20px; font-size: 14px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; font-family: Arial, Helvetica, sans-serif; }
+#sb-hhm button.hm-apply:hover { background: rgba(241,230,210,0.12); }
+#sb-hhm .hm-msg { font-size: 14.5px; min-height: 22px; margin: 8px 0 0; color: #C9A3AE; }
+#sb-hhm .hm-msg.hm-good { color: #A8E6B8; }
+#sb-hhm .hm-msg.hm-bad { color: #FFB4B4; }
+
+/* summary */
+#sb-hhm .hm-sum { background: #4A0719; border-radius: 14px; padding: 18px 22px; margin: 18px 0 0; }
+#sb-hhm .hm-sumline { display: flex; justify-content: space-between; gap: 18px; padding: 5px 0; font-size: 16px; color: rgba(241,230,210,0.85); }
+#sb-hhm .hm-sumline span:last-child { white-space: nowrap; font-variant-numeric: tabular-nums; }
+#sb-hhm .hm-sumtotal { border-top: 1px solid rgba(241,230,210,0.25); margin-top: 8px; padding-top: 12px; font-size: 20px; font-weight: 700; color: #F1E6D2; }
+#sb-hhm .hm-sumfree { color: #E3CFB4; font-size: 15px; padding: 6px 0 0; }
+#sb-hhm .hm-valid { display: none; margin: 16px 0 0; padding: 12px 16px; background: #FBE9E9; color: #8B1E1E; border-radius: 10px; font-size: 15px; text-align: center; }
+#sb-hhm .hm-notice { margin: 0 0 22px; padding: 18px 22px; border: 2px solid #F1E6D2; border-radius: 14px; text-align: center; font-size: 16px; color: #F1E6D2; }
+#sb-hhm .hm-notice a { color: #F1E6D2; font-weight: 700; }
+#sb-hhm #hmPaypal { margin: 20px 0 0; min-height: 10px; }
+#sb-hhm button.hm-confirm { display: none; width: 100%; margin: 20px 0 0; padding: 16px 20px; background: #F1E6D2; color: #5D0A23; border: none; border-radius: 10px; font-size: 15px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; cursor: pointer; font-family: Arial, Helvetica, sans-serif; }
+#sb-hhm button.hm-confirm:hover { background: #E3CFB4; }
+#sb-hhm .hm-icon { width: 72px; height: 72px; border-radius: 999px; background: #F1E6D2; color: #5D0A23; font-size: 34px; line-height: 72px; margin: 0 auto 18px; font-family: Georgia, serif; }
+#sb-hhm .hm-foot { text-align: center; font-size: 15px; color: #C9A3AE; margin: 6px 0 0; }
+#sb-hhm .hm-foot a { color: #F1E6D2; text-decoration: underline; text-underline-offset: 3px; }
+#sb-hhm a.hm-btn { display: inline-block; background: #F1E6D2; color: #5D0A23; text-decoration: none; border-radius: 10px; padding: 14px 26px; font-size: 14px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; margin: 14px 0 0; }
+@media (max-width: 640px) {
+  #sb-hhm .hm-card { padding: 20px 16px 24px; border-radius: 14px; }
+  #sb-hhm .hm-meal-head { padding: 14px 14px; gap: 12px; }
+  #sb-hhm .hm-meal-body { padding: 4px 14px 14px; }
+  #sb-hhm .hm-featured .hm-meal-title { font-size: 23px; }
+  #sb-hhm .hm-italic { font-size: 18px; }
+  #sb-hhm button.hm-pill { padding: 9px 16px; font-size: 15px; }
+  #sb-hhm button.hm-more-btn { flex-wrap: wrap; }
+}
+</style>
+<div id="sb-hhm">
+
+  <div class="hm-lead">
+    <p class="hm-eyebrow">Rosh Hashana 5787 &#8226; September 11&#8211;13</p>
+    <p class="hm-italic">Celebrate the New Year around our table.</p>
+    <p class="hm-small">Online reservations close Friday, September 11 at 2:30 pm. No refunds or exchanges after Wednesday at 6:00 pm.</p>
+  </div>
+
+  <div class="hm-nav">
+    <a class="hm-navcard" href="/7472654"><span class="hm-navlabel">Schedule</span><span class="hm-navtitle">Service Times</span><span class="hm-navarrow">&#8594;</span></a>
+    <a class="hm-navcard" href="/7442141"><span class="hm-navlabel">Services</span><span class="hm-navtitle">Reserve Your Seats</span><span class="hm-navarrow">&#8594;</span></a>
+    <a class="hm-navcard" href="/7216148"><span class="hm-navlabel">Shabbat</span><span class="hm-navtitle">All Other Meals</span><span class="hm-navarrow">&#8594;</span></a>
+  </div>
+
+  <div id="hmCutoff" class="hm-notice hm-hide">Online reservations for Rosh Hashana are closed. Please call <a href="tel:7869202302">786-920-2302</a> and we will do our best to seat you.</div>
+
+  <div id="hmLocked" class="hm-card hm-center hm-hide">
+    <div class="hm-icon">&#10038;</div>
+    <h3 class="hm-h" id="hmLockedTitle">This form is closed for Rosh Hashana</h3>
+    <p style="margin:0;color:#E3CFB4;" id="hmLockedBody">Shana Tova! We will see you after the holiday ends.</p>
+  </div>
+
+  <div id="hmPassed" class="hm-card hm-center hm-hide">
+    <h3 class="hm-h">The High Holiday meals have passed</h3>
+    <p style="margin:0;color:#E3CFB4;">Reserve Shabbat meals on our reservations page.</p>
+    <a class="hm-btn" href="/7216148">Shabbat &amp; Holiday Meals</a>
+  </div>
+
+  <form id="hmForm" autocomplete="on" onsubmit="return false;">
+
+    <div class="hm-card">
+      <p class="hm-step">Step 1 of 3</p>
+      <h3 class="hm-h">Choose Your Meals</h3>
+      <p class="hm-blurb">Tap a meal to add it, then set how many are joining.</p>
+      <div class="hm-where-box">
+        <div class="hm-where"><b>Services &amp; New Year's Dinner</b>The Jewish Museum of Florida, 301 Washington Ave</div>
+        <div class="hm-where"><b>All other meals</b>Chabad in South Beach, 320 Meridian Ave</div>
+      </div>
+
+      <div id="hmRhMeals">
+      <div class="hm-meal hm-featured" id="hmMeal1">
+        <div class="hm-meal-head" data-toggle="1">
+          <span class="hm-meal-text">
+            <span class="hm-badge">First Night</span>
+            <span class="hm-meal-title">Rosh Hashana New Year's Dinner</span>
+            <span class="hm-meal-when">Friday, September 11 &#8226; 8:00 pm, following 7:15 pm services</span>
+            <span class="hm-meal-where">At the Jewish Museum of Florida, 301 Washington Ave</span>
+            <span class="hm-meal-price" id="hmPrice1">$85 adult &#8226; $54 subsidized &#8226; $36 child</span>
+          </span>
+          <span class="hm-check"></span>
+        </div>
+        <div class="hm-meal-body">
+          <div class="hm-tier"><span><span class="hm-tier-name">Adult</span><span class="hm-tier-price">$85 per person</span></span><span class="hm-qty"><button type="button" class="hm-qbtn" data-qty="1A" data-delta="-1">&#8722;</button><span class="hm-qval" id="q1A">1</span><button type="button" class="hm-qbtn" data-qty="1A" data-delta="1">+</button></span></div>
+          <div class="hm-tier"><span><span class="hm-tier-name">Adult (Subsidized)</span><span class="hm-tier-price">$54 per person</span></span><span class="hm-qty"><button type="button" class="hm-qbtn" data-qty="1S" data-delta="-1">&#8722;</button><span class="hm-qval" id="q1S">0</span><button type="button" class="hm-qbtn" data-qty="1S" data-delta="1">+</button></span></div>
+          <div class="hm-tier"><span><span class="hm-tier-name">Child</span><span class="hm-tier-price">$36 per child</span></span><span class="hm-qty"><button type="button" class="hm-qbtn" data-qty="1C" data-delta="-1">&#8722;</button><span class="hm-qval" id="q1C">0</span><button type="button" class="hm-qbtn" data-qty="1C" data-delta="1">+</button></span></div>
+        </div>
+      </div>
+
+      <div class="hm-meal" id="hmMeal2">
+        <div class="hm-meal-head" data-toggle="2">
+          <span class="hm-meal-text">
+            <span class="hm-meal-title">Day One Lunch</span>
+            <span class="hm-meal-when">Shabbat, September 12 &#8226; 2:00 pm</span>
+            <span class="hm-meal-where">At Chabad in South Beach, 320 Meridian Ave</span>
+            <span class="hm-meal-price" id="hmPrice2">$54 adult &#8226; $36 subsidized &#8226; $18 child</span>
+          </span>
+          <span class="hm-check"></span>
+        </div>
+        <div class="hm-meal-body">
+          <div class="hm-tier"><span><span class="hm-tier-name">Adult</span><span class="hm-tier-price">$54 per person</span></span><span class="hm-qty"><button type="button" class="hm-qbtn" data-qty="2A" data-delta="-1">&#8722;</button><span class="hm-qval" id="q2A">0</span><button type="button" class="hm-qbtn" data-qty="2A" data-delta="1">+</button></span></div>
+          <div class="hm-tier"><span><span class="hm-tier-name">Adult (Subsidized)</span><span class="hm-tier-price">$36 per person</span></span><span class="hm-qty"><button type="button" class="hm-qbtn" data-qty="2S" data-delta="-1">&#8722;</button><span class="hm-qval" id="q2S">0</span><button type="button" class="hm-qbtn" data-qty="2S" data-delta="1">+</button></span></div>
+          <div class="hm-tier"><span><span class="hm-tier-name">Child</span><span class="hm-tier-price">$18 per child</span></span><span class="hm-qty"><button type="button" class="hm-qbtn" data-qty="2C" data-delta="-1">&#8722;</button><span class="hm-qval" id="q2C">0</span><button type="button" class="hm-qbtn" data-qty="2C" data-delta="1">+</button></span></div>
+        </div>
+      </div>
+
+      <div class="hm-meal" id="hmMeal3">
+        <div class="hm-meal-head" data-toggle="3">
+          <span class="hm-meal-text">
+            <span class="hm-meal-title">Second Night Dinner</span>
+            <span class="hm-meal-when">Saturday, September 12 &#8226; 8:15 pm, following 7:15 pm services</span>
+            <span class="hm-meal-where">At Chabad in South Beach, 320 Meridian Ave</span>
+            <span class="hm-meal-price" id="hmPrice3">$85 adult &#8226; $54 subsidized &#8226; $36 child</span>
+          </span>
+          <span class="hm-check"></span>
+        </div>
+        <div class="hm-meal-body">
+          <div class="hm-tier"><span><span class="hm-tier-name">Adult</span><span class="hm-tier-price">$85 per person</span></span><span class="hm-qty"><button type="button" class="hm-qbtn" data-qty="3A" data-delta="-1">&#8722;</button><span class="hm-qval" id="q3A">0</span><button type="button" class="hm-qbtn" data-qty="3A" data-delta="1">+</button></span></div>
+          <div class="hm-tier"><span><span class="hm-tier-name">Adult (Subsidized)</span><span class="hm-tier-price">$54 per person</span></span><span class="hm-qty"><button type="button" class="hm-qbtn" data-qty="3S" data-delta="-1">&#8722;</button><span class="hm-qval" id="q3S">0</span><button type="button" class="hm-qbtn" data-qty="3S" data-delta="1">+</button></span></div>
+          <div class="hm-tier"><span><span class="hm-tier-name">Child</span><span class="hm-tier-price">$36 per child</span></span><span class="hm-qty"><button type="button" class="hm-qbtn" data-qty="3C" data-delta="-1">&#8722;</button><span class="hm-qval" id="q3C">0</span><button type="button" class="hm-qbtn" data-qty="3C" data-delta="1">+</button></span></div>
+        </div>
+      </div>
+
+      <div class="hm-meal" id="hmMeal4">
+        <div class="hm-meal-head" data-toggle="4">
+          <span class="hm-meal-text">
+            <span class="hm-meal-title">Day Two Lunch</span>
+            <span class="hm-meal-when">Sunday, September 13 &#8226; 2:00 pm, after the 12:00 pm shofar sounding</span>
+            <span class="hm-meal-where">At Chabad in South Beach, 320 Meridian Ave</span>
+            <span class="hm-meal-price" id="hmPrice4">$54 adult &#8226; $36 subsidized &#8226; $18 child</span>
+          </span>
+          <span class="hm-check"></span>
+        </div>
+        <div class="hm-meal-body">
+          <div class="hm-tier"><span><span class="hm-tier-name">Adult</span><span class="hm-tier-price">$54 per person</span></span><span class="hm-qty"><button type="button" class="hm-qbtn" data-qty="4A" data-delta="-1">&#8722;</button><span class="hm-qval" id="q4A">0</span><button type="button" class="hm-qbtn" data-qty="4A" data-delta="1">+</button></span></div>
+          <div class="hm-tier"><span><span class="hm-tier-name">Adult (Subsidized)</span><span class="hm-tier-price">$36 per person</span></span><span class="hm-qty"><button type="button" class="hm-qbtn" data-qty="4S" data-delta="-1">&#8722;</button><span class="hm-qval" id="q4S">0</span><button type="button" class="hm-qbtn" data-qty="4S" data-delta="1">+</button></span></div>
+          <div class="hm-tier"><span><span class="hm-tier-name">Child</span><span class="hm-tier-price">$18 per child</span></span><span class="hm-qty"><button type="button" class="hm-qbtn" data-qty="4C" data-delta="-1">&#8722;</button><span class="hm-qval" id="q4C">0</span><button type="button" class="hm-qbtn" data-qty="4C" data-delta="1">+</button></span></div>
+        </div>
+      </div>
+      </div>
+
+      <div class="hm-more" id="hmYkWrap">
+        <button type="button" class="hm-more-btn" id="hmYkToggle">
+          <span class="hm-more-text"><span class="hm-more-title">Also reserve the Yom Kippur pre-fast meal</span><span class="hm-more-sub">Sunday, September 20 &#8226; 5:00 pm &#8226; Chabad in South Beach, 320 Meridian Ave</span></span>
+          <span class="hm-more-act" id="hmYkAct">Add</span>
+        </button>
+        <div class="hm-meal hm-meal-sm hm-hide" id="hmMeal5">
+          <div class="hm-meal-head" data-toggle="5">
+            <span class="hm-meal-text">
+              <span class="hm-meal-title">Yom Kippur Pre-Fast Meal</span>
+              <span class="hm-meal-when">Sunday, September 20 &#8226; 5:00 pm &#8226; Seudat Hamafseket, before the 7:01 pm fast</span>
+              <span class="hm-meal-where">At Chabad in South Beach, 320 Meridian Ave</span>
+              <span class="hm-meal-price" id="hmPrice5">$85 adult &#8226; $54 subsidized &#8226; $36 child</span>
+            </span>
+            <span class="hm-check"></span>
+          </div>
+          <div class="hm-meal-body">
+            <div class="hm-tier"><span><span class="hm-tier-name">Adult</span><span class="hm-tier-price">$85 per person</span></span><span class="hm-qty"><button type="button" class="hm-qbtn" data-qty="5A" data-delta="-1">&#8722;</button><span class="hm-qval" id="q5A">0</span><button type="button" class="hm-qbtn" data-qty="5A" data-delta="1">+</button></span></div>
+            <div class="hm-tier"><span><span class="hm-tier-name">Adult (Subsidized)</span><span class="hm-tier-price">$54 per person</span></span><span class="hm-qty"><button type="button" class="hm-qbtn" data-qty="5S" data-delta="-1">&#8722;</button><span class="hm-qval" id="q5S">0</span><button type="button" class="hm-qbtn" data-qty="5S" data-delta="1">+</button></span></div>
+            <div class="hm-tier"><span><span class="hm-tier-name">Child</span><span class="hm-tier-price">$36 per child</span></span><span class="hm-qty"><button type="button" class="hm-qbtn" data-qty="5C" data-delta="-1">&#8722;</button><span class="hm-qval" id="q5C">0</span><button type="button" class="hm-qbtn" data-qty="5C" data-delta="1">+</button></span></div>
+          </div>
+        </div>
+      </div>
+
+      <p class="hm-tiernote">The subsidized rate is for anyone who needs it, no questions asked. If cost is a concern, use it or call us; no one is ever turned away.</p>
+    </div>
+
+    <div class="hm-card">
+      <p class="hm-step">Step 2 of 3</p>
+      <h3 class="hm-h">Your Information</h3>
+      <div class="hm-field"><label class="hm-lab" for="hmName">Full Name</label><input class="hm-in" id="hmName" name="name" type="text" autocomplete="name" placeholder="Your full name" required="required" /></div>
+      <div class="hm-field hm-guests hm-hide" id="hmGuestsWrap"><label class="hm-lab">Others in your party <span class="hm-opt">optional</span></label><div id="hmGuests"></div></div>
+      <div class="hm-field"><label class="hm-lab" for="hmEmail">Email</label><input class="hm-in" id="hmEmail" name="email" type="email" autocomplete="email" placeholder="you@example.com" required="required" /></div>
+      <div class="hm-field"><label class="hm-lab" for="hmPhone">Phone</label><input class="hm-in" id="hmPhone" name="phone" type="tel" autocomplete="tel" placeholder="(305) 555-1234" required="required" /></div>
+      <div class="hm-field"><label class="hm-lab" for="hmAddress">Address <span class="hm-opt">hotel or home</span></label><input class="hm-in" id="hmAddress" name="address" type="text" autocomplete="street-address" placeholder="Street and city, or hotel name" required="required" /></div>
+      <div class="hm-field" style="margin:0;"><label class="hm-lab" for="hmNotes">Special Notes <span class="hm-opt">optional</span></label><input class="hm-in" id="hmNotes" name="notes" type="text" placeholder="Allergies, dietary needs, seating requests" /></div>
+    </div>
+
+    <div class="hm-card">
+      <p class="hm-step">Step 3 of 3</p>
+      <h3 class="hm-h">Review &amp; Pay</h3>
+
+      <label class="hm-lab">Add a Donation <span class="hm-opt">optional</span></label>
+      <div class="hm-pills">
+        <button type="button" class="hm-pill" data-don="18">$18</button>
+        <button type="button" class="hm-pill" data-don="36">$36</button>
+        <button type="button" class="hm-pill" data-don="54">$54</button>
+        <button type="button" class="hm-pill" data-don="100">$100</button>
+        <button type="button" class="hm-pill" data-don="180">$180</button>
+        <button type="button" class="hm-pill" data-don="360">$360</button>
+      </div>
+      <div class="hm-field"><input class="hm-in" id="hmDonation" type="number" min="0" step="1" inputmode="numeric" placeholder="Other amount" /></div>
+
+      <div class="hm-field">
+        <label class="hm-lab" for="hmCode">Discount Code</label>
+        <div class="hm-row2"><input class="hm-in" id="hmCode" type="text" autocomplete="off" placeholder="Enter code" /><button type="button" class="hm-apply" id="hmApply">Apply</button></div>
+        <div class="hm-msg" id="hmCodeMsg"></div>
+      </div>
+
+      <div class="hm-sum">
+        <div id="hmSumLines"></div>
+        <div class="hm-sumline"><span>Donation</span><span>$<span id="hmSumDon">0</span></span></div>
+        <div class="hm-sumline hm-hide" id="hmSumDiscRow"><span>Discount</span><span>-$<span id="hmSumDisc">0</span></span></div>
+        <div class="hm-sumline hm-sumtotal"><span>Total</span><span>$<span id="hmSumTotal">0</span></span></div>
+      </div>
+
+      <div class="hm-valid" id="hmValid"></div>
+      <div id="hmPaypal"></div>
+      <button type="button" class="hm-confirm" id="hmConfirm">Confirm Reservation</button>
+    </div>
+
+  </form>
+
+  <div id="hmSuccess" class="hm-card hm-center hm-hide">
+    <div class="hm-icon">&#10003;</div>
+    <h3 class="hm-h">Shana Tova!</h3>
+    <p style="margin:0 0 6px;color:#E3CFB4;">Your holiday meal reservation is confirmed.</p>
+    <p style="margin:0;color:#C9A3AE;font-size:15px;">A confirmation email is on its way for each holiday you reserved. We can&#39;t wait to celebrate with you.</p>
+  </div>
+
+  <p class="hm-foot">Looking for Shabbat meals? <a href="/7216148">Reserve them here</a>.</p>
+
+</div>
+<script>
+//<![CDATA[
+(function () {
+  // ===== CONFIGURATION (mirrors Meal Form.html so both forms share one backend) =====
+  var PAYPAL_CLIENT_ID = 'AQep8b0d5aOphyWo10ZQfAT-mwV0vWeHCjQLID21pSwnJyh4Fw5vNJANgqyTypi1PDiV3AKJ6fbarENP';
+  var GOOGLE_SHEET_WEBHOOK = 'https://script.google.com/macros/s/AKfycbzNnNNSbv6pUY_xoJDCz7xJl0DLAuXaeDajlwH1isdXw4gQBK0plUyOaThijLgOT6_9ag/exec';
+
+  // Each event exactly as the general form would describe it, so the backend
+  // builds the same sheet tabs. Multi-day yom tov: start = eve of day 1.
+  var EVENTS = {
+    rh: { title: 'Rosh Hashana', label: 'Rosh Hashana - Sep 11-13, 2026', startISO: '2026-09-11', endISO: '2026-09-13', weekName: 'Rosh Hashana - Sep 11-13, 2026' },
+    yk: { title: 'Yom Kippur',   label: 'Yom Kippur - Sep 21, 2026',      startISO: '2026-09-21', endISO: '2026-09-21', weekName: 'Yom Kippur - Sep 21, 2026' }
+  };
+
+  // Backend meal labels MUST match what the general form derives for each
+  // event (same order, same strings): they become the sheet column headers.
+  var MEALS = [
+    { slot: '1', ev: 'rh', label: 'Shabbat / Yom Tov Eve (Day 1)', sub: 'Dinner',        kind: 'dinner', date: '2026-09-11', isShabbat: true,  name: 'Rosh Hashana New Year\'s Dinner' },
+    { slot: '2', ev: 'rh', label: 'Shabbat / Yom Tov Day (Day 1)', sub: 'Lunch',         kind: 'lunch',  date: '2026-09-12', isShabbat: true,  name: 'Day One Lunch' },
+    { slot: '3', ev: 'rh', label: 'Yom Tov Eve (Day 2)',           sub: 'Dinner',        kind: 'dinner', date: '2026-09-12', isShabbat: false, name: 'Second Night Dinner' },
+    { slot: '4', ev: 'rh', label: 'Yom Tov Day (Day 2)',           sub: 'Lunch',         kind: 'lunch',  date: '2026-09-13', isShabbat: false, name: 'Day Two Lunch' },
+    { slot: '5', ev: 'yk', label: 'Seudat Hamafseket',             sub: 'Pre-Fast Meal', kind: 'dinner', date: '2026-09-20', isShabbat: false, name: 'Yom Kippur Pre-Fast Meal' }
+  ];
+
+  var PRICE = {
+    dinner: { A: 85, S: 54, C: 36 },
+    lunch:  { A: 54, S: 36, C: 18 }
+  };
+
+  // Timing, evaluated on the visitor's clock like the general form: online
+  // reservations close 2:30 pm on the eve; the form hides from candle
+  // lighting (5 min early) until the holiday ends (5 min late).
+  var RH_CUTOFF = new Date(2026, 8, 11, 14, 30, 0);
+  var RH_LOCK_START = new Date(2026, 8, 11, 19, 6, 0);
+  var RH_LOCK_END = new Date(2026, 8, 13, 20, 6, 0);
+  var YK_CUTOFF = new Date(2026, 8, 20, 14, 30, 0);
+  var YK_LOCK_START = new Date(2026, 8, 20, 18, 56, 0);
+  var YK_LOCK_END = new Date(2026, 8, 21, 19, 57, 0);
+
+  var PHONE_TEXT = '786-920-2302';
+
+  // ===== STATE =====
+  var active = { '1': true, '2': false, '3': false, '4': false, '5': false };   // first night pre-selected
+  var soldOut = {};
+  var remaining = {};
+  var eventOpen = { rh: true, yk: true };
+  var ykShown = false;
+  var discountCodes = [
+    { code: 'FREEEE', type: 'percent',      value: 100 },
+    { code: 'CHAI',   type: 'cap_per_head', value: 18  }
+  ];
+  var appliedCode = null;
+  var appliedCoupon = '';
+  var discountBy = { rh: 0, yk: 0 };
+  var donationAmount = 0;
+
+  function $(id) { return document.getElementById(id); }
+  function qty(slot, tier) { return parseInt($('q' + slot + tier).innerText, 10) || 0; }
+  function setQty(slot, tier, n) { $('q' + slot + tier).innerText = String(n); }
+  function mealBy(slot) {
+    for (var i = 0; i < MEALS.length; i++) if (MEALS[i].slot === slot) return MEALS[i];
+    return null;
+  }
+  function mealsOf(ev) {
+    var out = [];
+    for (var i = 0; i < MEALS.length; i++) if (MEALS[i].ev === ev) out.push(MEALS[i]);
+    return out;
+  }
+  function show(el, on) { if (el) el.style.display = on ? '' : 'none'; }
+  function esc(s) {
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  // ===== MEAL TOGGLES / QUANTITIES (event delegation: no inline handlers) =====
+  function paintMeal(slot) {
+    var card = $('hmMeal' + slot);
+    if (!card) return;
+    card.className = card.className.replace(/\s*hm-on/g, '') + (active[slot] ? ' hm-on' : '');
+    if (soldOut[slot]) {
+      if (card.className.indexOf('hm-soldout') === -1) card.className += ' hm-soldout';
+      var priceEl = $('hmPrice' + slot);
+      if (priceEl && priceEl.innerText.indexOf('SOLD OUT') === -1) priceEl.innerText = 'SOLD OUT \u2022 ' + priceEl.innerText;
+    }
+  }
+
+  function toggleMeal(slot) {
+    if (soldOut[slot]) return;
+    var m = mealBy(slot);
+    if (!m || !eventOpen[m.ev]) return;
+    active[slot] = !active[slot];
+    if (!active[slot]) { setQty(slot, 'A', 0); setQty(slot, 'S', 0); setQty(slot, 'C', 0); }
+    else if (slotHeads(slot) === 0) { setQty(slot, 'A', 1); }
+    paintMeal(slot);
+    updateTotals();
+  }
+
+  // Yom Kippur add-on: collapsed by default; "Add" reveals the small card and
+  // selects it with one adult, "Remove" hides and clears it.
+  function setYkShown(on) {
+    ykShown = !!on;
+    show($('hmMeal5'), ykShown);
+    $('hmYkWrap').className = 'hm-more' + (ykShown ? ' hm-open' : '');
+    $('hmYkAct').innerText = ykShown ? 'Remove' : 'Add';
+    if (ykShown) {
+      if (!active['5'] && !soldOut['5']) { active['5'] = true; if (slotHeads('5') === 0) setQty('5', 'A', 1); }
+    } else {
+      active['5'] = false; setQty('5', 'A', 0); setQty('5', 'S', 0); setQty('5', 'C', 0);
+    }
+    paintMeal('5');
+    updateTotals();
+  }
+  $('hmYkToggle').addEventListener('click', function (e) { e.preventDefault(); setYkShown(!ykShown); });
+
+  $('sb-hhm').addEventListener('click', function (e) {
+    var t = e.target;
+    while (t && t !== this) {
+      if (t.getAttribute) {
+        var tog = t.getAttribute('data-toggle');
+        if (tog) { toggleMeal(tog); return; }
+        var q = t.getAttribute('data-qty');
+        if (q) {
+          e.preventDefault();
+          var slot = q.charAt(0), tier = q.charAt(1);
+          var v = qty(slot, tier) + parseInt(t.getAttribute('data-delta'), 10);
+          if (v < 0) v = 0;
+          setQty(slot, tier, v);
+          updateTotals();
+          return;
+        }
+        var don = t.getAttribute('data-don');
+        if (don) {
+          e.preventDefault();
+          setDonation(parseInt(don, 10), true);
+          return;
+        }
+      }
+      t = t.parentNode;
+    }
+  });
+
+  // ===== DONATION =====
+  function setDonation(amount, fromPill) {
+    donationAmount = amount > 0 ? amount : 0;
+    if (fromPill) $('hmDonation').value = donationAmount ? String(donationAmount) : '';
+    var pills = document.querySelectorAll('#sb-hhm .hm-pill');
+    for (var i = 0; i < pills.length; i++) {
+      var on = parseInt(pills[i].getAttribute('data-don'), 10) === donationAmount;
+      pills[i].className = 'hm-pill' + (on ? ' hm-pill-on' : '');
+    }
+    updateTotals();
+  }
+  $('hmDonation').addEventListener('input', function () {
+    setDonation(parseFloat(this.value) || 0, false);
+  });
+
+  // ===== TOTALS =====
+  function slotCost(slot) {
+    if (!active[slot]) return 0;
+    var p = PRICE[mealBy(slot).kind];
+    return qty(slot, 'A') * p.A + qty(slot, 'S') * p.S + qty(slot, 'C') * p.C;
+  }
+  function slotHeads(slot) {
+    if (!active[slot]) return 0;
+    return qty(slot, 'A') + qty(slot, 'S') + qty(slot, 'C');
+  }
+  function eventCost(ev) { var g = 0, ms = mealsOf(ev); for (var i = 0; i < ms.length; i++) g += slotCost(ms[i].slot); return g; }
+  function eventHeads(ev) { var h = 0, ms = mealsOf(ev); for (var i = 0; i < ms.length; i++) h += slotHeads(ms[i].slot); return h; }
+  function partySize() {
+    var m = 0;
+    for (var i = 0; i < MEALS.length; i++) { var h = slotHeads(MEALS[i].slot); if (h > m) m = h; }
+    return m;
+  }
+
+  function computeDiscount(grand, heads, def) {
+    if (!def || grand <= 0) return 0;
+    if (def.type === 'percent') return Math.min(grand, Math.round(grand * (parseFloat(def.value) || 0) / 100));
+    if (def.type === 'fixed') return Math.min(grand, parseFloat(def.value) || 0);
+    if (def.type === 'cap_per_head') return Math.max(0, grand - (parseFloat(def.value) || 0) * heads);
+    return 0;
+  }
+  // Discount per event so each posted reservation carries its own figure.
+  // A fixed-amount code is spent on Rosh Hashana first, remainder on Yom Kippur.
+  function computeDiscounts(def) {
+    var rh = computeDiscount(eventCost('rh'), eventHeads('rh'), def);
+    var yk;
+    if (def && def.type === 'fixed') yk = computeDiscount(eventCost('yk'), eventHeads('yk'), { type: 'fixed', value: (parseFloat(def.value) || 0) - rh });
+    else yk = computeDiscount(eventCost('yk'), eventHeads('yk'), def);
+    return { rh: rh, yk: yk };
+  }
+
+  function updateTotals() {
+    clearValidationError();
+    var lines = '';
+    for (var i = 0; i < MEALS.length; i++) {
+      var m = MEALS[i];
+      if (!active[m.slot]) continue;
+      var heads = slotHeads(m.slot);
+      lines += '<div class="hm-sumline"><span>' + esc(m.name) + (heads ? ' \u00D7 ' + heads : '') + '</span><span>$' + slotCost(m.slot) + '</span></div>';
+    }
+    if (!lines) lines = '<div class="hm-sumline hm-sumfree">No meals selected yet</div>';
+    $('hmSumLines').innerHTML = lines;
+
+    var grand = eventCost('rh') + eventCost('yk');
+    discountBy = computeDiscounts(appliedCode);
+    var discount = discountBy.rh + discountBy.yk;
+    var total = Math.max(0, grand + donationAmount - discount);
+    $('hmSumDon').innerText = String(donationAmount);
+    show($('hmSumDiscRow'), discount > 0);
+    $('hmSumDisc').innerText = String(discount);
+    $('hmSumTotal').innerText = String(total);
+
+    var pp = $('hmPaypal');
+    var confirmBtn = $('hmConfirm');
+    if (total <= 0) { show(pp, false); confirmBtn.style.display = 'block'; }
+    else { show(pp, true); confirmBtn.style.display = 'none'; }
+
+    syncGuestInputs();
+  }
+
+  // ===== GUEST NAMES (one optional input per additional person) =====
+  function syncGuestInputs() {
+    var wrap = $('hmGuestsWrap'), list = $('hmGuests');
+    var needed = partySize() - 1;
+    if (needed < 0) needed = 0;
+    while (list.children.length > needed) list.removeChild(list.children[list.children.length - 1]);
+    while (list.children.length < needed) {
+      var inp = document.createElement('input');
+      inp.type = 'text';
+      inp.className = 'hm-in';
+      inp.autocomplete = 'off';
+      inp.placeholder = 'Guest ' + (list.children.length + 2) + ' full name (optional)';
+      list.appendChild(inp);
+    }
+    show(wrap, needed > 0);
+  }
+  function collectGuestNames() {
+    var out = [], inputs = document.querySelectorAll('#hmGuests input');
+    for (var i = 0; i < inputs.length; i++) { var v = String(inputs[i].value || '').trim(); if (v) out.push(v); }
+    return out;
+  }
+
+  // ===== DISCOUNT CODES =====
+  function loadDiscountCodes() {
+    fetch(GOOGLE_SHEET_WEBHOOK + '?action=publicCodes')
+      .then(function (r) { return r.json(); })
+      .then(function (data) { if (data && Array.isArray(data.codes) && data.codes.length > 0) discountCodes = data.codes; })
+      .catch(function (err) { console.error('Could not load discount codes:', err); });
+  }
+  function findCodeDef(input) {
+    var needle = String(input || '').trim().toUpperCase();
+    if (!needle) return null;
+    for (var i = 0; i < discountCodes.length; i++) if (String(discountCodes[i].code).toUpperCase() === needle) return discountCodes[i];
+    return null;
+  }
+  function checkDiscount() {
+    var msg = $('hmCodeMsg');
+    var raw = $('hmCode').value.trim();
+    appliedCode = null; appliedCoupon = '';
+    msg.className = 'hm-msg'; msg.innerText = '';
+    if (!raw) { updateTotals(); return; }
+    var def = findCodeDef(raw);
+    if (!def) { msg.className = 'hm-msg hm-bad'; msg.innerText = 'Invalid code.'; updateTotals(); return; }
+    var d = computeDiscounts(def);
+    if (d.rh + d.yk <= 0) { msg.className = 'hm-msg hm-bad'; msg.innerText = 'Code not applicable at this price. Add your meals first, then apply.'; updateTotals(); return; }
+    appliedCode = def; appliedCoupon = String(def.code).toUpperCase();
+    msg.className = 'hm-msg hm-good';
+    if (def.type === 'percent') msg.innerText = 'Code applied: ' + def.value + '% off.';
+    else if (def.type === 'fixed') msg.innerText = 'Code applied: $' + def.value + ' off.';
+    else if (def.type === 'cap_per_head') msg.innerText = 'Code applied: $' + def.value + ' per person.';
+    else msg.innerText = 'Code applied.';
+    updateTotals();
+  }
+  $('hmApply').addEventListener('click', checkDiscount);
+  $('hmCode').addEventListener('keypress', function (e) { if (e.key === 'Enter') { e.preventDefault(); checkDiscount(); } });
+
+  // ===== CAPACITY CAPS (same publicCaps feed and sheet-name keys as the general form) =====
+  function loadCaps() {
+    fetch(GOOGLE_SHEET_WEBHOOK + '?action=publicCaps')
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        if (!data || !Array.isArray(data.caps)) return;
+        for (var i = 0; i < data.caps.length; i++) {
+          var c = data.caps[i];
+          var ev = null;
+          for (var k in EVENTS) if (EVENTS[k].weekName === String(c.week)) ev = k;
+          if (!ev) continue;
+          var cap = parseInt(c.cap, 10) || 0;
+          if (cap <= 0) continue;
+          var counts = {};
+          var arr = c.meals || [];
+          for (var m = 0; m < arr.length; m++) counts[String(arr[m].label)] = parseInt(arr[m].count, 10) || 0;
+          var ms = mealsOf(ev);
+          for (var j = 0; j < ms.length; j++) {
+            var key = ms[j].label + ' ' + ms[j].sub;
+            var rem = cap - (counts[key] || 0);
+            remaining[ms[j].slot] = rem > 0 ? rem : 0;
+            if (rem <= 0) {
+              soldOut[ms[j].slot] = true;
+              active[ms[j].slot] = false;
+              setQty(ms[j].slot, 'A', 0); setQty(ms[j].slot, 'S', 0); setQty(ms[j].slot, 'C', 0);
+            }
+            paintMeal(ms[j].slot);
+          }
+        }
+        updateTotals();
+      })
+      .catch(function (err) { console.error('Could not load capacity caps:', err); });
+  }
+
+  // ===== VALIDATION =====
+  function validateMeals() {
+    var anyActive = false;
+    for (var i = 0; i < MEALS.length; i++) {
+      var m = MEALS[i];
+      if (!active[m.slot]) continue;
+      anyActive = true;
+      var heads = slotHeads(m.slot);
+      if (heads === 0) return 'Each selected meal needs at least 1 person (Adult, Subsidized or Child).';
+      if (soldOut[m.slot]) return m.name + ' is sold out. Please call us at ' + PHONE_TEXT + '.';
+      if (remaining[m.slot] !== undefined && heads > remaining[m.slot]) {
+        var n = remaining[m.slot];
+        return 'We only have ' + n + (n === 1 ? ' seat' : ' seats') + ' left for ' + m.name + '. Please adjust your party size or call us at ' + PHONE_TEXT + '.';
+      }
+    }
+    if (!anyActive) return 'Please select at least one meal.';
+    return null;
+  }
+  function showValidationError(msg) {
+    var box = $('hmValid');
+    box.innerText = msg;
+    box.style.display = 'block';
+    box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+  function clearValidationError() { $('hmValid').style.display = 'none'; }
+  function formOk() {
+    var form = $('hmForm');
+    if (!form.checkValidity()) { form.reportValidity(); return false; }
+    var err = validateMeals();
+    if (err) { showValidationError(err); return false; }
+    clearValidationError();
+    return true;
+  }
+
+  // ===== SUBMIT TO THE APPS SCRIPT (one reservation per holiday, same payload shape as the general form) =====
+  function buildPayload(ev, paymentDetails, carryDonation) {
+    var E = EVENTS[ev];
+    var meals = [];
+    var dinnerA = 0, dinnerS = 0, dinnerC = 0, lunchA = 0, lunchS = 0, lunchC = 0;
+    var ms = mealsOf(ev);
+    var grand = 0;
+    for (var i = 0; i < ms.length; i++) {
+      var m = ms[i];
+      var on = active[m.slot];
+      var a = on ? qty(m.slot, 'A') : 0, s = on ? qty(m.slot, 'S') : 0, c = on ? qty(m.slot, 'C') : 0;
+      meals.push({ id: 'slot' + (i + 1), label: m.label + ' ' + m.sub, date: m.date, kind: m.kind, isShabbat: m.isShabbat, adult: a, sub: s, child: c });
+      if (m.kind === 'dinner') { dinnerA += a; dinnerS += s; dinnerC += c; }
+      else { lunchA += a; lunchS += s; lunchC += c; }
+      grand += slotCost(m.slot);
+    }
+    var guests = collectGuestNames();
+    var don = carryDonation ? (donationAmount || 0) : 0;
+    var disc = discountBy[ev] || 0;
+    return {
+      shabbos: E.label,
+      shabbosDateISO: E.startISO,
+      shabbosEndDateISO: E.endISO,
+      shabbosTitle: E.title,
+      eventType: 'holiday',
+      name: $('hmName').value.trim(),
+      guestNames: guests.join(', '),
+      guestNamesList: guests,
+      address: $('hmAddress').value.trim(),
+      email: $('hmEmail').value.trim(),
+      phone: $('hmPhone').value.trim(),
+      notes: $('hmNotes').value.trim(),
+      meals: meals,
+      friAdult: dinnerA, friSub: dinnerS, friChild: dinnerC,
+      shabAdult: lunchA, shabSub: lunchS, shabChild: lunchC,
+      donation: don,
+      total: String(Math.max(0, grand + don - disc)),
+      discount: disc,
+      couponCode: disc > 0 ? appliedCoupon : '',
+      paymentId: paymentDetails.id,
+      payerEmail: paymentDetails.payer ? paymentDetails.payer.email_address : '',
+      source: 'hh-meals-page'
+    };
+  }
+  function post(data) {
+    return fetch(GOOGLE_SHEET_WEBHOOK, {
+      method: 'POST', mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    }).catch(function (err) { console.error('Sheet submission failed:', err); });
+  }
+  function submitToGoogleSheets(paymentDetails) {
+    var evs = [];
+    if (eventHeads('rh') > 0) evs.push('rh');
+    if (eventHeads('yk') > 0) evs.push('yk');
+    for (var i = 0; i < evs.length; i++) post(buildPayload(evs[i], paymentDetails, i === 0));
+  }
+  function showSuccess() {
+    $('hmForm').style.display = 'none';
+    show($('hmSuccess'), true);
+    $('hmSuccess').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  $('hmConfirm').addEventListener('click', function (e) {
+    e.preventDefault();
+    if (!formOk()) return;
+    this.innerText = 'Processing...';
+    this.disabled = true;
+    submitToGoogleSheets({ id: 'MANUAL_DISCOUNT' });
+    setTimeout(showSuccess, 900);
+  });
+
+  // ===== PAYPAL =====
+  function initPayPal() {
+    var script = document.createElement('script');
+    script.src = 'https://www.paypal.com/sdk/js?client-id=' + PAYPAL_CLIENT_ID + String.fromCharCode(38) + 'currency=USD';
+    script.onload = function () {
+      paypal.Buttons({
+        style: { layout: 'vertical', color: 'white', shape: 'rect', label: 'pay', height: 48, tagline: false },
+        createOrder: function (data, actions) {
+          if (!formOk()) return;
+          var total = parseFloat($('hmSumTotal').innerText);
+          if (total <= 0) { showValidationError('Your total is $0. Use the Confirm Reservation button instead.'); return; }
+          return actions.order.create({
+            purchase_units: [{ description: 'High Holiday Meals - Chabad in South Beach', amount: { value: total.toFixed(2) } }]
+          });
+        },
+        onApprove: function (data, actions) {
+          return actions.order.capture().then(function (details) {
+            submitToGoogleSheets(details);
+            showSuccess();
+          });
+        },
+        onError: function (err) {
+          console.error('PayPal error:', err);
+          showValidationError('Payment did not go through. Please try again or call us at ' + PHONE_TEXT + ' to reserve.');
+        }
+      }).render('#hmPaypal');
+    };
+    document.head.appendChild(script);
+  }
+
+  // ===== OPEN / CLOSED STATES =====
+  // Returns false when nothing can be booked (form hidden), true otherwise.
+  function applyTiming() {
+    var now = new Date();
+    var form = $('hmForm');
+    if (now > YK_LOCK_END) {                 // both holidays over
+      form.style.display = 'none';
+      show($('hmPassed'), true);
+      return false;
+    }
+    if (now >= YK_LOCK_START) {              // during Yom Kippur
+      $('hmLockedTitle').innerText = 'This form is closed for Yom Kippur';
+      $('hmLockedBody').innerText = 'Gmar chatima tova. We will see you after the fast.';
+      form.style.display = 'none';
+      show($('hmLocked'), true);
+      return false;
+    }
+    if (now > YK_CUTOFF) {                   // Yom Kippur cutoff passed, Rosh Hashana long over
+      $('hmCutoff').innerHTML = 'Online reservations for the High Holiday meals are closed. Please call <a href="tel:7869202302">786-920-2302</a> and we will do our best to seat you.';
+      show($('hmCutoff'), true);
+      form.style.display = 'none';
+      return false;
+    }
+    // Yom Kippur is bookable. Is Rosh Hashana?
+    if (now >= RH_LOCK_START && now <= RH_LOCK_END) {
+      closeRosh('This form is closed for Rosh Hashana. Shana Tova! You can still reserve the Yom Kippur pre-fast meal below.');
+    } else if (now > RH_CUTOFF) {
+      closeRosh('Online reservations for Rosh Hashana are closed (call <a href="tel:7869202302">786-920-2302</a>). You can still reserve the Yom Kippur pre-fast meal below.');
+    }
+    return true;
+  }
+  function closeRosh(html) {
+    eventOpen.rh = false;
+    var ms = mealsOf('rh');
+    for (var i = 0; i < ms.length; i++) {
+      active[ms[i].slot] = false;
+      setQty(ms[i].slot, 'A', 0); setQty(ms[i].slot, 'S', 0); setQty(ms[i].slot, 'C', 0);
+      paintMeal(ms[i].slot);
+    }
+    show($('hmRhMeals'), false);
+    $('hmCutoff').innerHTML = html;
+    show($('hmCutoff'), true);
+    $('hmYkWrap').style.borderTop = 'none';
+    $('hmYkWrap').style.marginTop = '0';
+    $('hmYkWrap').style.paddingTop = '0';
+    setYkShown(true);
+  }
+
+  // ===== INIT =====
+  for (var p = 1; p <= 5; p++) paintMeal(String(p));
+  updateTotals();
+  if (applyTiming()) {
+    loadDiscountCodes();
+    loadCaps();
+    initPayPal();
+  }
+})();
+//]]>
+</script>

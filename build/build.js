@@ -166,8 +166,8 @@ async function build() {
   fs.writeFileSync(path.join(DIST, 'site.css'), siteCss);
   fs.writeFileSync(path.join(DIST, 'site.js'), siteJs);
   // boot.js: the version-resolving loader as a STATIC file. It lives at the
-  // mutable @redesign ref, but its content never changes, so CDN staleness
-  // is harmless. It reads dist/version.txt from raw.githubusercontent.com
+  // mutable @redesign ref and changes rarely (deploy.js purges it), so CDN
+  // staleness is harmless. It reads dist/version.txt from raw.githubusercontent.com
   // (5-min cache, CORS *), then document.writes site.css + site.js pinned
   // to that exact commit - immutable jsDelivr URLs, never silently stale.
   // The paste boxes hold only plain <script src> tags because ChabadOne's
@@ -185,7 +185,13 @@ async function build() {
     "if(x.status===200&&/^[0-9a-f]{7,40}\\s*$/.test(x.responseText))v=x.responseText.trim();}catch(e){}" +
     "window.SB_ASSET_V=v;}" +
     "var B='https://cdn.jsdelivr.net/gh/rabbikraz/chabad-web-design@'+v+'/dist/';";
-  const bootJs = resolveVer +
+  // High Holiday pages (style.css section 22): flag <html> before the first
+  // paint so the burgundy header does not flash cream. Same list as
+  // HH_PAGES in script.js; window.SB_HH_PAGES (set in sb-config) overrides.
+  const hhFlag =
+    "var H=window.SB_HH_PAGES||['7472611','7472654','7442141'];" +
+    "for(var i=0;i<H.length;i++){if(location.href.indexOf(H[i])>-1){document.documentElement.className+=' sb-hh';break;}}";
+  const bootJs = resolveVer + hhFlag +
     "document.write('<link rel=\"stylesheet\" href=\"'+B+'site.css\">');" +
     "})();";
   const bootFooterJs = resolveVer +

@@ -76,6 +76,25 @@
      ------------------------------------------------------------------ */
   var PAGE_THEMES = window.SB_PAGE_THEMES || {};
 
+  /* ------------------------------------------------------------------
+     HIGH HOLIDAY THEME - burgundy/cream chrome (style.css section 22).
+     dist/boot.js sets html.sb-hh early for these article ids so the header
+     never flashes the default look; this is the fallback, and the HH pastes
+     also flag themselves with a one-line script. Override the list with
+     window.SB_HH_PAGES.
+     ------------------------------------------------------------------ */
+  var HH_PAGES = window.SB_HH_PAGES || ['7472611', '7472654', '7442141'];
+
+  function applyHHTheme() {
+    var href = window.location.href;
+    for (var i = 0; i < HH_PAGES.length; i++) {
+      if (href.indexOf(String(HH_PAGES[i])) !== -1) {
+        document.documentElement.classList.add('sb-hh');
+        return;
+      }
+    }
+  }
+
   function applyPageTheme() {
     var href = window.location.href;
     for (var key in PAGE_THEMES) {
@@ -2406,6 +2425,83 @@
     showScreen(1);
   }
 
+  /* ---------------- Shabbat & holiday meal form: Rosh Hashana wording ----------------
+     The live meal form (article 7216148, "Meal Form.html") names its meals
+     generically from the calendar: "Shabbat / Yom Tov Eve (Day 1)", "Yom Tov
+     Day (Day 2)" etc. For Rosh Hashana the owner wants the visitor to read
+     "Rosh Hashana" instead, no "Shabbat /" prefix, "New Year's Dinner" on the
+     first night, and ROSH HASHANA in caps in the date dropdown.
+     DISPLAY-ONLY: the form's internal state (slotMeta labels, the option's
+     data-title) is what reaches the Apps Script, so sheet tab names, capacity
+     keys and confirmation emails are untouched. The form re-renders these
+     texts on select/language/caps changes, so we re-apply via an observer. */
+
+  function initMealFormWording() {
+    var root = document.getElementById('shabbatFormContainer');
+    var sel = document.getElementById('shabbosDate');
+    if (!root || !sel) return;
+
+    var RH = /^rosh\s*hashana/i;
+    var GENERIC = /^(Shabbat \/ Yom Tov|Yom Tov|Shabbat)(?= (Eve|Day)\b)/;
+    var NY_DINNER = "New Year's Dinner";
+
+    function setText(node, val) {
+      if (node && node.textContent !== val) node.textContent = val;
+    }
+    function selectedIsRH() {
+      var o = sel.options[sel.selectedIndex];
+      return !!(o && RH.test(o.getAttribute('data-title') || o.text || ''));
+    }
+    function apply() {
+      // 1. dropdown: "Rosh Hashana - Sep 11-13, '26" -> "ROSH HASHANA - ..."
+      for (var i = 0; i < sel.options.length; i++) {
+        var o = sel.options[i];
+        var t = o.text || '';
+        if (RH.test(t) && !/^ROSH HASHANA/.test(t)) o.textContent = t.replace(RH, 'ROSH HASHANA');
+      }
+      if (!selectedIsRH()) return;
+
+      // 2. "Per Person - covers all meals of this Yom Tov" (all-meals ticket)
+      var ph = document.getElementById('slotAllPriceHeader');
+      if (ph && / of this Yom Tov$/.test(ph.textContent)) {
+        setText(ph, ph.textContent.replace(/ of this Yom Tov$/, ' of this Rosh Hashana'));
+      }
+
+      // 3. the meal cards (+ their pricing titles and summary rows)
+      for (var s = 1; s <= 8; s++) {
+        var lab = document.getElementById('slot' + s + 'Label');
+        if (!lab) continue;
+        var cur = lab.textContent;
+        // Hebrew mode or an already-rewritten card: nothing to do
+        if (!GENERIC.test(cur) && !/^Rosh Hashana (Eve|Day)\b/.test(cur)) continue;
+        var name = cur.replace(GENERIC, 'Rosh Hashana');
+        var firstNight = /^Rosh Hashana Eve( \(Day 1\))?$/.test(name);
+        setText(lab, name);
+        setText(document.getElementById('slot' + s + 'RowLabel'), name);
+        var sub = document.getElementById('slot' + s + 'Sub');
+        if (firstNight && sub && sub.textContent === 'Dinner') setText(sub, NY_DINNER);
+        var pt = document.getElementById('slot' + s + 'PriceTitle');
+        if (pt && (GENERIC.test(pt.textContent) || /^Rosh Hashana/.test(pt.textContent))) {
+          var p = pt.textContent.replace(GENERIC, 'Rosh Hashana');
+          if (firstNight) p = p.replace(/ Dinner$/, ' ' + NY_DINNER);
+          setText(pt, p);
+        }
+      }
+    }
+
+    var queued = false;
+    function schedule() {
+      if (queued) return;
+      queued = true;
+      requestAnimationFrame(function () { queued = false; safe('meal-wording', apply); });
+    }
+    // Our own writes trigger mutations too; apply() only writes when the text
+    // differs, so the observer settles after one extra pass.
+    new MutationObserver(schedule).observe(root, { childList: true, subtree: true, characterData: true });
+    sel.addEventListener('change', schedule);
+    schedule();
+  }
+
   /* ---------------- init ---------------- */
 
   function init() {
@@ -2413,6 +2509,7 @@
     document.body.classList.add('sb-js');
     if (isHome()) document.body.classList.add('sb-home');
 
+    safe('hh-theme', applyHHTheme);
     safe('page-rules', runPageRules);
     safe('page-theme', applyPageTheme);
     safe('nav-labels', normalizeNavLabels);
@@ -2448,6 +2545,7 @@
     safe('sponsor-tiers', initSponsorTiers);
     safe('donate-payvia', initDonatePayVia);
     safe('hh-seats', initHHSeats);
+    safe('meal-wording', initMealFormWording);
     safe('membership-builder', initMembershipBuilder);
   }
 

@@ -4,3 +4,5 @@ node_modules/
 test/preview-*.html
 test/probe-*.html
 package-lock.json
+# stray nested clone of this repo on the desktop
+Chabad Web Design/

@@ -103,12 +103,39 @@ window.addEventListener('load', function () {
     snapshot: '20251013120914',
     include: { token: '<!--SB_FORM_INCLUDE-->', file: 'forms/hh-landing.html' },
   },
+  // rosh hashana meals page (fixed-event meal form paste)
+  {
+    src: 'hh-meals.html',
+    out: 'preview-hh-meals.html',
+    snapshot: '20251013120914',
+    include: { token: '<!--SB_FORM_INCLUDE-->', file: 'forms/hh-meals.html' },
+  },
   // high holiday schedule page (self-contained inline-styled paste)
   {
     src: 'hh-schedule.html',
     out: 'preview-hh-schedule.html',
     snapshot: '20251013120914',
     include: { token: '<!--SB_FORM_INCLUDE-->', file: 'forms/hh-schedule.html' },
+  },
+  // live Shabbat/holiday meal form (outside the repo) inside a plain article shell;
+  // harness script auto-selects the Rosh Hashana date so the meal cards render
+  {
+    src: 'meal-form.html',
+    out: 'preview-meal-form.html',
+    snapshot: '20251013120914',
+    include: { token: '<!--SB_FORM_INCLUDE-->', file: '../Chabad forms/Meal Form.html' },
+    preFooter: `<script>
+window.addEventListener('load', function () {
+  var tries = 0;
+  var t = setInterval(function () {
+    var sel = document.getElementById('shabbosDate');
+    var opts = sel ? Array.prototype.slice.call(sel.options) : [];
+    var rh = opts.filter(function (o) { return /rosh hashana/i.test(o.getAttribute('data-title') || ''); })[0];
+    if (rh) { clearInterval(t); sel.value = rh.value; sel.dispatchEvent(new Event('change', { bubbles: true })); }
+    else if (++tries > 40) clearInterval(t);
+  }, 250);
+});
+</scr` + `ipt>`,
   },
 ];
 

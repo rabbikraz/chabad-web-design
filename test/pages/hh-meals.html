@@ -1,15 +1,12 @@
 <!DOCTYPE html>
-<!-- Synthetic CMS article shell for the High Holiday seats form page.
-     Real page source is Cloudflare-blocked; this mimics the article
-     template structure (body classes + container ids from section 15)
-     and the CMS form wrapper: <form> around the paste + its own submit.
-     The paste itself is inlined from forms/hh-seats.html by
-     test/build-preview.js at the SB_FORM_INCLUDE token. -->
-<html lang="en" class="sb-hh">
+<!-- Synthetic CMS article shell for the Rosh Hashana meals page (a regular
+     article, not a form page: the paste carries its own form). The paste is
+     inlined from forms/hh-meals.html by test/build-preview.js. -->
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>High Holidays Seat Reservations - Chabad of South Beach</title>
+<title>Rosh Hashana Meals - Chabad of South Beach</title>
 <link rel="stylesheet" href="/css/DefaultGrid.css">
 <link rel="stylesheet" href="/css/Elements.css">
 <link rel="stylesheet" href="/css/global.css">
@@ -24,16 +21,11 @@
         <div class="clearfix">
           <div class="g960">
             <div class="article-header">
-              <h1 class="article-header__title">High Holidays Seat Reservations</h1>
+              <h1 class="article-header__title">Rosh Hashana Meals</h1>
             </div>
             <div class="master-content-wrapper">
               <div id="ContentBody" class="content">
-                <form method="post" action="#preview-no-submit">
 <!--SB_FORM_INCLUDE-->
-                  <div class="co_global_submit" style="text-align:center;padding:10px 0 40px;">
-                    <input type="submit" class="button" value="Submit Reservation">
-                  </div>
-                </form>
               </div>
             </div>
           </div>

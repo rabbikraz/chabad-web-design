@@ -11,8 +11,29 @@
   Before sending: upload emails/high-holidays-art.jpg to your
   media library and replace the ONE image src marked
   "REPLACE-ME" below with the hosted URL.
+
+  Mobile-first: every inline style already fits a 320px phone
+  with no media queries. The <style> block below only ENLARGES
+  things on wide screens, so clients that ignore it still look
+  right on a phone.
   ============================================================
 -->
+<style type="text/css">
+  body, table, td, a { -webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; }
+  table, td { mso-table-lspace:0pt; mso-table-rspace:0pt; }
+  img { -ms-interpolation-mode:bicubic; }
+  .nowrap { white-space:nowrap; }
+  @media only screen and (min-width:520px) {
+    .card    { width:600px !important; }
+    .pad     { padding-left:30px !important; padding-right:30px !important; }
+    .eyebrow { font-size:15px !important; letter-spacing:6px !important; }
+    .head    { font-size:62px !important; line-height:60px !important; letter-spacing:2px !important; }
+    .sub     { font-size:17px !important; letter-spacing:5px !important; }
+    .date    { letter-spacing:3px !important; }
+    .btn a   { font-size:15px !important; letter-spacing:3px !important; padding-left:20px !important; padding-right:20px !important; }
+    .secthd  { letter-spacing:5px !important; }
+  }
+</style>
 </head>
 <body style="margin:0; padding:0; background-color:#5D0A23;" bgcolor="#5D0A23">
 
@@ -22,120 +43,152 @@
 </div>
 
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#5D0A23" style="background-color:#5D0A23;">
-<tr><td align="center" style="padding:24px 12px;">
+<tr><td align="center" style="padding:16px 8px;">
 
   <!-- ===== Main card ===== -->
-  <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" bgcolor="#660E29" style="width:600px; max-width:100%; background-color:#660E29;">
+  <table role="presentation" class="card" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#660E29" style="width:100%; max-width:600px; background-color:#660E29;">
 
     <!-- B"H -->
-    <tr><td align="center" style="padding:22px 30px 0 30px; font-family:Arial, Helvetica, sans-serif; font-size:11px; letter-spacing:2px; color:#C9A3AE;">B&quot;H</td></tr>
+    <tr><td align="center" class="pad" style="padding:22px 20px 0 20px; font-family:Arial, Helvetica, sans-serif; font-size:11px; letter-spacing:2px; color:#C9A3AE;">B&quot;H</td></tr>
 
     <!-- Eyebrow -->
-    <tr><td align="center" style="padding:26px 30px 0 30px; font-family:Arial, Helvetica, sans-serif; font-size:15px; font-weight:bold; letter-spacing:6px; color:#F1E6D2;">
-      CHABAD&nbsp;IN&nbsp;SOUTH&nbsp;BEACH
+    <tr><td align="center" class="pad eyebrow" style="padding:26px 20px 0 20px; font-family:Arial, Helvetica, sans-serif; font-size:13px; line-height:20px; font-weight:bold; letter-spacing:3px; color:#F1E6D2;">
+      CHABAD IN SOUTH BEACH
     </td></tr>
 
     <!-- Headline -->
-    <tr><td align="center" style="padding:14px 20px 0 20px; font-family:Georgia, 'Times New Roman', serif; font-size:62px; line-height:60px; font-weight:bold; letter-spacing:2px; color:#F1E6D2;">
+    <tr><td align="center" class="pad head" style="padding:14px 20px 0 20px; font-family:Georgia, 'Times New Roman', serif; font-size:42px; line-height:44px; font-weight:bold; letter-spacing:1px; color:#F1E6D2;">
       HIGH<br>HOLIDAYS
     </td></tr>
 
     <!-- Subhead -->
-    <tr><td align="center" style="padding:16px 30px 0 30px; font-family:Arial, Helvetica, sans-serif; font-size:17px; font-weight:bold; letter-spacing:5px; color:#F1E6D2;">
-      AT&nbsp;THE&nbsp;JEWISH&nbsp;MUSEUM
+    <tr><td align="center" class="pad sub" style="padding:16px 20px 0 20px; font-family:Arial, Helvetica, sans-serif; font-size:13px; line-height:20px; font-weight:bold; letter-spacing:3px; color:#F1E6D2;">
+      AT THE JEWISH MUSEUM
     </td></tr>
 
     <!-- Artwork -->
-    <tr><td align="center" style="padding:26px 30px 8px 30px;">
+    <tr><td align="center" class="pad" style="padding:26px 20px 8px 20px;">
       <a href="https://www.chabadinsouthbeach.com/high" style="text-decoration:none;">
         <!-- REPLACE-ME: swap src with your hosted image URL after uploading high-holidays-art.jpg -->
-        <img src="high-holidays-art.jpg" width="400" alt="Pomegranate, shofar and open machzor" style="display:block; width:400px; max-width:100%; height:auto; border:0;">
+        <img src="high-holidays-art.jpg" width="400" alt="Pomegranate, shofar and open machzor" style="display:block; width:100%; max-width:400px; height:auto; border:0;">
       </a>
     </td></tr>
 
     <!-- Dates -->
-    <tr><td align="center" style="padding:18px 30px 0 30px; font-family:Arial, Helvetica, sans-serif; font-size:20px; font-weight:bold; letter-spacing:3px; color:#F1E6D2;">
-      ROSH&nbsp;HASHANA
+    <tr><td align="center" class="pad date" style="padding:18px 20px 0 20px; font-family:Arial, Helvetica, sans-serif; font-size:19px; line-height:26px; font-weight:bold; letter-spacing:2px; color:#F1E6D2;">
+      ROSH HASHANA
     </td></tr>
-    <tr><td align="center" style="padding:4px 30px 0 30px; font-family:Arial, Helvetica, sans-serif; font-size:19px; letter-spacing:3px; color:#F1E6D2;">
-      SEPTEMBER&nbsp;11&#8211;13
+    <tr><td align="center" class="pad date" style="padding:2px 20px 0 20px; font-family:Arial, Helvetica, sans-serif; font-size:18px; line-height:26px; letter-spacing:2px; color:#F1E6D2;">
+      SEPTEMBER 11&#8211;13
     </td></tr>
-    <tr><td align="center" style="padding:18px 30px 0 30px; font-family:Arial, Helvetica, sans-serif; font-size:20px; font-weight:bold; letter-spacing:3px; color:#F1E6D2;">
-      YOM&nbsp;KIPPUR
+    <tr><td align="center" class="pad date" style="padding:18px 20px 0 20px; font-family:Arial, Helvetica, sans-serif; font-size:19px; line-height:26px; font-weight:bold; letter-spacing:2px; color:#F1E6D2;">
+      YOM KIPPUR
     </td></tr>
-    <tr><td align="center" style="padding:4px 30px 0 30px; font-family:Arial, Helvetica, sans-serif; font-size:19px; letter-spacing:3px; color:#F1E6D2;">
-      SEPTEMBER&nbsp;20&#8211;21
+    <tr><td align="center" class="pad date" style="padding:2px 20px 0 20px; font-family:Arial, Helvetica, sans-serif; font-size:18px; line-height:26px; letter-spacing:2px; color:#F1E6D2;">
+      SEPTEMBER 20&#8211;21
     </td></tr>
 
     <!-- Free-to-attend line -->
-    <tr><td align="center" style="padding:22px 40px 0 40px; font-family:Georgia, 'Times New Roman', serif; font-style:italic; font-size:16px; line-height:24px; color:#E3CFB4;">
+    <tr><td align="center" class="pad" style="padding:22px 24px 0 24px; font-family:Georgia, 'Times New Roman', serif; font-style:italic; font-size:16px; line-height:24px; color:#E3CFB4;">
       There is no charge to attend &mdash; and no one is ever turned away.
     </td></tr>
 
     <!-- Buttons -->
-    <tr><td align="center" style="padding:28px 30px 0 30px;">
-      <table role="presentation" width="400" cellpadding="0" cellspacing="0" border="0" style="width:400px; max-width:100%;">
-        <tr><td align="center" bgcolor="#F1E6D2" style="background-color:#F1E6D2; border-radius:6px;">
-          <a href="https://www.chabadinsouthbeach.com/templates/articlecco_cdo/aid/7472654/jewish/High-Holiday-Schedule.htm" style="display:block; padding:15px 20px; font-family:Arial, Helvetica, sans-serif; font-size:15px; font-weight:bold; letter-spacing:3px; color:#660E29; text-decoration:none;">VIEW&nbsp;THE&nbsp;FULL&nbsp;SCHEDULE</a>
+    <tr><td align="center" class="pad" style="padding:28px 20px 0 20px;">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width:100%; max-width:400px;">
+        <tr><td align="center" class="btn" bgcolor="#F1E6D2" style="background-color:#F1E6D2; border-radius:6px;">
+          <a href="https://www.chabadinsouthbeach.com/templates/articlecco_cdo/aid/7472654/jewish/High-Holiday-Schedule.htm" style="display:block; padding:15px 12px; font-family:Arial, Helvetica, sans-serif; font-size:14px; line-height:20px; font-weight:bold; letter-spacing:2px; color:#660E29; text-decoration:none;">VIEW THE FULL SCHEDULE</a>
         </td></tr>
         <tr><td style="font-size:14px; line-height:14px;">&nbsp;</td></tr>
-        <tr><td align="center" bgcolor="#F1E6D2" style="background-color:#F1E6D2; border-radius:6px;">
-          <a href="https://www.chabadinsouthbeach.com/templates/articlecco_cdo/aid/7442141/jewish/High-Holiday-Seats.htm" style="display:block; padding:15px 20px; font-family:Arial, Helvetica, sans-serif; font-size:15px; font-weight:bold; letter-spacing:3px; color:#660E29; text-decoration:none;">RESERVE&nbsp;YOUR&nbsp;SEATS</a>
+        <tr><td align="center" class="btn" bgcolor="#F1E6D2" style="background-color:#F1E6D2; border-radius:6px;">
+          <a href="https://www.chabadinsouthbeach.com/templates/articlecco_cdo/aid/7442141/jewish/High-Holiday-Seats.htm" style="display:block; padding:15px 12px; font-family:Arial, Helvetica, sans-serif; font-size:14px; line-height:20px; font-weight:bold; letter-spacing:2px; color:#660E29; text-decoration:none;">RESERVE YOUR SEATS</a>
         </td></tr>
         <tr><td style="font-size:14px; line-height:14px;">&nbsp;</td></tr>
-        <tr><td align="center" bgcolor="#F1E6D2" style="background-color:#F1E6D2; border-radius:6px;">
-          <a href="https://www.chabadinsouthbeach.com/templates/articlecco_cdo/aid/7216148/jewish/Shabbat-Holiday-Reservations.htm" style="display:block; padding:15px 20px; font-family:Arial, Helvetica, sans-serif; font-size:15px; font-weight:bold; letter-spacing:3px; color:#660E29; text-decoration:none;">HOLIDAY&nbsp;MEAL&nbsp;RESERVATIONS</a>
+        <tr><td align="center" class="btn" bgcolor="#F1E6D2" style="background-color:#F1E6D2; border-radius:6px;">
+          <a href="https://www.chabadinsouthbeach.com/hhmeals" style="display:block; padding:15px 12px; font-family:Arial, Helvetica, sans-serif; font-size:14px; line-height:20px; font-weight:bold; letter-spacing:2px; color:#660E29; text-decoration:none;">HOLIDAY MEAL RESERVATIONS</a>
         </td></tr>
         <tr><td style="font-size:14px; line-height:14px;">&nbsp;</td></tr>
-        <tr><td align="center" style="border:2px solid #F1E6D2; border-radius:6px;">
-          <a href="https://www.chabadinsouthbeach.com/high" style="display:block; padding:13px 20px; font-family:Arial, Helvetica, sans-serif; font-size:15px; font-weight:bold; letter-spacing:3px; color:#F1E6D2; text-decoration:none;">HIGH&nbsp;HOLIDAY&nbsp;PAGE</a>
+        <tr><td align="center" class="btn" style="border:2px solid #F1E6D2; border-radius:6px;">
+          <a href="https://www.chabadinsouthbeach.com/high" style="display:block; padding:13px 12px; font-family:Arial, Helvetica, sans-serif; font-size:14px; line-height:20px; font-weight:bold; letter-spacing:2px; color:#F1E6D2; text-decoration:none;">HIGH HOLIDAY PAGE</a>
         </td></tr>
       </table>
     </td></tr>
 
     <!-- Divider -->
-    <tr><td style="padding:34px 60px 0 60px;">
+    <tr><td style="padding:34px 40px 0 40px;">
       <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
         <td style="border-top:1px solid #8A3A50; font-size:0; line-height:0;">&nbsp;</td>
       </tr></table>
     </td></tr>
 
     <!-- Schedule highlights -->
-    <tr><td align="center" style="padding:28px 30px 0 30px; font-family:Arial, Helvetica, sans-serif; font-size:14px; font-weight:bold; letter-spacing:5px; color:#F1E6D2;">
-      SCHEDULE&nbsp;HIGHLIGHTS
+    <tr><td align="center" class="pad secthd" style="padding:28px 20px 0 20px; font-family:Arial, Helvetica, sans-serif; font-size:13px; line-height:20px; font-weight:bold; letter-spacing:3px; color:#F1E6D2;">
+      SCHEDULE HIGHLIGHTS
     </td></tr>
 
-    <tr><td align="center" style="padding:18px 40px 0 40px;">
+    <tr><td align="center" class="pad" style="padding:18px 20px 0 20px;">
       <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
-        <tr><td align="center" style="font-family:Georgia, 'Times New Roman', serif; font-size:19px; font-weight:bold; color:#F1E6D2; padding-bottom:6px;">Rosh Hashana</td></tr>
-        <tr><td align="center" style="font-family:Arial, Helvetica, sans-serif; font-size:14px; line-height:23px; color:#E3CFB4;">
-          <b style="color:#F1E6D2;">Fri, Sept 11</b> &mdash; Evening services 7:15 pm &bull; Community dinner 8:00 pm<br>
-          <b style="color:#F1E6D2;">Shabbat, Sept 12</b> &mdash; Morning services 9:30 am &bull; Lunch 2:00 pm &bull; Dinner 8:15 pm<br>
-          <b style="color:#F1E6D2;">Sun, Sept 13</b> &mdash; Shofar sounding 12:00 pm &bull; Lunch 2:00 pm &bull; Tashlich 3:00 pm
+
+        <!-- Rosh Hashana -->
+        <tr><td align="center" style="font-family:Georgia, 'Times New Roman', serif; font-size:21px; line-height:28px; font-weight:bold; color:#F1E6D2; padding-bottom:10px;">Rosh Hashana</td></tr>
+
+        <tr><td align="center" style="font-family:Arial, Helvetica, sans-serif; font-size:15px; line-height:22px; font-weight:bold; color:#F1E6D2; padding-top:4px;">Friday, Sept 11</td></tr>
+        <tr><td align="center" style="font-family:Arial, Helvetica, sans-serif; font-size:15px; line-height:24px; color:#E3CFB4;">
+          Evening services <span class="nowrap">7:15 pm</span><br>
+          Community dinner <span class="nowrap">8:00 pm</span>
         </td></tr>
-        <tr><td style="font-size:18px; line-height:18px;">&nbsp;</td></tr>
-        <tr><td align="center" style="font-family:Georgia, 'Times New Roman', serif; font-size:19px; font-weight:bold; color:#F1E6D2; padding-bottom:6px;">Yom Kippur</td></tr>
-        <tr><td align="center" style="font-family:Arial, Helvetica, sans-serif; font-size:14px; line-height:23px; color:#E3CFB4;">
-          <b style="color:#F1E6D2;">Sun, Sept 20</b> &mdash; Fast begins 7:01 pm &bull; Kol Nidrei 7:15 pm<br>
-          <b style="color:#F1E6D2;">Mon, Sept 21</b> &mdash; Yizkor 1:00 pm &bull; Neilah 6:30 pm &bull; Fast ends 7:52 pm
+
+        <tr><td align="center" style="font-family:Arial, Helvetica, sans-serif; font-size:15px; line-height:22px; font-weight:bold; color:#F1E6D2; padding-top:12px;">Shabbat, Sept 12</td></tr>
+        <tr><td align="center" style="font-family:Arial, Helvetica, sans-serif; font-size:15px; line-height:24px; color:#E3CFB4;">
+          Morning services <span class="nowrap">9:30 am</span><br>
+          Lunch <span class="nowrap">2:00 pm</span><br>
+          Dinner <span class="nowrap">8:15 pm</span>
         </td></tr>
+
+        <tr><td align="center" style="font-family:Arial, Helvetica, sans-serif; font-size:15px; line-height:22px; font-weight:bold; color:#F1E6D2; padding-top:12px;">Sunday, Sept 13</td></tr>
+        <tr><td align="center" style="font-family:Arial, Helvetica, sans-serif; font-size:15px; line-height:24px; color:#E3CFB4;">
+          Shofar sounding <span class="nowrap">12:00 pm</span><br>
+          Lunch <span class="nowrap">2:00 pm</span><br>
+          Tashlich <span class="nowrap">3:00 pm</span>
+        </td></tr>
+
+        <tr><td style="font-size:26px; line-height:26px;">&nbsp;</td></tr>
+
+        <!-- Yom Kippur -->
+        <tr><td align="center" style="font-family:Georgia, 'Times New Roman', serif; font-size:21px; line-height:28px; font-weight:bold; color:#F1E6D2; padding-bottom:10px;">Yom Kippur</td></tr>
+
+        <tr><td align="center" style="font-family:Arial, Helvetica, sans-serif; font-size:15px; line-height:22px; font-weight:bold; color:#F1E6D2; padding-top:4px;">Sunday, Sept 20</td></tr>
+        <tr><td align="center" style="font-family:Arial, Helvetica, sans-serif; font-size:15px; line-height:24px; color:#E3CFB4;">
+          Fast begins <span class="nowrap">7:01 pm</span><br>
+          Kol Nidrei <span class="nowrap">7:15 pm</span>
+        </td></tr>
+
+        <tr><td align="center" style="font-family:Arial, Helvetica, sans-serif; font-size:15px; line-height:22px; font-weight:bold; color:#F1E6D2; padding-top:12px;">Monday, Sept 21</td></tr>
+        <tr><td align="center" style="font-family:Arial, Helvetica, sans-serif; font-size:15px; line-height:24px; color:#E3CFB4;">
+          Yizkor <span class="nowrap">1:00 pm</span><br>
+          Neilah <span class="nowrap">6:30 pm</span><br>
+          Fast ends <span class="nowrap">7:52 pm</span>
+        </td></tr>
+
       </table>
     </td></tr>
 
     <!-- Location -->
-    <tr><td align="center" style="padding:26px 40px 0 40px; font-family:Arial, Helvetica, sans-serif; font-size:13px; line-height:20px; color:#E3CFB4;">
-      All High Holiday services &amp; meals at<br>
-      <a href="https://maps.google.com/?q=The+Jewish+Museum+of+Florida,+301+Washington+Ave,+Miami+Beach,+FL" style="color:#F1E6D2; font-weight:bold; text-decoration:underline;">The Jewish Museum of Florida &bull; 301 Washington Ave, Miami Beach</a>
+    <tr><td align="center" class="pad" style="padding:30px 24px 0 24px; font-family:Arial, Helvetica, sans-serif; font-size:13px; line-height:20px; color:#E3CFB4;">
+      All High Holiday services at<br>
+      <a href="https://maps.google.com/?q=The+Jewish+Museum+of+Florida,+301+Washington+Ave,+Miami+Beach,+FL" style="color:#F1E6D2; font-weight:bold; text-decoration:underline;">The Jewish Museum of Florida<br>301 Washington Ave, Miami Beach</a>
     </td></tr>
 
     <!-- Footer -->
-    <tr><td align="center" style="padding:32px 40px 8px 40px;">
+    <tr><td align="center" style="padding:32px 24px 8px 24px;">
       <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
         <td style="border-top:1px solid #8A3A50; font-size:0; line-height:0;">&nbsp;</td>
       </tr></table>
     </td></tr>
-    <tr><td align="center" style="padding:14px 40px 0 40px; font-family:Arial, Helvetica, sans-serif; font-size:12px; line-height:20px; color:#C9A3AE;">
-      Chabad in South Beach &bull; 320 Meridian Ave, Miami Beach, FL 33139 &bull; 786-920-2302<br>
+    <tr><td align="center" class="pad" style="padding:14px 24px 0 24px; font-family:Arial, Helvetica, sans-serif; font-size:12px; line-height:20px; color:#C9A3AE;">
+      Chabad in South Beach<br>
+      320 Meridian Ave, Miami Beach, FL 33139<br>
+      <a href="tel:+17869202302" style="color:#C9A3AE; text-decoration:none;">786-920-2302</a><br>
       <a href="https://www.chabadinsouthbeach.com/high" style="color:#F1E6D2; text-decoration:underline;">chabadsobe.com/high</a>
       &nbsp;&bull;&nbsp;
       <a href="https://www.chabadinsouthbeach.com/4970020" style="color:#F1E6D2; text-decoration:underline;">Donate</a>
