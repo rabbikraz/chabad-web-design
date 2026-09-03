@@ -381,7 +381,13 @@
     for (var i = 0; i < MEALS.length; i++) if (MEALS[i].ev === ev) out.push(MEALS[i]);
     return out;
   }
-  function show(el, on) { if (el) el.style.display = on ? '' : 'none'; }
+  // Visibility is driven by the hm-hide class (never inline display), so
+  // elements that ship hidden in the markup can be revealed reliably.
+  function show(el, on) {
+    if (!el) return;
+    el.className = el.className.replace(/s*hm-hide/g, '') + (on ? '' : ' hm-hide');
+    el.style.display = '';
+  }
   function esc(s) {
     return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   }

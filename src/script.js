@@ -83,7 +83,7 @@
      also flag themselves with a one-line script. Override the list with
      window.SB_HH_PAGES.
      ------------------------------------------------------------------ */
-  var HH_PAGES = window.SB_HH_PAGES || ['7472611', '7472654', '7442141'];
+  var HH_PAGES = window.SB_HH_PAGES || ['7472611', '7472654', '7442141', '7495929'];
 
   function applyHHTheme() {
     var href = window.location.href;

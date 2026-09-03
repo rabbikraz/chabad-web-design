@@ -189,7 +189,7 @@ async function build() {
   // paint so the burgundy header does not flash cream. Same list as
   // HH_PAGES in script.js; window.SB_HH_PAGES (set in sb-config) overrides.
   const hhFlag =
-    "var H=window.SB_HH_PAGES||['7472611','7472654','7442141'];" +
+    "var H=window.SB_HH_PAGES||['7472611','7472654','7442141','7495929'];" +
     "for(var i=0;i<H.length;i++){if(location.href.indexOf(H[i])>-1){document.documentElement.className+=' sb-hh';break;}}";
   const bootJs = resolveVer + hhFlag +
     "document.write('<link rel=\"stylesheet\" href=\"'+B+'site.css\">');" +
