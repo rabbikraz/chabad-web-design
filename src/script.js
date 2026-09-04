@@ -1634,7 +1634,10 @@
 
     /* SCREEN 1 — hero, household, tiers (all custom controls) */
     s1.appendChild(div('sb-mw-hero',
-      '<h2>Become a partner in our Chabad</h2><p>Select your household to see your pricing.</p>'));
+      '<span class="sb-mw-eyebrow">Membership</span>' +
+      '<h2>Become a partner in our Chabad</h2>' +
+      '<p class="sb-mw-tag">Your home in South Beach</p>' +
+      '<p class="sb-mw-hint">Select your household to see your pricing.</p>'));
     s1.appendChild(div('sb-mw-seclabel', 'I am joining as'));
     var hhGrid = div('sb-mw-hhgrid');
     [['Single', 'One adult'], ['Couple', 'Two adults'], ['Family', 'Parents + children']].forEach(function (o) {
