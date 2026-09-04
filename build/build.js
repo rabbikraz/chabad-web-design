@@ -191,7 +191,12 @@ async function build() {
   const hhFlag =
     "var H=window.SB_HH_PAGES||['7472611','7472654','7442141','7495929'];" +
     "for(var i=0;i<H.length;i++){if(location.href.indexOf(H[i])>-1){document.documentElement.className+=' sb-hh';break;}}";
-  const bootJs = resolveVer + hhFlag +
+  // Pages whose CMS title is hidden (style.css html.sb-notitle). Same list
+  // as NOTITLE_PAGES in script.js; window.SB_NOTITLE_PAGES overrides.
+  const noTitleFlag =
+    "var N=window.SB_NOTITLE_PAGES||['7080118'];" +
+    "for(var j=0;j<N.length;j++){if(location.href.indexOf(N[j])>-1){document.documentElement.className+=' sb-notitle';break;}}";
+  const bootJs = resolveVer + hhFlag + noTitleFlag +
     "document.write('<link rel=\"stylesheet\" href=\"'+B+'site.css\">');" +
     "})();";
   const bootFooterJs = resolveVer +

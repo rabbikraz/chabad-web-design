@@ -95,6 +95,21 @@
     }
   }
 
+  /* Pages whose CMS title duplicates their own content heading: hide the
+     article header (style.css, html.sb-notitle). Flagged early by boot.js
+     too; this is the fallback. Override with window.SB_NOTITLE_PAGES. */
+  var NOTITLE_PAGES = window.SB_NOTITLE_PAGES || ['7080118'];
+
+  function applyNoTitle() {
+    var href = window.location.href;
+    for (var i = 0; i < NOTITLE_PAGES.length; i++) {
+      if (href.indexOf(String(NOTITLE_PAGES[i])) !== -1) {
+        document.documentElement.classList.add('sb-notitle');
+        return;
+      }
+    }
+  }
+
   function applyPageTheme() {
     var href = window.location.href;
     for (var key in PAGE_THEMES) {
@@ -2513,6 +2528,7 @@
     if (isHome()) document.body.classList.add('sb-home');
 
     safe('hh-theme', applyHHTheme);
+    safe('no-title', applyNoTitle);
     safe('page-rules', runPageRules);
     safe('page-theme', applyPageTheme);
     safe('nav-labels', normalizeNavLabels);
