@@ -3711,6 +3711,15 @@ html:not(#sbx):not(#sbx2):not(#sbx3) body.cco_body form.sb-mf .sb-mw-tprice { ma
 html:not(#sbx):not(#sbx2):not(#sbx3) body.cco_body form.sb-mf .sb-mw-tnum { font-family: var(--sb-font-heading); font-size: 24px; font-weight: 400; color: #17232E; }
 html:not(#sbx):not(#sbx2):not(#sbx3) body.cco_body form.sb-mf .sb-mw-tper { font-size: 13px; color: #8A5F16; margin-left: 2px; }
 html:not(#sbx):not(#sbx2):not(#sbx3) body.cco_body form.sb-mf .sb-mw-tyear { font-size: 12.5px; color: #8A5F16; margin-top: .1rem; }
+/* "Everything in <lower tier>, plus:" - same size as the perks, just bolder */
+html:not(#sbx):not(#sbx2):not(#sbx3) body.cco_body form.sb-mf .sb-mw-tincl {
+  font-size: 13px;
+  font-weight: 600;
+  color: #17232E;
+  line-height: 1.55;
+  margin: 8px 0 0;
+}
+html:not(#sbx):not(#sbx2):not(#sbx3) body.cco_body form.sb-mf .sb-mw-tincl + .sb-mw-tperks { margin-top: 2px; }
 html:not(#sbx):not(#sbx2):not(#sbx3) body.cco_body form.sb-mf .sb-mw-tperks {
   list-style: none;
   margin: 8px 0 0;

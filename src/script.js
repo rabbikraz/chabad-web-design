@@ -1652,7 +1652,7 @@
       '<span class="sb-mw-eyebrow">Membership</span>' +
       '<h2>Become a partner in our Chabad</h2>' +
       '<p class="sb-mw-tag">Your home in South Beach</p>' +
-      '<p class="sb-mw-hint">Select your household to see your pricing.</p>'));
+      '<p class="sb-mw-hint">Select your household to discover your options and benefits.</p>'));
     s1.appendChild(div('sb-mw-seclabel', 'I am joining as'));
     var hhGrid = div('sb-mw-hhgrid');
     [['Single', 'One adult'], ['Couple', 'Two adults'], ['Family', 'Parents + children']].forEach(function (o) {
@@ -1695,13 +1695,15 @@
     s1.appendChild(div('sb-mw-seclabel', 'Membership level'));
     var tierGrid = div('sb-mw-tiergrid');
     var tierEls = {};
-    TIER_NAMES.forEach(function (t) {
+    TIER_NAMES.forEach(function (t, ti) {
       var c = div('sb-mw-tier' + (t === 'Chai' ? ' sb-mw-popular' : ''));
+      var prev = ti > 0 ? TIER_NAMES[ti - 1] : null;
       c.innerHTML =
         (t === 'Chai' ? '<span class="sb-mw-badge">Most popular</span>' : '') +
         '<div class="sb-mw-tname">' + t + '</div>' +
         '<div class="sb-mw-tprice"><span class="sb-mw-tnum"></span><span class="sb-mw-tper">/mo</span></div>' +
         '<div class="sb-mw-tyear"></div>' +
+        (prev ? '<div class="sb-mw-tincl">Everything in ' + prev + ', plus:</div>' : '') +
         '<ul class="sb-mw-tperks">' + (BENEFITS[t] || []).map(function (b) { return '<li>' + b + '</li>'; }).join('') + '</ul>';
       c.addEventListener('click', function () { st.tier = t; paint(); });
       tierGrid.appendChild(c);
