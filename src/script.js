@@ -1650,7 +1650,7 @@
     /* SCREEN 1 — hero, household, tiers (all custom controls) */
     s1.appendChild(div('sb-mw-hero',
       '<span class="sb-mw-eyebrow">Membership</span>' +
-      '<h2>Become a partner in our Chabad</h2>' +
+      '<h2>Become a Partner in our Chabad</h2>' +
       '<p class="sb-mw-tag">Your home in South Beach</p>' +
       '<p class="sb-mw-hint">Select your household to discover your options and benefits.</p>'));
     s1.appendChild(div('sb-mw-seclabel', 'I am joining as'));
@@ -1699,7 +1699,7 @@
       var c = div('sb-mw-tier' + (t === 'Chai' ? ' sb-mw-popular' : ''));
       var prev = ti > 0 ? TIER_NAMES[ti - 1] : null;
       c.innerHTML =
-        (t === 'Chai' ? '<span class="sb-mw-badge">Most popular</span>' : '') +
+        (t === 'Chai' ? '<span class="sb-mw-badge">Most Popular</span>' : '') +
         '<div class="sb-mw-tname">' + t + '</div>' +
         '<div class="sb-mw-tprice"><span class="sb-mw-tnum"></span><span class="sb-mw-tper">/mo</span></div>' +
         '<div class="sb-mw-tyear"></div>' +
@@ -1720,12 +1720,12 @@
     var top2 = div('sb-mw-top');
     var back2 = btn('sb-mw-back', 'Back');
     top2.appendChild(back2);
-    top2.appendChild(div('sb-mw-h1', 'Your information'));
+    top2.appendChild(div('sb-mw-h1', 'Your Information'));
     s2.appendChild(top2);
     var err2 = div('sb-mw-err');
     err2.textContent = 'Please complete the highlighted required fields.';
     s2.appendChild(err2);
-    var infoCard = card(s2, 'Primary member');
+    var infoCard = card(s2, 'Primary Member');
     var spouseCard = card(s2, 'Spouse', 'Shares the household mailing address above.');
     var kidsCard = card(s2, 'Children', 'One row per child, based on the count you chose.');
     var cont2 = btn('sb-mw-continue', 'Continue to preferences and payment');
@@ -1735,7 +1735,7 @@
     var top3 = div('sb-mw-top');
     var back3 = btn('sb-mw-back', 'Back');
     top3.appendChild(back3);
-    top3.appendChild(div('sb-mw-h1', 'Preferences & payment'));
+    top3.appendChild(div('sb-mw-h1', 'Preferences & Payment'));
     s3.appendChild(top3);
     var extrasCard = card(s3, 'Preferences');
     var payCard = card(s3, 'Payment');
