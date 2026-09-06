@@ -2484,8 +2484,18 @@
     var GENERIC = /^(Shabbat \/ Yom Tov|Yom Tov|Shabbat)(?= (Eve|Day)\b)/;
     var NY_DINNER = "New Year's Dinner";
 
+    var writes = 0;
+    var writesReset = 0;
+    var obs = null;
     function setText(node, val) {
-      if (node && node.textContent !== val) node.textContent = val;
+      if (!node || node.textContent === val) return;
+      // safety net: a non-idempotent rewrite would ping-pong with the observer
+      // forever (live bug 2026-09-06). Passes that write nothing are free;
+      // more than 60 actual text writes in 2s means a loop - stop observing.
+      var now = Date.now();
+      if (now - writesReset > 2000) { writesReset = now; writes = 0; }
+      if (++writes > 60) { if (obs) { obs.disconnect(); obs = null; } return; }
+      node.textContent = val;
     }
     function selectedIsRH() {
       var o = sel.options[sel.selectedIndex];
@@ -2533,21 +2543,12 @@
     }
 
     var queued = false;
-    var burst = 0;
-    var burstReset = 0;
-    var obs = null;
     function schedule() {
       if (queued) return;
       queued = true;
-      requestAnimationFrame(function () {
-        queued = false;
-        // safety net: if something ever makes apply() non-idempotent again,
-        // stop observing instead of rewriting the page forever
-        var now = Date.now();
-        if (now - burstReset > 2000) { burstReset = now; burst = 0; }
-        if (++burst > 40) { if (obs) obs.disconnect(); obs = null; return; }
-        safe('meal-wording', apply);
-      });
+      // setTimeout, not requestAnimationFrame: rAF is not pumped in the
+      // headless harness, which hid the runaway rewrite from testing
+      setTimeout(function () { queued = false; safe('meal-wording', apply); }, 0);
     }
     // Our own writes trigger mutations too; apply() only writes when the text
     // differs, so the observer settles after one extra pass.
