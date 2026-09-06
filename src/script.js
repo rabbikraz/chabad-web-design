@@ -1830,8 +1830,27 @@
       if (li.querySelector('input[id^="first_"]')) li.classList.add('sb-mf-namerow');
     });
     // checkbox-only rows say it all in the checkbox text - drop the label
-    lisByLabel(/^child d+ mitzvah lessons$/).forEach(function (li) {
+    lisByLabel(/^child \d+ mitzvah lessons$/).forEach(function (li) {
       li.classList.add('sb-mf-nolabel');
+      $all('.form-checkbox-item label span, .form-checkbox-item label', li).forEach(function (sp) {
+        if (sp.children.length) return;
+        sp.textContent = sp.textContent.replace(/bar\/bat mitzvah/i, 'Bar/Bat Mitzvah');
+      });
+    });
+    // the Bar/Bat Mitzvah date is computed by calcMitzvah(), never typed
+    lisByLabel(/^child \d+ bar\/bat mitzvah$/).forEach(function (li) {
+      li.classList.add('sb-mf-auto');
+      var lab = li.querySelector('.form-label-left label:not(.label-message)');
+      if (lab) lab.textContent = lab.textContent.replace(/bar\/bat mitzvah\s*$/i, 'Bar/Bat Mitzvah Date');
+      var msg = li.querySelector('.form-label-left .label-message');
+      if (msg && !msg.textContent.trim()) msg.textContent = ' Calculated automatically from the birthday and gender above.';
+      var inp = li.querySelector('input');
+      if (inp) {
+        inp.readOnly = true;
+        inp.tabIndex = -1;
+        inp.placeholder = 'Fill in the birthday and gender first';
+        inp.setAttribute('autocomplete', 'off');
+      }
     });
     // the per-child fields now cover Hebrew names / school / lessons
     (function () {

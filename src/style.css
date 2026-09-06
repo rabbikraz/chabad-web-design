@@ -3690,7 +3690,7 @@ html:not(#sbx):not(#sbx2):not(#sbx3) body.cco_body form.sb-mf .sb-mw-tier.sb-on 
 html:not(#sbx):not(#sbx2):not(#sbx3) body.cco_body form.sb-mf .sb-mw-badge {
   position: absolute;
   top: -11px;
-  left: 16px;
+  right: 16px;
   padding: 3px 10px;
   background: #C08A2E;
   color: #fff;
@@ -4135,6 +4135,16 @@ html:not(#sbx):not(#sbx2):not(#sbx3) body.cco_body form.sb-mf .sb-mw-billrow {
   margin: 0 0 1rem;
 }
 html:not(#sbx):not(#sbx2):not(#sbx3) body.cco_body form.sb-mf li.sb-mf-nolabel .form-label-left { display: none !important; }
+/* auto-computed fields (Bar/Bat Mitzvah date): read-only, styled as a result not an input */
+html:not(#sbx):not(#sbx2):not(#sbx3) body.cco_body form.sb-mf li.sb-mf-auto input[readonly] {
+  background: #F3E8D3 !important;
+  border-color: transparent !important;
+  color: #17232E !important;
+  box-shadow: none !important;
+  cursor: default !important;
+}
+html:not(#sbx):not(#sbx2):not(#sbx3) body.cco_body form.sb-mf li.sb-mf-auto input[readonly]::placeholder { color: #8A5F16; opacity: .8; }
+html:not(#sbx):not(#sbx2):not(#sbx3) body.cco_body form.sb-mf li.sb-mf-auto .label-message { display: block; font-size: 12.5px; color: #8A5F16; font-weight: 400; }
 html:not(#sbx):not(#sbx2):not(#sbx3) body.cco_body form.sb-mf .form-checkbox-item input.form-checkbox {
   -webkit-appearance: checkbox !important;
   appearance: auto !important;
