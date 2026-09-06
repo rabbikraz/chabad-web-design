@@ -2522,21 +2522,37 @@
         var pt = document.getElementById('slot' + s + 'PriceTitle');
         if (pt && (GENERIC.test(pt.textContent) || /^Rosh Hashana/.test(pt.textContent))) {
           var p = pt.textContent.replace(GENERIC, 'Rosh Hashana');
-          if (firstNight) p = p.replace(/ Dinner$/, ' ' + NY_DINNER);
+          // idempotent: a title already ending in "New Year's Dinner" must not
+          // grow another "New Year's" on every observer pass (live bug 2026-09-06)
+          if (firstNight && / Dinner$/.test(p) && p.indexOf(NY_DINNER) === -1) {
+            p = p.replace(/ Dinner$/, ' ' + NY_DINNER);
+          }
           setText(pt, p);
         }
       }
     }
 
     var queued = false;
+    var burst = 0;
+    var burstReset = 0;
+    var obs = null;
     function schedule() {
       if (queued) return;
       queued = true;
-      requestAnimationFrame(function () { queued = false; safe('meal-wording', apply); });
+      requestAnimationFrame(function () {
+        queued = false;
+        // safety net: if something ever makes apply() non-idempotent again,
+        // stop observing instead of rewriting the page forever
+        var now = Date.now();
+        if (now - burstReset > 2000) { burstReset = now; burst = 0; }
+        if (++burst > 40) { if (obs) obs.disconnect(); obs = null; return; }
+        safe('meal-wording', apply);
+      });
     }
     // Our own writes trigger mutations too; apply() only writes when the text
     // differs, so the observer settles after one extra pass.
-    new MutationObserver(schedule).observe(root, { childList: true, subtree: true, characterData: true });
+    obs = new MutationObserver(schedule);
+    obs.observe(root, { childList: true, subtree: true, characterData: true });
     sel.addEventListener('change', schedule);
     schedule();
   }
