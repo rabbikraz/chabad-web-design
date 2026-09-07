@@ -2583,8 +2583,11 @@
     };
     var SLOTS = {
         '1': { kind: 'dinner', label: 'Friday Night Dinner', active: false },
-        '2': { kind: 'lunch',  label: 'Shabbat Day Lunch',   active: false }
+        '2': { kind: 'lunch',  label: 'Shabbat Day Lunch',   active: false },
+        'B': { kind: 'both',   label: 'Both Meals',          active: false }   // one headcount for both
     };
+    var BOTH = { A: PRICE.dinner.A + PRICE.lunch.A, S: PRICE.dinner.S + PRICE.lunch.S, C: PRICE.dinner.C + PRICE.lunch.C };
+    var ALL_SLOTS = ['1', '2', 'B'];
     var PAST_WEEKS = 10;             // how many previous Shabbosim to list
     var CATCHALL_TITLE = 'Late and Past Payments';   // "Other" tab, one per year
 
@@ -2647,42 +2650,25 @@
         renderWeeks();
     }
 
-    function chip(value, text) {
-        var b = document.createElement('button');
-        b.type = 'button';
-        b.className = 'lpchip';
-        b.setAttribute('data-week', value);
-        b.innerText = text;
-        return b;
-    }
+    var sel = null;
     function renderWeeks() {
         var wrap = byId('payShabbosWrap');
         wrap.innerHTML = '';
-        weeks.forEach(function (w, i) { wrap.appendChild(chip(String(i), w.display)); });
-        wrap.appendChild(chip('other', 'Other / not sure (explain in the notes)'));
-        paintChips();
+        wrap.className = 'sb-lp-selwrap';
+        sel = document.createElement('select');
+        sel.id = 'payShabbos';
+        sel.className = 'sb-lp-select';
+        function opt(v, t) { var o = document.createElement('option'); o.value = v; o.text = t; sel.appendChild(o); }
+        opt('', 'Choose the Shabbos...');
+        weeks.forEach(function (w, i) { opt(String(i), w.display); });
+        opt('other', 'Other / not sure (explain in the notes)');
+        sel.addEventListener('change', function () {
+            var v = sel.value;
+            chosen = v === '' ? null : (v === 'other' ? 'other' : parseInt(v, 10));
+            paintWeek();
+        });
+        wrap.appendChild(sel);
     }
-    function paintChips() {
-        var chips = byId('payShabbosWrap').getElementsByTagName('button');
-        for (var i = 0; i < chips.length; i++) {
-            var on = chosen !== null ? chips[i].getAttribute('data-week') === String(chosen) : false;
-            chips[i].className = on ? 'lpchip lpchip-on' : 'lpchip';
-        }
-    }
-    byId('payShabbosWrap').addEventListener('click', function (e) {
-        var b = e.target;
-        while (b) {
-            if (b.getAttribute) { if (b.getAttribute('data-week')) break; }
-            if (b === e.currentTarget) { b = null; break; }
-            b = b.parentNode;
-        }
-        if (!b) return;
-        e.preventDefault();
-        var v = b.getAttribute('data-week');
-        chosen = v === 'other' ? 'other' : parseInt(v, 10);
-        paintChips();
-        paintWeek();
-    });
 
     function loadWeeks() {
         var sat = upcomingSaturday();
@@ -2707,11 +2693,13 @@
             var s = fromISO(w.satISO);
             byId('slot1Date').innerText = fmtNice(addDays(s, -1));
             byId('slot2Date').innerText = fmtNice(s);
+            if (byId('slotBDate')) byId('slotBDate').innerText = fmtShort(addDays(s, -1)) + ' - ' + fmtShort(s);
             byId('shabbosRowLabel').innerText = w.display;
             row.style.display = 'block';
         } else {
             byId('slot1Date').innerText = ' ';
             byId('slot2Date').innerText = ' ';
+            if (byId('slotBDate')) byId('slotBDate').innerText = ' ';
             if (chosen === 'other') {
                 byId('shabbosRowLabel').innerText = 'Shabbos: see notes';
                 row.style.display = 'block';
@@ -2720,6 +2708,40 @@
             }
         }
     }
+
+    // ===== "BOTH MEALS" CARD =====
+    // Cloned from the Shabbat Day card so it inherits the paste's classes; the
+    // paste itself never needs to change for this.
+    (function buildBothCard() {
+        var t2 = byId('slot2Toggle'), p2 = byId('slot2Pricing'), r2 = byId('slot2Row');
+        if (!t2 || !p2 || !r2 || byId('slotBToggle')) return;
+        var grid = t2.parentNode;
+        grid.className += ' sb-lp-grid';
+        var tB = t2.cloneNode(true);
+        tB.id = 'slotBToggle';
+        tB.children[0].innerText = 'Both Meals';
+        tB.children[1].innerText = 'Dinner + Lunch';
+        tB.children[2].id = 'slotBDate';
+        grid.appendChild(tB);
+
+        var pB = p2.cloneNode(true);
+        pB.id = 'slotBPricing';
+        pB.firstElementChild.innerText = 'Both Meals (one headcount covers dinner and lunch)';
+        var ids = pB.querySelectorAll('[id^="slot2"]');
+        for (var i = 0; i < ids.length; i++) ids[i].id = ids[i].id.replace('slot2', 'slotB');
+        var btns = pB.querySelectorAll('[data-qty^="slot2"]');
+        for (var j = 0; j < btns.length; j++) btns[j].setAttribute('data-qty', btns[j].getAttribute('data-qty').replace('slot2', 'slotB'));
+        var priceSpans = Array.prototype.slice.call(pB.querySelectorAll('span')).filter(function (el) { return /^\$\d/.test(el.innerText); });
+        var tiers = ['A', 'S', 'C'];
+        priceSpans.forEach(function (el, k) { el.innerText = '$' + BOTH[tiers[k]] + (k === 2 ? ' per child, both meals' : ' per person, both meals'); });
+        p2.parentNode.insertBefore(pB, p2.nextSibling);
+
+        var rB = r2.cloneNode(true);
+        rB.id = 'slotBRow';
+        rB.firstElementChild.innerText = 'Both Meals';
+        rB.querySelector('#slot2Total').id = 'slotBTotal';
+        r2.parentNode.insertBefore(rB, r2.nextSibling);
+    })();
 
     // ===== MEAL TOGGLES =====
     function paintSlot(slot) {
@@ -2736,12 +2758,15 @@
             p.style.display = 'none';
             ['A', 'S', 'C'].forEach(function (tier) { byId('slot' + slot + tier).innerText = '0'; });
         }
-        byId('mealsHint').style.display = (SLOTS['1'].active || SLOTS['2'].active) ? 'none' : 'block';
+        byId('mealsHint').style.display = (SLOTS['1'].active || SLOTS['2'].active || SLOTS.B.active) ? 'none' : 'block';
     }
-    ['1', '2'].forEach(function (slot) {
+    ALL_SLOTS.forEach(function (slot) {
         byId('slot' + slot + 'Toggle').addEventListener('click', function () {
             SLOTS[slot].active = !SLOTS[slot].active;
-            paintSlot(slot);
+            // "Both" replaces the two single cards and vice versa
+            if (slot === 'B' && SLOTS.B.active) { SLOTS['1'].active = false; SLOTS['2'].active = false; }
+            if (slot !== 'B' && SLOTS[slot].active) { SLOTS.B.active = false; }
+            ALL_SLOTS.forEach(paintSlot);
             updateTotals();
         });
     });
@@ -2771,7 +2796,7 @@
     function slotCost(slot) {
         var meta = SLOTS[slot];
         if (!meta.active) return 0;
-        var p = PRICE[meta.kind];
+        var p = meta.kind === 'both' ? BOTH : PRICE[meta.kind];
         return qty(slot, 'A') * p.A + qty(slot, 'S') * p.S + qty(slot, 'C') * p.C;
     }
     function slotHeads(slot) {
@@ -2780,7 +2805,7 @@
     }
     function updateTotals() {
         var total = 0;
-        ['1', '2'].forEach(function (slot) {
+        ALL_SLOTS.forEach(function (slot) {
             var c = slotCost(slot);
             total += c;
             byId('slot' + slot + 'Total').innerText = String(c);
@@ -2805,7 +2830,7 @@
         if (chosen === null) return 'Please choose which Shabbos this payment is for.';
         var anyActive = false;
         var anyEmpty = false;
-        ['1', '2'].forEach(function (slot) {
+        ALL_SLOTS.forEach(function (slot) {
             if (!SLOTS[slot].active) return;
             anyActive = true;
             if (slotHeads(slot) === 0) anyEmpty = true;
@@ -2849,11 +2874,14 @@
         var meals = [];
         var dinnerA = 0, dinnerS = 0, dinnerC = 0;
         var lunchA = 0, lunchS = 0, lunchC = 0;
+        var both = SLOTS.B.active;
         ['1', '2'].forEach(function (slot) {
             var meta = SLOTS[slot];
-            var a = meta.active ? qty(slot, 'A') : 0;
-            var sb = meta.active ? qty(slot, 'S') : 0;
-            var c = meta.active ? qty(slot, 'C') : 0;
+            var src = both ? 'B' : slot;
+            var on = both || meta.active;
+            var a = on ? qty(src, 'A') : 0;
+            var sb = on ? qty(src, 'S') : 0;
+            var c = on ? qty(src, 'C') : 0;
             meals.push({
                 id: 'slot' + slot,
                 label: meta.label,
@@ -2963,6 +2991,12 @@
     }
 
     // ===== INIT =====
+    (function relabelNotes() {
+        var lab = byId('sbPayFormContainer').querySelector('label[for="notes"]');
+        if (lab) lab.innerText = 'Comments or notes (optional)';
+        var n = byId('notes');
+        if (n) n.placeholder = 'Anything else we should know';
+    })();
     loadWeeks();
     updateTotals();
     initPayPal();

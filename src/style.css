@@ -4580,3 +4580,13 @@ html.sb-hh body.cco_body input[type="submit"].sb-hh-submit {
   box-shadow: 0 10px 28px rgba(0, 0, 0, .25);
 }
 html.sb-hh body.cco_body .sb-hh-submit:hover { background: #E3CFB4; }
+
+/* ============================================================
+   Shabbos Meal Payment page (paste = style + markup only; logic is
+   initLatePayment in script.js). Three even meal cards + runtime select.
+   ============================================================ */
+#sbPayFormContainer .sb-lp-grid { display: grid !important; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
+#sbPayFormContainer .sb-lp-grid > div { flex: none !important; min-width: 0 !important; display: flex; flex-direction: column; justify-content: center; }
+@media (max-width: 560px) { #sbPayFormContainer .sb-lp-grid { grid-template-columns: 1fr; } }
+#sbPayFormContainer .sb-lp-selwrap { display: block; }
+#sbPayFormContainer .sb-lp-select { width: 100%; padding: 1.1rem 1.2rem; border: 2px solid rgba(23,35,46,.14); border-radius: 12px; font-size: 1.38rem; color: #17232E; background: #fff; font-family: inherit; box-sizing: border-box; }
