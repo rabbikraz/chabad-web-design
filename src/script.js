@@ -3167,6 +3167,22 @@
     initPayPal();
   }
 
+  /* ---------------- High Holiday links -> the High Holidays landing page ----------------
+     The CMS "Events > High Holidays" menu item (and our footer copy of it) points
+     at the old Event-Reservations section (aid 418840), and the calendar rail's
+     Rosh Hashanah / Yom Kippur cards link to the bare calendar day. Leibel wants
+     all of those to open the High Holidays page (7472611). Runs after the footer
+     and events rail are built. */
+  var HH_LANDING = '/7472611';
+  function fixHighHolidayLinks() {
+    $all('a[href*="aid/418840"]').forEach(function (a) { a.setAttribute('href', HH_LANDING); });
+    $all('.sb-event-card').forEach(function (card) {
+      var h = card.querySelector('h3 a');
+      if (!h || !/rosh\s*hashan|yom\s*kippur|high\s*holiday/i.test(txt(h))) return;
+      $all('a', card).forEach(function (a) { a.setAttribute('href', HH_LANDING); });
+    });
+  }
+
   /* ---------------- init ---------------- */
 
   function init() {
@@ -3206,6 +3222,7 @@
     }
 
     safe('footer', buildFooter);
+    safe('hh-links', fixHighHolidayLinks);
     safe('feedback-bar', relocateFeedbackBar);
     safe('event-hero', buildEventHero);
     safe('sponsor-tiers', initSponsorTiers);

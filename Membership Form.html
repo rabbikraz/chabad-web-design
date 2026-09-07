@@ -457,6 +457,7 @@
         </div>
       </div>
 
+
       <div class="field" id="memorialPayField" style="display:none;">
         <label class="flabel" id="memorial_fee_label">Memorial board</label>
         <div class="helper" style="margin-top:0;margin-bottom:0.5rem;" id="memorial_fee_help">Memorial board plaque.</div>
@@ -471,6 +472,7 @@
         <div class="sum-row"><span>Membership</span><span id="sum_tier">-</span></div>
         <div class="sum-row"><span>Household</span><span id="sum_household">-</span></div>
         <div class="sum-row"><span>Start date</span><span id="sum_start">-</span></div>
+        <div class="sum-row"><span>Renewal</span><span id="sum_renewal">-</span></div>
         <div class="sum-row"><span>Monthly</span><span id="sum_monthly">-</span></div>
         <div class="sum-row"><span>Annual total</span><span id="sum_annual">-</span></div>
         <div class="sum-row" id="sum_discount_row" style="display:none;"><span id="sum_discount_label">Discount</span><span id="sum_discount">-</span></div>
@@ -492,6 +494,7 @@
 
       <div class="field" id="termsField" style="margin-bottom:0.9rem;">
         <label class="chk"><input type="checkbox" id="pay_terms" onchange="onTermsChange()" /> <span id="terms_label">I authorize the recurring billing shown above until I cancel.</span></label>
+        <div class="helper" id="renewal_help" style="margin-top:0.4rem;">Your membership renews each year until you cancel. We email you a month before every anniversary, and you can cancel any time with one click.</div>
       </div>
 
       <div id="paypal-notice" class="pay-notice">Please accept the billing authorization above to enable payment.</div>
@@ -514,6 +517,7 @@
         <div class="sum-row"><span>Membership</span><span id="conf_tier">-</span></div>
         <div class="sum-row"><span>Household</span><span id="conf_household">-</span></div>
         <div class="sum-row"><span>Start date</span><span id="conf_start">-</span></div>
+        <div class="sum-row"><span>Renewal</span><span id="conf_renewal">-</span></div>
         <div class="sum-row sum-total"><span>Monthly</span><span id="conf_monthly">-</span></div>
         <div class="sum-row"><span>Annual total</span><span id="conf_annual">-</span></div>
         <div class="sum-row" id="conf_memorial_row" style="display:none;"><span>Memorial board</span><span id="conf_memorial">-</span></div>
@@ -1725,6 +1729,7 @@ function refreshSummary() {
   setText('sum_tier', TIER_LABEL[h.tier] || '-');
   setText('sum_household', hhDesc());
   setText('sum_start', h.startDate || '-');
+  setText('sum_renewal', renewalLabel());
   /* prices reflect an applied discount code */
   var dm = applyDiscount(h.monthly);
   var da = applyDiscount(h.annual);
@@ -1796,6 +1801,10 @@ function onStartDateChange() {
 }
 
 function billingMode() { return radioVal('pay_billing') || 'monthly'; }
+/* Every membership renews until cancelled (PayPal cycles 0). 'once' is kept
+   as a value the backend understands should a one-year option ever return. */
+function renewalMode() { return radioVal('pay_renewal') || 'auto'; }
+function renewalLabel() { return (renewalMode() === 'once') ? 'Ends after one year' : 'Automatic each year'; }
 
 /* ---- Memorial board (one-time $360 per plaque) ---- */
 function memorialCount() {
@@ -1820,12 +1829,28 @@ function memorialBillingResolved() {
 function onMemorialPayChange() { refreshSummary(); }
 
 function onBillingChange() {
+  var once = (renewalMode() === 'once');
+  var annual = (billingMode() === 'annual');
   var lbl = document.getElementById('terms_label');
   if (lbl) {
-    lbl.textContent = (billingMode() === 'annual')
-      ? 'I authorize the annual recurring billing shown above until I cancel.'
-      : 'I authorize the monthly recurring billing shown above until I cancel.';
+    if (once) {
+      lbl.textContent = annual
+        ? 'I authorize the one-time annual payment shown above.'
+        : 'I authorize 12 monthly payments as shown above.';
+    } else {
+      lbl.textContent = annual
+        ? 'I authorize the annual recurring billing shown above until I cancel.'
+        : 'I authorize the monthly recurring billing shown above until I cancel.';
+    }
   }
+  var help = document.getElementById('renewal_help');
+  if (help) {
+    help.textContent = once
+      ? 'Your membership ends after one year with no further charges. We email you a month before it ends with a link to renew.'
+      : 'Your membership renews each year until you cancel. We email you a month before every anniversary, and you can cancel any time with one click.';
+  }
+  /* a new plan length means a fresh PayPal button */
+  if (paypalRendered) { paypalRendered = false; updatePayState(); }
   refreshSummary();
 }
 
@@ -1840,13 +1865,14 @@ function chk(id) { var e = document.getElementById(id); return e ? e.checked : f
 /* ============================================================
    PAYPAL SUBSCRIPTIONS (monthly or annual) + comp codes.
    Two base plans (created by make-paypal-plan.js): a MONTHLY plan
-   and an ANNUAL plan. The exact amount is overridden per subscriber
-   at checkout, so each plan covers every price. The SDK loads only
+   and an ANNUAL plan, both open-ended (renew until cancelled). The
+   exact amount is overridden per subscriber at checkout, so each plan
+   covers every price. The SDK loads only
    after the member accepts the billing terms.
    ============================================================ */
 var PAYPAL_CLIENT_ID = 'AZF-mE2fd4BhaiSEsPuLcEWzsMMhACeMhErPDDRt_JiOeoCZY_RGIdPjh4cVy1T8jm6KG35JLi5J0x-V';
-var PAYPAL_PLAN_ID_MONTHLY = 'P-4LJ28566DC929290SNJPEHBI';
-var PAYPAL_PLAN_ID_ANNUAL  = 'P-7R80393900362843ANJPEHBI';
+var PAYPAL_PLAN_ID_MONTHLY = 'P-84R14429HD2432009NKPQGZI';   /* Monthly Membership (ongoing), created 2026-09-07 */
+var PAYPAL_PLAN_ID_ANNUAL  = 'P-7D723527MX0513131NKPQGZI';   /* Annual Membership (renews yearly), created 2026-09-07 */
 
 /* Discount codes live in the "Codes" tab of the membership Google Sheet and
    are checked live via the backend (?action=checkCode), so new codes can be
@@ -1877,12 +1903,17 @@ function applyDiscount(amount) {
   return Math.round(v * 100) / 100;
 }
 
-/* Returns the plan id, amount, and number of cycles for the chosen billing. */
+/* Returns the plan id, amount, and number of cycles for the chosen billing.
+   The member's renewal choice sets the length: 'auto' -> cycles 0 (the
+   subscription keeps going until cancelled; the backend emails a notice a
+   month before each anniversary), 'once' -> exactly one year (12 monthly
+   payments or 1 annual payment; the backend emails a renew link instead). */
 function resolvePlan() {
+  var once = (renewalMode() === 'once');
   if (billingMode() === 'annual') {
-    return { id: PAYPAL_PLAN_ID_ANNUAL, amount: applyDiscount(state.household.annual).toFixed(2), cycles: 1 };
+    return { id: PAYPAL_PLAN_ID_ANNUAL, amount: applyDiscount(state.household.annual).toFixed(2), cycles: once ? 1 : 0 };
   }
-  return { id: PAYPAL_PLAN_ID_MONTHLY, amount: applyDiscount(state.household.monthly).toFixed(2), cycles: 12 };
+  return { id: PAYPAL_PLAN_ID_MONTHLY, amount: applyDiscount(state.household.monthly).toFixed(2), cycles: once ? 12 : 0 };
 }
 
 function onTermsChange() { updatePayState(); }
@@ -1959,7 +1990,7 @@ function renderPayPal() {
     onApprove: function (data) {
       var mc = memorialCount();
       state.payment = {
-        provider: 'paypal', subscriptionId: data.subscriptionID, billing: billingMode(),
+        provider: 'paypal', subscriptionId: data.subscriptionID, billing: billingMode(), renewal: renewalMode(),
         memorialPlaques: mc, memorialFee: mc * MEMORIAL_FEE, memorialBilling: memorialBillingResolved()
       };
       collectPreferences();
@@ -2053,7 +2084,7 @@ function setCompUI(on) {
 function finishComped() {
   var mc = memorialCount();
   var old = state.payment || {};
-  state.payment = { provider: 'comp', subscriptionId: old.code || 'COMP', billing: 'comped', code: old.code || '', comped: true, discount: old.discount || null };
+  state.payment = { provider: 'comp', subscriptionId: old.code || 'COMP', billing: 'comped', renewal: renewalMode(), code: old.code || '', comped: true, discount: old.discount || null };
   state.payment.memorialPlaques = mc;
   state.payment.memorialFee = mc * MEMORIAL_FEE;
   state.payment.memorialBilling = (mc > 0) ? 'separate' : 'none';
@@ -2166,6 +2197,7 @@ function buildMembershipXml() {
   s += selfEl('payment', at('provider', state.payment.provider) + at('subscriptionId', state.payment.subscriptionId) + at('billing', state.payment.billing || 'monthly') + at('code', state.payment.code || '') +
     at('discountKind', disc.kind || '') + at('discountValue', (disc.value === undefined) ? '' : disc.value) +
     at('discountedMonthly', applyDiscount(h.monthly)) + at('discountedAnnual', applyDiscount(h.annual)) +
+    at('renewal', state.payment.renewal || renewalMode()) +
     at('memorialPlaques', state.payment.memorialPlaques || 0) + at('memorialFee', state.payment.memorialFee || 0) + at('memorialBilling', state.payment.memorialBilling || 'none'));
   s += LT + '/household' + GT;
   s += LT + '/membership' + GT;
@@ -2198,6 +2230,7 @@ function goToScreen4() {
   setText('conf_tier', (TIER_LABEL[h.tier] || '-') + ' membership');
   setText('conf_household', hhDesc());
   setText('conf_start', h.startDate || '-');
+  setText('conf_renewal', (state.payment.renewal === 'once') ? 'Ends after one year' : 'Automatic each year');
   setText('conf_monthly', moneyFmt(h.monthly) + ' / mo');
   setText('conf_annual', moneyFmt(h.annual) + ' / yr');
   setText('conf_sub', state.payment.subscriptionId || '-');
