@@ -7,11 +7,15 @@
          with markup strings, so the CMS never chokes on dynamic '<'.
      Theme via CSS custom properties (dark-mode compatible).
 
-     BUILD STATUS: Phase 1 complete (Screen 1: household + tier + pricing).
-     Screens 2-4 to follow.
+     2026-09-07: copy, behavior and palette brought in line with the
+     header/footer edits that dressed the form-builder version (hero eyebrow
+     and tagline, Membership level label, Most Popular badge, Everything in
+     X plus lines, title-case headings, Bar/Bat Mitzvah Date explainer,
+     discount wording and summary row, site navy/gold palette, Marcellus +
+     Figtree). Deploy: node make-native-form.js "Membership Form.html"
      ========================================== -->
 <link href="https://fonts.googleapis.com" rel="preconnect" />
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Marcellus&amp;family=Figtree:wght@400;500;600;700&amp;display=swap" rel="stylesheet" />
 
 
 <!-- A real form element so browser autofill works (safe here: the markup is
@@ -23,8 +27,10 @@
   <div id="screen1">
 
     <div class="mhead">
-      <h1>Become a partner in our Chabad</h1>
-      <p>Select your household to see your pricing.</p>
+      <div class="mhead-eyebrow">Membership</div>
+      <h1>Become a Partner in our Chabad</h1>
+      <p class="mhead-tag">Your home in South Beach</p>
+      <p class="mhead-hint">Select your household to discover your options and benefits.</p>
     </div>
 
     <!-- Household selector -->
@@ -40,7 +46,7 @@
       </div>
       <div class="hh-card" data-hh="family" onclick="selectHousehold('family')">
         <div class="hh-title">Family</div>
-        <div class="hh-sub">Couple + children</div>
+        <div class="hh-sub">Parents + children</div>
       </div>
     </div>
 
@@ -55,7 +61,7 @@
 
     <!-- Children stepper (Family only) -->
     <div class="kids-card" id="kidsStepper" style="display: none;">
-      <div class="kids-label">Number of children at home</div>
+      <div class="kids-label">Children at home</div>
       <div class="stepper">
         <button type="button" class="step-btn" onclick="changeKids(-1)" aria-label="Fewer children">-</button>
         <span class="step-num" id="kidsNum">1</span>
@@ -64,6 +70,7 @@
     </div>
 
     <!-- Tier cards -->
+    <div class="seclabel">Membership level</div>
     <div class="tier-grid">
 
       <div class="tier-card" data-tier="basic" onclick="selectTier('basic')">
@@ -78,14 +85,15 @@
       </div>
 
       <div class="tier-card popular" data-tier="chai" onclick="selectTier('chai')">
-        <div class="tier-badge">Most popular</div>
+        <div class="tier-badge">Most Popular</div>
         <div class="tier-name">Chai</div>
         <div class="tier-price"><span class="tier-price-num" id="price-chai">$180</span><span class="tier-per">/mo</span></div>
         <div class="tier-annual" id="annual-chai">$2,160 / year</div>
+        <div class="tier-incl">Everything in Basic, plus:</div>
         <ul class="tier-benefits">
           <li>10% off all events and programs</li>
           <li>Listed on Chai donor wall</li>
-          <li>20% off Lulav &amp; Esrog set</li>
+          <li>20% off Lulav and Esrog set</li>
         </ul>
       </div>
 
@@ -93,11 +101,12 @@
         <div class="tier-name">Silver</div>
         <div class="tier-price"><span class="tier-price-num" id="price-silver">$500</span><span class="tier-per">/mo</span></div>
         <div class="tier-annual" id="annual-silver">$6,000 / year</div>
+        <div class="tier-incl">Everything in Chai, plus:</div>
         <ul class="tier-benefits">
           <li>Annual mezuzah checking</li>
           <li>1 co-sponsored Kiddush per year</li>
           <li>VIP High Holiday seating</li>
-          <li>50% off Lulav &amp; Esrog set</li>
+          <li>50% off Lulav and Esrog set</li>
           <li>Listed on Silver donor wall</li>
         </ul>
       </div>
@@ -106,10 +115,11 @@
         <div class="tier-name">Gold</div>
         <div class="tier-price"><span class="tier-price-num" id="price-gold">$1,000</span><span class="tier-per">/mo</span></div>
         <div class="tier-annual" id="annual-gold">$12,000 / year</div>
+        <div class="tier-incl">Everything in Silver, plus:</div>
         <ul class="tier-benefits">
-          <li>Annual mezuzah &amp; tefillin checking</li>
+          <li>Annual mezuzah and tefillin checking</li>
           <li>1 co-sponsored Kiddush per year</li>
-          <li>Lulav &amp; Esrog set provided</li>
+          <li>Lulav and Esrog set provided</li>
           <li>Listed on Gold donor wall</li>
         </ul>
       </div>
@@ -133,14 +143,14 @@
 
     <div class="s2-top">
       <button type="button" class="back-btn" onclick="showScreen(1)">Back</button>
-      <h1>Your information</h1>
+      <h1>Your Information</h1>
     </div>
 
     <div class="s2-err" id="screen2Err">Please complete the highlighted required fields.</div>
 
     <!-- PRIMARY MEMBER -->
     <div class="scard">
-      <h2>Primary member</h2>
+      <h2>Primary Member</h2>
 
       <div class="row2">
         <div class="field"><label class="flabel">First name (English)<span class="req">*</span></label>
@@ -267,7 +277,7 @@
 
     <!-- MAILING ADDRESS (household) -->
     <div class="scard">
-      <h2>Mailing address</h2>
+      <h2>Mailing Address</h2>
       <div class="field"><label class="flabel">Street</label>
         <input type="text" id="addr_street" autocomplete="street-address" placeholder="Street address" /></div>
       <div class="row2">
@@ -283,7 +293,7 @@
     <!-- SPOUSE (Couple / Family only) -->
     <div class="scard" id="spouseSection" style="display: none;">
       <h2>Spouse</h2>
-      <p class="scard-sub">Shares the household contact info and mailing address above.</p>
+      <p class="scard-sub">Shares the household mailing address above.</p>
 
       <div class="row2">
         <div class="field"><label class="flabel">First name (English)<span class="req">*</span></label>
@@ -408,7 +418,7 @@
       </div>
     </div>
 
-    <button type="button" class="continue-btn" onclick="goToScreen3()">Continue to preferences &amp; payment</button>
+    <button type="button" class="continue-btn" onclick="goToScreen3()">Continue to preferences and payment</button>
 
   </div>
   <!-- ============ /SCREEN 2 ============ -->
@@ -418,7 +428,7 @@
 
     <div class="s2-top">
       <button type="button" class="back-btn" onclick="showScreen(2)">Back</button>
-      <h1>Preferences &amp; payment</h1>
+      <h1>Preferences &amp; Payment</h1>
     </div>
 
     <!-- PREFERENCES -->
@@ -440,7 +450,7 @@
     <div class="scard">
       <h2>Payment</h2>
 
-      <div class="field"><label class="flabel">Billing</label>
+      <div class="field"><label class="flabel">How would you like to pay?</label>
         <div class="seg">
           <label class="seg-opt"><input type="radio" name="pay_billing" value="monthly" checked="checked" onchange="onBillingChange()" /><span>Monthly</span></label>
           <label class="seg-opt"><input type="radio" name="pay_billing" value="annual" onchange="onBillingChange()" /><span>Annual (pay full year)</span></label>
@@ -463,6 +473,7 @@
         <div class="sum-row"><span>Start date</span><span id="sum_start">-</span></div>
         <div class="sum-row"><span>Monthly</span><span id="sum_monthly">-</span></div>
         <div class="sum-row"><span>Annual total</span><span id="sum_annual">-</span></div>
+        <div class="sum-row" id="sum_discount_row" style="display:none;"><span id="sum_discount_label">Discount</span><span id="sum_discount">-</span></div>
         <div class="sum-row" id="sum_memorial_row" style="display:none;"><span id="sum_memorial_label">Memorial board (one-time)</span><span id="sum_memorial">-</span></div>
         <div class="sum-row sum-total"><span>You pay</span><span id="sum_billed">-</span></div>
       </div>
@@ -471,7 +482,7 @@
         <input type="date" id="pay_startDate" onchange="onStartDateChange()" />
       </div>
 
-      <div class="field"><label class="flabel">Membership code (optional)</label>
+      <div class="field"><label class="flabel">Discount code (optional)</label>
         <div class="code-row">
           <input type="text" id="pay_code" placeholder="Enter code" />
           <button type="button" class="code-btn" onclick="applyCode()">Apply</button>
@@ -547,11 +558,12 @@
         <div class="heb-display" data-field="hebDob">-</div></div>
     </div>
 
-    <div class="field"><label class="flabel">Bar / Bat mitzvah</label>
-      <div class="heb-display" data-field="bmitzvah">-</div></div>
+    <div class="field"><label class="flabel">Bar/Bat Mitzvah Date</label>
+      <div class="heb-display" data-field="bmitzvah">-</div>
+      <div class="helper">Calculated automatically from the birthday and gender above.</div></div>
 
     <div class="field">
-      <label class="chk"><input type="checkbox" data-field="bmLessons" /> <span>We're interested in bar/bat mitzvah lessons</span></label></div>
+      <label class="chk"><input type="checkbox" data-field="bmLessons" /> <span>We're interested in Bar/Bat Mitzvah lessons</span></label></div>
 
     <div class="field"><label class="flabel">School / yeshiva</label>
       <input type="text" data-field="school" placeholder="Optional" /></div>
@@ -641,18 +653,22 @@ var TIER_LABEL = { basic: 'Basic', chai: 'Chai', silver: 'Silver', gold: 'Gold' 
    in this CMS. Dynamic states (selected/checked/hover/invalid)
    are handled by the restyle helpers below.
    ============================================================ */
-/* Warm, burgundy-led palette: the page itself is a rosy linen tint so the
-   white cards read as highlights instead of the whole page being white.
-   Neutrals (text, borders) are warmed to match - no cool slate grays. */
+/* Site palette (the same one the header/footer code painted over the
+   form-builder version): navy-teal hero, gold accents, cream page, white
+   cards. The previous burgundy set is kept here for a one-line revert:
+   accent #7a1f3d / strong #5c1730 / tint rgba(122,31,61,.10) / faint
+   rgba(122,31,61,.40) / text #2b171c #5a3d44 #7d5c64 / soft #f8eeeb /
+   borders #cfa9ad #a8757f / page #f3e5e1 edge #e4c8c1. */
 var C = {
-  accent: '#7a1f3d', accentStrong: '#5c1730',
-  accentTint: 'rgba(122,31,61,0.10)', accentFaint: 'rgba(122,31,61,0.40)',
-  text: '#2b171c', text2: '#5a3d44', text3: '#7d5c64',
-  cardBg: '#ffffff', cardBgSoft: '#f8eeeb',
-  borderSub: '#cfa9ad', borderHair: '#a8757f',
-  appBg: '#f3e5e1', appEdge: '#e4c8c1',
+  accent: '#C08A2E', accentStrong: '#A97620',
+  accentTint: 'rgba(192,138,46,0.12)', accentFaint: 'rgba(192,138,46,0.45)',
+  text: '#17232E', text2: 'rgba(23,35,46,0.78)', text3: '#8A5F16',
+  cardBg: '#ffffff', cardBgSoft: '#F8EDD6',
+  borderSub: '#E2C179', borderHair: '#C08A2E',
+  appBg: '#F3E8D3', appEdge: '#EFDAAE',
   danger: '#dc2626', dangerText: '#dc2626'
 };
+var FONT_HEAD = "'Marcellus', Georgia, serif";
 
 function S(sel, o) {
   document.querySelectorAll(sel).forEach(function (el) {
@@ -664,16 +680,19 @@ function S(sel, o) {
 function styleInit() {
   S('#membershipApp *', { boxSizing: 'border-box' });
   S('#membershipApp', {
-    fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif",
+    fontFamily: "'Figtree', 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif",
     color: C.text, fontSize: '14px', lineHeight: '1.6', maxWidth: '880px',
     margin: '0.5rem auto', padding: '1.1rem 1.15rem 2.5rem',
     background: C.appBg, borderRadius: '18px', border: '1px solid ' + C.appEdge
   });
 
-  /* header - a burgundy hero band so the page opens with real color */
-  S('#membershipApp .mhead', { textAlign: 'center', margin: '0 0 1.75rem', padding: '1.9rem 1.2rem 2rem', background: 'linear-gradient(140deg, #4a1226 0%, #7a1f3d 60%, #93314f 100%)', borderRadius: '14px', boxShadow: '0 12px 26px rgba(92,23,48,0.25)' });
-  S('#membershipApp .mhead h1', { fontSize: '24px', fontWeight: '700', margin: '0 0 0.4rem', color: '#ffffff', letterSpacing: '-0.01em' });
+  /* header - the site's navy-teal hero band so the page opens with real color */
+  S('#membershipApp .mhead', { textAlign: 'center', margin: '0 0 1.75rem', padding: '1.9rem 1.2rem 2rem', background: 'linear-gradient(140deg, #072026 0%, #0E464B 60%, #17656B 100%)', borderRadius: '14px', boxShadow: '0 12px 26px rgba(7,32,38,0.25)' });
+  S('#membershipApp .mhead-eyebrow', { display: 'block', fontSize: '12px', fontWeight: '600', letterSpacing: '0.16em', textTransform: 'uppercase', color: '#E2B65C', margin: '0 0 0.55rem' });
+  S('#membershipApp .mhead h1', { fontFamily: FONT_HEAD, fontSize: '28px', fontWeight: '400', margin: '0 0 0.4rem', color: '#ffffff', letterSpacing: '0' });
   S('#membershipApp .mhead p', { margin: '0', color: 'rgba(255,255,255,0.85)', fontSize: '14px' });
+  S('#membershipApp .mhead-tag', { fontFamily: FONT_HEAD, fontSize: '18px', letterSpacing: '0.02em', color: '#E2B65C', margin: '0 0 0.7rem' });
+  S('#membershipApp .mhead-hint', { fontSize: '13.5px', color: 'rgba(255,255,255,0.72)' });
   S('#membershipApp .seclabel', { fontSize: '11px', fontWeight: '600', letterSpacing: '0.08em', textTransform: 'uppercase', color: C.text3, margin: '0 0 0.6rem 0.15rem' });
 
   /* household selector */
@@ -698,13 +717,15 @@ function styleInit() {
   /* tier cards */
   S('#membershipApp .tier-grid', { display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px', paddingTop: '14px', marginBottom: '1.5rem' });
   S('#membershipApp .tier-card', { position: 'relative', borderRadius: '12px', padding: '1.1rem 1rem 1.2rem', cursor: 'pointer', transition: 'all 0.15s ease', boxShadow: '0 1px 2px rgba(0,0,0,0.04)' });
-  S('#membershipApp .tier-badge', { position: 'absolute', top: '-11px', left: '16px', padding: '3px 10px', background: C.accent, color: '#fff', fontSize: '10px', fontWeight: '600', borderRadius: '999px', whiteSpace: 'nowrap', letterSpacing: '0.02em' });
+  S('#membershipApp .tier-badge', { position: 'absolute', top: '-11px', left: 'auto', right: '16px', padding: '3px 10px', background: C.accent, color: '#fff', fontSize: '10px', fontWeight: '600', borderRadius: '999px', whiteSpace: 'nowrap', letterSpacing: '0.02em' });
   S('#membershipApp .tier-name', { fontSize: '12px', fontWeight: '600', color: C.text3, textTransform: 'uppercase', letterSpacing: '0.05em' });
   S('#membershipApp .tier-price', { marginTop: '0.3rem' });
-  S('#membershipApp .tier-price-num', { fontSize: '28px', fontWeight: '700', color: C.text });
+  S('#membershipApp .tier-price-num', { fontFamily: FONT_HEAD, fontSize: '26px', fontWeight: '400', color: C.text });
   S('#membershipApp .tier-per', { fontSize: '14px', color: C.text3, marginLeft: '2px' });
   S('#membershipApp .tier-annual', { fontSize: '12px', color: C.text3, marginTop: '0.1rem' });
+  S('#membershipApp .tier-incl', { fontSize: '12.5px', fontWeight: '600', color: C.text, lineHeight: '1.55', margin: '10px 0 0' });
   S('#membershipApp .tier-benefits', { listStyle: 'none', margin: '12px 0 0', padding: '0', fontSize: '12.5px', color: C.text2, lineHeight: '1.7' });
+  S('#membershipApp .tier-incl + .tier-benefits', { marginTop: '2px' });
 
   /* continue + footer */
   S('#membershipApp .continue-btn', { width: '100%', padding: '1rem', border: 'none', borderRadius: '12px', background: C.accent, color: '#fff', fontSize: '15px', fontWeight: '600', fontFamily: 'inherit', cursor: 'pointer', transition: 'all 0.15s ease', marginBottom: '1.5rem' });
@@ -716,9 +737,9 @@ function styleInit() {
   /* screen 2 */
   S('#membershipApp .s2-top', { display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.25rem' });
   S('#membershipApp .back-btn', { border: '1px solid ' + C.borderHair, background: C.cardBg, color: C.text, borderRadius: '8px', padding: '0.4rem 0.7rem', fontSize: '13px', fontFamily: 'inherit', cursor: 'pointer', transition: 'all 0.15s ease' });
-  S('#membershipApp .s2-top h1', { fontSize: '20px', fontWeight: '700', margin: '0' });
+  S('#membershipApp .s2-top h1', { fontFamily: FONT_HEAD, fontSize: '24px', fontWeight: '400', margin: '0' });
   S('#membershipApp .scard', { background: C.cardBg, border: '1px solid ' + C.borderSub, borderRadius: '12px', padding: '1.25rem', marginBottom: '1.25rem', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' });
-  S('#membershipApp .scard h2', { fontSize: '16px', fontWeight: '600', margin: '0 0 0.35rem', color: C.text });
+  S('#membershipApp .scard h2', { fontFamily: FONT_HEAD, fontSize: '20px', fontWeight: '400', margin: '0 0 0.35rem', color: C.text });
   S('#membershipApp .scard-sub', { fontSize: '12px', color: C.text3, margin: '0 0 1.1rem' });
   S('#membershipApp .field', { marginBottom: '1rem' });
   S('#membershipApp .flabel', { display: 'block', fontSize: '13px', fontWeight: '600', color: C.text, marginBottom: '0.4rem' });
@@ -780,7 +801,7 @@ function styleInit() {
   S('#membershipApp .conf-card', { textAlign: 'center' });
   S('#membershipApp .conf-check', { width: '64px', height: '64px', borderRadius: '50%', background: C.accent, margin: '0.25rem auto 1rem', display: 'flex', alignItems: 'center', justifyContent: 'center' });
   S('#membershipApp .conf-tick', { display: 'block', width: '14px', height: '26px', borderRight: '4px solid #ffffff', borderBottom: '4px solid #ffffff', transform: 'rotate(45deg)', marginTop: '-6px' });
-  S('#membershipApp .conf-card h2', { fontSize: '20px', textAlign: 'center', margin: '0 0 0.5rem' });
+  S('#membershipApp .conf-card h2', { fontFamily: FONT_HEAD, fontSize: '24px', fontWeight: '400', textAlign: 'center', margin: '0 0 0.5rem' });
   S('#membershipApp .conf-lead', { color: C.text2, fontSize: '14px', margin: '0 0 1.3rem', lineHeight: '1.6' });
   S('#membershipApp .conf-next', { color: C.text3, fontSize: '12.5px', margin: '1.1rem 0 0', lineHeight: '1.6' });
   S('#membershipApp .s2-err', { display: 'none', color: C.dangerText, fontSize: '13px', marginBottom: '1rem', padding: '0.7rem 0.9rem', background: 'rgba(239,68,68,0.1)', borderRadius: '8px' });
@@ -875,6 +896,14 @@ function setParents(p) {
   updateContinue();
 }
 
+/* Household in words, e.g. "Single-parent family, 2 children" */
+function hhDesc() {
+  var h = state.household;
+  if (h.type !== 'family') { return HH_LABEL[h.type] || 'Single'; }
+  var who = (h.parents === 'one') ? 'Single-parent family, ' : 'Family, ';
+  return who + h.kidsCount + ((h.kidsCount === 1) ? ' child' : ' children');
+}
+
 /* True when a spouse section applies: couple, or a two-parent family. */
 function hasSpouse() {
   if (state.household.type === 'couple') { return true; }
@@ -924,9 +953,7 @@ function updateContinue() {
   btn.disabled = false;
   btn.style.opacity = '1';
   btn.style.cursor = 'pointer';
-  var hhlabel = HH_LABEL[state.household.type];
-  if (state.household.type === 'family') { if (state.household.parents === 'one') { hhlabel = 'Single-parent family'; } }
-  btn.textContent = 'Continue as ' + hhlabel + ' - ' + TIER_LABEL[tier] + ' - ' + money(m) + '/mo';
+  btn.textContent = 'Continue as ' + hhDesc() + ' - ' + TIER_LABEL[tier] + ' - ' + money(m) + '/mo';
 }
 
 /* ============================================================
@@ -1526,11 +1553,11 @@ function recalcChild(idx) {
     if (hebOut) { hebOut.textContent = hebStr(d); }
     if (!d) { return; }
     var gender = radioVal('c' + idx + '_gender');
-    if (!gender) { if (bmOut) { bmOut.textContent = 'Select gender for bar/bat mitzvah date'; } return; }
+    if (!gender) { if (bmOut) { bmOut.textContent = 'Fill in the gender above to see the date'; } return; }
     var addYears = (gender === 'M') ? 13 : 12;
     if (bmOut) { bmOut.textContent = 'Converting...'; }
     h2g(Number(d.hy) + addYears, d.hm, d.hd, function (g) {
-      var lbl = (gender === 'M') ? 'Bar mitzvah: ' : 'Bat mitzvah: ';
+      var lbl = (gender === 'M') ? 'Bar Mitzvah: ' : 'Bat Mitzvah: ';
       var base = lbl + engStr(g);
       if (bmOut) { bmOut.textContent = base; }
       var giso = gIso(g);
@@ -1686,18 +1713,27 @@ function isoLocal(d) {
 function refreshSummary() {
   var h = state.household;
   setText('sum_tier', TIER_LABEL[h.tier] || '-');
-  var hh = HH_LABEL[h.type] || '-';
-  if (h.type === 'family') {
-    var who = (h.parents === 'one') ? 'single parent, ' : '';
-    hh = hh + ' (' + who + h.kidsCount + ' ' + (h.kidsCount === 1 ? 'child' : 'children') + ')';
-  }
-  setText('sum_household', hh);
+  setText('sum_household', hhDesc());
   setText('sum_start', h.startDate || '-');
   /* prices reflect an applied discount code */
   var dm = applyDiscount(h.monthly);
   var da = applyDiscount(h.annual);
   setText('sum_monthly', moneyFmt(dm) + ' / mo');
   setText('sum_annual', moneyFmt(da) + ' / yr');
+
+  /* Discount row: what the code takes off the payment being made */
+  var dRow = document.getElementById('sum_discount_row');
+  var dAct = activeDiscount();
+  if (dRow) {
+    if (dAct) {
+      var per = (billingMode() === 'annual') ? h.annual : h.monthly;
+      setText('sum_discount_label', 'Discount (' + String(dAct.code || '').toUpperCase() + ')');
+      setText('sum_discount', '-' + moneyFmt(per - applyDiscount(per)));
+      dRow.style.display = 'flex';
+    } else {
+      dRow.style.display = 'none';
+    }
+  }
 
   /* Memorial board: show the choice block + summary row when any plaque is selected */
   var mc = memorialCount();
@@ -1926,13 +1962,14 @@ function applyCode() {
   var code = (val('pay_code') || '').trim();
   var msg = document.getElementById('code_msg');
   if (!code) { rejectCode('Enter a code first.'); return; }
+  code = code.toUpperCase();
   /* the local fallback list works even with no network */
   var local = false;
   FREE_CODES.forEach(function (c) {
     if (c) { if (c.toUpperCase() === code.toUpperCase()) { local = true; } }
   });
   if (local) { acceptCode(code, 'free', 100); return; }
-  if (!SUBMIT_URL) { rejectCode('That code is not valid.'); return; }
+  if (!SUBMIT_URL) { rejectCode('That code was not recognized.'); return; }
   if (msg) { msg.textContent = 'Checking code...'; msg.style.color = C.accent; }
   fetch(SUBMIT_URL + '?action=checkCode' + AMP + 'code=' + encodeURIComponent(code))
     .then(function (r) { return r.json(); })
@@ -1940,7 +1977,7 @@ function applyCode() {
       var valid = false;
       if (j) { if (j.ok) { if (j.valid) { valid = true; } } }
       if (valid) { acceptCode(code, j.kind, j.value); }
-      else { rejectCode('That code is not valid.'); }
+      else { rejectCode('That code was not recognized.'); }
     })
     .catch(function () { rejectCode('Could not check the code - please try again.'); });
 }
@@ -1964,7 +2001,7 @@ function acceptCode(code, kind, value) {
     msg.textContent = full
       ? 'Code applied - your membership is fully covered.'
       : 'Code applied - ' + discountText(kind, value) + '.';
-    msg.style.color = '#16a34a';
+    msg.style.color = '#166534';
   }
   setCompUI(full);
   refreshSummary();
@@ -1979,8 +2016,8 @@ function rejectCode(text) {
 }
 
 function discountText(kind, value) {
-  if (kind === 'percent') { return Number(value || 0) + '% off'; }
-  if (kind === 'amount') { return moneyFmt(Number(value || 0)) + ' off each payment'; }
+  if (kind === 'percent') { return Number(value || 0) + '% off every payment'; }
+  if (kind === 'amount') { return moneyFmt(Number(value || 0)) + ' off every payment'; }
   return 'discount applied';
 }
 
@@ -2147,12 +2184,7 @@ function goToScreen4() {
   var name = state.primary ? (state.primary.firstName || '') : '';
   setText('conf_title', name ? ('Welcome, ' + name + '!') : 'Welcome to our Chabad family!');
   setText('conf_tier', (TIER_LABEL[h.tier] || '-') + ' membership');
-  var hh = HH_LABEL[h.type] || '-';
-  if (h.type === 'family') {
-    var who = (h.parents === 'one') ? 'single parent, ' : '';
-    hh = hh + ' (' + who + h.kidsCount + ' ' + (h.kidsCount === 1 ? 'child' : 'children') + ')';
-  }
-  setText('conf_household', hh);
+  setText('conf_household', hhDesc());
   setText('conf_start', h.startDate || '-');
   setText('conf_monthly', moneyFmt(h.monthly) + ' / mo');
   setText('conf_annual', moneyFmt(h.annual) + ' / yr');

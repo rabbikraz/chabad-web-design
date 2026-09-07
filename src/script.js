@@ -98,7 +98,7 @@
   /* Pages whose CMS title duplicates their own content heading: hide the
      article header (style.css, html.sb-notitle). Flagged early by boot.js
      too; this is the fallback. Override with window.SB_NOTITLE_PAGES. */
-  var NOTITLE_PAGES = window.SB_NOTITLE_PAGES || ['7080118'];
+  var NOTITLE_PAGES = window.SB_NOTITLE_PAGES || ['7080118', '7474052'];
 
   function applyNoTitle() {
     var href = window.location.href;
@@ -1417,6 +1417,16 @@
      builder still computes the Total and posts everything.
      Fields are matched by LABEL, never by id. Styling: style.css 21. */
 
+  /* ---------------- membership form: ORIGINAL standalone paste ----------
+     "Membership Form Native.html" (Chabad forms) mounts #membershipApp
+     itself and carries its own styling; the page only needs the same
+     body flag the builder version gets, so the CMS article title (which
+     duplicates the hero) is hidden and the width rules apply. */
+  function initMembershipStandalone() {
+    if (!document.getElementById('membershipApp')) return;
+    document.body.classList.add('sb-memform');
+  }
+
   function initMembershipBuilder() {
     var root = $all('form.userform-form').filter(function (f) {
       return $all('.form-label-left label, .form-label label', f).some(function (l) {
@@ -2563,9 +2573,12 @@
      Paste = "Chabad forms/Late Payment Form.html" (style block + markup ONLY).
      The logic lives here because ChabadOne's editor hangs on Save when a
      pasted script creates a <script> element and sets its src (the PayPal SDK
-     loader) - bisected 2026-09-07; markup-only pastes save fine. Same prices,
-     PayPal client and Apps Script webhook as Meal Form.html; the visitor picks
-     which Shabbos so the row lands in that week's existing sheet tab. */
+     loader) - bisected 2026-09-07; markup-only pastes save fine.
+     Same prices, PayPal client and Apps Script webhook as Meal Form.html, and
+     the SAME event logic: the visitor picks a Shabbos or Yom Tov (parsha weeks
+     and Hebcal holiday families, adjacent Shabbat merged, meals derived per
+     day exactly like deriveMeals() in the main form) so the row lands in the
+     tab the main form uses for that event, with matching meal columns. */
   function initLatePayment() {
     if (!document.getElementById('sbPayFormContainer')) return;
     document.body.classList.add('sb-latepay');   // page-level hooks (centered title) in style.css
@@ -2573,86 +2586,175 @@
     // ===== CONFIGURATION (same processor + backend as Meal Form.html) =====
     var PAYPAL_CLIENT_ID = 'AQep8b0d5aOphyWo10ZQfAT-mwV0vWeHCjQLID21pSwnJyh4Fw5vNJANgqyTypi1PDiV3AKJ6fbarENP';
     var GOOGLE_SHEET_WEBHOOK = 'https://script.google.com/macros/s/AKfycbzNnNNSbv6pUY_xoJDCz7xJl0DLAuXaeDajlwH1isdXw4gQBK0plUyOaThijLgOT6_9ag/exec';
-
-    // Same prices as the main form. Slot 1 = Friday night (dinner tier),
-    // slot 2 = Shabbat day (lunch tier). Meal labels MUST stay exactly
-    // "Friday Night Dinner" / "Shabbat Day Lunch" so the row lines up with
-    // the columns of the week tab the main form already created.
     var PRICE = {
         dinner: { A: 85, S: 54, C: 36 },
         lunch:  { A: 54, S: 36, C: 18 }
     };
-    var SLOTS = {
-        '1': { kind: 'dinner', label: 'Friday Night Dinner', active: false },
-        '2': { kind: 'lunch',  label: 'Shabbat Day Lunch',   active: false },
-        'B': { kind: 'both',   label: 'Both Meals',          active: false }   // one headcount for both
-    };
-    var BOTH = { A: PRICE.dinner.A + PRICE.lunch.A, S: PRICE.dinner.S + PRICE.lunch.S, C: PRICE.dinner.C + PRICE.lunch.C };
-    var ALL_SLOTS = ['1', '2', 'B'];
     var PAST_WEEKS = 10;             // how many previous Shabbosim to list
+    var AHEAD_DAYS = 9;              // holidays starting within this many days after the coming Shabbos
+    var MAX_MEALS = 8;
     var CATCHALL_TITLE = 'Late and Past Payments';   // "Other" tab, one per year
-
     var amp = String.fromCharCode(38);
 
     // ===== HELPERS =====
     function byId(id) { return document.getElementById(id); }
-    function qty(slot, tier) { return parseInt(byId('slot' + slot + tier).innerText, 10) || 0; }
+    function qty(slot, tier) { var el = byId('slot' + slot + tier); return el ? (parseInt(el.innerText, 10) || 0) : 0; }
     function pad2(n) { return n > 9 ? String(n) : '0' + n; }
     function isoOf(d) { return d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate()); }
     function fromISO(iso) { var p = iso.split('-'); return new Date(parseInt(p[0], 10), parseInt(p[1], 10) - 1, parseInt(p[2], 10)); }
     function addDays(d, n) { var x = new Date(d.getTime()); x.setDate(x.getDate() + n); return x; }
-    function fmtShort(d) { return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }); }
-    function fmtNice(d) { return d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }); }
+    function addDaysISO(iso, n) { return isoOf(addDays(fromISO(iso), n)); }
+    function isoDow(iso) { return fromISO(iso).getDay(); }
+    function fmtShort(iso) { return fromISO(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }); }
+    function fmtNice(iso) { return fromISO(iso).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }); }
     function stripParashat(t) { return String(t || '').replace(/^Parashat\s+/i, ''); }
-
-
-    // ===== WHICH SHABBOS =====
-    // weeks[i] = { satISO, title (raw Hebcal title, "Parashat X" or the
-    // holiday), display, isThis } ; plus the "other" catch-all option.
-    var weeks = [];
-    var chosen = null;   // index into weeks, or 'other'
-
-    function upcomingSaturday() {
-        var d = new Date();
-        d.setHours(12, 0, 0, 0);
-        var dow = d.getDay();               // 0 Sun .. 6 Sat
-        var add = (6 - dow + 7) % 7;         // 0 when today is Saturday
-        return addDays(d, add);
+    function rangeText(startISO, endISO) {
+        var y = fromISO(endISO).getFullYear();
+        if (startISO === endISO) return fmtShort(startISO) + ', ' + y;
+        return fmtShort(startISO) + ' - ' + fmtShort(endISO) + ', ' + y;
     }
 
-    function buildWeeks(items) {
-        var byDate = {};
-        var holByDate = {};
-        var list = items || [];
-        list.forEach(function (it) {
+    // ===== EVENTS (ported from Meal Form.html) =====
+    // Collapse Hebcal's per-day yom-tov items into a single event family.
+    function classifyHoliday(title) {
+        if (!title) return null;
+        var t = String(title);
+        if (t.indexOf('Pesach') === 0)         return { key: 'pesach',       label: 'Pesach', isPesach: true };
+        if (t.indexOf('Rosh Hashana') === 0)   return { key: 'rosh_hashana', label: 'Rosh Hashana' };
+        if (t.indexOf('Yom Kippur') === 0)     return { key: 'yom_kippur',   label: 'Yom Kippur' };
+        if (t === 'Sukkot I' || t === 'Sukkot II') return { key: 'sukkot',  label: 'Sukkot' };
+        if (t.indexOf('Shmini Atzeret') === 0 || t.indexOf('Shemini Atzeret') === 0 || t.indexOf('Simchat Torah') === 0) {
+            return { key: 'shemini', label: 'Shemini Atzeret / Simchat Torah' };
+        }
+        if (t.indexOf('Shavuot') === 0)        return { key: 'shavuot',     label: 'Shavuot' };
+        return null;
+    }
+
+    // Same meals, labels, dates and order as the main form's deriveMeals().
+    function deriveMeals(ev) {
+        if (!ev || ev.type === 'parsha') {
+            var sat = ev ? ev.startDate : null;
+            return [
+                { label: 'Friday Night', sub: 'Dinner', kind: 'dinner', dateISO: sat ? addDaysISO(sat, -1) : null, isShabbat: false },
+                { label: 'Shabbat Day',  sub: 'Lunch',  kind: 'lunch',  dateISO: sat, isShabbat: true }
+            ];
+        }
+        if (ev.family === 'yom_kippur') {
+            return [{ label: 'Seudat Hamafseket', sub: 'Pre-Fast Meal', kind: 'dinner', dateISO: addDaysISO(ev.startDate, -1), isShabbat: false }];
+        }
+        var ytSet = {};
+        (ev.yomTovDates || []).forEach(function (d) { ytSet[d] = true; });
+        var meals = [];
+        var totalDays = Math.round((fromISO(ev.endDate) - fromISO(ev.startDate)) / 86400000) + 1;
+        for (var i = 0; i < totalDays; i++) {
+            var dayISO = addDaysISO(ev.startDate, i);
+            var eveISO = addDaysISO(dayISO, -1);
+            var isShab = isoDow(dayISO) === 6;
+            var isYT = ev.yomTovDates ? !!ytSet[dayISO] : true;
+            var daySuffix = totalDays > 1 ? ' (Day ' + (i + 1) + ')' : '';
+            var prefix;
+            if (isShab && isYT)       prefix = 'Shabbat / Yom Tov';
+            else if (isShab && !isYT) prefix = 'Shabbat';
+            else if (!isShab && isYT) prefix = 'Yom Tov';
+            else                      prefix = 'Chol Hamoed';
+            meals.push({ label: prefix + ' Eve' + daySuffix, sub: 'Dinner', kind: 'dinner', dateISO: eveISO, isShabbat: isShab });
+            meals.push({ label: prefix + ' Day' + daySuffix, sub: 'Lunch',  kind: 'lunch',  dateISO: dayISO, isShabbat: isShab });
+        }
+        if (meals.length > MAX_MEALS) meals = meals.slice(0, MAX_MEALS);
+        return meals;
+    }
+
+    function upcomingSaturdayISO() {
+        var d = new Date();
+        d.setHours(12, 0, 0, 0);
+        return isoOf(addDays(d, (6 - d.getDay() + 7) % 7));   // today when it is Saturday
+    }
+
+    // events[] sorted newest first: { type: 'parsha'|'holiday', title (what the
+    // main form posts as shabbosTitle), startDate, endDate, yomTovDates, display }
+    var events = [];
+    var chosen = null;   // index into events, or 'other'
+
+    function buildEvents(items) {
+        var upSat = upcomingSaturdayISO();
+        var rangeStart = addDaysISO(upSat, -7 * PAST_WEEKS - 1);
+        var rangeEnd = addDaysISO(upSat, AHEAD_DAYS);
+        var list = [];
+        var groups = {};
+        (items || []).forEach(function (it) {
             if (!it || !it.date) return;
             var day = String(it.date).split('T')[0];
-            if (it.category === 'parashat') byDate[day] = it.title;
-            else if (it.category === 'holiday') {
-                if (it.yomtov === true) holByDate[day] = it.title;
+            if (it.category === 'parashat') {
+                list.push({ type: 'parsha', title: it.title, startDate: day, endDate: day });
+            } else if (it.category === 'holiday') {
+                if (it.yomtov !== true) return;
+                var fam = classifyHoliday(it.title);
+                if (!fam) return;
+                var k = fam.key + '_' + day.split('-')[0];
+                if (!groups[k]) groups[k] = { family: fam, dates: [] };
+                groups[k].dates.push(day);
             }
         });
-        var sat = upcomingSaturday();
-        weeks = [];
-        for (var i = 0; i <= PAST_WEEKS; i++) {
-            var s = addDays(sat, -7 * i);
-            var iso = isoOf(s);
-            var title = byDate[iso] || holByDate[iso] || 'Shabbos';
-            var fri = addDays(s, -1);
-            var name = stripParashat(title);
-            var prefix = i === 0 ? 'This Shabbos: ' : (i === 1 ? 'Last Shabbos: ' : '');
-            weeks.push({
-                satISO: iso,
-                title: title,
-                display: prefix + name + ' (' + fmtShort(fri) + ' - ' + fmtShort(s) + ', ' + s.getFullYear() + ')',
-                isThis: i === 0
+        Object.keys(groups).forEach(function (k) {
+            var g = groups[k];
+            g.dates.sort();
+            list.push({
+                type: g.family.isPesach ? 'pesach' : 'holiday',
+                family: g.family.key,
+                title: g.family.label,
+                startDate: g.dates[0],
+                endDate: g.dates[g.dates.length - 1],
+                yomTovDates: g.dates.slice()
             });
+        });
+        list.sort(function (a, b) { return a.startDate < b.startDate ? -1 : (a.startDate > b.startDate ? 1 : 0); });
+
+        // Merge a holiday with an adjacent Shabbat into one event (main form rule):
+        // ends Friday -> extend through Saturday; starts Sunday -> start Saturday.
+        var parshaByDate = {};
+        list.forEach(function (e, i) { if (e.type === 'parsha') parshaByDate[e.startDate] = i; });
+        var drop = {};
+        list.forEach(function (e) {
+            if (e.type !== 'holiday') return;
+            if (isoDow(e.endDate) === 5) {
+                e.endDate = addDaysISO(e.endDate, 1);
+                if (parshaByDate[e.endDate] !== undefined) drop[parshaByDate[e.endDate]] = true;
+            }
+            if (isoDow(e.startDate) === 0) {
+                e.startDate = addDaysISO(e.startDate, -1);
+                if (parshaByDate[e.startDate] !== undefined) drop[parshaByDate[e.startDate]] = true;
+            }
+        });
+        list = list.filter(function (e, i) {
+            if (drop[i] || e.type === 'pesach') return false;      // Pesach is never booked online (main form rule)
+            return e.endDate >= rangeStart ? e.endDate <= rangeEnd : false;
+        });
+
+        // Regular Shabbosim with no Hebcal parsha item (e.g. a Yom Tov week) still
+        // need an entry if no holiday event covers that Saturday.
+        for (var w = 0; w <= PAST_WEEKS; w++) {
+            var sat = addDaysISO(upSat, -7 * w);
+            var covered = list.some(function (e) { return e.startDate <= sat ? e.endDate >= sat : false; });
+            if (!covered) list.push({ type: 'parsha', title: 'Shabbos', startDate: sat, endDate: sat });
         }
-        renderWeeks();
+        list.sort(function (a, b) { return a.startDate > b.startDate ? -1 : (a.startDate < b.startDate ? 1 : 0); });   // newest first
+
+        list.forEach(function (e) {
+            if (e.type === 'parsha') {
+                var prefix = e.startDate === upSat ? 'This Shabbos: ' : (e.startDate === addDaysISO(upSat, -7) ? 'Last Shabbos: ' : '');
+                e.display = prefix + stripParashat(e.title) + ' (' + rangeText(addDaysISO(e.startDate, -1), e.endDate) + ')';
+            } else {
+                var from = e.startDate === e.endDate ? e.startDate : addDaysISO(e.startDate, -1);   // eve dinner
+                if (e.family === 'yom_kippur') from = addDaysISO(e.startDate, -1);                   // pre-fast meal day
+                e.display = e.title + ' (' + rangeText(from, e.endDate) + ')';
+            }
+        });
+        events = list;
+        renderEvents();
     }
 
     var sel = null;
-    function renderWeeks() {
+    function renderEvents() {
         var wrap = byId('payShabbosWrap');
         wrap.innerHTML = '';
         wrap.className = 'sb-lp-selwrap';
@@ -2660,95 +2762,148 @@
         sel.id = 'payShabbos';
         sel.className = 'sb-lp-select';
         function opt(v, t) { var o = document.createElement('option'); o.value = v; o.text = t; sel.appendChild(o); }
-        opt('', 'Choose the Shabbos...');
-        weeks.forEach(function (w, i) { opt(String(i), w.display); });
+        opt('', 'Choose the Shabbos or Yom Tov...');
+        events.forEach(function (e, i) { opt(String(i), e.display); });
         opt('other', 'Other / not sure (explain in the notes)');
         sel.addEventListener('change', function () {
             var v = sel.value;
             chosen = v === '' ? null : (v === 'other' ? 'other' : parseInt(v, 10));
+            renderMeals(selectedEvent());
             paintWeek();
         });
         wrap.appendChild(sel);
     }
 
-    function loadWeeks() {
-        var sat = upcomingSaturday();
-        var start = isoOf(addDays(sat, -7 * PAST_WEEKS - 2));
-        var end = isoOf(sat);
+    function loadEvents() {
+        var upSat = upcomingSaturdayISO();
+        var start = addDaysISO(upSat, -7 * PAST_WEEKS - 2);
+        var end = addDaysISO(upSat, AHEAD_DAYS);
         var api = 'https://www.hebcal.com/hebcal?v=1' + amp + 'cfg=json' + amp + 'start=' + start + amp + 'end=' + end + amp + 's=on' + amp + 'maj=on' + amp + 'lg=en' + amp + 'geo=zip' + amp + 'zip=33139' + amp + 'tzid=America/New_York';
         fetch(api)
             .then(function (r) { return r.json(); })
-            .then(function (data) { buildWeeks(data.items || []); })
-            .catch(function () { buildWeeks([]); });   // dates only, titled "Shabbos"
+            .then(function (data) { buildEvents(data.items || []); })
+            .catch(function () { buildEvents([]); });   // dates only, titled "Shabbos"
     }
 
-    function selectedWeek() {
+    function selectedEvent() {
         if (chosen === null || chosen === 'other') return null;
-        return weeks[chosen] || null;
+        return events[chosen] || null;
     }
 
     function paintWeek() {
-        var w = selectedWeek();
+        var e = selectedEvent();
         var row = byId('shabbosRow');
-        if (w) {
-            var s = fromISO(w.satISO);
-            byId('slot1Date').innerText = fmtNice(addDays(s, -1));
-            byId('slot2Date').innerText = fmtNice(s);
-            if (byId('slotBDate')) byId('slotBDate').innerText = fmtShort(addDays(s, -1)) + ' - ' + fmtShort(s);
-            byId('shabbosRowLabel').innerText = w.display;
+        if (e) {
+            byId('shabbosRowLabel').innerText = e.display;
+            row.style.display = 'block';
+        } else if (chosen === 'other') {
+            byId('shabbosRowLabel').innerText = 'Shabbos: see notes';
             row.style.display = 'block';
         } else {
-            byId('slot1Date').innerText = ' ';
-            byId('slot2Date').innerText = ' ';
-            if (byId('slotBDate')) byId('slotBDate').innerText = ' ';
-            if (chosen === 'other') {
-                byId('shabbosRowLabel').innerText = 'Shabbos: see notes';
-                row.style.display = 'block';
-            } else {
-                row.style.display = 'none';
-            }
+            row.style.display = 'none';
         }
     }
 
-    // ===== "BOTH MEALS" CARD =====
-    // Cloned from the Shabbat Day card so it inherits the paste's classes; the
-    // paste itself never needs to change for this.
-    (function buildBothCard() {
-        var t2 = byId('slot2Toggle'), p2 = byId('slot2Pricing'), r2 = byId('slot2Row');
-        if (!t2 || !p2 || !r2 || byId('slotBToggle')) return;
-        var grid = t2.parentNode;
+    // ===== MEAL CARDS (built per event from the paste's two cards as templates) =====
+    var TPL = null;
+    var grid = null, pricingAnchor = null, rowAnchor = null;
+    var SLOTS = {};        // slot key -> { kind, label, sub, dateISO, isShabbat, active }
+    var ORDER = [];        // slot keys in display order; 'B' (all meals) last when present
+    var MEALS = [];        // current meal definitions (without 'B')
+
+    (function captureTemplates() {
+        var t1 = byId('slot1Toggle'), p1 = byId('slot1Pricing'), p2 = byId('slot2Pricing'), r1 = byId('slot1Row'), r2 = byId('slot2Row');
+        if (!t1 || !p1 || !p2 || !r1) return;
+        grid = t1.parentNode;
         grid.className += ' sb-lp-grid';
-        var tB = t2.cloneNode(true);
-        tB.id = 'slotBToggle';
-        tB.children[0].innerText = 'Both Meals';
-        tB.children[1].innerText = 'Dinner + Lunch';
-        tB.children[2].id = 'slotBDate';
-        grid.appendChild(tB);
-
-        var pB = p2.cloneNode(true);
-        pB.id = 'slotBPricing';
-        pB.firstElementChild.innerText = 'Both Meals (one headcount covers dinner and lunch)';
-        var ids = pB.querySelectorAll('[id^="slot2"]');
-        for (var i = 0; i < ids.length; i++) ids[i].id = ids[i].id.replace('slot2', 'slotB');
-        var btns = pB.querySelectorAll('[data-qty^="slot2"]');
-        for (var j = 0; j < btns.length; j++) btns[j].setAttribute('data-qty', btns[j].getAttribute('data-qty').replace('slot2', 'slotB'));
-        var priceSpans = Array.prototype.slice.call(pB.querySelectorAll('span')).filter(function (el) { return /^\$\d/.test(el.innerText); });
-        var tiers = ['A', 'S', 'C'];
-        priceSpans.forEach(function (el, k) { el.innerText = '$' + BOTH[tiers[k]] + (k === 2 ? ' per child, both meals' : ' per person, both meals'); });
-        p2.parentNode.insertBefore(pB, p2.nextSibling);
-
-        var rB = r2.cloneNode(true);
-        rB.id = 'slotBRow';
-        rB.firstElementChild.innerText = 'Both Meals';
-        rB.querySelector('#slot2Total').id = 'slotBTotal';
-        r2.parentNode.insertBefore(rB, r2.nextSibling);
+        pricingAnchor = byId('mealsHint');            // pricing blocks go right before the hint
+        rowAnchor = (r2 || r1).nextElementSibling;    // summary rows go right before the Total row
+        TPL = {
+            toggle: t1.cloneNode(true),
+            pricing: { dinner: p1.cloneNode(true), lunch: p2.cloneNode(true) },
+            row: r1.cloneNode(true)
+        };
+        ['slot1Toggle', 'slot2Toggle', 'slot1Pricing', 'slot2Pricing', 'slot1Row', 'slot2Row'].forEach(function (id) {
+            var el = byId(id); if (el) el.parentNode.removeChild(el);
+        });
     })();
 
-    // ===== MEAL TOGGLES =====
+    function retag(node, fromPrefix, toPrefix) {
+        var ids = node.querySelectorAll('[id^="' + fromPrefix + '"]');
+        for (var i = 0; i < ids.length; i++) ids[i].id = toPrefix + ids[i].id.slice(fromPrefix.length);
+        var qs = node.querySelectorAll('[data-qty^="' + fromPrefix + '"]');
+        for (var j = 0; j < qs.length; j++) qs[j].setAttribute('data-qty', toPrefix + qs[j].getAttribute('data-qty').slice(fromPrefix.length));
+    }
+    function setPrices(node, p) {
+        var spans = Array.prototype.slice.call(node.querySelectorAll('span')).filter(function (el) { return /^\$\d/.test(el.innerText); });
+        var tiers = ['A', 'S', 'C'];
+        spans.forEach(function (el, k) { el.innerText = '$' + p[tiers[k]] + (k === 2 ? ' per child' : ' per person'); });
+    }
+    function addCard(slot, meta, pricingKind, pricingTitle, prices) {
+        var t = TPL.toggle.cloneNode(true);
+        t.id = 'slot' + slot + 'Toggle';
+        t.setAttribute('data-slot', slot);
+        t.children[0].innerText = meta.label;
+        t.children[1].innerText = meta.sub;
+        t.children[2].id = 'slot' + slot + 'Date';
+        t.children[2].innerText = meta.dateText || ' ';
+        grid.appendChild(t);
+
+        var p = TPL.pricing[pricingKind].cloneNode(true);
+        retag(p, pricingKind === 'dinner' ? 'slot1' : 'slot2', 'slot' + slot);
+        p.id = 'slot' + slot + 'Pricing';
+        p.firstElementChild.innerText = pricingTitle;
+        if (prices) setPrices(p, prices);
+        p.style.display = 'none';
+        pricingAnchor.parentNode.insertBefore(p, pricingAnchor);
+
+        var r = TPL.row.cloneNode(true);
+        retag(r, 'slot1', 'slot' + slot);
+        r.id = 'slot' + slot + 'Row';
+        r.firstElementChild.innerText = pricingTitle.replace(/ \(.*$/, '');
+        r.style.display = 'none';
+        rowAnchor.parentNode.insertBefore(r, rowAnchor);
+        SLOTS[slot] = meta;
+        ORDER.push(slot);
+    }
+
+    function renderMeals(ev) {
+        if (!TPL) return;
+        MEALS = deriveMeals(ev);
+        ORDER.forEach(function (slot) {
+            ['Toggle', 'Pricing', 'Row'].forEach(function (sfx) { var el = byId('slot' + slot + sfx); if (el) el.parentNode.removeChild(el); });
+        });
+        SLOTS = {}; ORDER = [];
+        MEALS.forEach(function (m, i) {
+            var slot = String(i + 1);
+            addCard(slot, {
+                kind: m.kind, label: m.label, sub: m.sub, dateISO: m.dateISO, isShabbat: m.isShabbat, active: false,
+                dateText: m.dateISO ? fmtNice(m.dateISO) : ''
+            }, m.kind, m.label + ' ' + m.sub, null);
+        });
+        if (MEALS.length > 1) {
+            var all = { A: 0, S: 0, C: 0 };
+            MEALS.forEach(function (m) { all.A += PRICE[m.kind].A; all.S += PRICE[m.kind].S; all.C += PRICE[m.kind].C; });
+            var two = MEALS.length === 2;
+            addCard('B', {
+                kind: 'all', label: two ? 'Both Meals' : 'All Meals', sub: two ? 'Dinner + Lunch' : MEALS.length + ' meals, one headcount',
+                dateISO: null, isShabbat: false, active: false, price: all,
+                dateText: MEALS[0].dateISO ? fmtShort(MEALS[0].dateISO) + ' - ' + fmtShort(MEALS[MEALS.length - 1].dateISO) : ''
+            }, 'lunch', (two ? 'Both Meals' : 'All Meals') + ' (one headcount covers every meal)', all);
+        }
+        // even layout: 2 meals -> three columns; more -> two columns with the All card full width
+        var n = MEALS.length;
+        grid.style.gridTemplateColumns = n === 1 ? '1fr' : (n === 2 ? 'repeat(3, minmax(0, 1fr))' : 'repeat(2, minmax(0, 1fr))');
+        var bT = byId('slotBToggle');
+        if (bT) bT.style.gridColumn = n > 2 ? '1 / -1' : '';
+        updateTotals();
+    }
+
     function paintSlot(slot) {
         var meta = SLOTS[slot];
         var t = byId('slot' + slot + 'Toggle');
         var p = byId('slot' + slot + 'Pricing');
+        if (!meta || !t || !p) return;
         if (meta.active) {
             t.style.borderColor = '#C08A2E';
             t.style.background = '#F8EDD6';
@@ -2757,20 +2912,30 @@
             t.style.borderColor = 'rgba(23,35,46,.14)';
             t.style.background = '#F3E8D3';
             p.style.display = 'none';
-            ['A', 'S', 'C'].forEach(function (tier) { byId('slot' + slot + tier).innerText = '0'; });
+            ['A', 'S', 'C'].forEach(function (tier) { var el = byId('slot' + slot + tier); if (el) el.innerText = '0'; });
         }
-        byId('mealsHint').style.display = (SLOTS['1'].active || SLOTS['2'].active || SLOTS.B.active) ? 'none' : 'block';
     }
-    ALL_SLOTS.forEach(function (slot) {
-        byId('slot' + slot + 'Toggle').addEventListener('click', function () {
+    function anyActive() { return ORDER.some(function (s) { return SLOTS[s].active; }); }
+
+    // card clicks (delegated: cards are rebuilt per event)
+    if (grid) {
+        grid.addEventListener('click', function (e) {
+            var t = e.target;
+            while (t) {
+                if (t.getAttribute) { if (t.getAttribute('data-slot')) break; }
+                if (t === e.currentTarget) { t = null; break; }
+                t = t.parentNode;
+            }
+            if (!t) return;
+            var slot = t.getAttribute('data-slot');
             SLOTS[slot].active = !SLOTS[slot].active;
-            // "Both" replaces the two single cards and vice versa
-            if (slot === 'B' && SLOTS.B.active) { SLOTS['1'].active = false; SLOTS['2'].active = false; }
-            if (slot !== 'B' && SLOTS[slot].active) { SLOTS.B.active = false; }
-            ALL_SLOTS.forEach(paintSlot);
+            // "All meals" replaces the single cards and vice versa
+            if (slot === 'B' && SLOTS.B.active) ORDER.forEach(function (s) { if (s !== 'B') SLOTS[s].active = false; });
+            if (slot !== 'B' && SLOTS[slot].active && SLOTS.B) SLOTS.B.active = false;
+            ORDER.forEach(paintSlot);
             updateTotals();
         });
-    });
+    }
 
     function updateQty(id, delta) {
         var el = byId(id);
@@ -2794,25 +2959,29 @@
     });
 
     // ===== TOTALS =====
+    function priceOf(meta) { return meta.kind === 'all' ? meta.price : PRICE[meta.kind]; }
     function slotCost(slot) {
         var meta = SLOTS[slot];
-        if (!meta.active) return 0;
-        var p = meta.kind === 'both' ? BOTH : PRICE[meta.kind];
+        if (!meta || !meta.active) return 0;
+        var p = priceOf(meta);
         return qty(slot, 'A') * p.A + qty(slot, 'S') * p.S + qty(slot, 'C') * p.C;
     }
     function slotHeads(slot) {
-        if (!SLOTS[slot].active) return 0;
+        if (!SLOTS[slot] || !SLOTS[slot].active) return 0;
         return qty(slot, 'A') + qty(slot, 'S') + qty(slot, 'C');
     }
     function updateTotals() {
         var total = 0;
-        ALL_SLOTS.forEach(function (slot) {
+        ORDER.forEach(function (slot) {
             var c = slotCost(slot);
             total += c;
-            byId('slot' + slot + 'Total').innerText = String(c);
-            byId('slot' + slot + 'Row').style.display = SLOTS[slot].active ? 'flex' : 'none';
+            var tEl = byId('slot' + slot + 'Total'), rEl = byId('slot' + slot + 'Row');
+            if (tEl) tEl.innerText = String(c);
+            if (rEl) rEl.style.display = SLOTS[slot].active ? 'flex' : 'none';
         });
         byId('grandTotal').innerText = String(total);
+        var hint = byId('mealsHint');
+        if (hint) hint.style.display = anyActive() ? 'none' : 'block';
     }
 
     // ===== VALIDATION =====
@@ -2828,16 +2997,15 @@
         return null;
     }
     function validateMeals() {
-        if (chosen === null) return 'Please choose which Shabbos this payment is for.';
-        var anyActive = false;
-        var anyEmpty = false;
-        ALL_SLOTS.forEach(function (slot) {
+        if (chosen === null) return 'Please choose which Shabbos or Yom Tov this payment is for.';
+        var active = false, empty = false;
+        ORDER.forEach(function (slot) {
             if (!SLOTS[slot].active) return;
-            anyActive = true;
-            if (slotHeads(slot) === 0) anyEmpty = true;
+            active = true;
+            if (slotHeads(slot) === 0) empty = true;
         });
-        if (!anyActive) return 'Please select at least one meal.';
-        if (anyEmpty) return 'Each selected meal needs at least 1 person (Adult / Subsidized / Child).';
+        if (!active) return 'Please select at least one meal.';
+        if (empty) return 'Each selected meal needs at least 1 person (Adult / Subsidized / Child).';
         return null;
     }
     function showValidationError(msg) {
@@ -2849,58 +3017,52 @@
     function clearValidationError() { byId('validationMsg').style.display = 'none'; }
 
     // ===== GOOGLE SHEETS SUBMISSION =====
-    // Same payload shape as Meal Form.html so the Apps Script files the row
-    // in the chosen week's tab (creating it if the office never had one).
+    // Same payload shape as Meal Form.html so the Apps Script files the row in
+    // the event's tab (multi-day holidays post the eve as the start date, like
+    // the main form) with the same meal columns.
     function submitToGoogleSheets(paymentDetails) {
-        var w = selectedWeek();
-        var satISO, friISO, title, endISO, eventType, shabbosText;
-        if (w) {
-            satISO = w.satISO;
-            friISO = isoOf(addDays(fromISO(satISO), -1));
-            title = w.title;
-            endISO = satISO;
-            eventType = 'parsha';
-            shabbosText = w.display;
+        var ev = selectedEvent();
+        var startISO, endISO, title, eventType, shabbosText;
+        if (ev) {
+            title = ev.title;
+            eventType = ev.type;
+            endISO = ev.endDate;
+            startISO = (ev.type === 'holiday' ? ev.startDate !== ev.endDate : false) ? addDaysISO(ev.startDate, -1) : ev.startDate;
+            shabbosText = ev.display;
         } else {
             // catch-all yearly tab: "Late and Past Payments - Jan 1 - Dec 31, YYYY"
             var y = new Date().getFullYear();
-            satISO = y + '-01-01';
+            startISO = y + '-01-01';
             endISO = y + '-12-31';
-            friISO = satISO;
             title = CATCHALL_TITLE;
             eventType = 'holiday';
             shabbosText = CATCHALL_TITLE + ' ' + y;
         }
 
         var meals = [];
-        var dinnerA = 0, dinnerS = 0, dinnerC = 0;
-        var lunchA = 0, lunchS = 0, lunchC = 0;
-        var both = SLOTS.B.active;
-        ['1', '2'].forEach(function (slot) {
-            var meta = SLOTS[slot];
-            var src = both ? 'B' : slot;
-            var on = both || meta.active;
-            var a = on ? qty(src, 'A') : 0;
-            var sb = on ? qty(src, 'S') : 0;
-            var c = on ? qty(src, 'C') : 0;
+        var dinnerA = 0, dinnerS = 0, dinnerC = 0, lunchA = 0, lunchS = 0, lunchC = 0;
+        var all = SLOTS.B ? SLOTS.B.active : false;
+        MEALS.forEach(function (m, i) {
+            var slot = String(i + 1);
+            var src = all ? 'B' : slot;
+            var on = all || SLOTS[slot].active;
+            var a = on ? qty(src, 'A') : 0, sb = on ? qty(src, 'S') : 0, c = on ? qty(src, 'C') : 0;
             meals.push({
                 id: 'slot' + slot,
-                label: meta.label,
-                date: slot === '1' ? friISO : satISO,
-                kind: meta.kind,
-                isShabbat: slot === '2',
-                adult: a,
-                sub: sb,
-                child: c
+                label: m.label + ' ' + m.sub,
+                date: m.dateISO || startISO,
+                kind: m.kind,
+                isShabbat: m.isShabbat,
+                adult: a, sub: sb, child: c
             });
-            if (meta.kind === 'dinner') { dinnerA += a; dinnerS += sb; dinnerC += c; }
+            if (m.kind === 'dinner') { dinnerA += a; dinnerS += sb; dinnerC += c; }
             else { lunchA += a; lunchS += sb; lunchC += c; }
         });
 
-        var whichLine = w ? w.display : 'Other Shabbos (see notes)';
+        var whichLine = ev ? ev.display : 'Other Shabbos (see notes)';
         var data = {
             shabbos: shabbosText,
-            shabbosDateISO: satISO,
+            shabbosDateISO: startISO,
             shabbosEndDateISO: endISO,
             shabbosTitle: title,
             eventType: eventType,
@@ -2992,14 +3154,16 @@
     }
 
     // ===== INIT =====
-    (function relabelNotes() {
+    (function relabel() {
         var lab = byId('sbPayFormContainer').querySelector('label[for="notes"]');
         if (lab) lab.innerText = 'Comments or notes (optional)';
         var n = byId('notes');
         if (n) n.placeholder = 'Anything else we should know';
+        var hint = byId('mealsHint');
+        if (hint) hint.innerText = 'Choose the Shabbos or Yom Tov above, tap a meal, then enter how many people.';
     })();
-    loadWeeks();
-    updateTotals();
+    renderMeals(null);      // default Shabbos cards until a week is chosen
+    loadEvents();
     initPayPal();
   }
 
@@ -3049,6 +3213,7 @@
     safe('hh-seats', initHHSeats);
     safe('meal-wording', initMealFormWording);
     safe('late-payment', initLatePayment);
+    safe('membership-standalone', initMembershipStandalone);
     safe('membership-builder', initMembershipBuilder);
   }
 
