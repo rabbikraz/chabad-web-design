@@ -4590,3 +4590,15 @@ html.sb-hh body.cco_body .sb-hh-submit:hover { background: #E3CFB4; }
 @media (max-width: 560px) { #sbPayFormContainer .sb-lp-grid { grid-template-columns: 1fr; } }
 #sbPayFormContainer .sb-lp-selwrap { display: block; }
 #sbPayFormContainer .sb-lp-select { width: 100%; padding: 1.1rem 1.2rem; border: 2px solid rgba(23,35,46,.14); border-radius: 12px; font-size: 1.38rem; color: #17232E; background: #fff; font-family: inherit; box-sizing: border-box; }
+/* centered page title on the payment page (body.sb-latepay set by initLatePayment).
+   :not(#sbx) lifts specificity over the 2-id left-align rule in section 15;
+   the theme shrink-wraps the title, so it must be block + auto width first. */
+html:not(#sbx) body.sb-latepay #BodyContainer #co_content_container .article-header,
+html:not(#sbx) body.sb-latepay #BodyContainer #co_content_container .article-header__title {
+  display: block !important;
+  width: auto !important;
+  max-width: 640px;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  text-align: center !important;
+}

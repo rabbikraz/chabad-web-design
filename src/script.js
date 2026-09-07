@@ -2568,6 +2568,7 @@
      which Shabbos so the row lands in that week's existing sheet tab. */
   function initLatePayment() {
     if (!document.getElementById('sbPayFormContainer')) return;
+    document.body.classList.add('sb-latepay');   // page-level hooks (centered title) in style.css
 
     // ===== CONFIGURATION (same processor + backend as Meal Form.html) =====
     var PAYPAL_CLIENT_ID = 'AQep8b0d5aOphyWo10ZQfAT-mwV0vWeHCjQLID21pSwnJyh4Fw5vNJANgqyTypi1PDiV3AKJ6fbarENP';
