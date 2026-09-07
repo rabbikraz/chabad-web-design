@@ -2706,6 +2706,9 @@ body.cco_body .sb-hero-copy h1 {
 /* programs: theme turns cards into absolute overlays (white uppercase title
    centered over a grey-multiplied thumbnail) and hides the description */
 .hp-row:has(.sneak-peek-container) { padding: 96px var(--sb-gutter) 20px; }
+/* events/shabbat/facebook wrapper: same one-class specificity as the .hp-row
+   reset above, so it must be re-asserted after it or the rail sits flush left */
+.hp_content_wrapper { padding: 96px var(--sb-gutter) 40px; }
 .sneak-peek-container { max-width: none !important; text-align: left !important; }
 .sneak-peek-item .widget_content,
 .sneak-peek-container .sneak_peek .widget_content {
@@ -4601,4 +4604,23 @@ html:not(#sbx) body.sb-latepay #BodyContainer #co_content_container .article-hea
   margin-left: auto !important;
   margin-right: auto !important;
   text-align: center !important;
+}
+
+/* ============================================================
+   High Holiday meals page (paste forms/hh-meals.html, aid 7495929):
+   legend-style locations + a lighter top on phones. Lives here so the
+   paste never needs re-saving (pasted scripts now hang the editor).
+   ============================================================ */
+html.sb-hh #sb-hhm .hm-where-box { display: block; margin: 0 0 18px; }
+html.sb-hh #sb-hhm .hm-where { background: none; border-radius: 0; border-left: 2px solid #C9A3AE; padding: 2px 0 2px 12px; margin: 0 0 10px; color: #F1E6D2; font-size: 14.5px; line-height: 1.45; }
+html.sb-hh #sb-hhm .hm-where b { color: #C9A3AE; font-size: 11px; letter-spacing: 2.5px; margin: 0 0 2px; }
+@media (max-width: 640px) {
+  html.sb-hh .article-header { margin: 0 0 14px; }
+  html.sb-hh #sb-hhm { display: flex; flex-direction: column; }
+  html.sb-hh #sb-hhm .hm-nav { order: 99; margin: 6px 0 0; }
+  html.sb-hh #sb-hhm .hm-lead { padding: 0 8px 14px; }
+  html.sb-hh #sb-hhm .hm-italic { display: none; }
+  html.sb-hh #sb-hhm .hm-eyebrow { margin: 0 0 6px; letter-spacing: 3px; }
+  html.sb-hh #sb-hhm .hm-small { font-size: 13px; }
+  html.sb-hh #sb-hhm .hm-blurb { margin: -6px 0 12px; }
 }
