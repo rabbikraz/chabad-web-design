@@ -1878,7 +1878,8 @@ var PAYPAL_PLAN_ID_ANNUAL  = 'P-7D723527MX0513131NKPQGZI';   /* Annual Membershi
    are checked live via the backend (?action=checkCode), so new codes can be
    added or turned off in the sheet without ever re-pasting this form.
    Kinds: free (fully covered) / percent (e.g. 10 = 10% off every payment) /
-   amount (dollars off each payment). FREE_CODES below is an emergency local
+   amount (dollars off each payment) / cap (each payment is at most $Value,
+   whatever tier and household they choose). FREE_CODES below is an emergency local
    fallback that keeps working even if the backend is unreachable. */
 var FREE_CODES = ['LOCAL100'];
 
@@ -1897,17 +1898,16 @@ function applyDiscount(amount) {
   if (d) {
     if (d.kind === 'percent') { v = v * (1 - Number(d.value || 0) / 100); }
     if (d.kind === 'amount') { v = v - Number(d.value || 0); }
+    if (d.kind === 'cap') { if (v > Number(d.value || 0)) { v = Number(d.value || 0); } }   /* never more than $X per payment */
     if (d.kind === 'free') { v = 0; }
   }
   if (0 > v) { v = 0; }
   return Math.round(v * 100) / 100;
 }
 
-/* Returns the plan id, amount, and number of cycles for the chosen billing.
-   The member's renewal choice sets the length: 'auto' -> cycles 0 (the
-   subscription keeps going until cancelled; the backend emails a notice a
-   month before each anniversary), 'once' -> exactly one year (12 monthly
-   payments or 1 annual payment; the backend emails a renew link instead). */
+/* The plan id and amount for the chosen billing - for display and the
+   configuration checks below. The subscription itself is created by the
+   backend (createSubscription above), which recomputes the price. */
 function resolvePlan() {
   var once = (renewalMode() === 'once');
   if (billingMode() === 'annual') {
@@ -1967,25 +1967,32 @@ function renderPayPal() {
     /* PayPal allows only gold / blue / silver / white / black here - gold is
        PayPal's own default and the closest to the site's accent */
     style: { layout: 'vertical', color: 'gold', shape: 'pill', label: 'subscribe' },
-    createSubscription: function (data, actions) {
-      var plan = resolvePlan();
-      /* Override the base plan's price with this member's exact amount. */
-      var planObj = {
-        billing_cycles: [{
-          sequence: 1,
-          total_cycles: plan.cycles,
-          pricing_scheme: { fixed_price: { value: plan.amount, currency_code: 'USD' } }
-        }]
-      };
-      /* Memorial board fee added to the first payment becomes a one-time
-         setup fee charged when the subscription is created. */
-      if (memorialBillingResolved() === 'first') {
-        planObj.payment_preferences = {
-          setup_fee: { value: Number(memorialTotal()).toFixed(2), currency_code: 'USD' },
-          setup_fee_failure_action: 'CANCEL'
-        };
-      }
-      return actions.subscription.create({ plan_id: plan.id, plan: planObj });
+    /* PayPal does not let the browser set a custom price on a subscription
+       ("Billing Plan Override is not allowed"), so the backend creates it at
+       the price IT computes from tier + household + code, and we hand PayPal
+       the id. The window stays open on PayPal's spinner meanwhile. */
+    createSubscription: function () {
+      var h = state.household;
+      var d = activeDiscount();
+      var q = [
+        'action=createSubscription',
+        'tier=' + encodeURIComponent(h.tier || ''),
+        'type=' + encodeURIComponent(h.type || 'single'),
+        'parents=' + encodeURIComponent(h.parents || 'two'),
+        'kids=' + encodeURIComponent(h.type === 'family' ? h.kidsCount : 0),
+        'billing=' + encodeURIComponent(billingMode()),
+        'code=' + encodeURIComponent(d ? (d.code || '') : ''),
+        'memorial=' + encodeURIComponent(memorialBillingResolved() === 'first' ? memorialCount() : 0)
+      ].join(AMP);
+      return fetch(SUBMIT_URL + '?' + q)
+        .then(function (r) { return r.json(); })
+        .then(function (j) {
+          if (!j) { throw new Error('No answer from the membership server.'); }
+          if (!j.ok) { throw new Error(j.error || 'The membership server refused the request.'); }
+          state.payment = state.payment || { provider: 'paypal', subscriptionId: '' };
+          state.payment.serverAmount = j.amount;
+          return j.id;
+        });
     },
     onApprove: function (data) {
       var mc = memorialCount();
@@ -1996,7 +2003,19 @@ function renderPayPal() {
       collectPreferences();
       goToScreen4();
     },
-    onError: function () { showPayNotice('Payment error. Please try again or contact the office.'); }
+    onError: function (err) {
+      /* say WHY, so a PayPal-side refusal is never mistaken for a form problem */
+      var why = '';
+      try { why = String((err ? (err.message || err) : '') || ''); } catch (e) { why = ''; }
+      if (window.console) { console.warn('[membership] PayPal error:', err); }
+      var msg = 'PayPal could not start the subscription. Please try again in a moment, or contact the office and we will set it up with you.';
+      if (/^PayPal refused:|not valid any more|fully covered|membership server/i.test(why)) { msg = why + ' Nothing was charged.'; }
+      else if (/insufficient permissions|NOT_AUTHORIZED/i.test(why)) { msg = 'PayPal refused the request from this page. Please let the office know; nothing was charged.'; }
+      else if (/PLAN_STATUS_INVALID|plan status/i.test(why)) { msg = 'This page is using an outdated PayPal plan. Please let the office know the form needs to be re-published; nothing was charged.'; }
+      else if (/INVALID_RESOURCE_ID|RESOURCE_NOT_FOUND/i.test(why)) { msg = 'PayPal did not recognize the membership plan on this page. Please let the office know; nothing was charged.'; }
+      else if (/popup|window closed|closed/i.test(why)) { msg = 'The PayPal window was closed before finishing. Tap the button again when you are ready.'; }
+      showPayNotice(msg);
+    }
   }).render('#paypal-button-container');
 }
 
@@ -2061,6 +2080,7 @@ function rejectCode(text) {
 function discountText(kind, value) {
   if (kind === 'percent') { return Number(value || 0) + '% off every payment'; }
   if (kind === 'amount') { return moneyFmt(Number(value || 0)) + ' off every payment'; }
+  if (kind === 'cap') { return 'you never pay more than ' + moneyFmt(Number(value || 0)) + ' per payment'; }
   return 'discount applied';
 }
 

@@ -1441,11 +1441,11 @@ body.cco_body .sb-hero-copy h1 {
   background: var(--sb-surface);
   border-radius: var(--sb-radius-lg);
   overflow: hidden;
-  box-shadow: var(--sb-shadow-sm);
-  transition: box-shadow 220ms ease, transform 220ms ease;
+  box-shadow: none;
+  transition: transform 220ms ease;
   position: relative;
 }
-.sneak-peek-item .widget_content:hover { box-shadow: var(--sb-shadow-lg); transform: translateY(-2px); }
+.sneak-peek-item .widget_content:hover { transform: translateY(-2px); }
 .sneak-peek-item .widget_content a.thumbnail {
   display: block;
   height: 220px;
