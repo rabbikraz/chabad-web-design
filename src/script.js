@@ -681,11 +681,14 @@
       );
     }
     if (candles.holiday) {
+      // High Holidays go to their own landing page; anything else to the events list
+      var isHH = /rosh\s*hashan|yom\s*kippur|sukkot|shemini|shmini|simchat/i.test(candles.holiday.name || '');
+      var reserveHref = isHH ? HH_LANDING : '/tools/events/default_cdo';
       cols.push(
         '<div class="sb-shabbat-col"><div class="sb-eyebrow">Upcoming Holiday</div>' +
         '<h3><a href="' + esc(candles.holiday.href || '#') + '">' + esc(candles.holiday.name) + '</a></h3>' +
         (candles.holiday.date ? '<p>' + esc(candles.holiday.date) + '</p>' : '') +
-        '<a class="sb-btn sb-btn-primary" href="/tools/events/default_cdo">Reserve for the holidays</a></div>'
+        '<a class="sb-btn sb-btn-primary" href="' + reserveHref + '">Reserve for the holidays</a></div>'
       );
     }
     if (!cols.length) return;
