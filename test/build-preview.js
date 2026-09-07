@@ -117,6 +117,13 @@ window.addEventListener('load', function () {
     snapshot: '20251013120914',
     include: { token: '<!--SB_FORM_INCLUDE-->', file: 'forms/hh-schedule.html' },
   },
+  // late / past Shabbos payment form (outside the repo, sibling of Meal Form.html)
+  {
+    src: 'late-payment.html',
+    out: 'preview-late-payment.html',
+    snapshot: '20251013120914',
+    include: { token: '<!--SB_FORM_INCLUDE-->', file: '../Chabad forms/Late Payment Form.html' },
+  },
   // live Shabbat/holiday meal form (outside the repo) inside a plain article shell;
   // harness script auto-selects the Rosh Hashana date so the meal cards render
   {
