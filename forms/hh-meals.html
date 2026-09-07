@@ -564,8 +564,10 @@
     return { rh: rh, yk: yk };
   }
 
-  function updateTotals() {
-    clearValidationError();
+  function updateTotals(keepMsg) {
+    // keepMsg: a background refresh (capacity feed) must not hide a message
+    // the visitor was just shown.
+    if (!keepMsg) clearValidationError();
     var lines = '';
     if (allMode && eventHeads('rh') > 0) {
       lines += '<div class="hm-sumline"><span>All Rosh Hashana Meals \u00D7 ' + slotHeads('1') + '</span><span>$' + eventCost('rh') + '</span></div>';
@@ -683,7 +685,7 @@
             paintMeal(ms[j].slot);
           }
         }
-        updateTotals();
+        updateTotals(true);
       })
       .catch(function (err) { console.error('Could not load capacity caps:', err); });
   }
@@ -713,12 +715,38 @@
     box.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
   function clearValidationError() { $('hmValid').style.display = 'none'; }
-  function formOk() {
+  // Names the first empty or invalid contact field so the message can say
+  // exactly what is missing (the browser's own bubble is lost when a payment
+  // popup takes focus).
+  function fieldError() {
     var form = $('hmForm');
-    if (!form.checkValidity()) { form.reportValidity(); return false; }
-    var err = validateMeals();
+    if (form.checkValidity()) return null;
+    var bad = form.querySelector(':invalid');
+    var label = bad && bad.id ? form.querySelector('label[for="' + bad.id + '"]') : null;
+    var name = label ? label.firstChild.textContent.trim() : 'the highlighted field';
+    if (bad) {
+      bad.style.borderColor = '#D9534F';
+      bad.addEventListener('input', function fix() { bad.style.borderColor = ''; bad.removeEventListener('input', fix); });
+      try { bad.focus({ preventScroll: true }); } catch (e) { bad.focus(); }
+    }
+    if (bad && bad.value) return 'Please check your ' + name + ' above; it does not look right.';
+    return 'Please fill in your ' + name + ' above before paying.';
+  }
+  function formOk() {
+    var err = fieldError() || validateMeals();
     if (err) { showValidationError(err); return false; }
     clearValidationError();
+    return true;
+  }
+  // PayPal preflight: everything formOk checks, plus a payable total. Runs in
+  // onClick so a problem is reported BEFORE PayPal opens its window; a window
+  // that opens and instantly closes is what visitors saw as a failed payment.
+  var ppBlocked = false;
+  function ppReady() {
+    ppBlocked = false;
+    if (!formOk()) { ppBlocked = true; return false; }
+    var total = parseFloat($('hmSumTotal').innerText);
+    if (!(total > 0)) { showValidationError('Your total is $0. Use the Confirm Reservation button instead.'); ppBlocked = true; return false; }
     return true;
   }
 
@@ -801,10 +829,12 @@
     script.onload = function () {
       paypal.Buttons({
         style: { layout: 'vertical', color: 'white', shape: 'rect', label: 'pay', height: 48, tagline: false },
+        onClick: function (data, actions) {
+          return ppReady() ? actions.resolve() : actions.reject();
+        },
         createOrder: function (data, actions) {
-          if (!formOk()) return;
+          if (!ppReady()) return;
           var total = parseFloat($('hmSumTotal').innerText);
-          if (total <= 0) { showValidationError('Your total is $0. Use the Confirm Reservation button instead.'); return; }
           return actions.order.create({
             purchase_units: [{ description: 'High Holiday Meals - Chabad in South Beach', amount: { value: total.toFixed(2) } }]
           });
@@ -817,6 +847,8 @@
         },
         onError: function (err) {
           console.error('PayPal error:', err);
+          // A validation stop already explains itself; do not paper over it.
+          if (ppBlocked) { ppBlocked = false; return; }
           showValidationError('Payment did not go through. Please try again or call us at ' + PHONE_TEXT + ' to reserve.');
         }
       }).render('#hmPaypal');
