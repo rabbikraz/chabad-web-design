@@ -4624,3 +4624,18 @@ html.sb-hh #sb-hhm .hm-where b { color: #C9A3AE; font-size: 11px; letter-spacing
   html.sb-hh #sb-hhm .hm-small { font-size: 13px; }
   html.sb-hh #sb-hhm .hm-blurb { margin: -6px 0 12px; }
 }
+
+/* HH seats page (7442141): seats intro tighter on phones so the form shows without scrolling */
+@media (max-width: 640px) {
+  html.sb-hh #sb-hh .sb-hh-intro { padding: 14px 16px 12px; margin: 0 0 14px; }
+  html.sb-hh #sb-hh .sb-hh-free { font-size: 18px; margin: 0 0 6px; }
+  html.sb-hh #sb-hh .sb-hh-sub { font-size: 14px; line-height: 1.45; margin: 0 0 8px; }
+  html.sb-hh #sb-hh .sb-hh-intro p { margin: 0 0 8px !important; font-size: 14px !important; }
+  html.sb-hh #sb-hh .sb-hh-alt { font-size: 14px; margin: 0; }
+  html.sb-hh #sb-hh .sb-hh-dot { margin: 0 8px; }
+}
+/* HH schedule page (7472654, inline-styled paste): quick-link cards a third thinner */
+html.sb-hh div[style*="max-width:1040px"] > div[style*="flex-wrap"] > a[style] { padding: 11px 20px !important; border-radius: 14px !important; }
+html.sb-hh div[style*="max-width:1040px"] > div[style*="flex-wrap"] > a[style] > span > span:first-child { font-size: 18px !important; margin: 0 !important; }
+html.sb-hh div[style*="max-width:1040px"] > div[style*="flex-wrap"] > a[style] > span > span + span { font-size: 13px !important; }
+html.sb-hh div[style*="max-width:1040px"] > div[style*="flex-wrap"] { margin-bottom: 20px !important; }
