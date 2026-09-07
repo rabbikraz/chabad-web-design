@@ -98,7 +98,7 @@
   /* Pages whose CMS title duplicates their own content heading: hide the
      article header (style.css, html.sb-notitle). Flagged early by boot.js
      too; this is the fallback. Override with window.SB_NOTITLE_PAGES. */
-  var NOTITLE_PAGES = window.SB_NOTITLE_PAGES || ['7080118', '7474052'];
+  var NOTITLE_PAGES = window.SB_NOTITLE_PAGES || ['7080118', '7474052', '7437612'];
 
   function applyNoTitle() {
     var href = window.location.href;
