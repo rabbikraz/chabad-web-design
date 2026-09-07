@@ -1634,14 +1634,37 @@ body.cco_body:not(.sb-js) .candlelighting .section_heading { color: var(--sb-acc
    -------------------------------------------------------------------------- */
 .widget-4.facebook_likebox { margin-top: 64px; }
 .widget-4.facebook_likebox > .wrapper {
-  max-width: 700px;
+  max-width: 980px;
   margin: 0 auto;
   background: var(--sb-surface);
   border: 1px solid var(--sb-divider);
   border-radius: var(--sb-radius-lg);
-  padding: 26px 28px 28px;
+  padding: 34px 36px;
 }
 .widget-4.facebook_likebox .widget_header h5 { font-size: 24px; margin: 0 0 14px; }
+/* two columns once restyleFacebook() has run: our copy + button | the feed in a frame */
+.widget-4.facebook_likebox.sb-fb-ready > .wrapper {
+  display: grid;
+  grid-template-columns: minmax(220px, 1fr) minmax(300px, 500px);
+  gap: 36px;
+  align-items: center;
+}
+.widget-4.facebook_likebox.sb-fb-ready .widget_header { text-align: left !important; }
+.widget-4.facebook_likebox.sb-fb-ready .widget_header h5 { font-size: 30px !important; margin: 0 0 12px !important; padding: 0 !important; text-indent: 0; }
+.widget-4.facebook_likebox .sb-fb-copy { font-size: 16.5px; line-height: 1.6; color: var(--sb-text); margin: 0 0 20px; }
+.widget-4.facebook_likebox .sb-fb-followers { display: block; margin-top: 12px; font-size: 14px; letter-spacing: .08em; text-transform: uppercase; color: var(--sb-accent-dark, #8A5F16); }
+.widget-4.facebook_likebox .sb-fb-frame {
+  background: #fff;
+  border: 1px solid var(--sb-divider);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 10px 28px rgba(23, 35, 46, .08);
+  line-height: 0;
+}
+.widget-4.facebook_likebox .sb-fb-frame iframe { display: block; width: 100% !important; border: 0; }
+@media (max-width: 760px) {
+  .widget-4.facebook_likebox.sb-fb-ready > .wrapper { grid-template-columns: 1fr; gap: 22px; padding: 24px 18px; }
+}
 
 /* --------------------------------------------------------------------------
    12. LATEST PHOTOS (async widget → mosaic grid)
