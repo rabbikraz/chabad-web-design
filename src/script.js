@@ -2558,6 +2558,416 @@
     schedule();
   }
 
+
+  /* ---------------- Shabbos Meal Payment page (late sign-ups / past Shabbosim) ----------------
+     Paste = "Chabad forms/Late Payment Form.html" (style block + markup ONLY).
+     The logic lives here because ChabadOne's editor hangs on Save when a
+     pasted script creates a <script> element and sets its src (the PayPal SDK
+     loader) - bisected 2026-09-07; markup-only pastes save fine. Same prices,
+     PayPal client and Apps Script webhook as Meal Form.html; the visitor picks
+     which Shabbos so the row lands in that week's existing sheet tab. */
+  function initLatePayment() {
+    if (!document.getElementById('sbPayFormContainer')) return;
+
+    // ===== CONFIGURATION (same processor + backend as Meal Form.html) =====
+    var PAYPAL_CLIENT_ID = 'AQep8b0d5aOphyWo10ZQfAT-mwV0vWeHCjQLID21pSwnJyh4Fw5vNJANgqyTypi1PDiV3AKJ6fbarENP';
+    var GOOGLE_SHEET_WEBHOOK = 'https://script.google.com/macros/s/AKfycbzNnNNSbv6pUY_xoJDCz7xJl0DLAuXaeDajlwH1isdXw4gQBK0plUyOaThijLgOT6_9ag/exec';
+
+    // Same prices as the main form. Slot 1 = Friday night (dinner tier),
+    // slot 2 = Shabbat day (lunch tier). Meal labels MUST stay exactly
+    // "Friday Night Dinner" / "Shabbat Day Lunch" so the row lines up with
+    // the columns of the week tab the main form already created.
+    var PRICE = {
+        dinner: { A: 85, S: 54, C: 36 },
+        lunch:  { A: 54, S: 36, C: 18 }
+    };
+    var SLOTS = {
+        '1': { kind: 'dinner', label: 'Friday Night Dinner', active: false },
+        '2': { kind: 'lunch',  label: 'Shabbat Day Lunch',   active: false }
+    };
+    var PAST_WEEKS = 10;             // how many previous Shabbosim to list
+    var CATCHALL_TITLE = 'Late and Past Payments';   // "Other" tab, one per year
+
+    var amp = String.fromCharCode(38);
+
+    // ===== HELPERS =====
+    function byId(id) { return document.getElementById(id); }
+    function qty(slot, tier) { return parseInt(byId('slot' + slot + tier).innerText, 10) || 0; }
+    function pad2(n) { return n > 9 ? String(n) : '0' + n; }
+    function isoOf(d) { return d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate()); }
+    function fromISO(iso) { var p = iso.split('-'); return new Date(parseInt(p[0], 10), parseInt(p[1], 10) - 1, parseInt(p[2], 10)); }
+    function addDays(d, n) { var x = new Date(d.getTime()); x.setDate(x.getDate() + n); return x; }
+    function fmtShort(d) { return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }); }
+    function fmtNice(d) { return d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }); }
+    function stripParashat(t) { return String(t || '').replace(/^Parashat\s+/i, ''); }
+
+
+    // ===== WHICH SHABBOS =====
+    // weeks[i] = { satISO, title (raw Hebcal title, "Parashat X" or the
+    // holiday), display, isThis } ; plus the "other" catch-all option.
+    var weeks = [];
+    var chosen = null;   // index into weeks, or 'other'
+
+    function upcomingSaturday() {
+        var d = new Date();
+        d.setHours(12, 0, 0, 0);
+        var dow = d.getDay();               // 0 Sun .. 6 Sat
+        var add = (6 - dow + 7) % 7;         // 0 when today is Saturday
+        return addDays(d, add);
+    }
+
+    function buildWeeks(items) {
+        var byDate = {};
+        var holByDate = {};
+        var list = items || [];
+        list.forEach(function (it) {
+            if (!it || !it.date) return;
+            var day = String(it.date).split('T')[0];
+            if (it.category === 'parashat') byDate[day] = it.title;
+            else if (it.category === 'holiday') {
+                if (it.yomtov === true) holByDate[day] = it.title;
+            }
+        });
+        var sat = upcomingSaturday();
+        weeks = [];
+        for (var i = 0; i <= PAST_WEEKS; i++) {
+            var s = addDays(sat, -7 * i);
+            var iso = isoOf(s);
+            var title = byDate[iso] || holByDate[iso] || 'Shabbos';
+            var fri = addDays(s, -1);
+            var name = stripParashat(title);
+            var prefix = i === 0 ? 'This Shabbos: ' : (i === 1 ? 'Last Shabbos: ' : '');
+            weeks.push({
+                satISO: iso,
+                title: title,
+                display: prefix + name + ' (' + fmtShort(fri) + ' - ' + fmtShort(s) + ', ' + s.getFullYear() + ')',
+                isThis: i === 0
+            });
+        }
+        renderWeeks();
+    }
+
+    function chip(value, text) {
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'lpchip';
+        b.setAttribute('data-week', value);
+        b.innerText = text;
+        return b;
+    }
+    function renderWeeks() {
+        var wrap = byId('payShabbosWrap');
+        wrap.innerHTML = '';
+        weeks.forEach(function (w, i) { wrap.appendChild(chip(String(i), w.display)); });
+        wrap.appendChild(chip('other', 'Other / not sure (explain in the notes)'));
+        paintChips();
+    }
+    function paintChips() {
+        var chips = byId('payShabbosWrap').getElementsByTagName('button');
+        for (var i = 0; i < chips.length; i++) {
+            var on = chosen !== null ? chips[i].getAttribute('data-week') === String(chosen) : false;
+            chips[i].className = on ? 'lpchip lpchip-on' : 'lpchip';
+        }
+    }
+    byId('payShabbosWrap').addEventListener('click', function (e) {
+        var b = e.target;
+        while (b) {
+            if (b.getAttribute) { if (b.getAttribute('data-week')) break; }
+            if (b === e.currentTarget) { b = null; break; }
+            b = b.parentNode;
+        }
+        if (!b) return;
+        e.preventDefault();
+        var v = b.getAttribute('data-week');
+        chosen = v === 'other' ? 'other' : parseInt(v, 10);
+        paintChips();
+        paintWeek();
+    });
+
+    function loadWeeks() {
+        var sat = upcomingSaturday();
+        var start = isoOf(addDays(sat, -7 * PAST_WEEKS - 2));
+        var end = isoOf(sat);
+        var api = 'https://www.hebcal.com/hebcal?v=1' + amp + 'cfg=json' + amp + 'start=' + start + amp + 'end=' + end + amp + 's=on' + amp + 'maj=on' + amp + 'lg=en' + amp + 'geo=zip' + amp + 'zip=33139' + amp + 'tzid=America/New_York';
+        fetch(api)
+            .then(function (r) { return r.json(); })
+            .then(function (data) { buildWeeks(data.items || []); })
+            .catch(function () { buildWeeks([]); });   // dates only, titled "Shabbos"
+    }
+
+    function selectedWeek() {
+        if (chosen === null || chosen === 'other') return null;
+        return weeks[chosen] || null;
+    }
+
+    function paintWeek() {
+        var w = selectedWeek();
+        var row = byId('shabbosRow');
+        if (w) {
+            var s = fromISO(w.satISO);
+            byId('slot1Date').innerText = fmtNice(addDays(s, -1));
+            byId('slot2Date').innerText = fmtNice(s);
+            byId('shabbosRowLabel').innerText = w.display;
+            row.style.display = 'block';
+        } else {
+            byId('slot1Date').innerText = ' ';
+            byId('slot2Date').innerText = ' ';
+            if (chosen === 'other') {
+                byId('shabbosRowLabel').innerText = 'Shabbos: see notes';
+                row.style.display = 'block';
+            } else {
+                row.style.display = 'none';
+            }
+        }
+    }
+
+    // ===== MEAL TOGGLES =====
+    function paintSlot(slot) {
+        var meta = SLOTS[slot];
+        var t = byId('slot' + slot + 'Toggle');
+        var p = byId('slot' + slot + 'Pricing');
+        if (meta.active) {
+            t.style.borderColor = '#C08A2E';
+            t.style.background = '#F8EDD6';
+            p.style.display = 'block';
+        } else {
+            t.style.borderColor = 'rgba(23,35,46,.14)';
+            t.style.background = '#F3E8D3';
+            p.style.display = 'none';
+            ['A', 'S', 'C'].forEach(function (tier) { byId('slot' + slot + tier).innerText = '0'; });
+        }
+        byId('mealsHint').style.display = (SLOTS['1'].active || SLOTS['2'].active) ? 'none' : 'block';
+    }
+    ['1', '2'].forEach(function (slot) {
+        byId('slot' + slot + 'Toggle').addEventListener('click', function () {
+            SLOTS[slot].active = !SLOTS[slot].active;
+            paintSlot(slot);
+            updateTotals();
+        });
+    });
+
+    function updateQty(id, delta) {
+        var el = byId(id);
+        if (!el) return;
+        var val = parseInt(el.innerText, 10) + delta;
+        if (val < 0) val = 0;
+        el.innerText = String(val);
+        updateTotals();
+    }
+    // +/- buttons carry data-qty / data-delta (no inline handlers in the paste)
+    byId('sbPayFormContainer').addEventListener('click', function (e) {
+        var b = e.target;
+        while (b) {
+            if (b.getAttribute) { if (b.getAttribute('data-qty')) break; }
+            if (b === e.currentTarget) { b = null; break; }
+            b = b.parentNode;
+        }
+        if (!b) return;
+        e.preventDefault();
+        updateQty(b.getAttribute('data-qty'), parseInt(b.getAttribute('data-delta'), 10));
+    });
+
+    // ===== TOTALS =====
+    function slotCost(slot) {
+        var meta = SLOTS[slot];
+        if (!meta.active) return 0;
+        var p = PRICE[meta.kind];
+        return qty(slot, 'A') * p.A + qty(slot, 'S') * p.S + qty(slot, 'C') * p.C;
+    }
+    function slotHeads(slot) {
+        if (!SLOTS[slot].active) return 0;
+        return qty(slot, 'A') + qty(slot, 'S') + qty(slot, 'C');
+    }
+    function updateTotals() {
+        var total = 0;
+        ['1', '2'].forEach(function (slot) {
+            var c = slotCost(slot);
+            total += c;
+            byId('slot' + slot + 'Total').innerText = String(c);
+            byId('slot' + slot + 'Row').style.display = SLOTS[slot].active ? 'flex' : 'none';
+        });
+        byId('grandTotal').innerText = String(total);
+    }
+
+    // ===== VALIDATION =====
+    // The paste has no HTML form element (the editor mangles them), so the
+    // required fields are checked here instead of via checkValidity().
+    function validateFields() {
+        var name = byId('fullName').value.trim();
+        var email = byId('email').value.trim();
+        var phone = byId('phone').value.trim();
+        if (!name) { byId('fullName').focus(); return 'Please enter your full name.'; }
+        if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { byId('email').focus(); return 'Please enter a valid email address.'; }
+        if (!phone) { byId('phone').focus(); return 'Please enter your phone number.'; }
+        return null;
+    }
+    function validateMeals() {
+        if (chosen === null) return 'Please choose which Shabbos this payment is for.';
+        var anyActive = false;
+        var anyEmpty = false;
+        ['1', '2'].forEach(function (slot) {
+            if (!SLOTS[slot].active) return;
+            anyActive = true;
+            if (slotHeads(slot) === 0) anyEmpty = true;
+        });
+        if (!anyActive) return 'Please select at least one meal.';
+        if (anyEmpty) return 'Each selected meal needs at least 1 person (Adult / Subsidized / Child).';
+        return null;
+    }
+    function showValidationError(msg) {
+        var box = byId('validationMsg');
+        box.innerText = msg;
+        box.style.display = 'block';
+        box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+    function clearValidationError() { byId('validationMsg').style.display = 'none'; }
+
+    // ===== GOOGLE SHEETS SUBMISSION =====
+    // Same payload shape as Meal Form.html so the Apps Script files the row
+    // in the chosen week's tab (creating it if the office never had one).
+    function submitToGoogleSheets(paymentDetails) {
+        var w = selectedWeek();
+        var satISO, friISO, title, endISO, eventType, shabbosText;
+        if (w) {
+            satISO = w.satISO;
+            friISO = isoOf(addDays(fromISO(satISO), -1));
+            title = w.title;
+            endISO = satISO;
+            eventType = 'parsha';
+            shabbosText = w.display;
+        } else {
+            // catch-all yearly tab: "Late and Past Payments - Jan 1 - Dec 31, YYYY"
+            var y = new Date().getFullYear();
+            satISO = y + '-01-01';
+            endISO = y + '-12-31';
+            friISO = satISO;
+            title = CATCHALL_TITLE;
+            eventType = 'holiday';
+            shabbosText = CATCHALL_TITLE + ' ' + y;
+        }
+
+        var meals = [];
+        var dinnerA = 0, dinnerS = 0, dinnerC = 0;
+        var lunchA = 0, lunchS = 0, lunchC = 0;
+        ['1', '2'].forEach(function (slot) {
+            var meta = SLOTS[slot];
+            var a = meta.active ? qty(slot, 'A') : 0;
+            var sb = meta.active ? qty(slot, 'S') : 0;
+            var c = meta.active ? qty(slot, 'C') : 0;
+            meals.push({
+                id: 'slot' + slot,
+                label: meta.label,
+                date: slot === '1' ? friISO : satISO,
+                kind: meta.kind,
+                isShabbat: slot === '2',
+                adult: a,
+                sub: sb,
+                child: c
+            });
+            if (meta.kind === 'dinner') { dinnerA += a; dinnerS += sb; dinnerC += c; }
+            else { lunchA += a; lunchS += sb; lunchC += c; }
+        });
+
+        var whichLine = w ? w.display : 'Other Shabbos (see notes)';
+        var data = {
+            shabbos: shabbosText,
+            shabbosDateISO: satISO,
+            shabbosEndDateISO: endISO,
+            shabbosTitle: title,
+            eventType: eventType,
+            name: byId('fullName').value.trim(),
+            guestNames: '',
+            guestNamesList: [],
+            address: '',
+            email: byId('email').value,
+            phone: byId('phone').value,
+            notes: '[LATE / PAST PAYMENT] ' + whichLine + ' | ' + byId('notes').value.trim(),
+            meals: meals,
+            friAdult: dinnerA, friSub: dinnerS, friChild: dinnerC,
+            shabAdult: lunchA, shabSub: lunchS, shabChild: lunchC,
+            donation: 0,
+            total: byId('grandTotal').innerText,
+            discount: 0,
+            couponCode: '',
+            latePayment: true,
+            paymentId: paymentDetails.id,
+            payerEmail: paymentDetails.payer ? paymentDetails.payer.email_address : ''
+        };
+
+        fetch(GOOGLE_SHEET_WEBHOOK, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        }).catch(function (err) { console.error('Sheet submission failed:', err); });
+    }
+
+    // ===== PAYPAL SETUP =====
+    function initPayPal() {
+        var script = document.createElement('script');
+        script.src = 'https://www.paypal.com/sdk/js?client-id=' + PAYPAL_CLIENT_ID + amp + 'currency=USD';
+        script.onload = function () {
+            paypal.Buttons({
+                style: { layout: 'vertical', color: 'gold', shape: 'rect', label: 'pay', height: 48, tagline: false },
+                // Validation runs in onClick, BEFORE PayPal opens its window. Run inside
+                // createOrder it made the window open and instantly close on a missing
+                // field, and onError then reported a failed payment.
+                onClick: function (data, actions) {
+                    return paypalReady() ? actions.resolve() : actions.reject();
+                },
+                createOrder: function (data, actions) {
+                    if (!paypalReady()) return;
+                    var total = parseFloat(byId('grandTotal').innerText);
+                    return actions.order.create({
+                        purchase_units: [{
+                            description: 'Shabbos Meal Payment - Chabad in South Beach',
+                            amount: { value: total.toFixed(2) }
+                        }]
+                    });
+                },
+                onApprove: function (data, actions) {
+                    return actions.order.capture().then(function (details) {
+                        submitToGoogleSheets(details);
+                        byId('payForm').style.display = 'none';
+                        byId('successMessage').style.display = 'block';
+                        byId('successMessage').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    });
+                },
+                onError: function (err) {
+                    console.error('PayPal error:', err);
+                    // A validation stop already explained itself.
+                    if (paypalBlocked) { paypalBlocked = false; return; }
+                    showValidationError('Payment failed. Please try again or call us.');
+                }
+            }).render('#paypal-button-container');
+        };
+        // PayPal preflight: fields, meal rules and a payable total. Sets
+        // paypalBlocked so onError stays quiet after a validation stop.
+        var paypalBlocked = false;
+        function paypalReady() {
+            paypalBlocked = false;
+            var err = validateFields() || validateMeals();
+            if (!err) {
+                var total = parseFloat(byId('grandTotal').innerText);
+                if (!(total > 0)) err = 'Please add at least one person to a meal.';
+            }
+            if (err) {
+                showValidationError(err);
+                paypalBlocked = true;
+                return false;
+            }
+            clearValidationError();
+            return true;
+        }
+        document.head.appendChild(script);
+    }
+
+    // ===== INIT =====
+    loadWeeks();
+    updateTotals();
+    initPayPal();
+  }
+
   /* ---------------- init ---------------- */
 
   function init() {
@@ -2603,6 +3013,7 @@
     safe('donate-payvia', initDonatePayVia);
     safe('hh-seats', initHHSeats);
     safe('meal-wording', initMealFormWording);
+    safe('late-payment', initLatePayment);
     safe('membership-builder', initMembershipBuilder);
   }
 
