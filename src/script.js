@@ -3170,44 +3170,6 @@
     initPayPal();
   }
 
-  /* ---------------- Facebook card: modern page plugin in a clean frame ----------------
-     The CMS injects the legacy likebox.php iframe (faces on, 338px tall) into
-     .js-facebook-iframe. Swap it for the current page plugin (small header, no
-     cover, timeline only, taller) and give the card a two-column layout: our
-     copy + Follow button beside the feed. */
-  var FB_PAGE = 'https://www.facebook.com/159323581206';
-  function restyleFacebook() {
-    var widget = $('.widget-4.facebook_likebox');
-    if (!widget || widget.classList.contains('sb-fb-ready')) return;
-    var mount = $('.js-facebook-iframe', widget);
-    var iframe = mount ? $('iframe', mount) : null;
-    if (!mount || !iframe) return;
-    var header = $('.widget_header', widget);
-    if (header && !$('.sb-fb-copy', header)) {
-      if (!$('.sb-eyebrow', header)) header.insertBefore(el('div', 'sb-eyebrow', 'Stay connected'), header.firstChild);
-      var copy = el('p', 'sb-fb-copy', 'Photos from Shabbat and holidays, class recaps and the latest news from our community.');
-      header.appendChild(copy);
-      var follow = el('a', 'sb-btn sb-btn-primary', 'Follow us on Facebook');
-      follow.href = FB_PAGE;
-      follow.target = '_blank';
-      follow.rel = 'noopener';
-      header.appendChild(follow);
-    }
-    var frame = el('div', 'sb-fb-frame');
-    mount.parentNode.insertBefore(frame, mount);
-    frame.appendChild(mount);
-    widget.classList.add('sb-fb-ready');
-    var width = Math.max(280, Math.min(500, Math.round(frame.getBoundingClientRect().width) || 500));
-    var height = 560;
-    var q = 'href=' + encodeURIComponent(FB_PAGE) + AMP + 'tabs=timeline' + AMP + 'width=' + width + AMP + 'height=' + height +
-      AMP + 'small_header=true' + AMP + 'adapt_container_width=true' + AMP + 'hide_cover=true' + AMP + 'show_facepile=false' + AMP + 'locale=en_US';
-    iframe.setAttribute('src', 'https://www.facebook.com/plugins/page.php?' + q);
-    iframe.style.width = width + 'px';
-    iframe.style.height = height + 'px';
-    iframe.setAttribute('scrolling', 'no');
-    iframe.setAttribute('allow', 'encrypted-media');
-  }
-
   /* ---------------- High Holiday links -> the High Holidays landing page ----------------
      The CMS "Events > High Holidays" menu item (and our footer copy of it) points
      at the old Event-Reservations section (aid 418840), and the calendar rail's
@@ -3257,7 +3219,6 @@
       safe('welcome', function () { buildWelcome(heroImg); });
       safe('programs', wrapPrograms);
       safe('events-rail', buildEventsRail);
-      safe('facebook', restyleFacebook);
       safe('shabbat-band', function () { buildShabbatBand(candles); });
       safe('photos', initPhotosMosaic);
       safe('subscribe', enhanceSubscribe);
