@@ -518,6 +518,7 @@
         <div class="sum-row"><span>Household</span><span id="conf_household">-</span></div>
         <div class="sum-row"><span>Start date</span><span id="conf_start">-</span></div>
         <div class="sum-row"><span>Renewal</span><span id="conf_renewal">-</span></div>
+        <div class="sum-row" id="conf_discount_row" style="display:none;"><span id="conf_discount_label">Discount</span><span id="conf_discount">-</span></div>
         <div class="sum-row sum-total"><span>Monthly</span><span id="conf_monthly">-</span></div>
         <div class="sum-row"><span>Annual total</span><span id="conf_annual">-</span></div>
         <div class="sum-row" id="conf_memorial_row" style="display:none;"><span>Memorial board</span><span id="conf_memorial">-</span></div>
@@ -2251,8 +2252,18 @@ function goToScreen4() {
   setText('conf_household', hhDesc());
   setText('conf_start', h.startDate || '-');
   setText('conf_renewal', (state.payment.renewal === 'once') ? 'Ends after one year' : 'Automatic each year');
-  setText('conf_monthly', moneyFmt(h.monthly) + ' / mo');
-  setText('conf_annual', moneyFmt(h.annual) + ' / yr');
+  /* the confirmation is the member's receipt: show what they actually pay */
+  var cd = activeDiscount();
+  setText('conf_monthly', moneyFmt(applyDiscount(h.monthly)) + ' / mo');
+  setText('conf_annual', moneyFmt(applyDiscount(h.annual)) + ' / yr');
+  var cdRow = document.getElementById('conf_discount_row');
+  if (cdRow) {
+    if (cd) {
+      setText('conf_discount_label', 'Discount (' + String(cd.code || '').toUpperCase() + ')');
+      setText('conf_discount', discountText(cd.kind, cd.value));
+      cdRow.style.display = 'flex';
+    } else { cdRow.style.display = 'none'; }
+  }
   setText('conf_sub', state.payment.subscriptionId || '-');
 
   /* Memorial board line on the confirmation */
