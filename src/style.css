@@ -4647,3 +4647,10 @@ html.sb-hh div[style*="max-width:1040px"] > div[style*="flex-wrap"] { margin-bot
 .co_feature_icons div.item .preview .transformer { transform: none !important; width: 100% !important; height: 100% !important; }
 .co_feature_icons .transformer img,
 .co_feature_icons div.item .preview img { max-width: none !important; width: 100% !important; height: 100% !important; object-fit: cover; object-position: center; display: block; }
+
+/* HH meals page: PayPal renders its card checkout (billing address, Fastlane
+   checkboxes, legal line) in a TRANSPARENT iframe with dark text, unreadable on
+   the burgundy card. Give the container a light backdrop; the iframe content
+   itself cannot be styled. */
+html.sb-hh #sb-hhm #hmPaypal { background: #F7EEDF; border-radius: 14px; padding: 14px 14px 8px; }
+html.sb-hh #sb-hhm #hmPaypal:empty { background: none; padding: 0; }
