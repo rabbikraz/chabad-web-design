@@ -4644,5 +4644,6 @@ html.sb-hh div[style*="max-width:1040px"] > div[style*="flex-wrap"] { margin-bot
    each image inside a 1px .transformer that its script scales down, relying on
    the image's NATURAL size. Our global img max-width:100% collapsed them into
    blank white boxes (Leibel, 2026-09-07). Let them size naturally again. */
+.co_feature_icons div.item .preview .transformer { transform: none !important; width: 100% !important; height: 100% !important; }
 .co_feature_icons .transformer img,
-.co_feature_icons div.item .preview img { max-width: none !important; width: auto !important; height: auto !important; }
+.co_feature_icons div.item .preview img { max-width: none !important; width: 100% !important; height: 100% !important; object-fit: cover; object-position: center; display: block; }
