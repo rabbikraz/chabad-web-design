@@ -4639,3 +4639,10 @@ html.sb-hh div[style*="max-width:1040px"] > div[style*="flex-wrap"] > a[style] {
 html.sb-hh div[style*="max-width:1040px"] > div[style*="flex-wrap"] > a[style] > span > span:first-child { font-size: 18px !important; margin: 0 !important; }
 html.sb-hh div[style*="max-width:1040px"] > div[style*="flex-wrap"] > a[style] > span > span + span { font-size: 13px !important; }
 html.sb-hh div[style*="max-width:1040px"] > div[style*="flex-wrap"] { margin-bottom: 20px !important; }
+
+/* Chabad.org promo scroller (parshah / section pages): the thumbnail strip puts
+   each image inside a 1px .transformer that its script scales down, relying on
+   the image's NATURAL size. Our global img max-width:100% collapsed them into
+   blank white boxes (Leibel, 2026-09-07). Let them size naturally again. */
+.co_feature_icons .transformer img,
+.co_feature_icons div.item .preview img { max-width: none !important; width: auto !important; height: auto !important; }
