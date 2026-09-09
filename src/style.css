@@ -4279,6 +4279,13 @@ html:not(#sbx):not(#sbx2):not(#sbx3) body.cco_body form.sb-mf .sb-mw-discmsg.sb-
 }
 
 body.sb-memform .center.small { max-width: 880px; margin: 0 auto; color: #8A5F16; }
+/* Membership page: the CMS stacks ~99px above the card (measured live 2026-09-08:
+   16px container padding + a 28px .master-content-wrapper title bar that survives
+   the hidden heading + 50px padding on #co_body_container). Close it up. */
+body.cco_body.sb-memform .co_content_container.local_content { padding-top: 8px !important; }
+body.cco_body.sb-memform .master-content-wrapper { display: none !important; }
+body.cco_body.sb-memform #co_body_container.g960,
+body.cco_body.sb-memform #co_body_container { padding-top: 0 !important; }
 
 @media (max-width: 640px) {
   html:not(#sbx):not(#sbx2):not(#sbx3) body.cco_body form.sb-mf .form-all { padding: .9rem .8rem 2rem; }
