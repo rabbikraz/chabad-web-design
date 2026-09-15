@@ -3880,6 +3880,33 @@
     }
   }
 
+  /* Sukkot pages on phones: Leibel's phone showed the content column sitting
+     left of center (the fixed header stays centered, the column does not).
+     Emulated phones do not reproduce it, so measure the real viewport and
+     force symmetric 16px gutters on the Sukkot containers. */
+  function fixSukkotGutters() {
+    var ids = ['sb-skl', 'sb-sks', 'sb-skm'];
+    function apply() {
+      var vw = document.documentElement.clientWidth;
+      for (var i = 0; i < ids.length; i++) {
+        var el = document.getElementById(ids[i]);
+        if (!el) continue;
+        if (vw > 720) { el.style.marginLeft = ''; el.style.width = ''; el.style.maxWidth = ''; continue; }
+        el.style.marginLeft = '0px'; el.style.width = ''; el.style.maxWidth = '';
+        var left = el.getBoundingClientRect().left;
+        el.style.boxSizing = 'border-box';
+        el.style.width = (vw - 32) + 'px';
+        el.style.maxWidth = 'none';
+        el.style.marginLeft = (16 - left) + 'px';
+      }
+    }
+    if (!document.getElementById('sb-skl') && !document.getElementById('sb-sks') && !document.getElementById('sb-skm')) return;
+    apply();
+    window.addEventListener('resize', apply);
+    window.addEventListener('orientationchange', function () { setTimeout(apply, 150); });
+    setTimeout(apply, 600);
+  }
+
   var HH_LANDING = '/7472611';
   var SUKKOT_LANDING = '/7511266';
   function fixHighHolidayLinks() {
@@ -3942,6 +3969,7 @@
     safe('sukkot-meals', initSukkotMeals);
     safe('lulav-form', initLulavForm);
     safe('sukkot-schedule', initSukkotSchedule);
+    safe('sukkot-gutters', fixSukkotGutters);
     safe('membership-standalone', initMembershipStandalone);
     safe('membership-builder', initMembershipBuilder);
   }
