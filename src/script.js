@@ -3710,10 +3710,17 @@
         body: JSON.stringify(data)
       }).catch(function (err) { console.error('Sheet submission failed:', err); });
     }
+    // ONE request even when both holidays are booked: the first holiday is the
+    // main payload, the rest ride along in extraReservations. The Apps Script
+    // writes each into its own tab and sends the guest a single combined email.
     function submitToGoogleSheets(paymentDetails) {
       var evs = [];
       for (var e = 0; e < EVENT_ORDER.length; e++) if (eventHeads(EVENT_ORDER[e]) > 0) evs.push(EVENT_ORDER[e]);
-      for (var i = 0; i < evs.length; i++) post(buildPayload(evs[i], paymentDetails, i === 0));
+      if (!evs.length) return;
+      var main = buildPayload(evs[0], paymentDetails, true);
+      main.extraReservations = [];
+      for (var i = 1; i < evs.length; i++) main.extraReservations.push(buildPayload(evs[i], paymentDetails, false));
+      post(main);
     }
     window.SB_SUKKOT_PAYLOADS = function (details) {   // harness hook: inspect what would be posted
       var out = [];
