@@ -12,7 +12,8 @@
    forms/inject-membership.js, which built the live membership form.
 
    PRICES: Leibel's prices (2026-09-15): Standard $75, Deluxe $100,
-   Premium $150, delivery $18. The intro text is generated from the
+   Premium $150; pickup only (no delivery); a "fancier set" box takes
+   the buyer's own budget ($150 or more) and charges exactly that. The intro text is generated from the
    same PRICES object so the two never disagree.
 
    NOTHING IS SAVED until you review the canvas and click the
@@ -26,8 +27,8 @@
   var PRICES = {
     standard: 75,     // "Set quantity - Standard"  (per set)
     deluxe: 100,      // "Set quantity - Deluxe"    (per set)
-    premium: 150,     // "Set quantity - Premium"   (per set)
-    delivery: 18,     // "Deliver to my South Beach address"
+    premium: 150,     // "Premium set"   (per set)
+    fancierMin: 150,  // "Fancier set - my budget": the buyer types what to spend, charged 1:1
     donations: [18, 36, 54, 100, 180]
   };
   var ORDER_BY = 'Sunday, September 20';
@@ -59,8 +60,8 @@
     return null;
   }
 
-  if (findByLabel(/^set quantity - standard$/i)) {
-    alert('This form already has a "Set quantity - Standard" field - it looks like the injection already ran here. Aborting, nothing changed.');
+  if (findByLabel(/^(set quantity - )?standard( set)?$/i)) {
+    alert('This form already has a Standard set field - it looks like the injection already ran here. Use forms/update-lulav-form.js to change a built form. Aborting, nothing changed.');
     return;
   }
   if (!confirm('This will build form #' + fid + ' as the Lulav & Etrog order form (existing fields with matching labels are kept; everything else is created). Nothing is saved until you click Save. Continue?')) return;
@@ -93,6 +94,7 @@
     if (id) return copyQ(id, rename);
     return make();
   }
+  function priceOf(key) { return PRICES[key]; }
 
   var RADIO_DEF = { message: '', labelAlign: 'Auto', required: 'No', special: 'None', allowOther: 'No', otherText: 'Other', calculateOther: 'No', selected: '', spreadCols: '1', description: '' };
   var DROP_DEF = { message: '', labelAlign: 'Auto', required: 'No', special: 'None', size: 0, width: 150, selected: '', subLabel: '', description: '' };
@@ -108,11 +110,7 @@
   }
 
   var INTRO_HTML = '<p>Hand-selected, kosher Lulav &amp; Etrog sets for Sukkot 5787. Every set includes a lulav, etrog, three hadassim and two aravot, checked by the Rabbi, with a holder for the lulav.</p>' +
-    '<p>SET OPTIONS</p>' +
-    '<p>Standard - $' + PRICES.standard + ' &middot; a beautiful kosher set</p>' +
-    '<p>Deluxe - $' + PRICES.deluxe + ' &middot; a finer etrog and fuller lulav</p>' +
-    '<p>Premium - $' + PRICES.premium + ' &middot; our top selection, chosen first</p>' +
-    '<p>Enter how many of each set you would like below; your total is calculated automatically. Sets are picked up at Chabad in South Beach, 320 Meridian Ave, or delivered in South Beach for $' + PRICES.delivery + '.</p>' +
+    '<p>Choose how many of each set you would like; your total is calculated automatically. All sets are picked up at Chabad in South Beach, 320 Meridian Ave.</p>' +
     '<p>Please order by ' + ORDER_BY + '. Sukkot begins ' + SUKKOT_STARTS + '.</p>';
 
   /* ================= sets ================= */
@@ -124,15 +122,12 @@
     addQ('control_text', { text: INTRO_HTML });
     report.push('  (intro text created)');
   })();
-  reuse(/^set quantity - standard$/i, 'control_number', function () { return qty('Set quantity - Standard', PRICES.standard, '$' + PRICES.standard + ' per set'); });
-  reuse(/^set quantity - deluxe$/i, 'control_number', function () { return qty('Set quantity - Deluxe', PRICES.deluxe, '$' + PRICES.deluxe + ' per set'); });
-  reuse(/^set quantity - premium$/i, 'control_number', function () { return qty('Set quantity - Premium', PRICES.premium, '$' + PRICES.premium + ' per set'); });
-
-  /* ================= pickup / delivery ================= */
-  var DELIVER_OPT = 'Deliver to my South Beach address ($' + PRICES.delivery + ')';
-  var DELIVERY = reuse(/^delivery$/i, 'control_radio', function () {
-    return radio('Delivery', 'Pickup at Chabad (free)|' + DELIVER_OPT, { required: 'Yes', pricing: '0|' + PRICES.delivery, selected: 'Pickup at Chabad (free)' });
-  });
+  /* one CARD per set: label = name, sub-label = price + description, quantity inside (style.css) */
+  reuse(/^(set quantity - )?standard( set)?$/i, 'control_number', function () { return qty('Standard set', PRICES.standard, '$' + PRICES.standard + ' per set - a beautiful kosher set'); }, 'Standard set');
+  reuse(/^(set quantity - )?deluxe( set)?$/i, 'control_number', function () { return qty('Deluxe set', PRICES.deluxe, '$' + PRICES.deluxe + ' per set - a finer etrog and fuller lulav'); }, 'Deluxe set');
+  reuse(/^(set quantity - )?premium( set)?$/i, 'control_number', function () { return qty('Premium set', PRICES.premium, '$' + PRICES.premium + ' per set - our top selection, chosen first'); }, 'Premium set');
+  /* "fancier set": pricePerItem 1 charges exactly the dollar amount typed */
+  reuse(/^fancier set/i, 'control_number', function () { return addQ('control_number', { text: 'Fancier set - my budget', message: '', labelAlign: 'Auto', required: 'No', size: '6', maxsize: '', minValue: String(PRICES.fancierMin), maxValue: '10000', defaultValue: '', subLabel: 'Type the amount you would like to spend ($' + PRICES.fancierMin + ' or more) and we will hand-pick a set in that range; you are charged exactly this amount', hint: '', description: '', readonly: 'No', pricePerItem: 1 }); });
 
   /* ================= your information ================= */
   heading('Your Information');
@@ -145,13 +140,6 @@
   reuse(null, 'control_phone', function () {
     return addQ('control_phone', { text: 'Phone', message: '', labelAlign: 'Auto', required: 'Yes', validation: 'None', countryCode: 'No', inputMask: 'enable', inputMaskValue: '(###) ###-####', description: 'We text you when your set is ready.', sublabels: { country: 'Country Code', area: 'Area Code', phone: 'Phone Number', full: 'Phone Number' }, readonly: 'No' });
   });
-  /* Required stays OFF: the builder cannot make a field required only when
-     delivery is chosen, and ticking Required would block pickup orders. The
-     condition below shows it only for delivery; the label asks for it. */
-  var ADDRESS = reuse(/^delivery address$/i, 'control_address', function () {
-    return addQ('control_address', { text: 'Delivery Address', message: 'Required for delivery orders.', labelAlign: 'Auto', required: 'No', selectedCountry: 'United States', description: '', subfields: 'st1|st2|city|state|zip', sublabels: { addr_line1: 'Street Address', addr_line2: 'Apt / Unit', city: 'City', state: 'State', postal: 'Zip Code', country: 'Country' } });
-  });
-
   /* ================= donation / notes ================= */
   var donOpts = PRICES.donations.map(function (d) { return '$' + d; }).join('|');
   var donPricing = PRICES.donations.join('|');
@@ -203,8 +191,7 @@
       actions: fields.map(function (f) { return { field: String(f), visibility: 'Show' }; })
     };
   }
-  var conds = [];
-  conds.push(show([[DELIVERY, 'equals', DELIVER_OPT]], [ADDRESS]));
+  var conds = [];   // no conditions: pickup only, no address field
 
   /* ================= rebuild the canvas ================= */
   var nested = BuildSource.convertSavedToProp(out);
@@ -215,7 +202,6 @@
 
   console.log('=== INJECTION COMPLETE ON FORM #' + fid + ' - REVIEW THE FORM, THEN CLICK SAVE ===');
   console.log(report.join('\n'));
-  console.log('Prices used: Standard $' + PRICES.standard + ', Deluxe $' + PRICES.deluxe + ', Premium $' + PRICES.premium + ', delivery $' + PRICES.delivery + '.');
-  console.log('Conditions: ' + conds.length + ' rule (Delivery Address shows only for delivery orders).');
+  console.log('Prices used: Standard $' + PRICES.standard + ', Deluxe $' + PRICES.deluxe + ', Premium $' + PRICES.premium + '; fancier-set box from $' + PRICES.fancierMin + '.');
   console.log('If anything looks wrong: close WITHOUT saving and send this output to your helper.');
 })();

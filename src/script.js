@@ -3839,10 +3839,44 @@
     f.classList.add('sk-lulav');
     var all = f.querySelector('.form-all');
     if (all) all.classList.add('sk-schach');
+    var qs = f.querySelectorAll('li.form-line');
+    for (var q = 0; q < qs.length; q++) {
+      if (!qs[q].querySelector('.custom-number-wrapper')) continue;
+      var sub = qs[q].querySelector('.form-sub-label'), lab = qs[q].querySelector('.form-label-left, .form-label-top, .form-label-right');
+      if (sub && lab) lab.setAttribute('data-sub', (sub.textContent || '').trim());
+    }
     var subs = f.querySelectorAll('li.form-line .form-submit-button');
     for (var i = 1; i < subs.length; i++) {
       var li = subs[i].closest ? subs[i].closest('li.form-line') : null;
       if (li) li.classList.add('sk-dupe-submit');
+    }
+  }
+
+  /* ------------------------------------------------------------------
+     SUKKOT SCHEDULE PAGE (paste forms/sukkot-schedule.html): once a holiday
+     card's last event has passed, cross it out and dim it (Leibel: "on
+     Sept 27 at 7 pm the first days should go away or be crossed out").
+     Cards carry data-until; older pastes without it fall back to the same
+     times by card order. Override the clock with window.SB_SUKKOT_NOW.
+     ------------------------------------------------------------------ */
+  function initSukkotSchedule() {
+    var root = document.getElementById('sb-sks');
+    if (!root) return;
+    var now = window.SB_SUKKOT_NOW ? new Date(window.SB_SUKKOT_NOW) : new Date();
+    var fallback = ['2026-09-27T19:00:00', '2026-10-01T19:00:00', '2026-10-03T06:00:00', '2026-10-04T20:00:00'];
+    var cards = root.querySelectorAll('.sks-card');
+    for (var i = 0; i < cards.length; i++) {
+      var until = cards[i].getAttribute('data-until') || fallback[i];
+      if (!until) continue;
+      if (now > new Date(until)) {
+        cards[i].classList.add('sks-past');
+        if (!cards[i].querySelector('.sks-past-badge')) {
+          var b = document.createElement('span');
+          b.className = 'sks-past-badge';
+          b.textContent = 'This holiday has passed';
+          cards[i].insertBefore(b, cards[i].firstChild);
+        }
+      }
     }
   }
 
@@ -3907,6 +3941,7 @@
     safe('late-payment', initLatePayment);
     safe('sukkot-meals', initSukkotMeals);
     safe('lulav-form', initLulavForm);
+    safe('sukkot-schedule', initSukkotSchedule);
     safe('membership-standalone', initMembershipStandalone);
     safe('membership-builder', initMembershipBuilder);
   }

@@ -1,5 +1,10 @@
 # Lulav & Etrog order form - build playbook (ChabadOne form builder)
 
+**Already built on page 7511371.** To apply the 2026-09-15 changes (prices
+$75 / $100 / $150, set cards, no delivery, the "Fancier set - my budget" box)
+run `forms/update-lulav-form.js` in the builder console and Save. The steps
+below are for building from scratch.
+
 The Lulav form is a native ChabadOne form (the site's own processor, the CRM
 keeps the orders). Three files in this folder do the work:
 
@@ -18,7 +23,7 @@ the file are the confirmed prices (Standard $75, Deluxe $100, Premium $150):
 standard: 75     Set quantity - Standard   (per set)
 deluxe:  100     Set quantity - Deluxe     (per set)
 premium: 150     Set quantity - Premium    (per set)
-delivery: 18     South Beach delivery
+fancierMin: 150  "Fancier set - my budget": buyer types the amount ($150+), charged 1:1
 donations: 18, 36, 54, 100, 180
 ```
 
@@ -66,11 +71,11 @@ Re-running on a built form aborts on purpose ("already has Set quantity - Standa
 The receipt repeats one row per **non-empty** submitted field, using the field
 label as the row name. That is why:
 
-- the labels are short and self-explanatory ("Set quantity - Deluxe", "Delivery");
+- the labels are short and self-explanatory ("Deluxe set", "Fancier set - my budget");
 - quantity fields left blank simply do not appear (a family ordering one Deluxe
   set sees one quantity row, not three);
 - the donation dropdown has no "none" option: untouched means omitted;
-- an empty Delivery Address is omitted for pickup orders.
+- the fancier-set box, when left blank, does not appear either.
 
 ## Field list (as built)
 
@@ -78,15 +83,14 @@ label as the row name. That is why:
 |---|---|---|---|
 | Lulav & Etrog Sets 5787 | heading | | |
 | (intro text with set options, pickup, order-by date) | text | | |
-| Set quantity - Standard | number | price per item = standard | no |
-| Set quantity - Deluxe | number | price per item = deluxe | no |
-| Set quantity - Premium | number | price per item = premium | no |
-| Delivery | radio: Pickup at Chabad (free) / Deliver to my South Beach address ($18) | 0 / 18 | yes, defaults to pickup |
+| Standard set | number (card: name, price + description sub-label, quantity) | price per item = 75 | no |
+| Deluxe set | number (card) | price per item = 100 | no |
+| Premium set | number (card) | price per item = 150 | no |
+| Fancier set - my budget | number | price per item = 1 (charges the typed amount), min 150 | no |
 | Your Information | heading | | |
 | Full Name | full name | | yes |
 | Email | email | | yes |
 | Phone | phone | | yes |
-| Delivery Address | address (street, apt, city, state, zip) | | no (see note) |
 | Would you like to add a donation? | dropdown $18 / $36 / $54 / $100 / $180 | 18 / 36 / 54 / 100 / 180 | no |
 | Notes | textarea | | no |
 | Payment | heading | | |
@@ -94,10 +98,7 @@ label as the row name. That is why:
 | Payment | payform (credit card, processor 0) | | |
 | Order My Set | submit button | | |
 
-Condition: Delivery Address is shown only when Delivery = the deliver option.
-The builder cannot make a field required only for some answers, so the address
-is optional at the engine level; the label says it is required for delivery and
-the office should check delivery orders for an address.
+No conditions: pickup only, no address field.
 
 ## Why quantities are number fields, not dropdowns
 
