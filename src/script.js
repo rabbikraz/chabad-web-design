@@ -87,7 +87,7 @@
   /* SUKKOT THEME (style.css section 23, teal/apricot): same mechanism as
      the HH theme. 7511266 = Sukkot landing; add the schedule / meals /
      lulav article ids here AND in build.js once created. */
-  var SUKKOT_PAGES = window.SB_SUKKOT_PAGES || ['7511266'];
+  var SUKKOT_PAGES = window.SB_SUKKOT_PAGES || ['7511266', '7511368', '7511370', '7511371'];
 
   function applyHHTheme() {
     var href = window.location.href;

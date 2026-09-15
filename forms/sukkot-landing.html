@@ -4,8 +4,7 @@
      it takes from the site assets is the teal/apricot page chrome (html.sb-sukkot
      in site.css) and the schach band graphic (.sk-schach). Without site.css the
      page still reads fine (plain teal cards).
-     Links use aliases so the page never needs re-pasting when the other
-     Sukkot pages get their article ids: /sukkotmeals, /sukkotschedule, /lulav.
+     Links: meals /7511368, schedule /7511370, Lulav form /7511371.
      Paste rules: pure ASCII, numeric character references, no form tags,
      no inline handlers. -->
 <script>document.documentElement.className += ' sb-sukkot';</script>
@@ -31,7 +30,7 @@
 #sb-skl .skl-venue-s { display: block; font-size: 14.5px; color: #F3D9B0; }
 #sb-skl .skl-venue-s b { color: #F5B56A; font-weight: 700; }
 #sb-skl .skl-grid { display: flex; flex-wrap: wrap; gap: 22px; align-items: stretch; }
-#sb-skl a.skl-card { flex: 1 1 calc(50% - 11px); min-width: 250px; display: flex; flex-direction: column; position: relative; overflow: hidden; background: #24686C; border: 1px solid rgba(255,244,227,0.16); border-top: 3px solid #F5B56A; border-radius: 18px; box-shadow: 0 10px 28px rgba(0,0,0,0.18); padding: 26px 26px 28px; color: #FFF4E3; transition: transform 160ms ease, background 160ms ease; }
+#sb-skl a.skl-card { flex: 1 1 260px; min-width: 250px; display: flex; flex-direction: column; position: relative; overflow: hidden; background: #24686C; border: 1px solid rgba(255,244,227,0.16); border-top: 3px solid #F5B56A; border-radius: 18px; box-shadow: 0 10px 28px rgba(0,0,0,0.18); padding: 26px 26px 28px; color: #FFF4E3; transition: transform 160ms ease, background 160ms ease; }
 #sb-skl a.skl-card:hover { transform: translateY(-2px); background: #2A7478; }
 #sb-skl .skl-card-eyebrow { display: block; font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; font-weight: 700; color: #A9CFC9; margin: 0 0 10px; }
 #sb-skl .skl-card-t { display: block; font-family: Georgia, 'Times New Roman', serif; font-size: 24px; line-height: 1.25; color: #FFF4E3; margin: 0 0 10px; }
@@ -63,8 +62,8 @@
       <h2 class="skl-h">Celebrate Sukkot in our Sukkah</h2>
       <p class="skl-lead">Join us for eight days of joy: holiday dinners and lunches in the Sukkah, the Four Kinds in your hands, and a Simchat Torah celebration to remember. No membership needed, no one turned away.</p>
       <div class="skl-btns">
-        <a class="skl-btn" href="/sukkotmeals">Reserve holiday meals</a>
-        <a class="skl-btn skl-ghost" href="/lulav">Order a Lulav &amp; Etrog</a>
+        <a class="skl-btn" href="/7511368">Reserve holiday meals</a>
+        <a class="skl-btn skl-ghost" href="/7511371">Order a Lulav &amp; Etrog</a>
       </div>
     </div>
     <div class="skl-lulav"></div>
@@ -76,33 +75,26 @@
   </a>
 
   <div class="skl-grid">
-    <a class="skl-card" href="/sukkotmeals">
+    <a class="skl-card" href="/7511368">
       <span class="skl-card-etrog"></span>
       <span class="skl-card-eyebrow">Dining</span>
       <span class="skl-card-t">Meals in the Sukkah</span>
       <span class="skl-card-p">Reserve your place at our Sukkot dinners and lunches, and for Shemini Atzeret and Simchat Torah. Book a single meal or all the meals of the first days or the last days in one click.</span>
       <span class="skl-card-btn">Reserve meals</span>
     </a>
-    <a class="skl-card" href="/lulav">
+    <a class="skl-card" href="/7511371">
       <span class="skl-card-etrog"></span>
       <span class="skl-card-eyebrow">The Four Kinds</span>
       <span class="skl-card-t">Lulav &amp; Etrog Sets</span>
       <span class="skl-card-p">Order a beautiful, kosher Lulav and Etrog set, hand-selected for you and ready for pickup at Chabad before the holiday begins.</span>
       <span class="skl-card-btn">Order a set</span>
     </a>
-    <a class="skl-card" href="/sukkotschedule">
+    <a class="skl-card" href="/7511370">
       <span class="skl-card-etrog"></span>
       <span class="skl-card-eyebrow">Schedule</span>
       <span class="skl-card-t">Service Times</span>
       <span class="skl-card-p">Candle lighting, services and meal times for Sukkot, Hoshana Rabba, Shemini Atzeret and Simchat Torah.</span>
       <span class="skl-card-btn">View schedule</span>
-    </a>
-    <a class="skl-card" href="/sukkotschedule">
-      <span class="skl-card-etrog"></span>
-      <span class="skl-card-eyebrow">Celebration</span>
-      <span class="skl-card-t">Simchat Torah</span>
-      <span class="skl-card-p">Dancing, Hakafot, a festive dinner and lunch, and a celebration for kids and grown-ups alike. Saturday night, October 3 and Sunday, October 4.</span>
-      <span class="skl-card-btn">See the details</span>
     </a>
   </div>
 
