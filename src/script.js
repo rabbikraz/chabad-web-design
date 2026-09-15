@@ -3222,7 +3222,7 @@
         startISO: '2026-09-25', endISO: '2026-09-27',
         group: 'skmSkMeals', section: 'skmSectSk',
         cutoff: new Date(2026, 8, 25, 14, 30, 0),
-        lockStart: new Date(2026, 8, 25, 18, 50, 0),   // candle lighting 6:55 pm, 5 min early
+        lockStart: new Date(2026, 8, 25, 18, 51, 0),   // candle lighting 6:56 pm (chabad.org zmanim 33139), 5 min early
         lockEnd: new Date(2026, 8, 27, 19, 50, 0),     // Yom Tov ends 7:45 pm, 5 min late
         lockedTitle: 'This form is closed for Sukkot',
         lockedBody: 'Chag Sameach! We will see you after Yom Tov ends on Sunday night.'
@@ -3233,7 +3233,7 @@
         startISO: '2026-10-02', endISO: '2026-10-04',
         group: 'skmStMeals', section: 'skmSectSt',
         cutoff: new Date(2026, 9, 2, 14, 30, 0),
-        lockStart: new Date(2026, 9, 2, 18, 42, 0),    // candle lighting 6:47 pm
+        lockStart: new Date(2026, 9, 2, 18, 43, 0),    // candle lighting 6:48 pm (chabad.org zmanim 33139)
         lockEnd: new Date(2026, 9, 4, 19, 43, 0),      // holiday ends 7:38 pm
         lockedTitle: 'This form is closed for Simchat Torah',
         lockedBody: 'Chag Sameach! We will see you after the holiday ends on Sunday night.'
