@@ -3900,15 +3900,7 @@
       for (var i = 0; i < ids.length; i++) {
         var el = document.getElementById(ids[i]);
         if (!el) continue;
-        el.style.marginLeft = ''; el.style.width = ''; el.style.maxWidth = '';
-        if (vw > 720) continue;
-        el.style.marginLeft = '0px';
-        var left = el.getBoundingClientRect().left;       // layout px, relative to the layout viewport
-        var gutter = 16;
-        el.style.boxSizing = 'border-box';
-        el.style.width = Math.max(240, Math.round(vw - gutter * 2)) + 'px';
-        el.style.maxWidth = 'none';
-        el.style.marginLeft = Math.round(off + gutter - left) + 'px';
+        el.style.marginLeft = ''; el.style.width = ''; el.style.maxWidth = '';   // sizing is CSS-only now (the JS sizing overflowed the CMS wrapper)
       }
       if (/sbdebug=1/.test(location.search)) {
         var d = document.getElementById('sbDbg');

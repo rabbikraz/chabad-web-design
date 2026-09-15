@@ -5073,3 +5073,11 @@ html.sb-sukkot #sb-sks .sks-has-lulav .sks-days { padding-right: 0; }
    Clip horizontal overflow on the page and the CMS wrappers; clip (not hidden)
    so the body never becomes its own scroll container. */
 html.sb-sukkot, html.sb-sukkot body, html.sb-sukkot #BodyContainer, html.sb-sukkot #content, html.sb-sukkot .co_content_container { overflow-x: clip; }
+
+/* Sukkot pages: the CMS content wrapper (#co_content_container.no_overflow etc.)
+   became a sideways scroller on Leibel's phone. Hide horizontal overflow on the
+   INNER wrappers (never html/body: scroll-lock bug) and pin the Sukkot
+   containers to their wrapper width. */
+html.sb-sukkot #co_content_container, html.sb-sukkot .co_content_container, html.sb-sukkot #cco_body, html.sb-sukkot .content-area-parent, html.sb-sukkot #ContentBody, html.sb-sukkot #co_body_container, html.sb-sukkot .co_body.article-body, html.sb-sukkot article.content { overflow-x: hidden !important; }
+html.sb-sukkot #sb-skl, html.sb-sukkot #sb-sks, html.sb-sukkot #sb-skm { width: auto !important; max-width: 100% !important; margin-left: auto !important; margin-right: auto !important; box-sizing: border-box; }
+@media (min-width: 721px) { html.sb-sukkot #sb-skl, html.sb-sukkot #sb-sks { max-width: 1040px !important; } html.sb-sukkot #sb-skm { max-width: 680px !important; } }
