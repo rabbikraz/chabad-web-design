@@ -3900,8 +3900,9 @@
       for (var i = 0; i < ids.length; i++) {
         var el = document.getElementById(ids[i]);
         if (!el) continue;
-        el.style.marginLeft = '0px'; el.style.width = ''; el.style.maxWidth = '';
+        el.style.marginLeft = ''; el.style.width = ''; el.style.maxWidth = '';
         if (vw > 720) continue;
+        el.style.marginLeft = '0px';
         var left = el.getBoundingClientRect().left;       // layout px, relative to the layout viewport
         var gutter = 16;
         el.style.boxSizing = 'border-box';
@@ -3914,7 +3915,13 @@
         if (!d) { d = document.createElement('pre'); d.id = 'sbDbg'; d.style.cssText = 'position:fixed;left:0;bottom:0;z-index:99999;background:#000;color:#0f0;font:11px/1.4 monospace;padding:6px;margin:0;max-width:100%;white-space:pre-wrap;'; document.body.appendChild(d); }
         var el0 = document.getElementById(ids[0]) || document.getElementById(ids[1]) || document.getElementById(ids[2]);
         var r = el0.getBoundingClientRect();
-        d.textContent = 'clientW ' + lw + ' innerW ' + window.innerWidth + ' vv ' + (vv ? Math.round(vv.width) + 'x' + Math.round(vv.height) + ' scale ' + vv.scale.toFixed(2) + ' off ' + Math.round(vv.offsetLeft) : 'n/a') + ' screen ' + screen.width + ' dpr ' + window.devicePixelRatio + ' docScrollW ' + document.documentElement.scrollWidth + ' bodyW ' + document.body.getBoundingClientRect().width + ' el L ' + Math.round(r.left) + ' W ' + Math.round(r.width) + ' R ' + Math.round(lw - r.right);
+        var wide = [];
+        var all = document.body.querySelectorAll('*');
+        for (var a = 0; a < all.length && wide.length < 8; a++) {
+          var rr = all[a].getBoundingClientRect();
+          if (rr.width > 0 && rr.right > lw + 1 && getComputedStyle(all[a]).position !== 'fixed') wide.push(all[a].tagName.toLowerCase() + (all[a].id ? '#' + all[a].id : '') + '.' + String(all[a].className).split(' ')[0] + ' R' + Math.round(rr.right) + ' W' + Math.round(rr.width));
+        }
+        d.textContent = 'ovf html ' + getComputedStyle(document.documentElement).overflowX + ' body ' + getComputedStyle(document.body).overflowX + ' scrollX ' + Math.round(window.scrollX) + '\nWIDE: ' + (wide.join(' | ') || 'none') + '\n' + 'clientW ' + lw + ' innerW ' + window.innerWidth + ' vv ' + (vv ? Math.round(vv.width) + 'x' + Math.round(vv.height) + ' scale ' + vv.scale.toFixed(2) + ' off ' + Math.round(vv.offsetLeft) : 'n/a') + ' screen ' + screen.width + ' dpr ' + window.devicePixelRatio + ' docScrollW ' + document.documentElement.scrollWidth + ' bodyW ' + document.body.getBoundingClientRect().width + ' el L ' + Math.round(r.left) + ' W ' + Math.round(r.width) + ' R ' + Math.round(lw - r.right);
       }
     }
     apply();

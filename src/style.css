@@ -5067,3 +5067,9 @@ html.sb-sukkot #sb-sks .sks-card.sk-schach .sks-past-badge { top: 86px; }
 html.sb-sukkot #sb-sks .sks-lulav { right: 26px; top: 62px; bottom: auto; width: 96px; height: 122px; }
 html.sb-sukkot #sb-sks .sks-has-lulav .sks-days { padding-right: 0; }
 @media (min-width: 721px) { html.sb-sukkot #sb-sks .sks-has-lulav .sks-h, html.sb-sukkot #sb-sks .sks-has-lulav .sks-eyebrow { padding-right: 130px; } }
+
+/* Sukkot pages: Leibel's phone scrolled sideways (content wider than the
+   screen, which also made the column look off-center under the fixed header).
+   Clip horizontal overflow on the page and the CMS wrappers; clip (not hidden)
+   so the body never becomes its own scroll container. */
+html.sb-sukkot, html.sb-sukkot body, html.sb-sukkot #BodyContainer, html.sb-sukkot #content, html.sb-sukkot .co_content_container { overflow-x: clip; }
