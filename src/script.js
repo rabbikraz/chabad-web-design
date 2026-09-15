@@ -3863,7 +3863,7 @@
     var root = document.getElementById('sb-sks');
     if (!root) return;
     var now = window.SB_SUKKOT_NOW ? new Date(window.SB_SUKKOT_NOW) : new Date();
-    var fallback = ['2026-09-27T19:00:00', '2026-10-01T19:00:00', '2026-10-03T06:00:00', '2026-10-04T20:00:00'];
+    var fallback = ['2026-09-27T19:00:00', '2026-09-28T20:00:00', '2026-10-01T19:00:00', '2026-10-03T06:00:00', '2026-10-04T20:00:00'];   // order of the CURRENT paste; data-until wins when present
     var cards = root.querySelectorAll('.sks-card');
     for (var i = 0; i < cards.length; i++) {
       var until = cards[i].getAttribute('data-until') || fallback[i];
