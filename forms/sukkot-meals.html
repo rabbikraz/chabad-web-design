@@ -1,0 +1,444 @@
+<!-- SUKKOT MEALS: paste as the body of a REGULAR article page (not a form
+     page) in Source mode, then Save without switching to the visual view.
+     Give the page the alias /sukkotmeals (the landing, schedule and email link
+     to it) and add its article id to the Sukkot page list in build.js +
+     script.js so the teal chrome loads before first paint.
+     STYLE + MARKUP ONLY. All logic is initSukkotMeals() in site.js (pasted
+     scripts that load the PayPal SDK hang the ChabadOne editor on Save).
+     Fixed-event version of the Shabbat/holiday meal form: same Apps Script
+     backend, same payload shape, same sheet tabs as the general form would
+     create ("Sukkot - Sep 25-27, 2026" and "Shemini Atzeret / Simchat Torah -
+     Oct 2-4, 2026"), so reservations from here and from the general form land
+     together. A booking that spans both holidays posts one reservation per tab.
+     Paste rules: pure ASCII, numeric character references, no form tag, no
+     hidden inputs, no inline handlers. -->
+<script>document.documentElement.className += ' sb-sukkot';</script>
+<style>
+#sb-skm { max-width: 680px; margin: 0 auto; font-family: Arial, Helvetica, sans-serif; color: #FFF4E3; font-size: 17px; line-height: 1.6; }
+#sb-skm * { box-sizing: border-box; }
+#sb-skm .skm-lead { text-align: center; padding: 0 8px 26px; }
+#sb-skm .skm-eyebrow { font-size: 13px; font-weight: 700; letter-spacing: 4px; text-transform: uppercase; color: #F5B56A; margin: 0 0 12px; }
+#sb-skm .skm-italic { font-family: Georgia, 'Times New Roman', serif; font-style: italic; font-size: 20px; line-height: 1.5; color: #F3D9B0; margin: 0 0 12px; }
+#sb-skm .skm-small { font-size: 14px; color: #A9CFC9; margin: 0; }
+#sb-skm .skm-nav { display: flex; flex-wrap: wrap; gap: 12px; margin: 0 0 26px; }
+#sb-skm a.skm-navcard { flex: 1 1 180px; min-width: 160px; display: flex; flex-direction: column; position: relative; background: #FFF4E3; color: #14383B; text-decoration: none; border-radius: 12px; padding: 14px 44px 14px 18px; transition: background 160ms ease, transform 160ms ease; }
+#sb-skm a.skm-navcard:hover { background: #FBD7A6; transform: translateY(-1px); text-decoration: none; }
+#sb-skm .skm-navlabel { font-size: 11px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: #3E8286; margin: 0 0 3px; }
+#sb-skm .skm-navtitle { font-family: Georgia, 'Times New Roman', serif; font-size: 18px; line-height: 1.2; color: #14383B; }
+#sb-skm .skm-navarrow { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); font-size: 20px; color: #3E8286; }
+#sb-skm .skm-card { position: relative; background-color: #24686C; border: 1px solid rgba(255,244,227,0.16); border-top: 3px solid #F5B56A; border-radius: 18px; padding: 26px 28px 30px; margin: 0 0 22px; box-shadow: 0 10px 28px rgba(0,0,0,0.18); }
+#sb-skm .skm-card.sk-schach { border-top: none; padding-top: 86px; }
+#sb-skm .skm-step { font-size: 12px; letter-spacing: 3px; text-transform: uppercase; font-weight: 700; color: #F5B56A; margin: 0 0 4px; }
+#sb-skm h3.skm-h { font-family: Georgia, 'Times New Roman', serif; font-weight: 700; font-size: 26px; line-height: 1.2; color: #FFF4E3; margin: 0 0 18px; text-transform: none; letter-spacing: 0; }
+#sb-skm .skm-blurb { font-size: 15.5px; color: #F3D9B0; margin: -8px 0 18px; }
+#sb-skm .skm-center { text-align: center; }
+#sb-skm .skm-hide { display: none !important; }
+#sb-skm .skm-where { border-left: 2px solid #F5B56A; padding: 2px 0 2px 12px; margin: 0 0 20px; color: #FFF4E3; font-size: 14.5px; line-height: 1.45; }
+#sb-skm .skm-where b { display: block; color: #F5B56A; font-size: 11px; letter-spacing: 2.5px; text-transform: uppercase; margin: 0 0 2px; }
+#sb-skm .skm-where a { color: #FFF4E3; text-decoration: underline; text-underline-offset: 3px; }
+
+/* holiday sections inside step 1 */
+#sb-skm .skm-sect { margin: 26px 0 0; padding: 22px 0 0; border-top: 1px solid rgba(255,244,227,0.14); }
+#sb-skm .skm-sect.skm-first { margin: 0; padding: 0; border-top: none; }
+#sb-skm .skm-sect-eyebrow { font-size: 11.5px; letter-spacing: 3px; text-transform: uppercase; font-weight: 700; color: #A9CFC9; margin: 0 0 2px; }
+#sb-skm .skm-sect-h { font-family: Georgia, 'Times New Roman', serif; font-size: 22px; line-height: 1.2; color: #FFF4E3; margin: 0 0 12px; }
+#sb-skm .skm-sect-h .skm-sect-dates { font-family: Arial, Helvetica, sans-serif; font-size: 14px; color: #F3D9B0; margin-left: 8px; white-space: nowrap; }
+
+/* meal cards */
+#sb-skm .skm-meal { border: 2px solid #F3D9B0; border-radius: 14px; margin: 0 0 14px; background: #FFF4E3; overflow: hidden; transition: border-color 160ms ease, background 160ms ease; }
+#sb-skm .skm-meal.skm-on { border-color: #E9A24E; background: #FFF9EE; box-shadow: 0 0 0 1px #E9A24E; }
+#sb-skm .skm-meal.skm-featured { border-color: #F5B56A; }
+#sb-skm .skm-meal.skm-soldout { opacity: 0.55; }
+#sb-skm .skm-meal-head { display: flex; align-items: center; gap: 16px; padding: 16px 18px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+#sb-skm .skm-soldout .skm-meal-head { cursor: default; }
+#sb-skm .skm-meal-text { flex: 1; min-width: 0; }
+#sb-skm .skm-badge { display: inline-block; background: #1E5A5E; color: #FFF4E3; font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; border-radius: 999px; padding: 4px 11px; margin: 0 0 8px; }
+#sb-skm .skm-meal-title { display: block; font-family: Georgia, 'Times New Roman', serif; font-size: 22px; line-height: 1.2; color: #14383B; }
+#sb-skm .skm-featured .skm-meal-title { font-size: 25px; }
+#sb-skm .skm-meal-when { display: block; font-size: 15px; color: #2E4A4D; margin: 4px 0 0; }
+#sb-skm .skm-meal-where { display: block; font-size: 13.5px; color: #5C7275; margin: 3px 0 0; }
+#sb-skm .skm-meal-price { display: block; font-size: 13px; letter-spacing: 1px; text-transform: uppercase; color: #8A5F16; margin: 6px 0 0; }
+#sb-skm .skm-check { flex: none; width: 30px; height: 30px; border: 2px solid #3E8286; border-radius: 999px; position: relative; background: #FFFFFF; }
+#sb-skm .skm-on .skm-check { background: #1E5A5E; border-color: #1E5A5E; }
+#sb-skm .skm-on .skm-check:after { content: ''; position: absolute; left: 9px; top: 4px; width: 7px; height: 13px; border-right: 3px solid #F5B56A; border-bottom: 3px solid #F5B56A; transform: rotate(45deg); }
+#sb-skm .skm-meal-body { display: none; padding: 4px 18px 16px; border-top: 1px solid rgba(20,56,59,0.16); }
+#sb-skm .skm-on .skm-meal-body { display: block; }
+#sb-skm .skm-tier { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 12px 0; border-bottom: 1px solid rgba(20,56,59,0.12); }
+#sb-skm .skm-tier:last-child { border-bottom: none; }
+#sb-skm .skm-tier-name { display: block; font-size: 16.5px; font-weight: 700; color: #14383B; }
+#sb-skm .skm-tier-price { display: block; font-size: 14px; color: #5C7275; }
+#sb-skm .skm-qty { display: flex; align-items: center; gap: 10px; flex: none; }
+#sb-skm button.skm-qbtn { width: 38px; height: 38px; border-radius: 999px; border: 2px solid #1E5A5E; background: transparent; color: #1E5A5E; font-size: 22px; line-height: 1; cursor: pointer; padding: 0; font-family: Arial, Helvetica, sans-serif; }
+#sb-skm button.skm-qbtn:hover { background: rgba(30,90,94,0.1); }
+#sb-skm .skm-qval { min-width: 26px; text-align: center; font-size: 18px; font-weight: 700; color: #14383B; }
+#sb-skm .skm-tiernote { font-size: 13.5px; color: #A9CFC9; margin: 22px 0 0; }
+
+/* one-click "all meals" per holiday */
+#sb-skm button.skm-allbtn { width: 100%; display: flex; align-items: center; gap: 12px; text-align: left; background: #FFF4E3; border: 1px dashed #3E8286; border-radius: 12px; padding: 12px 16px; color: #14383B; cursor: pointer; font-family: Arial, Helvetica, sans-serif; margin: 0 0 16px; }
+#sb-skm button.skm-allbtn:hover { background: #FBD7A6; }
+#sb-skm .skm-all-text { flex: 1; min-width: 0; }
+#sb-skm .skm-all-title { display: block; font-size: 15px; font-weight: 700; color: #14383B; }
+#sb-skm .skm-all-sub { display: block; font-size: 13px; color: #5C7275; margin: 2px 0 0; }
+#sb-skm .skm-all-act { flex: none; font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #14383B; border: 1.5px solid #1E5A5E; border-radius: 999px; padding: 6px 12px; }
+#sb-skm .skm-meal.skm-all { border-color: #E9A24E; background: #FFF9EE; box-shadow: 0 0 0 1px #E9A24E; }
+#sb-skm .skm-all .skm-meal-head { cursor: default; }
+#sb-skm button.skm-back { width: 100%; margin: 14px 0 4px; padding: 11px 14px; background: transparent; border: 1.5px solid #1E5A5E; border-radius: 10px; color: #1E5A5E; font-size: 14px; font-weight: 700; cursor: pointer; font-family: Arial, Helvetica, sans-serif; }
+#sb-skm button.skm-back:hover { background: rgba(30,90,94,0.1); }
+
+/* fields */
+#sb-skm .skm-field { margin: 0 0 16px; }
+#sb-skm .skm-lab { display: block; font-size: 12.5px; letter-spacing: 2px; text-transform: uppercase; font-weight: 700; color: #F3D9B0; margin: 0 0 7px; }
+#sb-skm .skm-opt { font-weight: 400; letter-spacing: 1px; color: #A9CFC9; }
+#content #sb-skm input.skm-in, #content #sb-skm textarea.skm-in { width: 100%; min-height: 48px; padding: 11px 14px; border: 1px solid rgba(255,244,227,0.3); border-radius: 10px; background: #FFFBF3; color: #14383B; font-family: Arial, Helvetica, sans-serif; font-size: 16px; }
+#content #sb-skm input.skm-in:focus, #content #sb-skm textarea.skm-in:focus { outline: none; border-color: #F5B56A; box-shadow: 0 0 0 3px rgba(245,181,106,0.3); }
+#content #sb-skm input.skm-in::placeholder { color: rgba(20,56,59,0.45); }
+#content #sb-skm input.skm-in.skm-bad { border-color: #E0655B; box-shadow: 0 0 0 3px rgba(224,101,91,0.25); }
+#sb-skm .skm-guests input { margin: 0 0 10px; }
+
+/* donation pills */
+#sb-skm .skm-pills { display: flex; flex-wrap: wrap; gap: 10px; margin: 0 0 14px; }
+#sb-skm button.skm-pill { border: 2px solid rgba(255,244,227,0.5); background: transparent; color: #FFF4E3; border-radius: 999px; padding: 10px 20px; font-size: 16px; font-weight: 700; cursor: pointer; font-family: Arial, Helvetica, sans-serif; }
+#sb-skm button.skm-pill:hover { background: rgba(255,244,227,0.12); }
+#sb-skm button.skm-pill.skm-pill-on { background: #F5B56A; color: #14383B; border-color: #F5B56A; }
+#sb-skm .skm-row2 { display: flex; gap: 10px; }
+#sb-skm .skm-row2 input.skm-in { flex: 1; text-transform: uppercase; }
+#sb-skm button.skm-apply { flex: none; border: 2px solid #F5B56A; background: transparent; color: #FFF4E3; border-radius: 10px; padding: 0 20px; font-size: 14px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; font-family: Arial, Helvetica, sans-serif; }
+#sb-skm button.skm-apply:hover { background: rgba(245,181,106,0.18); }
+#sb-skm .skm-msg { font-size: 14.5px; min-height: 22px; margin: 8px 0 0; color: #A9CFC9; }
+#sb-skm .skm-msg.skm-good { color: #BDE7A3; }
+#sb-skm .skm-msg.skm-bad { color: #FFB4B4; }
+
+/* summary */
+#sb-skm .skm-sum { background: #16474A; border-radius: 14px; padding: 18px 22px; margin: 18px 0 0; }
+#sb-skm .skm-sumline { display: flex; justify-content: space-between; gap: 18px; padding: 5px 0; font-size: 16px; color: rgba(255,244,227,0.85); }
+#sb-skm .skm-sumline span:last-child { white-space: nowrap; font-variant-numeric: tabular-nums; }
+#sb-skm .skm-sumtotal { border-top: 1px solid rgba(255,244,227,0.25); margin-top: 8px; padding-top: 12px; font-size: 20px; font-weight: 700; color: #FFF4E3; }
+#sb-skm .skm-sumtotal span:last-child { color: #F5B56A; }
+#sb-skm .skm-sumfree { color: #F3D9B0; font-size: 15px; padding: 6px 0 0; }
+#sb-skm .skm-valid { display: none; margin: 16px 0 0; padding: 12px 16px; background: #FBE9E9; color: #8B1E1E; border-radius: 10px; font-size: 15px; text-align: center; }
+#sb-skm .skm-notice { margin: 0 0 22px; padding: 18px 22px; border: 2px solid #F5B56A; border-radius: 14px; text-align: center; font-size: 16px; color: #FFF4E3; }
+#sb-skm .skm-notice a { color: #F5B56A; font-weight: 700; }
+#sb-skm #skmPaypal { margin: 20px 0 0; min-height: 10px; background: #FFF4E3; border-radius: 14px; padding: 14px 14px 8px; }
+#sb-skm #skmPaypal:empty { background: none; padding: 0; }
+#sb-skm button.skm-confirm { display: none; width: 100%; margin: 20px 0 0; padding: 16px 20px; background: #F5B56A; color: #14383B; border: none; border-radius: 10px; font-size: 15px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; cursor: pointer; font-family: Arial, Helvetica, sans-serif; }
+#sb-skm button.skm-confirm:hover { background: #FBD7A6; }
+#sb-skm .skm-icon { width: 72px; height: 72px; border-radius: 999px; background: #F5B56A; color: #14383B; font-size: 34px; line-height: 72px; margin: 0 auto 18px; font-family: Georgia, serif; }
+#sb-skm .skm-foot { text-align: center; font-size: 15px; color: #A9CFC9; margin: 6px 0 0; }
+#sb-skm .skm-foot a { color: #FFF4E3; text-decoration: underline; text-underline-offset: 3px; }
+#sb-skm a.skm-btn { display: inline-block; background: #F5B56A; color: #14383B; text-decoration: none; border-radius: 10px; padding: 14px 26px; font-size: 14px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; margin: 14px 0 0; }
+#sb-skm .skm-lulav { position: absolute; right: 18px; top: 10px; width: 78px; height: 100px; background: url('data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%20200%20260%27%20width=%27200%27%20height=%27260%27%3E%20%3Cg%20fill=%27none%27%20stroke-linecap=%27round%27%20stroke-linejoin=%27round%27%3E%20%3Cpath%20d=%27M118%20236%20C%20112%20170,%20108%20110,%20104%2020%27%20stroke=%27%234F8B3B%27%20stroke-width=%277%27/%3E%20%3Cpath%20d=%27M118%20236%20C%20112%20170,%20108%20110,%20104%2020%27%20stroke=%27%237DB55A%27%20stroke-width=%273%27/%3E%20%3Cpath%20d=%27M112%20200%20C%2096%20172,%2078%20150,%2058%20132%27%20stroke=%27%234F8B3B%27%20stroke-width=%274%27/%3E%20%3Cg%20fill=%27%237DB55A%27%20opacity=%27.95%27%3E%20%3Cellipse%20cx=%2792%27%20cy=%27180%27%20rx=%276%27%20ry=%2711%27%20transform=%27rotate%2838%2092%20180%29%27/%3E%20%3Cellipse%20cx=%2782%27%20cy=%27168%27%20rx=%276%27%20ry=%2711%27%20transform=%27rotate%2838%2082%20168%29%27/%3E%20%3Cellipse%20cx=%2772%27%20cy=%27156%27%20rx=%276%27%20ry=%2711%27%20transform=%27rotate%2838%2072%20156%29%27/%3E%20%3Cellipse%20cx=%2762%27%20cy=%27144%27%20rx=%276%27%20ry=%2711%27%20transform=%27rotate%2838%2062%20144%29%27/%3E%20%3Cellipse%20cx=%27100%27%20cy=%27190%27%20rx=%276%27%20ry=%2711%27%20transform=%27rotate%28-50%20100%20190%29%27/%3E%20%3Cellipse%20cx=%2790%27%20cy=%27176%27%20rx=%276%27%20ry=%2711%27%20transform=%27rotate%28-50%2090%20176%29%27/%3E%20%3Cellipse%20cx=%2780%27%20cy=%27162%27%20rx=%276%27%20ry=%2711%27%20transform=%27rotate%28-50%2080%20162%29%27/%3E%20%3C/g%3E%20%3Cpath%20d=%27M124%20200%20C%20140%20170,%20152%20148,%20160%20120%27%20stroke=%27%234F8B3B%27%20stroke-width=%274%27/%3E%20%3Cg%20fill=%27%23A9D680%27%20opacity=%27.95%27%3E%20%3Cpath%20d=%27M132%20186%20c%2010%20-16,%2020%20-18,%2026%20-14%20c%20-4%2010,%20-14%2018,%20-26%2014z%27/%3E%20%3Cpath%20d=%27M140%20170%20c%2010%20-16,%2020%20-18,%2026%20-14%20c%20-4%2010,%20-14%2018,%20-26%2014z%27/%3E%20%3Cpath%20d=%27M148%20154%20c%2010%20-16,%2020%20-18,%2026%20-14%20c%20-4%2010,%20-14%2018,%20-26%2014z%27/%3E%20%3Cpath%20d=%27M154%20138%20c%208%20-14,%2018%20-16,%2024%20-12%20c%20-4%209,%20-13%2016,%20-24%2012z%27/%3E%20%3C/g%3E%20%3Cpath%20d=%27M100%20222%20l%2036%200%20l%20-4%2022%20l%20-28%200%20z%27%20fill=%27%23C9A765%27%20stroke=%27%23A8823E%27%20stroke-width=%272%27/%3E%20%3Cpath%20d=%27M104%20230%20l%2028%200%20M103%20238%20l%2030%200%27%20stroke=%27%23A8823E%27%20stroke-width=%271.5%27/%3E%20%3Cpath%20d=%27M62%20236%20c%20-22%20-2,%20-34%20-22,%20-30%20-42%20c%204%20-18,%2020%20-30,%2040%20-26%20c%2020%204,%2030%2024,%2026%2044%20c%20-4%2016,%20-18%2026,%20-36%2024z%27%20fill=%27%23D9DC4A%27%20stroke=%27%23B8BB2E%27%20stroke-width=%272.5%27/%3E%20%3Cpath%20d=%27M70%20172%20c%202%20-6,%206%20-8,%2010%20-6%27%20stroke=%27%238F7A2A%27%20stroke-width=%273%27/%3E%20%3Cpath%20d=%27M42%20200%20c%206%20-12,%2016%20-20,%2030%20-22%27%20stroke=%27%23EEF08A%27%20stroke-width=%273%27%20opacity=%27.8%27/%3E%20%3C/g%3E%20%3C/svg%3E') no-repeat center bottom; background-size: contain; opacity: 0.95; pointer-events: none; }
+@media (max-width: 640px) {
+  #sb-skm { display: flex; flex-direction: column; }
+  #sb-skm .skm-nav { order: 99; margin: 6px 0 0; }
+  #sb-skm .skm-lead { padding: 0 8px 14px; }
+  #sb-skm .skm-italic { display: none; }
+  #sb-skm .skm-eyebrow { margin: 0 0 6px; letter-spacing: 3px; }
+  #sb-skm .skm-small { font-size: 13px; }
+  #sb-skm .skm-card { padding: 20px 16px 24px; border-radius: 14px; }
+  #sb-skm .skm-card.sk-schach { padding-top: 74px; }
+  #sb-skm .skm-lulav { display: none; }
+  #sb-skm .skm-blurb { margin: -6px 0 12px; }
+  #sb-skm .skm-meal-head { padding: 14px 14px; gap: 12px; }
+  #sb-skm .skm-meal-body { padding: 4px 14px 14px; }
+  #sb-skm .skm-featured .skm-meal-title { font-size: 22px; }
+  #sb-skm .skm-sect-h .skm-sect-dates { display: block; margin: 2px 0 0; }
+  #sb-skm button.skm-pill { padding: 9px 16px; font-size: 15px; }
+  #sb-skm button.skm-allbtn { flex-wrap: wrap; }
+}
+</style>
+<div id="sb-skm">
+
+  <div class="skm-lead">
+    <p class="skm-eyebrow">Sukkot 5787 &#8226; September 25 &#8211; October 4</p>
+    <p class="skm-italic">Celebrate under the stars in our Sukkah.</p>
+    <p class="skm-small">Online reservations close at 2:30 pm on the eve of each holiday. No refunds or exchanges after the Wednesday before at 6:00 pm.</p>
+  </div>
+
+  <div class="skm-nav">
+    <a class="skm-navcard" href="/sukkotschedule"><span class="skm-navlabel">Schedule</span><span class="skm-navtitle">Service Times</span><span class="skm-navarrow">&#8594;</span></a>
+    <a class="skm-navcard" href="/lulav"><span class="skm-navlabel">The Four Kinds</span><span class="skm-navtitle">Lulav &amp; Etrog Sets</span><span class="skm-navarrow">&#8594;</span></a>
+    <a class="skm-navcard" href="/7216148"><span class="skm-navlabel">Shabbat</span><span class="skm-navtitle">All Other Meals</span><span class="skm-navarrow">&#8594;</span></a>
+  </div>
+
+  <div id="skmCutoff" class="skm-notice skm-hide"></div>
+
+  <div id="skmLocked" class="skm-card skm-center skm-hide">
+    <div class="skm-icon">&#10038;</div>
+    <h3 class="skm-h" id="skmLockedTitle">This form is closed for the holiday</h3>
+    <p style="margin:0;color:#F3D9B0;" id="skmLockedBody">Chag Sameach! We will see you after Yom Tov ends.</p>
+  </div>
+
+  <div id="skmPassed" class="skm-card skm-center skm-hide">
+    <h3 class="skm-h">The Sukkot meals have passed</h3>
+    <p style="margin:0;color:#F3D9B0;">Reserve Shabbat meals on our reservations page.</p>
+    <a class="skm-btn" href="/7216148">Shabbat &amp; Holiday Meals</a>
+  </div>
+
+  <div id="skmForm">
+
+    <div class="skm-card sk-schach">
+      <div class="skm-lulav"></div>
+      <p class="skm-step">Step 1 of 3</p>
+      <h3 class="skm-h">Choose Your Meals</h3>
+      <p class="skm-blurb">Tap a meal to add it, then set how many are joining. Or take a whole holiday in one click.</p>
+      <div class="skm-where"><b>Where</b>All meals are in our Sukkah at <a href="https://maps.google.com/?q=320+Meridian+Ave+Miami+Beach+FL+33139">Chabad in South Beach, 320 Meridian Ave</a>. Simchat Torah dancing and meals are indoors at Chabad.</div>
+
+      <div class="skm-sect skm-first" id="skmSectSk">
+        <p class="skm-sect-eyebrow">The first days</p>
+        <h4 class="skm-sect-h">Sukkot <span class="skm-sect-dates">Friday, Sept. 25 &#8211; Sunday, Sept. 27</span></h4>
+
+        <button type="button" class="skm-allbtn" id="skmAllSk" data-all="sk">
+          <span class="skm-all-text"><span class="skm-all-title">Coming to every Sukkot meal?</span><span class="skm-all-sub">One click: the same headcount for all four meals of the first days (2 dinners + 2 lunches)</span></span>
+          <span class="skm-all-act">Select all</span>
+        </button>
+
+        <div class="skm-meal skm-all skm-on skm-hide" id="skmMeal0">
+          <div class="skm-meal-head">
+            <span class="skm-meal-text">
+              <span class="skm-badge">All Four Sukkot Meals</span>
+              <span class="skm-meal-title">All the Meals of the First Days</span>
+              <span class="skm-meal-when">First Night Dinner, Day One Lunch, Second Night Dinner, Day Two Lunch</span>
+              <span class="skm-meal-where">In our Sukkah at Chabad, 320 Meridian Ave</span>
+              <span class="skm-meal-price" id="skmPrice0">$278 adult &#8226; $180 subsidized &#8226; $108 child, all four meals included</span>
+            </span>
+            <span class="skm-check"></span>
+          </div>
+          <div class="skm-meal-body">
+            <div class="skm-tier"><span><span class="skm-tier-name">Adult</span><span class="skm-tier-price">$278 per person, all four meals</span></span><span class="skm-qty"><button type="button" class="skm-qbtn" data-qty="0A" data-delta="-1">&#8722;</button><span class="skm-qval" id="q0A">0</span><button type="button" class="skm-qbtn" data-qty="0A" data-delta="1">+</button></span></div>
+            <div class="skm-tier"><span><span class="skm-tier-name">Adult (Subsidized)</span><span class="skm-tier-price">$180 per person, all four meals</span></span><span class="skm-qty"><button type="button" class="skm-qbtn" data-qty="0S" data-delta="-1">&#8722;</button><span class="skm-qval" id="q0S">0</span><button type="button" class="skm-qbtn" data-qty="0S" data-delta="1">+</button></span></div>
+            <div class="skm-tier"><span><span class="skm-tier-name">Child</span><span class="skm-tier-price">$108 per child, all four meals</span></span><span class="skm-qty"><button type="button" class="skm-qbtn" data-qty="0C" data-delta="-1">&#8722;</button><span class="skm-qval" id="q0C">0</span><button type="button" class="skm-qbtn" data-qty="0C" data-delta="1">+</button></span></div>
+            <button type="button" class="skm-back" data-back="sk">Back to choosing individual meals</button>
+          </div>
+        </div>
+
+        <div id="skmSkMeals">
+          <div class="skm-meal skm-featured" id="skmMeal1">
+            <div class="skm-meal-head" data-toggle="1">
+              <span class="skm-meal-text">
+                <span class="skm-badge">First Night</span>
+                <span class="skm-meal-title">Sukkot First Night Dinner</span>
+                <span class="skm-meal-when">Friday, September 25 &#8226; 7:45 pm, following 7:00 pm services</span>
+                <span class="skm-meal-where">In our Sukkah at Chabad, 320 Meridian Ave</span>
+                <span class="skm-meal-price" id="skmPrice1">$85 adult &#8226; $54 subsidized &#8226; $36 child</span>
+              </span>
+              <span class="skm-check"></span>
+            </div>
+            <div class="skm-meal-body">
+              <div class="skm-tier"><span><span class="skm-tier-name">Adult</span><span class="skm-tier-price">$85 per person</span></span><span class="skm-qty"><button type="button" class="skm-qbtn" data-qty="1A" data-delta="-1">&#8722;</button><span class="skm-qval" id="q1A">1</span><button type="button" class="skm-qbtn" data-qty="1A" data-delta="1">+</button></span></div>
+              <div class="skm-tier"><span><span class="skm-tier-name">Adult (Subsidized)</span><span class="skm-tier-price">$54 per person</span></span><span class="skm-qty"><button type="button" class="skm-qbtn" data-qty="1S" data-delta="-1">&#8722;</button><span class="skm-qval" id="q1S">0</span><button type="button" class="skm-qbtn" data-qty="1S" data-delta="1">+</button></span></div>
+              <div class="skm-tier"><span><span class="skm-tier-name">Child</span><span class="skm-tier-price">$36 per child</span></span><span class="skm-qty"><button type="button" class="skm-qbtn" data-qty="1C" data-delta="-1">&#8722;</button><span class="skm-qval" id="q1C">0</span><button type="button" class="skm-qbtn" data-qty="1C" data-delta="1">+</button></span></div>
+            </div>
+          </div>
+
+          <div class="skm-meal" id="skmMeal2">
+            <div class="skm-meal-head" data-toggle="2">
+              <span class="skm-meal-text">
+                <span class="skm-meal-title">Day One Lunch</span>
+                <span class="skm-meal-when">Shabbat, September 26 &#8226; 12:30 pm, following 10:00 am services</span>
+                <span class="skm-meal-where">In our Sukkah at Chabad, 320 Meridian Ave</span>
+                <span class="skm-meal-price" id="skmPrice2">$54 adult &#8226; $36 subsidized &#8226; $18 child</span>
+              </span>
+              <span class="skm-check"></span>
+            </div>
+            <div class="skm-meal-body">
+              <div class="skm-tier"><span><span class="skm-tier-name">Adult</span><span class="skm-tier-price">$54 per person</span></span><span class="skm-qty"><button type="button" class="skm-qbtn" data-qty="2A" data-delta="-1">&#8722;</button><span class="skm-qval" id="q2A">0</span><button type="button" class="skm-qbtn" data-qty="2A" data-delta="1">+</button></span></div>
+              <div class="skm-tier"><span><span class="skm-tier-name">Adult (Subsidized)</span><span class="skm-tier-price">$36 per person</span></span><span class="skm-qty"><button type="button" class="skm-qbtn" data-qty="2S" data-delta="-1">&#8722;</button><span class="skm-qval" id="q2S">0</span><button type="button" class="skm-qbtn" data-qty="2S" data-delta="1">+</button></span></div>
+              <div class="skm-tier"><span><span class="skm-tier-name">Child</span><span class="skm-tier-price">$18 per child</span></span><span class="skm-qty"><button type="button" class="skm-qbtn" data-qty="2C" data-delta="-1">&#8722;</button><span class="skm-qval" id="q2C">0</span><button type="button" class="skm-qbtn" data-qty="2C" data-delta="1">+</button></span></div>
+            </div>
+          </div>
+
+          <div class="skm-meal" id="skmMeal3">
+            <div class="skm-meal-head" data-toggle="3">
+              <span class="skm-meal-text">
+                <span class="skm-meal-title">Second Night Dinner</span>
+                <span class="skm-meal-when">Saturday, September 26 &#8226; 8:00 pm, following 7:30 pm services</span>
+                <span class="skm-meal-where">In our Sukkah at Chabad, 320 Meridian Ave</span>
+                <span class="skm-meal-price" id="skmPrice3">$85 adult &#8226; $54 subsidized &#8226; $36 child</span>
+              </span>
+              <span class="skm-check"></span>
+            </div>
+            <div class="skm-meal-body">
+              <div class="skm-tier"><span><span class="skm-tier-name">Adult</span><span class="skm-tier-price">$85 per person</span></span><span class="skm-qty"><button type="button" class="skm-qbtn" data-qty="3A" data-delta="-1">&#8722;</button><span class="skm-qval" id="q3A">0</span><button type="button" class="skm-qbtn" data-qty="3A" data-delta="1">+</button></span></div>
+              <div class="skm-tier"><span><span class="skm-tier-name">Adult (Subsidized)</span><span class="skm-tier-price">$54 per person</span></span><span class="skm-qty"><button type="button" class="skm-qbtn" data-qty="3S" data-delta="-1">&#8722;</button><span class="skm-qval" id="q3S">0</span><button type="button" class="skm-qbtn" data-qty="3S" data-delta="1">+</button></span></div>
+              <div class="skm-tier"><span><span class="skm-tier-name">Child</span><span class="skm-tier-price">$36 per child</span></span><span class="skm-qty"><button type="button" class="skm-qbtn" data-qty="3C" data-delta="-1">&#8722;</button><span class="skm-qval" id="q3C">0</span><button type="button" class="skm-qbtn" data-qty="3C" data-delta="1">+</button></span></div>
+            </div>
+          </div>
+
+          <div class="skm-meal" id="skmMeal4">
+            <div class="skm-meal-head" data-toggle="4">
+              <span class="skm-meal-text">
+                <span class="skm-meal-title">Day Two Lunch</span>
+                <span class="skm-meal-when">Sunday, September 27 &#8226; 12:30 pm, following 10:00 am services</span>
+                <span class="skm-meal-where">In our Sukkah at Chabad, 320 Meridian Ave</span>
+                <span class="skm-meal-price" id="skmPrice4">$54 adult &#8226; $36 subsidized &#8226; $18 child</span>
+              </span>
+              <span class="skm-check"></span>
+            </div>
+            <div class="skm-meal-body">
+              <div class="skm-tier"><span><span class="skm-tier-name">Adult</span><span class="skm-tier-price">$54 per person</span></span><span class="skm-qty"><button type="button" class="skm-qbtn" data-qty="4A" data-delta="-1">&#8722;</button><span class="skm-qval" id="q4A">0</span><button type="button" class="skm-qbtn" data-qty="4A" data-delta="1">+</button></span></div>
+              <div class="skm-tier"><span><span class="skm-tier-name">Adult (Subsidized)</span><span class="skm-tier-price">$36 per person</span></span><span class="skm-qty"><button type="button" class="skm-qbtn" data-qty="4S" data-delta="-1">&#8722;</button><span class="skm-qval" id="q4S">0</span><button type="button" class="skm-qbtn" data-qty="4S" data-delta="1">+</button></span></div>
+              <div class="skm-tier"><span><span class="skm-tier-name">Child</span><span class="skm-tier-price">$18 per child</span></span><span class="skm-qty"><button type="button" class="skm-qbtn" data-qty="4C" data-delta="-1">&#8722;</button><span class="skm-qval" id="q4C">0</span><button type="button" class="skm-qbtn" data-qty="4C" data-delta="1">+</button></span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="skm-sect" id="skmSectSt">
+        <p class="skm-sect-eyebrow">The last days</p>
+        <h4 class="skm-sect-h">Shemini Atzeret &amp; Simchat Torah <span class="skm-sect-dates">Friday, Oct. 2 &#8211; Sunday, Oct. 4</span></h4>
+
+        <button type="button" class="skm-allbtn" id="skmAllSt" data-all="st">
+          <span class="skm-all-text"><span class="skm-all-title">Coming to every Simchat Torah meal?</span><span class="skm-all-sub">One click: the same headcount for all four meals of the last days (2 dinners + 2 lunches)</span></span>
+          <span class="skm-all-act">Select all</span>
+        </button>
+
+        <div class="skm-meal skm-all skm-on skm-hide" id="skmMeal9">
+          <div class="skm-meal-head">
+            <span class="skm-meal-text">
+              <span class="skm-badge">All Four Meals</span>
+              <span class="skm-meal-title">All the Meals of the Last Days</span>
+              <span class="skm-meal-when">Shemini Atzeret Dinner and Lunch, Simchat Torah Dinner and Lunch</span>
+              <span class="skm-meal-where">At Chabad in South Beach, 320 Meridian Ave</span>
+              <span class="skm-meal-price" id="skmPrice9">$278 adult &#8226; $180 subsidized &#8226; $108 child, all four meals included</span>
+            </span>
+            <span class="skm-check"></span>
+          </div>
+          <div class="skm-meal-body">
+            <div class="skm-tier"><span><span class="skm-tier-name">Adult</span><span class="skm-tier-price">$278 per person, all four meals</span></span><span class="skm-qty"><button type="button" class="skm-qbtn" data-qty="9A" data-delta="-1">&#8722;</button><span class="skm-qval" id="q9A">0</span><button type="button" class="skm-qbtn" data-qty="9A" data-delta="1">+</button></span></div>
+            <div class="skm-tier"><span><span class="skm-tier-name">Adult (Subsidized)</span><span class="skm-tier-price">$180 per person, all four meals</span></span><span class="skm-qty"><button type="button" class="skm-qbtn" data-qty="9S" data-delta="-1">&#8722;</button><span class="skm-qval" id="q9S">0</span><button type="button" class="skm-qbtn" data-qty="9S" data-delta="1">+</button></span></div>
+            <div class="skm-tier"><span><span class="skm-tier-name">Child</span><span class="skm-tier-price">$108 per child, all four meals</span></span><span class="skm-qty"><button type="button" class="skm-qbtn" data-qty="9C" data-delta="-1">&#8722;</button><span class="skm-qval" id="q9C">0</span><button type="button" class="skm-qbtn" data-qty="9C" data-delta="1">+</button></span></div>
+            <button type="button" class="skm-back" data-back="st">Back to choosing individual meals</button>
+          </div>
+        </div>
+
+        <div id="skmStMeals">
+          <div class="skm-meal" id="skmMeal5">
+            <div class="skm-meal-head" data-toggle="5">
+              <span class="skm-meal-text">
+                <span class="skm-meal-title">Shemini Atzeret Dinner</span>
+                <span class="skm-meal-when">Friday, October 2 &#8226; 7:30 pm, following 6:50 pm services</span>
+                <span class="skm-meal-where">In our Sukkah at Chabad, 320 Meridian Ave</span>
+                <span class="skm-meal-price" id="skmPrice5">$85 adult &#8226; $54 subsidized &#8226; $36 child</span>
+              </span>
+              <span class="skm-check"></span>
+            </div>
+            <div class="skm-meal-body">
+              <div class="skm-tier"><span><span class="skm-tier-name">Adult</span><span class="skm-tier-price">$85 per person</span></span><span class="skm-qty"><button type="button" class="skm-qbtn" data-qty="5A" data-delta="-1">&#8722;</button><span class="skm-qval" id="q5A">0</span><button type="button" class="skm-qbtn" data-qty="5A" data-delta="1">+</button></span></div>
+              <div class="skm-tier"><span><span class="skm-tier-name">Adult (Subsidized)</span><span class="skm-tier-price">$54 per person</span></span><span class="skm-qty"><button type="button" class="skm-qbtn" data-qty="5S" data-delta="-1">&#8722;</button><span class="skm-qval" id="q5S">0</span><button type="button" class="skm-qbtn" data-qty="5S" data-delta="1">+</button></span></div>
+              <div class="skm-tier"><span><span class="skm-tier-name">Child</span><span class="skm-tier-price">$36 per child</span></span><span class="skm-qty"><button type="button" class="skm-qbtn" data-qty="5C" data-delta="-1">&#8722;</button><span class="skm-qval" id="q5C">0</span><button type="button" class="skm-qbtn" data-qty="5C" data-delta="1">+</button></span></div>
+            </div>
+          </div>
+
+          <div class="skm-meal" id="skmMeal6">
+            <div class="skm-meal-head" data-toggle="6">
+              <span class="skm-meal-text">
+                <span class="skm-meal-title">Shemini Atzeret Lunch</span>
+                <span class="skm-meal-when">Shabbat, October 3 &#8226; 12:30 pm, following 10:00 am services and Yizkor</span>
+                <span class="skm-meal-where">In our Sukkah at Chabad, 320 Meridian Ave</span>
+                <span class="skm-meal-price" id="skmPrice6">$54 adult &#8226; $36 subsidized &#8226; $18 child</span>
+              </span>
+              <span class="skm-check"></span>
+            </div>
+            <div class="skm-meal-body">
+              <div class="skm-tier"><span><span class="skm-tier-name">Adult</span><span class="skm-tier-price">$54 per person</span></span><span class="skm-qty"><button type="button" class="skm-qbtn" data-qty="6A" data-delta="-1">&#8722;</button><span class="skm-qval" id="q6A">0</span><button type="button" class="skm-qbtn" data-qty="6A" data-delta="1">+</button></span></div>
+              <div class="skm-tier"><span><span class="skm-tier-name">Adult (Subsidized)</span><span class="skm-tier-price">$36 per person</span></span><span class="skm-qty"><button type="button" class="skm-qbtn" data-qty="6S" data-delta="-1">&#8722;</button><span class="skm-qval" id="q6S">0</span><button type="button" class="skm-qbtn" data-qty="6S" data-delta="1">+</button></span></div>
+              <div class="skm-tier"><span><span class="skm-tier-name">Child</span><span class="skm-tier-price">$18 per child</span></span><span class="skm-qty"><button type="button" class="skm-qbtn" data-qty="6C" data-delta="-1">&#8722;</button><span class="skm-qval" id="q6C">0</span><button type="button" class="skm-qbtn" data-qty="6C" data-delta="1">+</button></span></div>
+            </div>
+          </div>
+
+          <div class="skm-meal skm-featured" id="skmMeal7">
+            <div class="skm-meal-head" data-toggle="7">
+              <span class="skm-meal-text">
+                <span class="skm-badge">Hakafot</span>
+                <span class="skm-meal-title">Simchat Torah Dinner and Dancing</span>
+                <span class="skm-meal-when">Saturday, October 3 &#8226; 8:30 pm, after 7:30 pm services and 8:00 pm Hakafot</span>
+                <span class="skm-meal-where">At Chabad in South Beach, 320 Meridian Ave</span>
+                <span class="skm-meal-price" id="skmPrice7">$85 adult &#8226; $54 subsidized &#8226; $36 child</span>
+              </span>
+              <span class="skm-check"></span>
+            </div>
+            <div class="skm-meal-body">
+              <div class="skm-tier"><span><span class="skm-tier-name">Adult</span><span class="skm-tier-price">$85 per person</span></span><span class="skm-qty"><button type="button" class="skm-qbtn" data-qty="7A" data-delta="-1">&#8722;</button><span class="skm-qval" id="q7A">0</span><button type="button" class="skm-qbtn" data-qty="7A" data-delta="1">+</button></span></div>
+              <div class="skm-tier"><span><span class="skm-tier-name">Adult (Subsidized)</span><span class="skm-tier-price">$54 per person</span></span><span class="skm-qty"><button type="button" class="skm-qbtn" data-qty="7S" data-delta="-1">&#8722;</button><span class="skm-qval" id="q7S">0</span><button type="button" class="skm-qbtn" data-qty="7S" data-delta="1">+</button></span></div>
+              <div class="skm-tier"><span><span class="skm-tier-name">Child</span><span class="skm-tier-price">$36 per child</span></span><span class="skm-qty"><button type="button" class="skm-qbtn" data-qty="7C" data-delta="-1">&#8722;</button><span class="skm-qval" id="q7C">0</span><button type="button" class="skm-qbtn" data-qty="7C" data-delta="1">+</button></span></div>
+            </div>
+          </div>
+
+          <div class="skm-meal" id="skmMeal8">
+            <div class="skm-meal-head" data-toggle="8">
+              <span class="skm-meal-text">
+                <span class="skm-meal-title">Simchat Torah Lunch</span>
+                <span class="skm-meal-when">Sunday, October 4 &#8226; 12:30 pm, following 10:00 am services and Hakafot</span>
+                <span class="skm-meal-where">At Chabad in South Beach, 320 Meridian Ave</span>
+                <span class="skm-meal-price" id="skmPrice8">$54 adult &#8226; $36 subsidized &#8226; $18 child</span>
+              </span>
+              <span class="skm-check"></span>
+            </div>
+            <div class="skm-meal-body">
+              <div class="skm-tier"><span><span class="skm-tier-name">Adult</span><span class="skm-tier-price">$54 per person</span></span><span class="skm-qty"><button type="button" class="skm-qbtn" data-qty="8A" data-delta="-1">&#8722;</button><span class="skm-qval" id="q8A">0</span><button type="button" class="skm-qbtn" data-qty="8A" data-delta="1">+</button></span></div>
+              <div class="skm-tier"><span><span class="skm-tier-name">Adult (Subsidized)</span><span class="skm-tier-price">$36 per person</span></span><span class="skm-qty"><button type="button" class="skm-qbtn" data-qty="8S" data-delta="-1">&#8722;</button><span class="skm-qval" id="q8S">0</span><button type="button" class="skm-qbtn" data-qty="8S" data-delta="1">+</button></span></div>
+              <div class="skm-tier"><span><span class="skm-tier-name">Child</span><span class="skm-tier-price">$18 per child</span></span><span class="skm-qty"><button type="button" class="skm-qbtn" data-qty="8C" data-delta="-1">&#8722;</button><span class="skm-qval" id="q8C">0</span><button type="button" class="skm-qbtn" data-qty="8C" data-delta="1">+</button></span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <p class="skm-tiernote">The subsidized rate is for anyone who needs it, no questions asked. If cost is a concern, use it or call us; no one is ever turned away.</p>
+    </div>
+
+    <div class="skm-card">
+      <p class="skm-step">Step 2 of 3</p>
+      <h3 class="skm-h">Your Information</h3>
+      <div class="skm-field"><label class="skm-lab" for="skmName">Full Name</label><input class="skm-in" id="skmName" name="name" type="text" autocomplete="name" placeholder="Your full name" data-req="Full Name" /></div>
+      <div class="skm-field skm-guests skm-hide" id="skmGuestsWrap"><label class="skm-lab">Others in your party <span class="skm-opt">optional</span></label><div id="skmGuests"></div></div>
+      <div class="skm-field"><label class="skm-lab" for="skmEmail">Email</label><input class="skm-in" id="skmEmail" name="email" type="email" autocomplete="email" placeholder="you@example.com" data-req="Email" /></div>
+      <div class="skm-field"><label class="skm-lab" for="skmPhone">Phone</label><input class="skm-in" id="skmPhone" name="phone" type="tel" autocomplete="tel" placeholder="(305) 555-1234" data-req="Phone" /></div>
+      <div class="skm-field"><label class="skm-lab" for="skmAddress">Address <span class="skm-opt">hotel or home</span></label><input class="skm-in" id="skmAddress" name="address" type="text" autocomplete="street-address" placeholder="Street and city, or hotel name" data-req="Address" /></div>
+      <div class="skm-field" style="margin:0;"><label class="skm-lab" for="skmNotes">Special Notes <span class="skm-opt">optional</span></label><input class="skm-in" id="skmNotes" name="notes" type="text" placeholder="Allergies, dietary needs, seating requests" /></div>
+    </div>
+
+    <div class="skm-card">
+      <p class="skm-step">Step 3 of 3</p>
+      <h3 class="skm-h">Review &amp; Pay</h3>
+
+      <label class="skm-lab">Add a Donation <span class="skm-opt">optional</span></label>
+      <div class="skm-pills">
+        <button type="button" class="skm-pill" data-don="18">$18</button>
+        <button type="button" class="skm-pill" data-don="36">$36</button>
+        <button type="button" class="skm-pill" data-don="54">$54</button>
+        <button type="button" class="skm-pill" data-don="100">$100</button>
+        <button type="button" class="skm-pill" data-don="180">$180</button>
+        <button type="button" class="skm-pill" data-don="360">$360</button>
+      </div>
+      <div class="skm-field"><input class="skm-in" id="skmDonation" type="number" min="0" step="1" inputmode="numeric" placeholder="Other amount" /></div>
+
+      <div class="skm-field">
+        <label class="skm-lab" for="skmCode">Discount Code</label>
+        <div class="skm-row2"><input class="skm-in" id="skmCode" type="text" autocomplete="off" placeholder="Enter code" /><button type="button" class="skm-apply" id="skmApply">Apply</button></div>
+        <div class="skm-msg" id="skmCodeMsg"></div>
+      </div>
+
+      <div class="skm-sum">
+        <div id="skmSumLines"></div>
+        <div class="skm-sumline"><span>Donation</span><span>$<span id="skmSumDon">0</span></span></div>
+        <div class="skm-sumline skm-hide" id="skmSumDiscRow"><span>Discount</span><span>-$<span id="skmSumDisc">0</span></span></div>
+        <div class="skm-sumline skm-sumtotal"><span>Total</span><span>$<span id="skmSumTotal">0</span></span></div>
+      </div>
+
+      <div class="skm-valid" id="skmValid"></div>
+      <div id="skmPaypal"></div>
+      <button type="button" class="skm-confirm" id="skmConfirm">Confirm Reservation</button>
+    </div>
+
+  </div>
+
+  <div id="skmSuccess" class="skm-card skm-center skm-hide">
+    <div class="skm-icon">&#10003;</div>
+    <h3 class="skm-h">Chag Sameach!</h3>
+    <p style="margin:0 0 6px;color:#F3D9B0;">Your holiday meal reservation is confirmed.</p>
+    <p style="margin:0;color:#A9CFC9;font-size:15px;">A confirmation email is on its way for each holiday you reserved. We can&#39;t wait to celebrate with you in the Sukkah.</p>
+  </div>
+
+  <p class="skm-foot">Looking for Shabbat meals? <a href="/7216148">Reserve them here</a>.</p>
+
+</div>

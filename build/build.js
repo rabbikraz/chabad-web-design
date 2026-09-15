@@ -196,7 +196,12 @@ async function build() {
   const noTitleFlag =
     "var N=window.SB_NOTITLE_PAGES||['7080118','7474052','7437612','7407611','7407897'];" +
     "for(var j=0;j<N.length;j++){if(location.href.indexOf(N[j])>-1){document.documentElement.className+=' sb-notitle';break;}}";
-  const bootJs = resolveVer + hhFlag + noTitleFlag +
+  // Sukkot pages (style.css section 23, teal/apricot). Same list as
+  // SUKKOT_PAGES in script.js; window.SB_SUKKOT_PAGES overrides.
+  const sukkotFlag =
+    "var S=window.SB_SUKKOT_PAGES||['7511266'];" +
+    "for(var k=0;k<S.length;k++){if(location.href.indexOf(S[k])>-1){document.documentElement.className+=' sb-sukkot';break;}}";
+  const bootJs = resolveVer + hhFlag + noTitleFlag + sukkotFlag +
     "document.write('<link rel=\"stylesheet\" href=\"'+B+'site.css\">');" +
     "})();";
   const bootFooterJs = resolveVer +

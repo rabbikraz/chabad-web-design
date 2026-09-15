@@ -1,0 +1,115 @@
+<!-- SUKKOT LANDING PAGE (aid 7511266): paste as the body of a regular article
+     page in Source mode, then Save without switching to the visual view.
+     Self-contained: every rule lives in the style block below; the only thing
+     it takes from the site assets is the teal/apricot page chrome (html.sb-sukkot
+     in site.css) and the schach band graphic (.sk-schach). Without site.css the
+     page still reads fine (plain teal cards).
+     Links use aliases so the page never needs re-pasting when the other
+     Sukkot pages get their article ids: /sukkotmeals, /sukkotschedule, /lulav.
+     Paste rules: pure ASCII, numeric character references, no form tags,
+     no inline handlers. -->
+<script>document.documentElement.className += ' sb-sukkot';</script>
+<style>
+#sb-skl { max-width: 1040px; margin: 0 auto; font-family: Arial, Helvetica, sans-serif; color: #FFF4E3; }
+#sb-skl * { box-sizing: border-box; }
+#sb-skl a { text-decoration: none; }
+#sb-skl .skl-intro { text-align: center; font-size: 18px; line-height: 1.6; color: #F3D9B0; max-width: 660px; margin: 4px auto 28px; }
+#sb-skl .skl-hero { position: relative; overflow: hidden; background-color: #24686C; border: 1px solid rgba(255,244,227,0.16); border-radius: 22px; box-shadow: 0 12px 32px rgba(0,0,0,0.22); padding: 34px 36px 34px; margin: 0 0 26px; }
+#sb-skl .skl-hero.sk-schach { padding-top: 92px; }
+#sb-skl .skl-hero-text { position: relative; z-index: 1; max-width: 560px; }
+#sb-skl .skl-eyebrow { font-size: 12px; letter-spacing: 0.22em; text-transform: uppercase; font-weight: 700; color: #F5B56A; margin: 0 0 10px; }
+#sb-skl .skl-h { font-family: Georgia, 'Times New Roman', serif; font-size: 34px; line-height: 1.15; color: #FFF4E3; margin: 0 0 14px; }
+#sb-skl .skl-lead { font-size: 16.5px; line-height: 1.65; color: #F3D9B0; margin: 0 0 22px; }
+#sb-skl .skl-btns { display: flex; flex-wrap: wrap; gap: 12px; }
+#sb-skl a.skl-btn { display: inline-block; background: #F5B56A; color: #14383B; border-radius: 999px; padding: 12px 26px; font-size: 15px; font-weight: 700; transition: background 160ms ease, transform 160ms ease; }
+#sb-skl a.skl-btn:hover { background: #FBD7A6; transform: translateY(-1px); }
+#sb-skl a.skl-btn.skl-ghost { background: transparent; color: #FFF4E3; border: 2px solid rgba(255,244,227,0.5); padding: 10px 24px; }
+#sb-skl a.skl-btn.skl-ghost:hover { background: rgba(255,244,227,0.1); }
+#sb-skl .skl-lulav { position: absolute; right: 26px; bottom: -6px; width: 200px; height: 260px; background: url('data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%20200%20260%27%20width=%27200%27%20height=%27260%27%3E%20%3Cg%20fill=%27none%27%20stroke-linecap=%27round%27%20stroke-linejoin=%27round%27%3E%20%3Cpath%20d=%27M118%20236%20C%20112%20170,%20108%20110,%20104%2020%27%20stroke=%27%234F8B3B%27%20stroke-width=%277%27/%3E%20%3Cpath%20d=%27M118%20236%20C%20112%20170,%20108%20110,%20104%2020%27%20stroke=%27%237DB55A%27%20stroke-width=%273%27/%3E%20%3Cpath%20d=%27M112%20200%20C%2096%20172,%2078%20150,%2058%20132%27%20stroke=%27%234F8B3B%27%20stroke-width=%274%27/%3E%20%3Cg%20fill=%27%237DB55A%27%20opacity=%27.95%27%3E%20%3Cellipse%20cx=%2792%27%20cy=%27180%27%20rx=%276%27%20ry=%2711%27%20transform=%27rotate%2838%2092%20180%29%27/%3E%20%3Cellipse%20cx=%2782%27%20cy=%27168%27%20rx=%276%27%20ry=%2711%27%20transform=%27rotate%2838%2082%20168%29%27/%3E%20%3Cellipse%20cx=%2772%27%20cy=%27156%27%20rx=%276%27%20ry=%2711%27%20transform=%27rotate%2838%2072%20156%29%27/%3E%20%3Cellipse%20cx=%2762%27%20cy=%27144%27%20rx=%276%27%20ry=%2711%27%20transform=%27rotate%2838%2062%20144%29%27/%3E%20%3Cellipse%20cx=%27100%27%20cy=%27190%27%20rx=%276%27%20ry=%2711%27%20transform=%27rotate%28-50%20100%20190%29%27/%3E%20%3Cellipse%20cx=%2790%27%20cy=%27176%27%20rx=%276%27%20ry=%2711%27%20transform=%27rotate%28-50%2090%20176%29%27/%3E%20%3Cellipse%20cx=%2780%27%20cy=%27162%27%20rx=%276%27%20ry=%2711%27%20transform=%27rotate%28-50%2080%20162%29%27/%3E%20%3C/g%3E%20%3Cpath%20d=%27M124%20200%20C%20140%20170,%20152%20148,%20160%20120%27%20stroke=%27%234F8B3B%27%20stroke-width=%274%27/%3E%20%3Cg%20fill=%27%23A9D680%27%20opacity=%27.95%27%3E%20%3Cpath%20d=%27M132%20186%20c%2010%20-16,%2020%20-18,%2026%20-14%20c%20-4%2010,%20-14%2018,%20-26%2014z%27/%3E%20%3Cpath%20d=%27M140%20170%20c%2010%20-16,%2020%20-18,%2026%20-14%20c%20-4%2010,%20-14%2018,%20-26%2014z%27/%3E%20%3Cpath%20d=%27M148%20154%20c%2010%20-16,%2020%20-18,%2026%20-14%20c%20-4%2010,%20-14%2018,%20-26%2014z%27/%3E%20%3Cpath%20d=%27M154%20138%20c%208%20-14,%2018%20-16,%2024%20-12%20c%20-4%209,%20-13%2016,%20-24%2012z%27/%3E%20%3C/g%3E%20%3Cpath%20d=%27M100%20222%20l%2036%200%20l%20-4%2022%20l%20-28%200%20z%27%20fill=%27%23C9A765%27%20stroke=%27%23A8823E%27%20stroke-width=%272%27/%3E%20%3Cpath%20d=%27M104%20230%20l%2028%200%20M103%20238%20l%2030%200%27%20stroke=%27%23A8823E%27%20stroke-width=%271.5%27/%3E%20%3Cpath%20d=%27M62%20236%20c%20-22%20-2,%20-34%20-22,%20-30%20-42%20c%204%20-18,%2020%20-30,%2040%20-26%20c%2020%204,%2030%2024,%2026%2044%20c%20-4%2016,%20-18%2026,%20-36%2024z%27%20fill=%27%23D9DC4A%27%20stroke=%27%23B8BB2E%27%20stroke-width=%272.5%27/%3E%20%3Cpath%20d=%27M70%20172%20c%202%20-6,%206%20-8,%2010%20-6%27%20stroke=%27%238F7A2A%27%20stroke-width=%273%27/%3E%20%3Cpath%20d=%27M42%20200%20c%206%20-12,%2016%20-20,%2030%20-22%27%20stroke=%27%23EEF08A%27%20stroke-width=%273%27%20opacity=%27.8%27/%3E%20%3C/g%3E%20%3C/svg%3E') no-repeat center bottom; background-size: contain; opacity: 0.95; pointer-events: none; }
+#sb-skl a.skl-venue { display: block; background: #16474A; border: 1px solid rgba(255,244,227,0.16); border-radius: 16px; box-shadow: 0 10px 28px rgba(0,0,0,0.18); padding: 18px 26px; margin: 0 0 26px; text-align: center; }
+#sb-skl .skl-venue-t { display: block; font-family: Georgia, 'Times New Roman', serif; font-size: 19px; line-height: 1.35; color: #FFF4E3; margin: 0 0 4px; }
+#sb-skl .skl-venue-s { display: block; font-size: 14.5px; color: #F3D9B0; }
+#sb-skl .skl-venue-s b { color: #F5B56A; font-weight: 700; }
+#sb-skl .skl-grid { display: flex; flex-wrap: wrap; gap: 22px; align-items: stretch; }
+#sb-skl a.skl-card { flex: 1 1 calc(50% - 11px); min-width: 250px; display: flex; flex-direction: column; position: relative; overflow: hidden; background: #24686C; border: 1px solid rgba(255,244,227,0.16); border-top: 3px solid #F5B56A; border-radius: 18px; box-shadow: 0 10px 28px rgba(0,0,0,0.18); padding: 26px 26px 28px; color: #FFF4E3; transition: transform 160ms ease, background 160ms ease; }
+#sb-skl a.skl-card:hover { transform: translateY(-2px); background: #2A7478; }
+#sb-skl .skl-card-eyebrow { display: block; font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; font-weight: 700; color: #A9CFC9; margin: 0 0 10px; }
+#sb-skl .skl-card-t { display: block; font-family: Georgia, 'Times New Roman', serif; font-size: 24px; line-height: 1.25; color: #FFF4E3; margin: 0 0 10px; }
+#sb-skl .skl-card-p { display: block; font-size: 15.5px; line-height: 1.6; color: #F3D9B0; flex: 1; margin: 0 0 20px; }
+#sb-skl .skl-card-btn { align-self: flex-start; background: #F5B56A; color: #14383B; border-radius: 999px; padding: 10px 24px; font-size: 15px; font-weight: 600; }
+#sb-skl .skl-card-etrog { position: absolute; right: 18px; top: 18px; width: 34px; height: 34px; background: url('data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%2040%2040%27%20width=%2740%27%20height=%2740%27%3E%20%3Cpath%20d=%27M20%2036%20c%20-9%20-1,%20-14%20-9,%20-12%20-17%20c%202%20-7,%208%20-12,%2016%20-10%20c%208%202,%2012%2010,%2010%2018%20c%20-2%206,%20-7%2010,%20-14%209z%27%20fill=%27%23D9DC4A%27%20stroke=%27%23B8BB2E%27%20stroke-width=%272%27/%3E%20%3Cpath%20d=%27M22%209%20c%201%20-3,%203%20-4,%205%20-3%27%20stroke=%27%238F7A2A%27%20stroke-width=%272.4%27%20fill=%27none%27%20stroke-linecap=%27round%27/%3E%20%3Cpath%20d=%27M12%2022%20c%202%20-5,%206%20-8,%2011%20-9%27%20stroke=%27%23EEF08A%27%20stroke-width=%272%27%20fill=%27none%27%20stroke-linecap=%27round%27%20opacity=%27.8%27/%3E%20%3C/svg%3E') no-repeat center; background-size: contain; opacity: 0.9; }
+#sb-skl .skl-dates { display: flex; flex-wrap: wrap; gap: 12px 28px; justify-content: center; margin: 26px 0 0; padding: 18px 20px; border: 1px solid rgba(255,244,227,0.16); border-radius: 16px; background: rgba(22,71,74,0.6); }
+#sb-skl .skl-date { text-align: center; min-width: 150px; }
+#sb-skl .skl-date b { display: block; font-family: Georgia, 'Times New Roman', serif; font-size: 17px; color: #FFF4E3; font-weight: 400; }
+#sb-skl .skl-date span { display: block; font-size: 13.5px; color: #F3D9B0; margin: 3px 0 0; }
+#sb-skl .skl-date i { display: block; font-style: normal; font-size: 12px; color: #F5B56A; letter-spacing: 0.1em; text-transform: uppercase; margin: 4px 0 0; }
+@media (max-width: 720px) {
+  #sb-skl .skl-hero { padding: 26px 22px 200px; }
+  #sb-skl .skl-hero.sk-schach { padding-top: 78px; }
+  #sb-skl .skl-hero-text { max-width: none; }
+  #sb-skl .skl-h { font-size: 28px; }
+  #sb-skl .skl-lulav { right: 50%; margin-right: -80px; width: 160px; height: 200px; bottom: -8px; }
+  #sb-skl .skl-intro { font-size: 16px; margin-bottom: 20px; }
+  #sb-skl a.skl-card { padding: 22px 20px 24px; }
+  #sb-skl .skl-dates { gap: 14px 18px; }
+}
+</style>
+<div id="sb-skl">
+  <p class="skl-intro">Everything you need for Sukkot and Simchat Torah with Chabad in South Beach. Festive meals under the stars, a Lulav and Etrog of your own, and dancing with the Torah. Everyone is welcome.</p>
+
+  <div class="skl-hero sk-schach">
+    <div class="skl-hero-text">
+      <p class="skl-eyebrow">Sukkot 5787 &#8226; September 25 &#8211; October 4</p>
+      <h2 class="skl-h">Celebrate Sukkot in our Sukkah</h2>
+      <p class="skl-lead">Join us for eight days of joy: holiday dinners and lunches in the Sukkah, the Four Kinds in your hands, and a Simchat Torah celebration to remember. No membership needed, no one turned away.</p>
+      <div class="skl-btns">
+        <a class="skl-btn" href="/sukkotmeals">Reserve holiday meals</a>
+        <a class="skl-btn skl-ghost" href="/lulav">Order a Lulav &amp; Etrog</a>
+      </div>
+    </div>
+    <div class="skl-lulav"></div>
+  </div>
+
+  <a class="skl-venue" href="https://maps.google.com/?q=320+Meridian+Ave+Miami+Beach+FL+33139">
+    <span class="skl-venue-t">All Sukkot services and meals take place in our Sukkah at Chabad in South Beach</span>
+    <span class="skl-venue-s">320 Meridian Ave, Miami Beach &#183; <b>Get directions &#8599;</b></span>
+  </a>
+
+  <div class="skl-grid">
+    <a class="skl-card" href="/sukkotmeals">
+      <span class="skl-card-etrog"></span>
+      <span class="skl-card-eyebrow">Dining</span>
+      <span class="skl-card-t">Meals in the Sukkah</span>
+      <span class="skl-card-p">Reserve your place at our Sukkot dinners and lunches, and for Shemini Atzeret and Simchat Torah. Book a single meal or all the meals of the first days or the last days in one click.</span>
+      <span class="skl-card-btn">Reserve meals</span>
+    </a>
+    <a class="skl-card" href="/lulav">
+      <span class="skl-card-etrog"></span>
+      <span class="skl-card-eyebrow">The Four Kinds</span>
+      <span class="skl-card-t">Lulav &amp; Etrog Sets</span>
+      <span class="skl-card-p">Order a beautiful, kosher Lulav and Etrog set, hand-selected for you and ready for pickup at Chabad before the holiday begins.</span>
+      <span class="skl-card-btn">Order a set</span>
+    </a>
+    <a class="skl-card" href="/sukkotschedule">
+      <span class="skl-card-etrog"></span>
+      <span class="skl-card-eyebrow">Schedule</span>
+      <span class="skl-card-t">Service Times</span>
+      <span class="skl-card-p">Candle lighting, services and meal times for Sukkot, Hoshana Rabba, Shemini Atzeret and Simchat Torah.</span>
+      <span class="skl-card-btn">View schedule</span>
+    </a>
+    <a class="skl-card" href="/sukkotschedule">
+      <span class="skl-card-etrog"></span>
+      <span class="skl-card-eyebrow">Celebration</span>
+      <span class="skl-card-t">Simchat Torah</span>
+      <span class="skl-card-p">Dancing, Hakafot, a festive dinner and lunch, and a celebration for kids and grown-ups alike. Saturday night, October 3 and Sunday, October 4.</span>
+      <span class="skl-card-btn">See the details</span>
+    </a>
+  </div>
+
+  <div class="skl-dates">
+    <div class="skl-date"><b>Sukkot</b><span>Fri. Sept. 25 &#8211; Sun. Sept. 27</span><i>Light candles 6:55 pm</i></div>
+    <div class="skl-date"><b>Chol Hamoed</b><span>Mon. Sept. 28 &#8211; Fri. Oct. 2</span><i>Come shake the Lulav</i></div>
+    <div class="skl-date"><b>Shemini Atzeret</b><span>Fri. Oct. 2 &#8211; Sat. Oct. 3</span><i>Light candles 6:47 pm</i></div>
+    <div class="skl-date"><b>Simchat Torah</b><span>Sat. night Oct. 3 &#8211; Sun. Oct. 4</span><i>Hakafot 8:00 pm</i></div>
+  </div>
+</div>

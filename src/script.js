@@ -84,12 +84,25 @@
      window.SB_HH_PAGES.
      ------------------------------------------------------------------ */
   var HH_PAGES = window.SB_HH_PAGES || ['7472611', '7472654', '7442141', '7495929'];
+  /* SUKKOT THEME (style.css section 23, teal/apricot): same mechanism as
+     the HH theme. 7511266 = Sukkot landing; add the schedule / meals /
+     lulav article ids here AND in build.js once created. */
+  var SUKKOT_PAGES = window.SB_SUKKOT_PAGES || ['7511266'];
 
   function applyHHTheme() {
     var href = window.location.href;
     for (var i = 0; i < HH_PAGES.length; i++) {
       if (href.indexOf(String(HH_PAGES[i])) !== -1) {
         document.documentElement.classList.add('sb-hh');
+        return;
+      }
+    }
+  }
+  function applySukkotTheme() {
+    var href = window.location.href;
+    for (var i = 0; i < SUKKOT_PAGES.length; i++) {
+      if (href.indexOf(String(SUKKOT_PAGES[i])) !== -1) {
+        document.documentElement.classList.add('sb-sukkot');
         return;
       }
     }
@@ -682,8 +695,10 @@
     }
     if (candles.holiday) {
       // High Holidays go to their own landing page; anything else to the events list
-      var isHH = /rosh\s*hashan|yom\s*kippur|sukkot|shemini|shmini|simchat/i.test(candles.holiday.name || '');
-      var reserveHref = isHH ? HH_LANDING : '/tools/events/default_cdo';
+      var hName = candles.holiday.name || '';
+      var isHH = /rosh\s*hashan|yom\s*kippur/i.test(hName);
+      var isSukkot = /sukkot|shemini|shmini|simchat|hoshana/i.test(hName);
+      var reserveHref = isHH ? HH_LANDING : (isSukkot ? SUKKOT_LANDING : '/tools/events/default_cdo');
       cols.push(
         '<div class="sb-shabbat-col"><div class="sb-eyebrow">Upcoming Holiday</div>' +
         '<h3><a href="' + esc(candles.holiday.href || '#') + '">' + esc(candles.holiday.name) + '</a></h3>' +
@@ -3176,7 +3191,586 @@
      Rosh Hashanah / Yom Kippur cards link to the bare calendar day. Leibel wants
      all of those to open the High Holidays page (7472611). Runs after the footer
      and events rail are built. */
+  /* ------------------------------------------------------------------
+     SUKKOT MEALS PAGE (paste forms/sukkot-meals.html = style + markup only;
+     this is the logic, mirroring forms/hh-meals.html). Two fixed events,
+     each with a one-click "all four meals" mode, posting one reservation per
+     holiday into the same Apps Script tabs the general Meal Form would use:
+     "Sukkot - Sep 25-27, 2026" and
+     "Shemini Atzeret / Simchat Torah - Oct 2-4, 2026".
+     Guard: #sb-skm present. Lives in site.js because pasted scripts that
+     load the PayPal SDK hang the ChabadOne editor on Save.
+     ------------------------------------------------------------------ */
+  function initSukkotMeals() {
+    if (!document.getElementById('sb-skm')) return;
+    document.documentElement.classList.add('sb-sukkot');
+
+    // ===== CONFIGURATION (same processor + backend as Meal Form.html) =====
+    var PAYPAL_CLIENT_ID = 'AQep8b0d5aOphyWo10ZQfAT-mwV0vWeHCjQLID21pSwnJyh4Fw5vNJANgqyTypi1PDiV3AKJ6fbarENP';
+    var GOOGLE_SHEET_WEBHOOK = 'https://script.google.com/macros/s/AKfycbzNnNNSbv6pUY_xoJDCz7xJl0DLAuXaeDajlwH1isdXw4gQBK0plUyOaThijLgOT6_9ag/exec';
+    var PHONE_TEXT = '786-920-2302';
+    var PHONE_LINK = '<a href="tel:7869202302">786-920-2302</a>';
+    var amp = String.fromCharCode(38);
+
+    // Each event exactly as the general form describes it (title, eve-of-day-1
+    // start, last day end) so the backend builds the same sheet tabs.
+    // allSlot = the shared-headcount card; group = the individual meal cards.
+    var EVENTS = {
+      sk: {
+        title: 'Sukkot', short: 'Sukkot', weekName: 'Sukkot - Sep 25-27, 2026',
+        startISO: '2026-09-25', endISO: '2026-09-27',
+        allSlot: '0', allBtn: 'skmAllSk', allCard: 'skmMeal0', group: 'skmSkMeals', section: 'skmSectSk',
+        cutoff: new Date(2026, 8, 25, 14, 30, 0),
+        lockStart: new Date(2026, 8, 25, 18, 50, 0),   // candle lighting 6:55 pm, 5 min early
+        lockEnd: new Date(2026, 8, 27, 19, 50, 0),     // Yom Tov ends 7:45 pm, 5 min late
+        lockedTitle: 'This form is closed for Sukkot',
+        lockedBody: 'Chag Sameach! We will see you after Yom Tov ends on Sunday night.'
+      },
+      st: {
+        title: 'Shemini Atzeret / Simchat Torah', short: 'Shemini Atzeret and Simchat Torah',
+        weekName: 'Shemini Atzeret / Simchat Torah - Oct 2-4, 2026',
+        startISO: '2026-10-02', endISO: '2026-10-04',
+        allSlot: '9', allBtn: 'skmAllSt', allCard: 'skmMeal9', group: 'skmStMeals', section: 'skmSectSt',
+        cutoff: new Date(2026, 9, 2, 14, 30, 0),
+        lockStart: new Date(2026, 9, 2, 18, 42, 0),    // candle lighting 6:47 pm
+        lockEnd: new Date(2026, 9, 4, 19, 43, 0),      // holiday ends 7:38 pm
+        lockedTitle: 'This form is closed for Simchat Torah',
+        lockedBody: 'Chag Sameach! We will see you after the holiday ends on Sunday night.'
+      }
+    };
+    var EVENT_ORDER = ['sk', 'st'];
+
+    // Backend meal labels MUST match what the general form derives for each
+    // event (same order, same strings): they become the sheet column headers.
+    var MEALS = [
+      { slot: '1', ev: 'sk', label: 'Shabbat / Yom Tov Eve (Day 1)', sub: 'Dinner', kind: 'dinner', date: '2026-09-25', isShabbat: true,  name: 'Sukkot First Night Dinner' },
+      { slot: '2', ev: 'sk', label: 'Shabbat / Yom Tov Day (Day 1)', sub: 'Lunch',  kind: 'lunch',  date: '2026-09-26', isShabbat: true,  name: 'Day One Lunch' },
+      { slot: '3', ev: 'sk', label: 'Yom Tov Eve (Day 2)',           sub: 'Dinner', kind: 'dinner', date: '2026-09-26', isShabbat: false, name: 'Second Night Dinner' },
+      { slot: '4', ev: 'sk', label: 'Yom Tov Day (Day 2)',           sub: 'Lunch',  kind: 'lunch',  date: '2026-09-27', isShabbat: false, name: 'Day Two Lunch' },
+      { slot: '5', ev: 'st', label: 'Shabbat / Yom Tov Eve (Day 1)', sub: 'Dinner', kind: 'dinner', date: '2026-10-02', isShabbat: true,  name: 'Shemini Atzeret Dinner' },
+      { slot: '6', ev: 'st', label: 'Shabbat / Yom Tov Day (Day 1)', sub: 'Lunch',  kind: 'lunch',  date: '2026-10-03', isShabbat: true,  name: 'Shemini Atzeret Lunch' },
+      { slot: '7', ev: 'st', label: 'Yom Tov Eve (Day 2)',           sub: 'Dinner', kind: 'dinner', date: '2026-10-03', isShabbat: false, name: 'Simchat Torah Dinner' },
+      { slot: '8', ev: 'st', label: 'Yom Tov Day (Day 2)',           sub: 'Lunch',  kind: 'lunch',  date: '2026-10-04', isShabbat: false, name: 'Simchat Torah Lunch' }
+    ];
+
+    var PRICE = {
+      dinner: { A: 85, S: 54, C: 36 },
+      lunch:  { A: 54, S: 36, C: 18 }
+    };
+
+    // ===== STATE =====
+    var active = { '1': true };          // first-night dinner pre-selected
+    var soldOut = {};
+    var remaining = {};
+    var eventOpen = { sk: true, st: true };
+    var allMode = { sk: false, st: false };
+    var discountCodes = [
+      { code: 'FREEEE', type: 'percent',      value: 100 },
+      { code: 'CHAI',   type: 'cap_per_head', value: 18  }
+    ];
+    var appliedCode = null;
+    var appliedCoupon = '';
+    var discountBy = { sk: 0, st: 0 };
+    var donationAmount = 0;
+
+    function byId(id) { return document.getElementById(id); }
+    function qty(slot, tier) { var el = byId('q' + slot + tier); return el ? (parseInt(el.innerText, 10) || 0) : 0; }
+    function setQty(slot, tier, n) { var el = byId('q' + slot + tier); if (el) el.innerText = String(n); }
+    function zero(slot) { setQty(slot, 'A', 0); setQty(slot, 'S', 0); setQty(slot, 'C', 0); }
+    function mealBy(slot) {
+      for (var i = 0; i < MEALS.length; i++) if (MEALS[i].slot === slot) return MEALS[i];
+      return null;
+    }
+    function mealsOf(ev) {
+      var out = [];
+      for (var i = 0; i < MEALS.length; i++) if (MEALS[i].ev === ev) out.push(MEALS[i]);
+      return out;
+    }
+    function show(el, on) {
+      if (!el) return;
+      el.className = el.className.replace(/\s*skm-hide/g, '') + (on ? '' : ' skm-hide');
+      el.style.display = '';
+    }
+    function esc(s) {
+      return String(s).replace(/&/g, amp + 'amp;').replace(/</g, amp + 'lt;').replace(/>/g, amp + 'gt;');
+    }
+
+    // ===== MEAL TOGGLES / QUANTITIES (event delegation: no inline handlers) =====
+    function paintMeal(slot) {
+      var card = byId('skmMeal' + slot);
+      if (!card) return;
+      card.className = card.className.replace(/\s*skm-on/g, '') + (active[slot] ? ' skm-on' : '');
+      if (soldOut[slot]) {
+        if (card.className.indexOf('skm-soldout') === -1) card.className += ' skm-soldout';
+        var priceEl = byId('skmPrice' + slot);
+        if (priceEl && priceEl.innerText.indexOf('SOLD OUT') === -1) priceEl.innerText = 'SOLD OUT • ' + priceEl.innerText;
+      }
+    }
+    function toggleMeal(slot) {
+      if (soldOut[slot]) return;
+      var m = mealBy(slot);
+      if (!m || !eventOpen[m.ev]) return;
+      active[slot] = !active[slot];
+      if (!active[slot]) zero(slot);
+      else if (slotHeads(slot) === 0) setQty(slot, 'A', 1);
+      paintMeal(slot);
+      updateTotals();
+    }
+    function setAllMode(ev, on) {
+      var E = EVENTS[ev];
+      allMode[ev] = !!on;
+      show(byId(E.allCard), allMode[ev]);
+      show(byId(E.group), !allMode[ev]);
+      show(byId(E.allBtn), !allMode[ev]);
+      if (allMode[ev]) {
+        if (qty(E.allSlot, 'A') + qty(E.allSlot, 'S') + qty(E.allSlot, 'C') === 0) setQty(E.allSlot, 'A', 1);
+      } else {
+        zero(E.allSlot);
+      }
+      updateTotals();
+    }
+
+    byId('sb-skm').addEventListener('click', function (e) {
+      var t = e.target;
+      while (t && t !== this) {
+        if (t.getAttribute) {
+          var tog = t.getAttribute('data-toggle');
+          if (tog) { toggleMeal(tog); return; }
+          var all = t.getAttribute('data-all');
+          if (all) { e.preventDefault(); setAllMode(all, true); return; }
+          var back = t.getAttribute('data-back');
+          if (back) { e.preventDefault(); setAllMode(back, false); return; }
+          var q = t.getAttribute('data-qty');
+          if (q) {
+            e.preventDefault();
+            var slot = q.charAt(0), tier = q.charAt(1);
+            var v = qty(slot, tier) + parseInt(t.getAttribute('data-delta'), 10);
+            if (v < 0) v = 0;
+            setQty(slot, tier, v);
+            updateTotals();
+            return;
+          }
+          var don = t.getAttribute('data-don');
+          if (don) { e.preventDefault(); setDonation(parseInt(don, 10), true); return; }
+        }
+        t = t.parentNode;
+      }
+    });
+
+    // ===== DONATION =====
+    function setDonation(amount, fromPill) {
+      donationAmount = amount > 0 ? amount : 0;
+      if (fromPill) byId('skmDonation').value = donationAmount ? String(donationAmount) : '';
+      var pills = document.querySelectorAll('#sb-skm .skm-pill');
+      for (var i = 0; i < pills.length; i++) {
+        var on = parseInt(pills[i].getAttribute('data-don'), 10) === donationAmount;
+        pills[i].className = 'skm-pill' + (on ? ' skm-pill-on' : '');
+      }
+      updateTotals();
+    }
+    byId('skmDonation').addEventListener('input', function () { setDonation(parseFloat(this.value) || 0, false); });
+
+    // ===== TOTALS =====
+    function isOn(slot) {
+      var m = mealBy(slot);
+      if (!m) return false;
+      if (allMode[m.ev]) return eventOpen[m.ev];
+      return !!active[slot];
+    }
+    function cnt(slot, tier) {
+      var m = mealBy(slot);
+      if (m && allMode[m.ev]) return qty(EVENTS[m.ev].allSlot, tier);
+      return qty(slot, tier);
+    }
+    function slotCost(slot) {
+      if (!isOn(slot)) return 0;
+      var p = PRICE[mealBy(slot).kind];
+      return cnt(slot, 'A') * p.A + cnt(slot, 'S') * p.S + cnt(slot, 'C') * p.C;
+    }
+    function slotHeads(slot) {
+      if (!isOn(slot)) return 0;
+      return cnt(slot, 'A') + cnt(slot, 'S') + cnt(slot, 'C');
+    }
+    function eventCost(ev) { var g = 0, ms = mealsOf(ev); for (var i = 0; i < ms.length; i++) g += slotCost(ms[i].slot); return g; }
+    function eventHeads(ev) { var h = 0, ms = mealsOf(ev); for (var i = 0; i < ms.length; i++) h += slotHeads(ms[i].slot); return h; }
+    function partySize() {
+      var m = 0;
+      for (var i = 0; i < MEALS.length; i++) { var h = slotHeads(MEALS[i].slot); if (h > m) m = h; }
+      return m;
+    }
+    function computeDiscount(grand, heads, def) {
+      if (!def || grand <= 0) return 0;
+      if (def.type === 'percent') return Math.min(grand, Math.round(grand * (parseFloat(def.value) || 0) / 100));
+      if (def.type === 'fixed') return Math.min(grand, parseFloat(def.value) || 0);
+      if (def.type === 'cap_per_head') return Math.max(0, grand - (parseFloat(def.value) || 0) * heads);
+      return 0;
+    }
+    // Discount per event so each posted reservation carries its own figure;
+    // a fixed-amount code is spent on Sukkot first, remainder on Simchat Torah.
+    function computeDiscounts(def) {
+      var sk = computeDiscount(eventCost('sk'), eventHeads('sk'), def);
+      var st;
+      if (def && def.type === 'fixed') st = computeDiscount(eventCost('st'), eventHeads('st'), { type: 'fixed', value: (parseFloat(def.value) || 0) - sk });
+      else st = computeDiscount(eventCost('st'), eventHeads('st'), def);
+      return { sk: sk, st: st };
+    }
+
+    function updateTotals(keepMsg) {
+      if (!keepMsg) clearValidationError();
+      var lines = '';
+      for (var e = 0; e < EVENT_ORDER.length; e++) {
+        var ev = EVENT_ORDER[e];
+        if (allMode[ev] && eventHeads(ev) > 0) {
+          lines += '<div class="skm-sumline"><span>All ' + esc(EVENTS[ev].short) + ' meals × ' + slotHeads(mealsOf(ev)[0].slot) + '</span><span>$' + eventCost(ev) + '</span></div>';
+        }
+      }
+      for (var i = 0; i < MEALS.length; i++) {
+        var m = MEALS[i];
+        if (allMode[m.ev]) continue;
+        if (!isOn(m.slot)) continue;
+        var heads = slotHeads(m.slot);
+        lines += '<div class="skm-sumline"><span>' + esc(m.name) + (heads ? ' × ' + heads : '') + '</span><span>$' + slotCost(m.slot) + '</span></div>';
+      }
+      if (!lines) lines = '<div class="skm-sumline skm-sumfree">No meals selected yet</div>';
+      byId('skmSumLines').innerHTML = lines;
+
+      var grand = eventCost('sk') + eventCost('st');
+      discountBy = computeDiscounts(appliedCode);
+      var discount = discountBy.sk + discountBy.st;
+      var total = Math.max(0, grand + donationAmount - discount);
+      byId('skmSumDon').innerText = String(donationAmount);
+      show(byId('skmSumDiscRow'), discount > 0);
+      byId('skmSumDisc').innerText = String(discount);
+      byId('skmSumTotal').innerText = String(total);
+
+      var pp = byId('skmPaypal');
+      var confirmBtn = byId('skmConfirm');
+      if (total <= 0) { show(pp, false); confirmBtn.style.display = 'block'; }
+      else { show(pp, true); confirmBtn.style.display = 'none'; }
+
+      syncGuestInputs();
+    }
+
+    // ===== GUEST NAMES (one optional input per additional person) =====
+    function syncGuestInputs() {
+      var wrap = byId('skmGuestsWrap'), list = byId('skmGuests');
+      var needed = partySize() - 1;
+      if (needed < 0) needed = 0;
+      while (list.children.length > needed) list.removeChild(list.children[list.children.length - 1]);
+      while (list.children.length < needed) {
+        var inp = document.createElement('input');
+        inp.type = 'text';
+        inp.className = 'skm-in';
+        inp.autocomplete = 'off';
+        inp.placeholder = 'Guest ' + (list.children.length + 2) + ' full name (optional)';
+        list.appendChild(inp);
+      }
+      show(wrap, needed > 0);
+    }
+    function collectGuestNames() {
+      var out = [], inputs = document.querySelectorAll('#skmGuests input');
+      for (var i = 0; i < inputs.length; i++) { var v = String(inputs[i].value || '').trim(); if (v) out.push(v); }
+      return out;
+    }
+
+    // ===== DISCOUNT CODES =====
+    function loadDiscountCodes() {
+      fetch(GOOGLE_SHEET_WEBHOOK + '?action=publicCodes')
+        .then(function (r) { return r.json(); })
+        .then(function (data) { if (data && Array.isArray(data.codes) && data.codes.length > 0) discountCodes = data.codes; })
+        .catch(function (err) { console.error('Could not load discount codes:', err); });
+    }
+    function findCodeDef(input) {
+      var needle = String(input || '').trim().toUpperCase();
+      if (!needle) return null;
+      for (var i = 0; i < discountCodes.length; i++) if (String(discountCodes[i].code).toUpperCase() === needle) return discountCodes[i];
+      return null;
+    }
+    function checkDiscount() {
+      var msg = byId('skmCodeMsg');
+      var raw = byId('skmCode').value.trim();
+      appliedCode = null; appliedCoupon = '';
+      msg.className = 'skm-msg'; msg.innerText = '';
+      if (!raw) { updateTotals(); return; }
+      var def = findCodeDef(raw);
+      if (!def) { msg.className = 'skm-msg skm-bad'; msg.innerText = 'Invalid code.'; updateTotals(); return; }
+      var d = computeDiscounts(def);
+      if (d.sk + d.st <= 0) { msg.className = 'skm-msg skm-bad'; msg.innerText = 'Code not applicable at this price. Add your meals first, then apply.'; updateTotals(); return; }
+      appliedCode = def; appliedCoupon = String(def.code).toUpperCase();
+      msg.className = 'skm-msg skm-good';
+      if (def.type === 'percent') msg.innerText = 'Code applied: ' + def.value + '% off.';
+      else if (def.type === 'fixed') msg.innerText = 'Code applied: $' + def.value + ' off.';
+      else if (def.type === 'cap_per_head') msg.innerText = 'Code applied: $' + def.value + ' per person.';
+      else msg.innerText = 'Code applied.';
+      updateTotals();
+    }
+    byId('skmApply').addEventListener('click', checkDiscount);
+    byId('skmCode').addEventListener('keypress', function (e) { if (e.key === 'Enter') { e.preventDefault(); checkDiscount(); } });
+
+    // ===== CAPACITY CAPS (same publicCaps feed and sheet-name keys as the general form) =====
+    function loadCaps() {
+      fetch(GOOGLE_SHEET_WEBHOOK + '?action=publicCaps')
+        .then(function (r) { return r.json(); })
+        .then(function (data) {
+          if (!data || !Array.isArray(data.caps)) return;
+          for (var i = 0; i < data.caps.length; i++) {
+            var c = data.caps[i];
+            var ev = null;
+            for (var k in EVENTS) if (EVENTS[k].weekName === String(c.week)) ev = k;
+            if (!ev) continue;
+            var cap = parseInt(c.cap, 10) || 0;
+            if (cap <= 0) continue;
+            var counts = {};
+            var arr = c.meals || [];
+            for (var m = 0; m < arr.length; m++) counts[String(arr[m].label)] = parseInt(arr[m].count, 10) || 0;
+            var ms = mealsOf(ev);
+            for (var j = 0; j < ms.length; j++) {
+              var key = ms[j].label + ' ' + ms[j].sub;
+              var rem = cap - (counts[key] || 0);
+              remaining[ms[j].slot] = rem > 0 ? rem : 0;
+              if (rem <= 0) {
+                if (allMode[ev]) setAllMode(ev, false);
+                show(byId(EVENTS[ev].allBtn), false);
+                soldOut[ms[j].slot] = true;
+                active[ms[j].slot] = false;
+                zero(ms[j].slot);
+              }
+              paintMeal(ms[j].slot);
+            }
+          }
+          updateTotals(true);
+        })
+        .catch(function (err) { console.error('Could not load capacity caps:', err); });
+    }
+
+    // ===== VALIDATION (no form element: the CMS editor mangles them) =====
+    function validateMeals() {
+      var anyActive = false;
+      for (var i = 0; i < MEALS.length; i++) {
+        var m = MEALS[i];
+        if (!isOn(m.slot)) continue;
+        anyActive = true;
+        var heads = slotHeads(m.slot);
+        if (heads === 0) return 'Each selected meal needs at least 1 person (Adult, Subsidized or Child).';
+        if (soldOut[m.slot]) return m.name + ' is sold out. Please call us at ' + PHONE_TEXT + '.';
+        if (remaining[m.slot] !== undefined && heads > remaining[m.slot]) {
+          var n = remaining[m.slot];
+          return 'We only have ' + n + (n === 1 ? ' seat' : ' seats') + ' left for ' + m.name + '. Please adjust your party size or call us at ' + PHONE_TEXT + '.';
+        }
+      }
+      if (!anyActive) return 'Please select at least one meal.';
+      return null;
+    }
+    function showValidationError(msg) {
+      var box = byId('skmValid');
+      box.innerText = msg;
+      box.style.display = 'block';
+      box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+    function clearValidationError() { byId('skmValid').style.display = 'none'; }
+    function markBad(inp) {
+      inp.className = inp.className.replace(/\s*skm-bad/g, '') + ' skm-bad';
+      inp.addEventListener('input', function fix() { inp.className = inp.className.replace(/\s*skm-bad/g, ''); inp.removeEventListener('input', fix); });
+      try { inp.focus({ preventScroll: true }); } catch (e) { inp.focus(); }
+    }
+    // Names the first empty or invalid contact field so the message can say
+    // exactly what is missing (a payment popup steals the browser's bubble).
+    function fieldError() {
+      var reqs = document.querySelectorAll('#skmForm input[data-req]');
+      for (var i = 0; i < reqs.length; i++) {
+        var inp = reqs[i];
+        var v = String(inp.value || '').trim();
+        var name = inp.getAttribute('data-req');
+        if (!v) { markBad(inp); return 'Please fill in your ' + name + ' above before paying.'; }
+        if (inp.type === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) { markBad(inp); return 'Please check your ' + name + ' above; it does not look right.'; }
+        if (inp.type === 'tel' && v.replace(/\D/g, '').length < 7) { markBad(inp); return 'Please check your ' + name + ' above; it does not look right.'; }
+      }
+      return null;
+    }
+    function formOk() {
+      var err = fieldError() || validateMeals();
+      if (err) { showValidationError(err); return false; }
+      clearValidationError();
+      return true;
+    }
+    // PayPal preflight in onClick so problems are reported BEFORE the window opens.
+    var ppBlocked = false;
+    function ppReady() {
+      ppBlocked = false;
+      if (!formOk()) { ppBlocked = true; return false; }
+      var total = parseFloat(byId('skmSumTotal').innerText);
+      if (!(total > 0)) { showValidationError('Your total is $0. Use the Confirm Reservation button instead.'); ppBlocked = true; return false; }
+      return true;
+    }
+
+    // ===== SUBMIT TO THE APPS SCRIPT (one reservation per holiday) =====
+    function buildPayload(ev, paymentDetails, carryDonation) {
+      var E = EVENTS[ev];
+      var meals = [];
+      var dinnerA = 0, dinnerS = 0, dinnerC = 0, lunchA = 0, lunchS = 0, lunchC = 0;
+      var ms = mealsOf(ev);
+      var grand = 0;
+      for (var i = 0; i < ms.length; i++) {
+        var m = ms[i];
+        var on = isOn(m.slot);
+        var a = on ? cnt(m.slot, 'A') : 0, s = on ? cnt(m.slot, 'S') : 0, c = on ? cnt(m.slot, 'C') : 0;
+        meals.push({ id: 'slot' + (i + 1), label: m.label + ' ' + m.sub, date: m.date, kind: m.kind, isShabbat: m.isShabbat, adult: a, sub: s, child: c });
+        if (m.kind === 'dinner') { dinnerA += a; dinnerS += s; dinnerC += c; }
+        else { lunchA += a; lunchS += s; lunchC += c; }
+        grand += slotCost(m.slot);
+      }
+      var guests = collectGuestNames();
+      var don = carryDonation ? (donationAmount || 0) : 0;
+      var disc = discountBy[ev] || 0;
+      return {
+        shabbos: E.weekName,
+        shabbosDateISO: E.startISO,
+        shabbosEndDateISO: E.endISO,
+        shabbosTitle: E.title,
+        eventType: 'holiday',
+        name: byId('skmName').value.trim(),
+        guestNames: guests.join(', '),
+        guestNamesList: guests,
+        address: byId('skmAddress').value.trim(),
+        email: byId('skmEmail').value.trim(),
+        phone: byId('skmPhone').value.trim(),
+        notes: byId('skmNotes').value.trim(),
+        meals: meals,
+        friAdult: dinnerA, friSub: dinnerS, friChild: dinnerC,
+        shabAdult: lunchA, shabSub: lunchS, shabChild: lunchC,
+        donation: don,
+        total: String(Math.max(0, grand + don - disc)),
+        discount: disc,
+        couponCode: disc > 0 ? appliedCoupon : '',
+        paymentId: paymentDetails.id,
+        payerEmail: paymentDetails.payer ? paymentDetails.payer.email_address : '',
+        source: 'sukkot-meals-page'
+      };
+    }
+    function post(data) {
+      return fetch(GOOGLE_SHEET_WEBHOOK, {
+        method: 'POST', mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      }).catch(function (err) { console.error('Sheet submission failed:', err); });
+    }
+    function submitToGoogleSheets(paymentDetails) {
+      var evs = [];
+      for (var e = 0; e < EVENT_ORDER.length; e++) if (eventHeads(EVENT_ORDER[e]) > 0) evs.push(EVENT_ORDER[e]);
+      for (var i = 0; i < evs.length; i++) post(buildPayload(evs[i], paymentDetails, i === 0));
+    }
+    window.SB_SUKKOT_PAYLOADS = function (details) {   // harness hook: inspect what would be posted
+      var out = [];
+      for (var e = 0; e < EVENT_ORDER.length; e++) if (eventHeads(EVENT_ORDER[e]) > 0) out.push(buildPayload(EVENT_ORDER[e], details || { id: 'TEST' }, out.length === 0));
+      return out;
+    };
+    function showSuccess() {
+      byId('skmForm').style.display = 'none';
+      show(byId('skmSuccess'), true);
+      byId('skmSuccess').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    byId('skmConfirm').addEventListener('click', function (e) {
+      e.preventDefault();
+      if (!formOk()) return;
+      this.innerText = 'Processing...';
+      this.disabled = true;
+      submitToGoogleSheets({ id: 'MANUAL_DISCOUNT' });
+      setTimeout(showSuccess, 900);
+    });
+
+    // ===== PAYPAL =====
+    function initPayPal() {
+      var script = document.createElement('script');
+      script.src = 'https://www.paypal.com/sdk/js?client-id=' + PAYPAL_CLIENT_ID + amp + 'currency=USD';
+      script.onload = function () {
+        paypal.Buttons({
+          style: { layout: 'vertical', color: 'white', shape: 'rect', label: 'pay', height: 48, tagline: false },
+          onClick: function (data, actions) { return ppReady() ? actions.resolve() : actions.reject(); },
+          createOrder: function (data, actions) {
+            if (!ppReady()) return;
+            var total = parseFloat(byId('skmSumTotal').innerText);
+            return actions.order.create({
+              purchase_units: [{ description: 'Sukkot Meals - Chabad in South Beach', amount: { value: total.toFixed(2) } }]
+            });
+          },
+          onApprove: function (data, actions) {
+            return actions.order.capture().then(function (details) {
+              submitToGoogleSheets(details);
+              showSuccess();
+            });
+          },
+          onError: function (err) {
+            console.error('PayPal error:', err);
+            if (ppBlocked) { ppBlocked = false; return; }
+            showValidationError('Payment did not go through. Please try again or call us at ' + PHONE_TEXT + ' to reserve.');
+          }
+        }).render('#skmPaypal');
+      };
+      document.head.appendChild(script);
+    }
+
+    // ===== OPEN / CLOSED STATES =====
+    function closeEvent(ev) {
+      var E = EVENTS[ev];
+      eventOpen[ev] = false;
+      var ms = mealsOf(ev);
+      for (var i = 0; i < ms.length; i++) { active[ms[i].slot] = false; zero(ms[i].slot); paintMeal(ms[i].slot); }
+      if (allMode[ev]) setAllMode(ev, false);
+      show(byId(E.section), false);
+    }
+    // Returns false when nothing can be booked (form hidden), true otherwise.
+    function applyTiming() {
+      var now = window.SB_SUKKOT_NOW ? new Date(window.SB_SUKKOT_NOW) : new Date();   // harness override
+      var form = byId('skmForm');
+      if (now > EVENTS.st.lockEnd) {                       // everything over
+        form.style.display = 'none';
+        show(byId('skmPassed'), true);
+        return false;
+      }
+      var openCount = 0, closedNames = [], locking = null;
+      for (var e = 0; e < EVENT_ORDER.length; e++) {
+        var ev = EVENT_ORDER[e], E = EVENTS[ev];
+        if (now >= E.lockStart && now <= E.lockEnd) { locking = E; closeEvent(ev); closedNames.push(E.short); }
+        else if (now > E.cutoff) { closeEvent(ev); closedNames.push(E.short); }
+        else openCount++;
+      }
+      if (openCount === 0) {
+        form.style.display = 'none';
+        if (locking) {
+          byId('skmLockedTitle').innerText = locking.lockedTitle;
+          byId('skmLockedBody').innerText = locking.lockedBody;
+          show(byId('skmLocked'), true);
+        } else {
+          byId('skmCutoff').innerHTML = 'Online reservations for the holiday meals are closed. Please call ' + PHONE_LINK + ' and we will do our best to seat you.';
+          show(byId('skmCutoff'), true);
+        }
+        return false;
+      }
+      if (closedNames.length) {
+        byId('skmCutoff').innerHTML = 'Online reservations for ' + esc(closedNames.join(' and ')) + ' are closed (call ' + PHONE_LINK + '). You can still reserve the remaining holiday meals below.';
+        show(byId('skmCutoff'), true);
+        // Bring the still-open section to the top of the card.
+        var firstOpen = null;
+        for (var f = 0; f < EVENT_ORDER.length; f++) if (eventOpen[EVENT_ORDER[f]]) { firstOpen = byId(EVENTS[EVENT_ORDER[f]].section); break; }
+        if (firstOpen) { firstOpen.style.marginTop = '0'; firstOpen.style.paddingTop = '0'; firstOpen.style.borderTop = 'none'; }
+        if (!eventOpen.sk && eventOpen.st && !active['5'] && !soldOut['5']) { active['5'] = true; setQty('5', 'A', 1); paintMeal('5'); }
+      }
+      return true;
+    }
+
+    // ===== INIT =====
+    for (var p = 0; p <= 9; p++) paintMeal(String(p));
+    updateTotals();
+    if (applyTiming()) {
+      updateTotals();
+      loadDiscountCodes();
+      loadCaps();
+      initPayPal();
+    }
+  }
+
   var HH_LANDING = '/7472611';
+  var SUKKOT_LANDING = '/7511266';
   function fixHighHolidayLinks() {
     $all('a[href*="aid/418840"]').forEach(function (a) { a.setAttribute('href', HH_LANDING); });
     $all('.sb-event-card').forEach(function (card) {
@@ -3194,6 +3788,7 @@
     if (isHome()) document.body.classList.add('sb-home');
 
     safe('hh-theme', applyHHTheme);
+    safe('sukkot-theme', applySukkotTheme);
     safe('no-title', applyNoTitle);
     safe('page-rules', runPageRules);
     safe('page-theme', applyPageTheme);
@@ -3233,6 +3828,7 @@
     safe('hh-seats', initHHSeats);
     safe('meal-wording', initMealFormWording);
     safe('late-payment', initLatePayment);
+    safe('sukkot-meals', initSukkotMeals);
     safe('membership-standalone', initMembershipStandalone);
     safe('membership-builder', initMembershipBuilder);
   }

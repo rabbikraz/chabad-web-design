@@ -117,6 +117,10 @@ window.addEventListener('load', function () {
     snapshot: '20251013120914',
     include: { token: '<!--SB_FORM_INCLUDE-->', file: 'forms/hh-schedule.html' },
   },
+  // Sukkot pages (teal/apricot theme): landing 7511266, schedule, meals (logic in site.js)
+  { src: 'sukkot-landing.html', out: 'preview-sukkot-landing.html', snapshot: '20251013120914', include: { token: '<!--SB_FORM_INCLUDE-->', file: 'forms/sukkot-landing.html' } },
+  { src: 'sukkot-schedule.html', out: 'preview-sukkot-schedule.html', snapshot: '20251013120914', include: { token: '<!--SB_FORM_INCLUDE-->', file: 'forms/sukkot-schedule.html' } },
+  { src: 'sukkot-meals.html', out: 'preview-sukkot-meals.html', snapshot: '20251013120914', include: { token: '<!--SB_FORM_INCLUDE-->', file: 'forms/sukkot-meals.html' } },
   // late / past Shabbos payment form (outside the repo, sibling of Meal Form.html)
   {
     src: 'late-payment.html',
