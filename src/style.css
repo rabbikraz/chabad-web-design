@@ -4914,3 +4914,92 @@ html.sb-sukkot #sb-skm #skmPaypal:empty { background: none; padding: 0; }
 /* interior-page gap above the title is reclaimed site-wide; on Sukkot pages
    the title sits on the teal ground, so give it a little air. */
 html.sb-sukkot .article-header { padding-top: 8px; }
+
+/* Sukkot meals page: the lulav mark hangs just below the schach roof, and the
+   step-1 heading text keeps clear of it (the paste positions it at the top). */
+html.sb-sukkot #sb-skm .skm-card.sk-schach .skm-lulav { top: 64px; right: 20px; width: 84px; height: 108px; }
+@media (min-width: 641px) {
+  html.sb-sukkot #sb-skm .skm-card.sk-schach > .skm-step,
+  html.sb-sukkot #sb-skm .skm-card.sk-schach > h3.skm-h,
+  html.sb-sukkot #sb-skm .skm-card.sk-schach > .skm-blurb { padding-right: 104px; }
+}
+
+/* --------------------------------------------------------------------------
+   LULAV & ETROG ORDER FORM (form-builder page 7511371): Sukkot skin over
+   chabad.org's form-redesign theme. That theme nests every rule inside
+   html:has(script[src*=form-script.js]):not(:has(.ct-container, #footer-links)),
+   which gives it ID-level specificity, so every selector here is lifted with
+   two :not(#id) guards. NEVER drop them. initLulavForm (script.js) adds
+   .sk-schach to .form-all and hides the platform's duplicate Submit row.
+   -------------------------------------------------------------------------- */
+html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form { max-width: 680px; margin: 0 auto; font-family: Arial, Helvetica, sans-serif; color: #FFF4E3; }
+html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form .form-all { background-color: #24686C; border: 1px solid rgba(255, 244, 227, .16); border-top: 3px solid #F5B56A; border-radius: 18px; padding: 26px 28px 30px; box-shadow: 0 10px 28px rgba(0, 0, 0, .18); max-width: none; width: auto; margin: 0; }
+html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form .form-all.sk-schach { border-top: none; padding-top: 86px; }
+html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form ul.form-section { margin: 0; padding: 0; list-style: none; }
+html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form li.form-line, html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form li.form-input-wide { padding: 10px 0 !important; margin: 0 !important; background: none !important; border: none !important; }
+html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form li.form-line.form-field-hidden { display: none !important; }
+html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form .form-header-group { margin: 0 0 6px; padding: 0; border: none; background: none; }
+html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form li.form-input-wide:not(:first-child) .form-header-group { margin-top: 18px; padding-top: 22px; border-top: 1px solid rgba(255, 244, 227, .14); }
+html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form h2.form-header { font-family: Georgia, "Times New Roman", serif; font-weight: 700; font-size: 26px; line-height: 1.2; color: #FFF4E3 !important; margin: 0 0 6px; text-transform: none; letter-spacing: 0; }
+html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form .form-subHeader { font-size: 15.5px; color: #F3D9B0 !important; }
+html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form .form-html { color: #F3D9B0 !important; font-size: 15.5px; line-height: 1.6; }
+html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form .form-html p { margin: 0 0 10px; color: #F3D9B0; }
+html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form .form-html p:nth-child(2) { font-size: 11.5px; letter-spacing: 3px; text-transform: uppercase; font-weight: 700; color: #F5B56A; margin: 16px 0 6px; }
+html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form .form-html p:nth-child(3), html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form .form-html p:nth-child(4), html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form .form-html p:nth-child(5) { color: #FFF4E3; font-weight: 700; margin: 0 0 4px; }
+html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form .form-html p:nth-child(6) { margin-top: 12px; }
+html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form .form-label-left, html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form .form-label-top, html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form .form-label-right { width: auto !important; float: none !important; text-align: left !important; margin: 0 0 7px !important; padding: 0 !important; display: block !important; }
+html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form .form-label-left > label:first-child, html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form .form-label-top > label:first-child, html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form .form-label-right > label:first-child { display: block; font-size: 12.5px; letter-spacing: 2px; text-transform: uppercase; font-weight: 700; color: #F3D9B0 !important; line-height: 1.4; }
+html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form label.label-message { display: block; font-size: 13.5px; color: #A9CFC9 !important; letter-spacing: 0; text-transform: none; font-weight: 400; margin: 4px 0 0; }
+html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form .form-required { color: #F5B56A; }
+html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form .form-input, html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form .form-input-wide { width: auto !important; float: none !important; margin: 0 !important; padding: 0 !important; display: block !important; }
+html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form .form-sub-label { color: #A9CFC9 !important; font-size: 13px; }
+html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form .form-textbox, html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form .form-textarea, html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form .form-dropdown, html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form select { background: #FFFBF3 !important; color: #14383B !important; border: 1px solid rgba(255, 244, 227, .3) !important; border-radius: 10px !important; font-size: 16px !important; font-family: Arial, Helvetica, sans-serif; padding: 11px 14px !important; box-shadow: none !important; }
+html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form .form-textbox:focus, html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form .form-textarea:focus, html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form .form-dropdown:focus { outline: none; border-color: #F5B56A !important; box-shadow: 0 0 0 3px rgba(245, 181, 106, .3) !important; }
+html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form .form-textarea { min-height: 90px; height: auto !important; }
+/* quantity fields: round plus/minus in a cream pill */
+html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form .custom-number-wrapper { display: inline-flex !important; align-items: center; gap: 8px; background: #FFF4E3; border-radius: 999px; padding: 4px; }
+html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form .qty-btn { width: 38px !important; height: 38px !important; min-height: 0 !important; border-radius: 999px !important; border: 2px solid #1E5A5E !important; background: transparent !important; color: #1E5A5E !important; font-size: 22px !important; line-height: 1 !important; padding: 0 !important; margin: 0 !important; cursor: pointer; font-family: Arial, Helvetica, sans-serif; box-shadow: none !important; }
+html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form .qty-btn:hover { background: rgba(30, 90, 94, .1) !important; }
+html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form .form-number-input { width: 56px !important; min-width: 0 !important; height: 38px !important; min-height: 0 !important; text-align: center; border: none !important; background: transparent !important; font-weight: 700 !important; font-size: 18px !important; padding: 0 !important; box-shadow: none !important; }
+html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form .form-number-input::placeholder { color: #14383B; }
+html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form .form-sub-label-container { display: inline-block; vertical-align: top; margin: 0 10px 0 0; }
+html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form .form-sub-label-container .form-sub-label { display: block; margin: 6px 0 0; }
+/* radios as choice cards */
+html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form .form-single-column, html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form .form-multiple-column { display: block !important; padding: 0 !important; margin: 0 !important; width: auto !important; }
+html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form .form-radio-item { display: flex !important; align-items: center; gap: 12px; background: #FFF4E3 !important; border: 2px solid #F3D9B0 !important; border-radius: 12px !important; padding: 12px 16px !important; margin: 0 0 10px !important; color: #14383B !important; width: auto !important; flex: none !important; box-shadow: none; }
+html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form .form-radio-item.active-option, html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form .form-radio-item:has(input:checked) { border-color: #E9A24E !important; background: #FFF9EE !important; box-shadow: 0 0 0 1px #E9A24E; }
+html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form .form-radio-item label, html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form .form-radio-item label span { color: #14383B !important; font-size: 16px; font-weight: 600; padding: 0; margin: 0; }
+html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form .form-radio-item input.form-radio { accent-color: #1E5A5E; width: 20px !important; height: 20px !important; min-height: 0 !important; margin: 0 !important; flex: none; display: inline-block !important; opacity: 1 !important; position: static !important; }
+html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form .form-radio-item > *:not(label):not(input) { display: none !important; }
+html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form span.clearfix { display: none !important; }
+/* total */
+html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form li.form-line:has(#total_amount) { background: #16474A !important; border-radius: 14px; padding: 14px 18px !important; margin: 8px 0 !important; display: flex !important; align-items: baseline; justify-content: space-between; gap: 18px; }
+html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form li.form-line:has(#total_amount) .form-label-left { margin: 0 !important; }
+html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form li.form-line:has(#total_amount) .form-label-left > label:first-child { font-size: 16px; letter-spacing: 0; text-transform: none; color: #FFF4E3 !important; }
+html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form #total_amount { font-family: Georgia, "Times New Roman", serif; font-size: 26px; font-weight: 700; color: #F5B56A !important; font-variant-numeric: tabular-nums; }
+/* credit card + billing blocks */
+html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form .form-address-table { width: 100%; }
+html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form .form-address-table td { padding: 4px 0 !important; }
+html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form .form-address-table th { color: #FFF4E3 !important; font-size: 12.5px; letter-spacing: 2px; text-transform: uppercase; text-align: left; padding: 8px 0 !important; background: none !important; }
+html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form .credit_card > td > table { background: #FFF4E3; border-radius: 12px; padding: 12px 14px; width: 100%; }
+html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form .credit_card .form-sub-label { color: #5C7275 !important; }
+html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form .form-payment-methods:empty { display: none; }
+/* buttons (the theme script inline-styles them, hence the !importants) */
+html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form .form-buttons-wrapper { text-align: center; margin: 12px 0 0; }
+html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form .form-submit-button { display: block; width: 100% !important; margin: 0 !important; padding: 16px 20px !important; background: #F5B56A !important; color: #14383B !important; border: none !important; border-radius: 10px !important; font-size: 15px !important; font-weight: 700 !important; letter-spacing: 3px; text-transform: uppercase; cursor: pointer; font-family: Arial, Helvetica, sans-serif; box-shadow: none !important; }
+html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form .form-submit-button:hover { background: #FBD7A6 !important; }
+html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form li.sk-dupe-submit { display: none !important; }
+html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form .form-description-content { color: #14383B; }
+@media (max-width: 640px) {
+  html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form .form-all { padding: 20px 16px 24px; border-radius: 14px; }
+  html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form .form-all.sk-schach { padding-top: 74px; }
+  html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form h2.form-header { font-size: 23px; }
+}
+
+/* lulav form: field widths */
+html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form .form-textbox:not(.form-number-input), html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form .form-dropdown, html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form .form-textarea, html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form .dir_ltr { width: 100% !important; max-width: none !important; box-sizing: border-box; }
+html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form li.form-line:has(input[id^=first_]) .form-input { display: flex !important; gap: 10px; }
+html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form li.form-line:has(input[id^=first_]) .form-sub-label-container, html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form .form-input > .dir_ltr > .form-sub-label-container, html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form .form-input > .form-sub-label-container:only-child { display: block; flex: 1 1 0; margin: 0; min-width: 0; }
+html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form li.form-line:has(.form-payment-methods) > .form-label-left { display: none !important; }
+html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form .form-address-table td .form-sub-label-container { display: block; margin: 0; }
+@media (max-width: 480px) { html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form li.form-line:has(input[id^=first_]) .form-input { display: block !important; } html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form li.form-line:has(input[id^=first_]) .form-sub-label-container { margin: 0 0 8px; } }

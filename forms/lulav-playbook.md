@@ -12,12 +12,12 @@ keeps the orders). Three files in this folder do the work:
 ## 0. Set the prices first
 
 Open `inject-lulav.js` and edit the `PRICES` block at the top. The values in
-the file are PLACEHOLDERS:
+the file are the confirmed prices (Standard $75, Deluxe $100, Premium $150):
 
 ```
-standard: 54     Set quantity - Standard   (per set)
-deluxe:   85     Set quantity - Deluxe     (per set)
-premium: 120     Set quantity - Premium    (per set)
+standard: 75     Set quantity - Standard   (per set)
+deluxe:  100     Set quantity - Deluxe     (per set)
+premium: 150     Set quantity - Premium    (per set)
 delivery: 18     South Beach delivery
 donations: 18, 36, 54, 100, 180
 ```

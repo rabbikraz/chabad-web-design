@@ -3826,6 +3826,26 @@
     }
   }
 
+  /* ------------------------------------------------------------------
+     LULAV ORDER FORM (form-builder page 7511371, html.sb-sukkot): the skin is
+     CSS (style.css, "LULAV & ETROG ORDER FORM"); this only adds the schach
+     roof class and hides the platform's duplicate Submit row (the builder's
+     own "Order My Set" button is kept, both post the same form).
+     ------------------------------------------------------------------ */
+  function initLulavForm() {
+    if (!document.documentElement.classList.contains('sb-sukkot')) return;
+    var f = document.querySelector('form.userform-form');
+    if (!f) return;
+    f.classList.add('sk-lulav');
+    var all = f.querySelector('.form-all');
+    if (all) all.classList.add('sk-schach');
+    var subs = f.querySelectorAll('li.form-line .form-submit-button');
+    for (var i = 1; i < subs.length; i++) {
+      var li = subs[i].closest ? subs[i].closest('li.form-line') : null;
+      if (li) li.classList.add('sk-dupe-submit');
+    }
+  }
+
   var HH_LANDING = '/7472611';
   var SUKKOT_LANDING = '/7511266';
   function fixHighHolidayLinks() {
@@ -3886,6 +3906,7 @@
     safe('meal-wording', initMealFormWording);
     safe('late-payment', initLatePayment);
     safe('sukkot-meals', initSukkotMeals);
+    safe('lulav-form', initLulavForm);
     safe('membership-standalone', initMembershipStandalone);
     safe('membership-builder', initMembershipBuilder);
   }

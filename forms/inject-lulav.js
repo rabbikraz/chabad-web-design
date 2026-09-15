@@ -11,9 +11,9 @@
    kept and reused in place). Same helper shapes as
    forms/inject-membership.js, which built the live membership form.
 
-   PRICES: edit the PRICES object below BEFORE running. The values
-   shipped here are placeholders; the intro text is generated
-   from the same object so the two never disagree.
+   PRICES: Leibel's prices (2026-09-15): Standard $75, Deluxe $100,
+   Premium $150, delivery $18. The intro text is generated from the
+   same PRICES object so the two never disagree.
 
    NOTHING IS SAVED until you review the canvas and click the
    admin's own Save button. If anything looks wrong: close the
@@ -24,9 +24,9 @@
 
   /* ---------- EDIT ME: prices in whole dollars ---------- */
   var PRICES = {
-    standard: 54,     // "Set quantity - Standard"  (per set)
-    deluxe: 85,       // "Set quantity - Deluxe"    (per set)
-    premium: 120,     // "Set quantity - Premium"   (per set)
+    standard: 75,     // "Set quantity - Standard"  (per set)
+    deluxe: 100,      // "Set quantity - Deluxe"    (per set)
+    premium: 150,     // "Set quantity - Premium"   (per set)
     delivery: 18,     // "Deliver to my South Beach address"
     donations: [18, 36, 54, 100, 180]
   };
