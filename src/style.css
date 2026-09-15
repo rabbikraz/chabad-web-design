@@ -5081,3 +5081,11 @@ html.sb-sukkot, html.sb-sukkot body, html.sb-sukkot #BodyContainer, html.sb-sukk
 html.sb-sukkot #co_content_container, html.sb-sukkot .co_content_container, html.sb-sukkot #cco_body, html.sb-sukkot .content-area-parent, html.sb-sukkot #ContentBody, html.sb-sukkot #co_body_container, html.sb-sukkot .co_body.article-body, html.sb-sukkot article.content { overflow-x: hidden !important; }
 html.sb-sukkot #sb-skl, html.sb-sukkot #sb-sks, html.sb-sukkot #sb-skm { width: auto !important; max-width: 100% !important; margin-left: auto !important; margin-right: auto !important; box-sizing: border-box; }
 @media (min-width: 721px) { html.sb-sukkot #sb-skl, html.sb-sukkot #sb-sks { max-width: 1040px !important; } html.sb-sukkot #sb-skm { max-width: 680px !important; } }
+
+/* ROOT CAUSE of the off-center Sukkot pages on Android (2026-09-15): a nowrap
+   date line in the landing dates strip was a few px wider than the column in
+   Android fonts, so the browser zoomed the whole page out to fit it. Nothing
+   on a Sukkot page may refuse to wrap except short times and prices. */
+html.sb-sukkot #sb-skl .skl-date span, html.sb-sukkot #sb-skm .skm-sect-h .skm-sect-dates { white-space: normal !important; }
+html.sb-sukkot #sb-skl, html.sb-sukkot #sb-sks, html.sb-sukkot #sb-skm { overflow-wrap: anywhere; }
+html.sb-sukkot #sb-skl *, html.sb-sukkot #sb-sks *, html.sb-sukkot #sb-skm * { min-width: 0; }
