@@ -5061,3 +5061,9 @@ html.sb-sukkot #sb-sks .sks-card.sks-past .sks-lulav { display: none; }
 html.sb-sukkot #sb-sks .sks-past-badge { position: absolute; right: 20px; top: 16px; background: #F5B56A; color: #14383B; border-radius: 999px; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; font-weight: 700; padding: 5px 12px; }
 html.sb-sukkot #sb-sks .sks-card.sk-schach .sks-past-badge { top: 86px; }
 @media (max-width: 720px) { html.sb-sukkot #sb-sks .sks-past-badge { position: static; display: inline-block; margin: 0 0 10px; } }
+
+/* Sukkot schedule: the lulav mark hangs beside the Sukkot title instead of
+   squeezing the day columns (Leibel: the text moving over was gross) */
+html.sb-sukkot #sb-sks .sks-lulav { right: 26px; top: 62px; bottom: auto; width: 96px; height: 122px; }
+html.sb-sukkot #sb-sks .sks-has-lulav .sks-days { padding-right: 0; }
+@media (min-width: 721px) { html.sb-sukkot #sb-sks .sks-has-lulav .sks-h, html.sb-sukkot #sb-sks .sks-has-lulav .sks-eyebrow { padding-right: 130px; } }
