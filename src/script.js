@@ -3880,31 +3880,49 @@
     }
   }
 
-  /* Sukkot pages on phones: Leibel's phone showed the content column sitting
-     left of center (the fixed header stays centered, the column does not).
-     Emulated phones do not reproduce it, so measure the real viewport and
-     force symmetric 16px gutters on the Sukkot containers. */
+  /* Sukkot pages on phones: Leibel's phone showed the content column off
+     center (fixed header centered, column not), then clipped on the right
+     once a layout-width shim was applied, i.e. the LAYOUT viewport and the
+     VISUAL viewport disagree on his device. Emulated phones do not
+     reproduce it. So: size and place the Sukkot containers against the
+     visual viewport (what the screen really shows), re-applying on resize,
+     rotation and viewport changes. ?sbdebug=1 prints the measurements. */
   function fixSukkotGutters() {
     var ids = ['sb-skl', 'sb-sks', 'sb-skm'];
+    var any = false;
+    for (var k = 0; k < ids.length; k++) if (document.getElementById(ids[k])) any = true;
+    if (!any) return;
+    var vv = window.visualViewport;
     function apply() {
-      var vw = document.documentElement.clientWidth;
+      var lw = document.documentElement.clientWidth;
+      var vw = vv ? vv.width : lw;
+      var off = vv ? vv.offsetLeft : 0;
       for (var i = 0; i < ids.length; i++) {
         var el = document.getElementById(ids[i]);
         if (!el) continue;
-        if (vw > 720) { el.style.marginLeft = ''; el.style.width = ''; el.style.maxWidth = ''; continue; }
         el.style.marginLeft = '0px'; el.style.width = ''; el.style.maxWidth = '';
-        var left = el.getBoundingClientRect().left;
+        if (vw > 720) continue;
+        var left = el.getBoundingClientRect().left;       // layout px, relative to the layout viewport
+        var gutter = 16;
         el.style.boxSizing = 'border-box';
-        el.style.width = (vw - 32) + 'px';
+        el.style.width = Math.max(240, Math.round(vw - gutter * 2)) + 'px';
         el.style.maxWidth = 'none';
-        el.style.marginLeft = (16 - left) + 'px';
+        el.style.marginLeft = Math.round(off + gutter - left) + 'px';
+      }
+      if (/sbdebug=1/.test(location.search)) {
+        var d = document.getElementById('sbDbg');
+        if (!d) { d = document.createElement('pre'); d.id = 'sbDbg'; d.style.cssText = 'position:fixed;left:0;bottom:0;z-index:99999;background:#000;color:#0f0;font:11px/1.4 monospace;padding:6px;margin:0;max-width:100%;white-space:pre-wrap;'; document.body.appendChild(d); }
+        var el0 = document.getElementById(ids[0]) || document.getElementById(ids[1]) || document.getElementById(ids[2]);
+        var r = el0.getBoundingClientRect();
+        d.textContent = 'clientW ' + lw + ' innerW ' + window.innerWidth + ' vv ' + (vv ? Math.round(vv.width) + 'x' + Math.round(vv.height) + ' scale ' + vv.scale.toFixed(2) + ' off ' + Math.round(vv.offsetLeft) : 'n/a') + ' screen ' + screen.width + ' dpr ' + window.devicePixelRatio + ' docScrollW ' + document.documentElement.scrollWidth + ' bodyW ' + document.body.getBoundingClientRect().width + ' el L ' + Math.round(r.left) + ' W ' + Math.round(r.width) + ' R ' + Math.round(lw - r.right);
       }
     }
-    if (!document.getElementById('sb-skl') && !document.getElementById('sb-sks') && !document.getElementById('sb-skm')) return;
     apply();
     window.addEventListener('resize', apply);
     window.addEventListener('orientationchange', function () { setTimeout(apply, 150); });
+    if (vv) { vv.addEventListener('resize', apply); vv.addEventListener('scroll', apply); }
     setTimeout(apply, 600);
+    setTimeout(apply, 2000);
   }
 
   var HH_LANDING = '/7472611';
