@@ -3193,13 +3193,15 @@
      and events rail are built. */
   /* ------------------------------------------------------------------
      SUKKOT MEALS PAGE (paste forms/sukkot-meals.html = style + markup only;
-     this is the logic, mirroring forms/hh-meals.html). Two fixed events,
-     each with a one-click "all four meals" mode, posting one reservation per
-     holiday into the same Apps Script tabs the general Meal Form would use:
+     this is the logic). Two fixed events posting one reservation each into
+     the same Apps Script tabs the general Meal Form would use:
      "Sukkot - Sep 25-27, 2026" and
      "Shemini Atzeret / Simchat Torah - Oct 2-4, 2026".
-     Guard: #sb-skm present. Lives in site.js because pasted scripts that
-     load the PayPal SDK hang the ChabadOne editor on Save.
+     Step 1 offers three whole-holiday bundles (all 8 meals / first days /
+     last days: one headcount for every covered meal, tap again to remove)
+     above the individual meal cards. Guard: #sb-skm present. Lives in
+     site.js because pasted scripts that load the PayPal SDK hang the
+     ChabadOne editor on Save.
      ------------------------------------------------------------------ */
   function initSukkotMeals() {
     if (!document.getElementById('sb-skm')) return;
@@ -3214,12 +3216,11 @@
 
     // Each event exactly as the general form describes it (title, eve-of-day-1
     // start, last day end) so the backend builds the same sheet tabs.
-    // allSlot = the shared-headcount card; group = the individual meal cards.
     var EVENTS = {
       sk: {
         title: 'Sukkot', short: 'Sukkot', weekName: 'Sukkot - Sep 25-27, 2026',
         startISO: '2026-09-25', endISO: '2026-09-27',
-        allSlot: '0', allBtn: 'skmAllSk', allCard: 'skmMeal0', group: 'skmSkMeals', section: 'skmSectSk',
+        group: 'skmSkMeals', section: 'skmSectSk',
         cutoff: new Date(2026, 8, 25, 14, 30, 0),
         lockStart: new Date(2026, 8, 25, 18, 50, 0),   // candle lighting 6:55 pm, 5 min early
         lockEnd: new Date(2026, 8, 27, 19, 50, 0),     // Yom Tov ends 7:45 pm, 5 min late
@@ -3230,7 +3231,7 @@
         title: 'Shemini Atzeret / Simchat Torah', short: 'Shemini Atzeret and Simchat Torah',
         weekName: 'Shemini Atzeret / Simchat Torah - Oct 2-4, 2026',
         startISO: '2026-10-02', endISO: '2026-10-04',
-        allSlot: '9', allBtn: 'skmAllSt', allCard: 'skmMeal9', group: 'skmStMeals', section: 'skmSectSt',
+        group: 'skmStMeals', section: 'skmSectSt',
         cutoff: new Date(2026, 9, 2, 14, 30, 0),
         lockStart: new Date(2026, 9, 2, 18, 42, 0),    // candle lighting 6:47 pm
         lockEnd: new Date(2026, 9, 4, 19, 43, 0),      // holiday ends 7:38 pm
@@ -3258,12 +3259,21 @@
       lunch:  { A: 54, S: 36, C: 18 }
     };
 
+    // Whole-holiday bundles: one shared headcount (slot 'B') applied to every
+    // meal of the covered events. Exclusive with each other.
+    var BUNDLES = {
+      E: { name: 'All Sukkot Meals',  evs: ['sk', 'st'], card: 'skmBundleE', line: 'All Sukkot meals (8 meals)' },
+      F: { name: 'The First Days',    evs: ['sk'],       card: 'skmBundleF', line: 'All first-days meals (4 meals)' },
+      L: { name: 'The Last Days',     evs: ['st'],       card: 'skmBundleL', line: 'All last-days meals (4 meals)' }
+    };
+    var BUNDLE_ORDER = ['E', 'F', 'L'];
+
     // ===== STATE =====
     var active = { '1': true };          // first-night dinner pre-selected
+    var bundle = null;                    // 'E' | 'F' | 'L' | null
     var soldOut = {};
     var remaining = {};
     var eventOpen = { sk: true, st: true };
-    var allMode = { sk: false, st: false };
     var discountCodes = [
       { code: 'FREEEE', type: 'percent',      value: 100 },
       { code: 'CHAI',   type: 'cap_per_head', value: 18  }
@@ -3291,15 +3301,72 @@
       el.className = el.className.replace(/\s*skm-hide/g, '') + (on ? '' : ' skm-hide');
       el.style.display = '';
     }
+    function setOn(el, on) {
+      if (!el) return;
+      el.className = el.className.replace(/\s*skm-on/g, '') + (on ? ' skm-on' : '');
+    }
     function esc(s) {
       return String(s).replace(/&/g, amp + 'amp;').replace(/</g, amp + 'lt;').replace(/>/g, amp + 'gt;');
+    }
+
+    // ===== BUNDLES =====
+    function coversEv(key, ev) { return !!key && BUNDLES[key].evs.indexOf(ev) !== -1; }
+    function covered(slot) { var m = mealBy(slot); return !!m && coversEv(bundle, m.ev); }
+    function bundleAvailable(key) {
+      var evs = BUNDLES[key].evs;
+      for (var i = 0; i < evs.length; i++) {
+        if (!eventOpen[evs[i]]) return false;
+        var ms = mealsOf(evs[i]);
+        for (var j = 0; j < ms.length; j++) if (soldOut[ms[j].slot]) return false;
+      }
+      return true;
+    }
+    function bundlePrice(key, tier) {
+      var p = 0, evs = BUNDLES[key].evs;
+      for (var i = 0; i < evs.length; i++) { var ms = mealsOf(evs[i]); for (var j = 0; j < ms.length; j++) p += PRICE[ms[j].kind][tier]; }
+      return p;
+    }
+    function paintBundles() {
+      var any = false;
+      for (var i = 0; i < BUNDLE_ORDER.length; i++) {
+        var key = BUNDLE_ORDER[i], card = byId(BUNDLES[key].card), ok = bundleAvailable(key);
+        show(card, ok);
+        if (ok) any = true;
+        setOn(card, bundle === key);
+      }
+      show(byId('skmBundles'), any);
+      show(byId('skmOr'), any);
+      show(byId('skmBundleBody'), !!bundle);
+      if (bundle) {
+        byId('skmBundleName').innerText = BUNDLES[bundle].name;
+        var lab = { A: 'per person', S: 'per person', C: 'per child' };
+        for (var t in lab) { var el = byId('skmBundlePrice' + t); if (el) el.innerText = '$' + bundlePrice(bundle, t) + ' ' + lab[t] + ', every meal included'; }
+      }
+      // individual groups: hidden while their event is covered by the bundle
+      for (var e = 0; e < EVENT_ORDER.length; e++) {
+        var ev = EVENT_ORDER[e];
+        show(byId(EVENTS[ev].group), eventOpen[ev] && !coversEv(bundle, ev));
+      }
+    }
+    function setBundle(key) {
+      if (key && !bundleAvailable(key)) key = null;
+      if (key === bundle) key = null;                 // tap again = remove
+      bundle = key;
+      if (!bundle) zero('B');
+      else {
+        if (qty('B', 'A') + qty('B', 'S') + qty('B', 'C') === 0) setQty('B', 'A', 1);
+        // covered individual meals are cleared so nothing double-counts later
+        for (var i = 0; i < MEALS.length; i++) if (covered(MEALS[i].slot)) { active[MEALS[i].slot] = false; zero(MEALS[i].slot); paintMeal(MEALS[i].slot); }
+      }
+      paintBundles();
+      updateTotals();
     }
 
     // ===== MEAL TOGGLES / QUANTITIES (event delegation: no inline handlers) =====
     function paintMeal(slot) {
       var card = byId('skmMeal' + slot);
       if (!card) return;
-      card.className = card.className.replace(/\s*skm-on/g, '') + (active[slot] ? ' skm-on' : '');
+      setOn(card, !!active[slot]);
       if (soldOut[slot]) {
         if (card.className.indexOf('skm-soldout') === -1) card.className += ' skm-soldout';
         var priceEl = byId('skmPrice' + slot);
@@ -3316,19 +3383,6 @@
       paintMeal(slot);
       updateTotals();
     }
-    function setAllMode(ev, on) {
-      var E = EVENTS[ev];
-      allMode[ev] = !!on;
-      show(byId(E.allCard), allMode[ev]);
-      show(byId(E.group), !allMode[ev]);
-      show(byId(E.allBtn), !allMode[ev]);
-      if (allMode[ev]) {
-        if (qty(E.allSlot, 'A') + qty(E.allSlot, 'S') + qty(E.allSlot, 'C') === 0) setQty(E.allSlot, 'A', 1);
-      } else {
-        zero(E.allSlot);
-      }
-      updateTotals();
-    }
 
     byId('sb-skm').addEventListener('click', function (e) {
       var t = e.target;
@@ -3336,10 +3390,9 @@
         if (t.getAttribute) {
           var tog = t.getAttribute('data-toggle');
           if (tog) { toggleMeal(tog); return; }
-          var all = t.getAttribute('data-all');
-          if (all) { e.preventDefault(); setAllMode(all, true); return; }
-          var back = t.getAttribute('data-back');
-          if (back) { e.preventDefault(); setAllMode(back, false); return; }
+          var bk = t.getAttribute('data-bundle');
+          if (bk) { setBundle(bk); return; }
+          if (t.getAttribute('data-bundle-off')) { e.preventDefault(); setBundle(null); return; }
           var q = t.getAttribute('data-qty');
           if (q) {
             e.preventDefault();
@@ -3374,14 +3427,10 @@
     function isOn(slot) {
       var m = mealBy(slot);
       if (!m) return false;
-      if (allMode[m.ev]) return eventOpen[m.ev];
+      if (covered(slot)) return eventOpen[m.ev];
       return !!active[slot];
     }
-    function cnt(slot, tier) {
-      var m = mealBy(slot);
-      if (m && allMode[m.ev]) return qty(EVENTS[m.ev].allSlot, tier);
-      return qty(slot, tier);
-    }
+    function cnt(slot, tier) { return covered(slot) ? qty('B', tier) : qty(slot, tier); }
     function slotCost(slot) {
       if (!isOn(slot)) return 0;
       var p = PRICE[mealBy(slot).kind];
@@ -3393,6 +3442,13 @@
     }
     function eventCost(ev) { var g = 0, ms = mealsOf(ev); for (var i = 0; i < ms.length; i++) g += slotCost(ms[i].slot); return g; }
     function eventHeads(ev) { var h = 0, ms = mealsOf(ev); for (var i = 0; i < ms.length; i++) h += slotHeads(ms[i].slot); return h; }
+    function bundleHeads() { return bundle ? qty('B', 'A') + qty('B', 'S') + qty('B', 'C') : 0; }
+    function bundleCost() {
+      var g = 0;
+      if (!bundle) return 0;
+      for (var i = 0; i < MEALS.length; i++) if (covered(MEALS[i].slot)) g += slotCost(MEALS[i].slot);
+      return g;
+    }
     function partySize() {
       var m = 0;
       for (var i = 0; i < MEALS.length; i++) { var h = slotHeads(MEALS[i].slot); if (h > m) m = h; }
@@ -3418,15 +3474,12 @@
     function updateTotals(keepMsg) {
       if (!keepMsg) clearValidationError();
       var lines = '';
-      for (var e = 0; e < EVENT_ORDER.length; e++) {
-        var ev = EVENT_ORDER[e];
-        if (allMode[ev] && eventHeads(ev) > 0) {
-          lines += '<div class="skm-sumline"><span>All ' + esc(EVENTS[ev].short) + ' meals × ' + slotHeads(mealsOf(ev)[0].slot) + '</span><span>$' + eventCost(ev) + '</span></div>';
-        }
+      if (bundle && bundleHeads() > 0) {
+        lines += '<div class="skm-sumline"><span>' + esc(BUNDLES[bundle].line) + ' × ' + bundleHeads() + '</span><span>$' + bundleCost() + '</span></div>';
       }
       for (var i = 0; i < MEALS.length; i++) {
         var m = MEALS[i];
-        if (allMode[m.ev]) continue;
+        if (covered(m.slot)) continue;
         if (!isOn(m.slot)) continue;
         var heads = slotHeads(m.slot);
         lines += '<div class="skm-sumline"><span>' + esc(m.name) + (heads ? ' × ' + heads : '') + '</span><span>$' + slotCost(m.slot) + '</span></div>';
@@ -3513,6 +3566,7 @@
         .then(function (r) { return r.json(); })
         .then(function (data) {
           if (!data || !Array.isArray(data.caps)) return;
+          var changed = false;
           for (var i = 0; i < data.caps.length; i++) {
             var c = data.caps[i];
             var ev = null;
@@ -3529,15 +3583,16 @@
               var rem = cap - (counts[key] || 0);
               remaining[ms[j].slot] = rem > 0 ? rem : 0;
               if (rem <= 0) {
-                if (allMode[ev]) setAllMode(ev, false);
-                show(byId(EVENTS[ev].allBtn), false);
                 soldOut[ms[j].slot] = true;
                 active[ms[j].slot] = false;
                 zero(ms[j].slot);
+                changed = true;
               }
               paintMeal(ms[j].slot);
             }
           }
+          if (changed && bundle && !bundleAvailable(bundle)) { bundle = null; zero('B'); }
+          paintBundles();
           updateTotals(true);
         })
         .catch(function (err) { console.error('Could not load capacity caps:', err); });
@@ -3546,6 +3601,7 @@
     // ===== VALIDATION (no form element: the CMS editor mangles them) =====
     function validateMeals() {
       var anyActive = false;
+      if (bundle && bundleHeads() === 0) return 'Set how many people are coming for ' + BUNDLES[bundle].name + ' (Adult, Subsidized or Child).';
       for (var i = 0; i < MEALS.length; i++) {
         var m = MEALS[i];
         if (!isOn(m.slot)) continue;
@@ -3715,7 +3771,7 @@
       eventOpen[ev] = false;
       var ms = mealsOf(ev);
       for (var i = 0; i < ms.length; i++) { active[ms[i].slot] = false; zero(ms[i].slot); paintMeal(ms[i].slot); }
-      if (allMode[ev]) setAllMode(ev, false);
+      if (bundle && !bundleAvailable(bundle)) { bundle = null; zero('B'); }
       show(byId(E.section), false);
     }
     // Returns false when nothing can be booked (form hidden), true otherwise.
@@ -3749,7 +3805,6 @@
       if (closedNames.length) {
         byId('skmCutoff').innerHTML = 'Online reservations for ' + esc(closedNames.join(' and ')) + ' are closed (call ' + PHONE_LINK + '). You can still reserve the remaining holiday meals below.';
         show(byId('skmCutoff'), true);
-        // Bring the still-open section to the top of the card.
         var firstOpen = null;
         for (var f = 0; f < EVENT_ORDER.length; f++) if (eventOpen[EVENT_ORDER[f]]) { firstOpen = byId(EVENTS[EVENT_ORDER[f]].section); break; }
         if (firstOpen) { firstOpen.style.marginTop = '0'; firstOpen.style.paddingTop = '0'; firstOpen.style.borderTop = 'none'; }
@@ -3759,9 +3814,11 @@
     }
 
     // ===== INIT =====
-    for (var p = 0; p <= 9; p++) paintMeal(String(p));
+    for (var i = 0; i < MEALS.length; i++) paintMeal(MEALS[i].slot);
+    paintBundles();
     updateTotals();
     if (applyTiming()) {
+      paintBundles();
       updateTotals();
       loadDiscountCodes();
       loadCaps();
