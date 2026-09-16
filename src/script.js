@@ -413,10 +413,20 @@
       });
       holidayDate = hd.length ? hd[hd.length - 1] : '';
     }
+    // Rows are chronological and may cover two events (e.g. Shabbat, then Yom
+    // Kippur two days later). Show ONE coherent event: the first "Light" row and
+    // the first "Ends" row that follows it - never the last "Ends" on the list.
+    var lightIdx = -1;
+    rows.some(function (r, i) { if (/^light/i.test(r.label)) { lightIdx = i; return true; } return false; });
+    if (lightIdx === -1 && rows.length) lightIdx = 0;
+    var endsRow = null;
+    for (var ei = lightIdx + 1; ei < rows.length; ei++) {
+      if (/ends/i.test(rows[ei].label)) { endsRow = rows[ei]; break; }
+    }
     return {
       rows: rows,
-      light: rows.filter(function (r) { return /^light/i.test(r.label); })[0] || rows[0] || null,
-      ends: rows.filter(function (r) { return /ends/i.test(r.label); }).pop() || null,
+      light: lightIdx >= 0 ? rows[lightIdx] : null,
+      ends: endsRow,
       parsha: parshaA ? { name: txt(parshaA), href: parshaA.getAttribute('href') } : null,
       holiday: holidayA ? { name: txt(holidayA), href: holidayA.getAttribute('href'), date: holidayDate } : null,
       calendarHref: (rows[0] && rows[0].href) || '/calendar/candlelighting.htm'
@@ -681,8 +691,12 @@
         '</span><span class="sb-time-label">' + esc(candles.ends.label) + (candles.ends.date ? ', ' + esc(candles.ends.date) : '') + '</span></div>';
     }
     if (timesHtml) {
+      // Eyebrow follows the rows: plain Shabbat, a holiday, or Shabbat running into Yom Tov
+      var lightIsHoliday = !!(candles.light && /holiday/i.test(candles.light.label));
+      var endsIsHoliday = !!(candles.ends && /holiday/i.test(candles.ends.label));
+      var eyebrow = lightIsHoliday ? 'This Yom Tov' : (endsIsHoliday ? 'Shabbat & Yom Tov' : 'This Shabbat');
       cols.push(
-        '<div class="sb-shabbat-col"><div class="sb-eyebrow">This Shabbat</div>' + timesHtml +
+        '<div class="sb-shabbat-col"><div class="sb-eyebrow">' + eyebrow + '</div>' + timesHtml +
         '<p style="margin-top:14px"><a class="sb-link-caps" href="' + esc(candles.calendarHref) + '">All candle-lighting times →</a></p></div>'
       );
     }
