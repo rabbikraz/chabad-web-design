@@ -3866,6 +3866,28 @@
       var sub = qs[q].querySelector('.form-sub-label'), lab = qs[q].querySelector('.form-label-left, .form-label-top, .form-label-right');
       if (sub && lab) lab.setAttribute('data-sub', (sub.textContent || '').trim());
     }
+    /* PICKUP ONLY card (Leibel 2026-09-16: "ppl need to know it's pickup only"):
+       lift the "All sets are picked up ..." sentence out of the intro text into
+       its own bold apricot card, inserted as a full-width row right after the
+       intro. Works whether the sentence has its own <p> or shares one. */
+    var intro = f.querySelector('li.form-line .form-html');
+    if (intro && !f.querySelector('.sk-pickup')) {
+      var ps = intro.querySelectorAll('p'), pk = null;
+      for (var p = 0; p < ps.length; p++) if (/picked up/i.test(ps[p].textContent || '')) { pk = ps[p]; break; }
+      if (pk) {
+        var t = (pk.textContent || '').replace(/\s+/g, ' ').trim();
+        var at = t.search(/All sets are picked up|picked up/i);
+        var before = at > 0 ? t.slice(0, at).trim() : '';
+        var body = (at > 0 ? t.slice(at) : t).trim();
+        if (before) pk.textContent = before; else pk.parentNode.removeChild(pk);
+        var li = document.createElement('li');
+        li.className = 'form-line sk-pickup-line';
+        li.innerHTML = '<div class="sk-pickup"><span class="sk-pickup-pin">\u00a0</span><div class="sk-pickup-text"><span class="sk-pickup-eyebrow">Pickup only \u00b7 no delivery</span><strong></strong></div></div>';
+        li.querySelector('strong').textContent = body;
+        var introLi = intro.closest ? intro.closest('li') : intro.parentNode.parentNode;
+        introLi.parentNode.insertBefore(li, introLi.nextSibling);
+      }
+    }
     var subs = f.querySelectorAll('li.form-line .form-submit-button');
     for (var i = 1; i < subs.length; i++) {
       var li = subs[i].closest ? subs[i].closest('li.form-line') : null;

@@ -5032,6 +5032,26 @@ html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form .form-all.s
 }
 @media (max-width: 700px) { html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form .form-all.sk-schach::after { display: none; } }
 
+/* lulav form: PICKUP ONLY card (built by initLulavForm from the intro's
+   "All sets are picked up ..." sentence). Apricot on ink so nobody misses it. */
+html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form li.form-line.sk-pickup-line { padding: 4px 0 14px !important; }
+html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form .sk-pickup { display: flex; align-items: center; gap: 14px; background: #F5B56A; color: #14383B; border: 2px solid #E9A24E; border-radius: 14px; padding: 14px 18px; box-shadow: 0 6px 18px rgba(0, 0, 0, .18); }
+html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form .sk-pickup-pin { flex: none; width: 44px; height: 44px; border-radius: 999px; background: #14383B url("data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%2024%2024%27%3E%3Cpath%20fill=%27%23F5B56A%27%20d=%27M12%202C8.1%202%205%205.1%205%209c0%205.2%207%2013%207%2013s7-7.8%207-13c0-3.9-3.1-7-7-7zm0%209.5A2.5%202.5%200%201%201%2012%206.5a2.5%202.5%200%200%201%200%205z%27/%3E%3C/svg%3E") center / 24px 24px no-repeat; }
+html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form .sk-pickup-text { min-width: 0; }
+html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form .sk-pickup-eyebrow { display: block; font-size: 11.5px; letter-spacing: .2em; text-transform: uppercase; font-weight: 700; color: #14383B; opacity: .8; margin: 0 0 3px; }
+html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form .sk-pickup strong { display: block; font-size: 16.5px; line-height: 1.4; font-weight: 700; color: #14383B; }
+@media (max-width: 480px) { html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form .sk-pickup { padding: 12px 14px; gap: 12px; } html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form .sk-pickup-pin { width: 38px; height: 38px; background-size: 20px 20px; } html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form .sk-pickup strong { font-size: 15.5px; } }
+
+/* lulav form: CHECKBOX groups (Leibel's own "I'd like:" field) as stacked cream
+   choice cards, same look as the radio cards and the set cards */
+html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form .form-checkbox-item { display: flex !important; align-items: center; gap: 12px; width: auto !important; max-width: none !important; float: none !important; background: #FFF4E3 !important; border: 2px solid #F3D9B0 !important; border-radius: 12px !important; padding: 13px 16px !important; margin: 0 0 10px !important; color: #14383B !important; cursor: pointer; box-sizing: border-box; }
+html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form .form-checkbox-item:hover { border-color: #E9C48F !important; }
+html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form .form-checkbox-item.active-option, html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form .form-checkbox-item:has(input:checked) { border-color: #E9A24E !important; background: #FFF9EE !important; box-shadow: 0 0 0 1px #E9A24E; }
+html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form .form-checkbox-item label, html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form .form-checkbox-item label span { color: #14383B !important; font-size: 16px; font-weight: 600; padding: 0; margin: 0; flex: 1 1 auto; cursor: pointer; line-height: 1.35; }
+html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form .form-checkbox-item input.form-checkbox { accent-color: #1E5A5E; width: 22px !important; height: 22px !important; min-height: 0 !important; margin: 0 !important; flex: none; display: inline-block !important; opacity: 1 !important; position: static !important; border-radius: 6px; }
+html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form .form-checkbox-item > *:not(label):not(input) { display: none !important; }
+html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form li.form-line:has(.form-checkbox-item) .form-label-left { margin: 0 0 10px !important; }
+
 /* Sukkot meals page: tighter individual meal cards (site-side so no re-paste) */
 html.sb-sukkot #sb-skm .skm-sect .skm-meal { margin: 0 0 8px; border-radius: 12px; }
 html.sb-sukkot #sb-skm .skm-sect .skm-meal-head { padding: 10px 14px; gap: 12px; }

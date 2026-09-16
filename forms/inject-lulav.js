@@ -110,7 +110,8 @@
   }
 
   var INTRO_HTML = '<p>Hand-selected, kosher Lulav &amp; Etrog sets for Sukkot 5787. Every set includes a lulav, etrog, three hadassim and two aravot, checked by the Rabbi, with a holder for the lulav.</p>' +
-    '<p>Choose how many of each set you would like; your total is calculated automatically. All sets are picked up at Chabad in South Beach, 320 Meridian Ave.</p>' +
+    '<p>Choose how many of each set you would like; your total is calculated automatically.</p>' +
+    '<p>All sets are picked up at Chabad in South Beach, 320 Meridian Ave., on Thursday, Sept. 24 or Friday, Sept. 25.</p>' +   /* site.js lifts this sentence into the bold PICKUP ONLY card */
     '<p>Please order by ' + ORDER_BY + '. Sukkot begins ' + SUKKOT_STARTS + '.</p>';
 
   /* ================= sets ================= */
