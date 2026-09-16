@@ -3888,6 +3888,49 @@
         introLi.parentNode.insertBefore(li, introLi.nextSibling);
       }
     }
+    /* Checkbox groups with a builder "max selections" limit (data-maxselection):
+       the platform only WARNS after the fact ("The maximum number of selections
+       allowed is 1") and still lets every box be ticked. Enforce it here: when
+       the limit is 1 the group behaves like radios (ticking one clears the
+       others); for a higher limit the oldest tick is dropped. Runs in the
+       capture phase so the platform's validator already sees a legal state. */
+    var groups = f.querySelectorAll('li.form-line');
+    for (var g = 0; g < groups.length; g++) {
+      (function (li) {
+        var first = li.querySelector('input.form-checkbox[data-maxselection]');
+        if (!first) return;
+        var max = parseInt(first.getAttribute('data-maxselection'), 10);
+        if (!(max > 0)) return;
+        li.classList.add(max === 1 ? 'sk-cb-single' : 'sk-cb-limited');
+        var order = [];
+        function boxes() { return Array.prototype.slice.call(li.querySelectorAll('input.form-checkbox')); }
+        function clearError() {
+          var errs = li.querySelectorAll('.form-error-message, .form-validation-error');
+          for (var e = 0; e < errs.length; e++) {
+            if (errs[e].classList.contains('form-error-message')) { if (errs[e].parentNode) errs[e].parentNode.removeChild(errs[e]); }
+            else errs[e].classList.remove('form-validation-error');
+          }
+          li.classList.remove('form-line-error');
+        }
+        li.addEventListener('click', function (ev) {
+          var t = ev.target;
+          if (!t || !t.classList || !t.classList.contains('form-checkbox')) return;
+          if (!t.checked) { order = order.filter(function (x) { return x !== t; }); return; }
+          order = order.filter(function (x) { return x !== t; }); order.push(t);
+          var on = boxes().filter(function (b) { return b.checked; });
+          if (on.length <= max) return;
+          var victims = max === 1 ? on.filter(function (b) { return b !== t; }) : order.slice(0, on.length - max);
+          for (var v = 0; v < victims.length; v++) {
+            victims[v].checked = false;
+            order = order.filter(function (x) { return x !== victims[v]; });
+            var item = victims[v].closest ? victims[v].closest('.form-checkbox-item') : null;
+            if (item) item.classList.remove('active-option');
+          }
+          setTimeout(clearError, 0);
+          setTimeout(clearError, 250);
+        }, true);
+      })(groups[g]);
+    }
     var subs = f.querySelectorAll('li.form-line .form-submit-button');
     for (var i = 1; i < subs.length; i++) {
       var li = subs[i].closest ? subs[i].closest('li.form-line') : null;
