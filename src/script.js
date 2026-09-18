@@ -3853,11 +3853,66 @@
      roof class and hides the platform's duplicate Submit row (the builder's
      own "Order My Set" button is kept, both post the same form).
      ------------------------------------------------------------------ */
+  /* LULAV FORM GATE (Leibel 2026-09-17: "we are almost out of sets, please call
+     or message Rabbi Mann before proceeding"): a modal over the form page that
+     only an explicit "I did" click dismisses (remembered for the tab session).
+     Turn off by setting LULAV_GATE_ON = false (or window.SB_LULAV_GATE = false
+     on the page). Text lives here, not in the CMS. */
+  var LULAV_GATE_ON = true;
+  var LULAV_GATE = {
+    eyebrow: 'Almost sold out',
+    title: 'Please check with us before you order',
+    text: 'We are almost out of Lulav & Etrog sets. Please call or message Rabbi Mann to make sure a set is still available before placing your order.',
+    phone: '786-920-2302',
+    tel: '+17869202302',
+    wa: 'https://wa.me/17869202302',
+    email: 'rabbi@chabadinsouthbeach.com',
+    ok: 'I did, take me to the form'
+  };
+  function showLulavGate() {
+    if (!LULAV_GATE_ON || window.SB_LULAV_GATE === false) return;
+    try { if (sessionStorage.getItem('sb-lulav-gate') === '1') return; } catch (e) { }
+    if (document.querySelector('.sk-gate')) return;
+    var o = document.createElement('div');
+    o.className = 'sk-gate';
+    o.setAttribute('role', 'dialog');
+    o.setAttribute('aria-modal', 'true');
+    o.setAttribute('aria-labelledby', 'sk-gate-title');
+    o.innerHTML =
+      '<div class="sk-gate-card">' +
+        '<span class="sk-gate-eyebrow"></span>' +
+        '<h2 class="sk-gate-title" id="sk-gate-title"></h2>' +
+        '<p class="sk-gate-text"></p>' +
+        '<div class="sk-gate-contacts">' +
+          '<a class="sk-gate-chip sk-gate-call"><span class="sk-gate-chip-l">Call or text</span><b></b></a>' +
+          '<a class="sk-gate-chip sk-gate-wa" target="_blank" rel="noopener"><span class="sk-gate-chip-l">WhatsApp</span><b></b></a>' +
+          '<a class="sk-gate-chip sk-gate-mail"><span class="sk-gate-chip-l">Email</span><b></b></a>' +
+        '</div>' +
+        '<button type="button" class="sk-gate-ok"></button>' +
+      '</div>';
+    o.querySelector('.sk-gate-eyebrow').textContent = LULAV_GATE.eyebrow;
+    o.querySelector('.sk-gate-title').textContent = LULAV_GATE.title;
+    o.querySelector('.sk-gate-text').textContent = LULAV_GATE.text;
+    var call = o.querySelector('.sk-gate-call'); call.href = 'tel:' + LULAV_GATE.tel; call.querySelector('b').textContent = LULAV_GATE.phone;
+    var wa = o.querySelector('.sk-gate-wa'); wa.href = LULAV_GATE.wa; wa.querySelector('b').textContent = LULAV_GATE.phone;
+    var mail = o.querySelector('.sk-gate-mail'); mail.href = 'mailto:' + LULAV_GATE.email; mail.querySelector('b').textContent = LULAV_GATE.email;
+    var ok = o.querySelector('.sk-gate-ok'); ok.textContent = LULAV_GATE.ok;
+    ok.addEventListener('click', function () {
+      try { sessionStorage.setItem('sb-lulav-gate', '1'); } catch (e) { }
+      document.documentElement.classList.remove('sk-gate-open');
+      if (o.parentNode) o.parentNode.removeChild(o);
+    });
+    document.body.appendChild(o);
+    document.documentElement.classList.add('sk-gate-open');
+    setTimeout(function () { try { ok.focus(); } catch (e) { } }, 50);
+  }
+
   function initLulavForm() {
     if (!document.documentElement.classList.contains('sb-sukkot')) return;
     var f = document.querySelector('form.userform-form');
     if (!f) return;
     f.classList.add('sk-lulav');
+    showLulavGate();
     var all = f.querySelector('.form-all');
     if (all) all.classList.add('sk-schach');
     var qs = f.querySelectorAll('li.form-line');

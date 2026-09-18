@@ -5056,6 +5056,24 @@ html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form li.sk-cb-si
 html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form .form-checkbox-item > *:not(label):not(input) { display: none !important; }
 html.sb-sukkot:not(#sbx):not(#sbx2) body.cco_body form.userform-form li.form-line:has(.form-checkbox-item) .form-label-left { margin: 0 0 10px !important; }
 
+/* lulav form: SOLD-OUT GATE modal (built by showLulavGate in site.js) */
+html.sk-gate-open, html.sk-gate-open body { overflow: hidden !important; }
+html.sb-sukkot .sk-gate { position: fixed; inset: 0; z-index: 2147483000; display: flex; align-items: center; justify-content: center; padding: 20px; background: rgba(12, 42, 45, .78); -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px); font-family: Arial, Helvetica, sans-serif; box-sizing: border-box; }
+html.sb-sukkot .sk-gate * { box-sizing: border-box; }
+html.sb-sukkot .sk-gate-card { width: 100%; max-width: 520px; max-height: 100%; overflow: auto; background: #FFF4E3; color: #14383B; border-radius: 20px; border-top: 6px solid #F5B56A; padding: 28px 28px 26px; box-shadow: 0 24px 60px rgba(0, 0, 0, .4); text-align: center; }
+html.sb-sukkot .sk-gate-eyebrow { display: inline-block; background: #F5B56A; color: #14383B; border-radius: 999px; font-size: 11.5px; letter-spacing: .2em; text-transform: uppercase; font-weight: 700; padding: 6px 14px; margin: 0 0 14px; }
+html.sb-sukkot .sk-gate-title { font-family: Georgia, "Times New Roman", serif; font-weight: 700; font-size: 26px; line-height: 1.2; color: #14383B; margin: 0 0 12px; }
+html.sb-sukkot .sk-gate-text { font-size: 16px; line-height: 1.55; color: #2F5658; margin: 0 0 18px; }
+html.sb-sukkot .sk-gate-contacts { display: flex; flex-direction: column; gap: 8px; margin: 0 0 18px; }
+html.sb-sukkot .sk-gate-chip { display: flex; align-items: center; justify-content: space-between; gap: 12px; background: #FFFFFF; border: 2px solid #F3D9B0; border-radius: 12px; padding: 11px 16px; color: #14383B !important; text-decoration: none !important; font-size: 15px; }
+html.sb-sukkot .sk-gate-chip:hover { border-color: #E9A24E; background: #FFF9EE; }
+html.sb-sukkot .sk-gate-chip-l { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; font-weight: 700; color: #5C7275; }
+html.sb-sukkot .sk-gate-chip b { font-weight: 700; color: #1E5A5E; overflow-wrap: anywhere; text-align: right; }
+html.sb-sukkot .sk-gate-ok { display: block; width: 100%; border: none; border-radius: 12px; background: #1E5A5E; color: #FFF4E3; font-size: 16px; font-weight: 700; padding: 15px 18px; cursor: pointer; font-family: inherit; }
+html.sb-sukkot .sk-gate-ok:hover { background: #24686C; }
+html.sb-sukkot .sk-gate-ok:focus-visible { outline: 3px solid #F5B56A; outline-offset: 2px; }
+@media (max-width: 480px) { html.sb-sukkot .sk-gate { padding: 12px; align-items: flex-end; } html.sb-sukkot .sk-gate-card { padding: 22px 18px 20px; border-radius: 18px; } html.sb-sukkot .sk-gate-title { font-size: 22px; } html.sb-sukkot .sk-gate-text { font-size: 15px; } }
+
 /* Sukkot meals page: tighter individual meal cards (site-side so no re-paste) */
 html.sb-sukkot #sb-skm .skm-sect .skm-meal { margin: 0 0 8px; border-radius: 12px; }
 html.sb-sukkot #sb-skm .skm-sect .skm-meal-head { padding: 10px 14px; gap: 12px; }
