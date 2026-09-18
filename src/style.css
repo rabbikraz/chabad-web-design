@@ -750,6 +750,11 @@ body.cco_body #tabContentMain .co_menu_item.hover span.parent a {
   background: var(--sb-accent-100);
   color: var(--sb-text);
 }
+/* The tiered "Tourist Info" label wraps "Info" in a span; the CMS colours
+   "a span" #333 while the item is open (.hover), which showed "Info" dark on
+   the teal drawer. Nested label spans always take the link colour. */
+body.cco_body #tabContentMain .co_menu_item span.parent a span,
+body.cco_body #tabContentMain .co_menu_item.hover.arrow span.parent a span { color: inherit !important; }
 /* chevron on items with submenus — must out-rank the blanket pseudo reset */
 body.cco_body #header #tabContentMain .co_menu_item.multi_level span.parent a:after {
   content: "" !important;
@@ -1192,7 +1197,15 @@ body.cco_body #tabContentMain .co_menu_item.donate_link span.parent a:hover {
     gap: 18px;
     padding: 22px 0 0;
     font-size: 15.5px;
+    /* the CMS pins this block position:fixed; bottom:31px, so About / Contact
+       floated over whatever menu item scrolled under them (seen over "High
+       Holidays" with Tourist Info expanded). Keep it in the flow. */
+    position: static !important;
+    width: auto !important;
+    text-align: left !important;
+    z-index: auto !important;
   }
+  .mobile-menu-bottom-links > a:not(:first-child):before { content: none !important; margin: 0 !important; }
   .mobile-menu-bottom-links a { color: rgba(251, 245, 233, .75) !important; }
   .mobile-menu-bottom-links a:hover { color: var(--sb-accent-300) !important; }
   .mobile-menu-bottom-links a[href="/search"],
