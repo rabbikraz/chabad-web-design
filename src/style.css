@@ -3216,6 +3216,23 @@ div#confirm-wrapper::after { content: none !important; display: none !important;
   .frequency-toggle-wrapper .frequency-toggle { width: 100%; max-width: 320px; }
   .frequency-toggle-wrapper .frequency-toggle label { font-size: 15.5px; padding: 12px 0; }
   #donate-wrapper #donate .monthly-note { font-size: 14.5px; padding: 10px 0 2px; }
+
+  /* thank-you / receipt screen: the template's phone rule sets the card to
+     width:100% on top of our side margins (pushed it off-screen right), and
+     receipt rows are a fixed 170px label + 70% value, which long emails
+     overflow. Let the card size to the gutter and the value column wrap. */
+  .body_wrapper.co_body:has(#confirm-wrapper) { display: block !important; }
+  #confirm-wrapper, #confirm-wrapper #confirm { max-width: 100% !important; min-width: 0 !important; }
+  #confirm-wrapper #confirm {
+    width: auto !important;
+    height: auto;
+    padding: 26px 18px 10px;
+  }
+  #confirm-wrapper #confirm h1 { font-size: 26px; line-height: 1.25; margin: 6px 0 18px; }
+  #confirm-wrapper #confirm main .receipt { margin: 20px 0 22px; font-size: 15.5px; }
+  #confirm-wrapper #confirm main .receipt .row { flex-direction: row; gap: 10px; padding: 8px 4px; }
+  #confirm-wrapper #confirm main .receipt label { flex: 0 0 38%; width: auto; margin: 0; }
+  #confirm-wrapper #confirm main .receipt .row .info { flex: 1 1 0; width: auto; min-width: 0; overflow-wrap: anywhere; }
 }
 
 /* --------------------------------------------------------------------------
