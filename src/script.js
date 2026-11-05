@@ -79,11 +79,14 @@
      a line followed by "- item" lines becomes a heading + bullet list.
      font: a Google Fonts family string loaded only on that page.
      ------------------------------------------------------------------ */
-  var PAGE_THEMES = window.SB_PAGE_THEMES || {
+  var PAGE_THEMES = {
     // Men's Club "Wisdom & Whiskey" (flyer: sage, blush display type)
     '24234': { accent: '#70766B', accentDark: '#4A5243', band: '#3E4437',
                soft: '#ECEAE2', skin: 'sage', font: 'Rozha+One' }
   };
+  // the live header code box defines window.SB_PAGE_THEMES (23305, 23338...):
+  // merge it over these defaults rather than replacing them
+  (function (o) { for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) PAGE_THEMES[k] = o[k]; })(window.SB_PAGE_THEMES || {});
 
   /* ------------------------------------------------------------------
      HIGH HOLIDAY THEME - burgundy/cream chrome (style.css section 22).
