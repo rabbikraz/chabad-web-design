@@ -82,8 +82,10 @@
   var PAGE_THEMES = {
     // Men's Club "Wisdom & Whiskey" (flyer: sage, blush display type)
     '24234': { accent: '#70766B', accentDark: '#4A5243', band: '#3E4437',
-               soft: '#ECEAE2', skin: 'sage', font: 'Rozha+One' }
+               soft: '#ECEAE2', skin: 'sage', font: 'Rozha+One',
+               flyerIntro: false, flyerNote: false }
   };
+  var FLYER_OPTS = {}; // the matched theme (set by applyPageTheme)
   // the live header code box defines window.SB_PAGE_THEMES (23305, 23338...):
   // merge it over these defaults rather than replacing them
   (function (o) { for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) PAGE_THEMES[k] = o[k]; })(window.SB_PAGE_THEMES || {});
@@ -157,6 +159,7 @@
         r.setProperty('--accent-form-light', t.soft);
       }
       document.body.classList.add('sb-themed-page');
+      FLYER_OPTS = t;
       if (t.skin) document.documentElement.classList.add('sb-skin', 'sb-skin-' + t.skin);
       if (t.font) {
         var fl = document.createElement('link');
@@ -984,7 +987,9 @@
     blocks.forEach(function (b) {
       var bullets = b.slice(1).filter(function (l) { return /^[-•*]\s*/.test(l); });
       if (b.length > 1 && bullets.length === b.length - 1) {
-        sections.push('<div class="sb-flyer-sec"><h3>' + b[0].replace(/:\s*$/, '') + '</h3><ul>' +
+        sections.push('<div class="sb-flyer-sec"><h3>' + b[0].replace(/:\s*$/, '')
+          // flyer-style headings: "Enjoy a full Japanese menu" -> "Japanese menu"
+          .replace(/^enjoy\s+(?:(?:a|an|the|our)\s+)?(?:full\s+)?/i, '') + '</h3><ul>' +
           bullets.map(function (l) { return '<li>' + l.replace(/^[-•*]\s*/, '') + '</li>'; }).join('') +
           '</ul></div>');
       } else {
@@ -992,6 +997,10 @@
       }
     });
     if (!sections.length) return;
+    // theme flags: flyerIntro:false / flyerNote:false drop the paragraphs
+    // before / after the columns on this page only (the CMS text is untouched)
+    if (FLYER_OPTS.flyerIntro === false) intro = [];
+    if (FLYER_OPTS.flyerNote === false) outro = [];
     desc.setAttribute('data-sb-flyer', '1');
     desc.classList.add('sb-flyer');
     desc.innerHTML =

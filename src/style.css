@@ -5696,3 +5696,5 @@ html.sb-skin .sb-band-cell a:hover { color: var(--sb-flyer-head) !important; }
   .sb-flyer .sb-flyer-intro { font-size: 17px; margin-bottom: 28px; }
   .sb-flyer li { font-size: 17px; }
 }
+/* no intro paragraph (theme flyerIntro:false): breathing room under the banner */
+.sb-flyer > .sb-flyer-cols:first-child { padding-top: 24px; }
