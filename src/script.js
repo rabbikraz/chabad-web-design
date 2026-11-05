@@ -73,8 +73,17 @@
                   band: '#2F4436', soft: '#F5EEE3' }
 
      Anything not set falls back to the site palette.
+
+     skin: 'sage' etc. adds html.sb-skin-<name> (style.css section 25) and
+     turns the event description into a flyer panel (buildFlyerDesc):
+     a line followed by "- item" lines becomes a heading + bullet list.
+     font: a Google Fonts family string loaded only on that page.
      ------------------------------------------------------------------ */
-  var PAGE_THEMES = window.SB_PAGE_THEMES || {};
+  var PAGE_THEMES = window.SB_PAGE_THEMES || {
+    // Men's Club "Wisdom & Whiskey" (flyer: sage, blush display type)
+    '24234': { accent: '#70766B', accentDark: '#4A5243', band: '#3E4437',
+               soft: '#ECEAE2', skin: 'sage', font: 'Rozha+One' }
+  };
 
   /* ------------------------------------------------------------------
      HIGH HOLIDAY THEME - burgundy/cream chrome (style.css section 22).
@@ -145,6 +154,13 @@
         r.setProperty('--accent-form-light', t.soft);
       }
       document.body.classList.add('sb-themed-page');
+      if (t.skin) document.documentElement.classList.add('sb-skin', 'sb-skin-' + t.skin);
+      if (t.font) {
+        var fl = document.createElement('link');
+        fl.rel = 'stylesheet';
+        fl.href = 'https://fonts.googleapis.com/css2?family=' + t.font + '&display=swap';
+        document.head.appendChild(fl);
+      }
       break;
     }
   }
@@ -942,6 +958,45 @@
     }
   }
 
+  /* ---------------- flyer-skinned event description ----------------
+     Only on html.sb-skin pages (PAGE_THEMES skin). The CMS description
+     is plain text with <br>s; blank lines split it into blocks. A block
+     whose following lines start with "- " becomes a flyer section
+     (display heading + bullets, laid out in columns); every other block
+     stays a paragraph. The hero banner and this panel join into one
+     flyer-coloured card (style.css section 25). */
+
+  function buildFlyerDesc() {
+    if (!document.documentElement.classList.contains('sb-skin')) return;
+    var desc = $('#RegisterHeader .event_description');
+    if (!desc || desc.getAttribute('data-sb-flyer')) return;
+    var lines = desc.innerHTML.split(/<br\s*\/?>/i).map(function (s) { return s.trim(); });
+    var blocks = [], cur = [];
+    lines.concat(['']).forEach(function (l) {
+      if (l) cur.push(l);
+      else if (cur.length) { blocks.push(cur); cur = []; }
+    });
+    if (!blocks.length) return;
+    var intro = [], sections = [], outro = [];
+    blocks.forEach(function (b) {
+      var bullets = b.slice(1).filter(function (l) { return /^[-•*]\s*/.test(l); });
+      if (b.length > 1 && bullets.length === b.length - 1) {
+        sections.push('<div class="sb-flyer-sec"><h3>' + b[0].replace(/:\s*$/, '') + '</h3><ul>' +
+          bullets.map(function (l) { return '<li>' + l.replace(/^[-•*]\s*/, '') + '</li>'; }).join('') +
+          '</ul></div>');
+      } else {
+        (sections.length ? outro : intro).push('<p>' + b.join('<br>') + '</p>');
+      }
+    });
+    if (!sections.length) return;
+    desc.setAttribute('data-sb-flyer', '1');
+    desc.classList.add('sb-flyer');
+    desc.innerHTML =
+      (intro.length ? '<div class="sb-flyer-intro">' + intro.join('') + '</div>' : '') +
+      '<div class="sb-flyer-cols">' + sections.join('') + '</div>' +
+      (outro.length ? '<div class="sb-flyer-note">' + outro.join('') + '</div>' : '');
+  }
+
   /* event-listing theming + read-more clamp moved to
      src/register-autofill.js (header block) for footer size */
 
@@ -1450,7 +1505,7 @@
      Fields are matched by LABEL, never by id. Styling: style.css 21. */
 
   /* ---------------- membership form: ORIGINAL standalone paste ----------
-     "Membership Form Native.html" (Chabad forms) mounts #membershipApp
+     "Membership Form Native.html" (apps/membership) mounts #membershipApp
      itself and carries its own styling; the page only needs the same
      body flag the builder version gets, so the CMS article title (which
      duplicates the hero) is hidden and the width rules apply. */
@@ -2602,7 +2657,7 @@
 
 
   /* ---------------- Shabbos Meal Payment page (late sign-ups / past Shabbosim) ----------------
-     Paste = "Chabad forms/Late Payment Form.html" (style block + markup ONLY).
+     Paste = "apps/meals/Late Payment Form.html" (style block + markup ONLY).
      The logic lives here because ChabadOne's editor hangs on Save when a
      pasted script creates a <script> element and sets its src (the PayPal SDK
      loader) - bisected 2026-09-07; markup-only pastes save fine.
@@ -4119,6 +4174,7 @@
     safe('hh-links', fixHighHolidayLinks);
     safe('feedback-bar', relocateFeedbackBar);
     safe('event-hero', buildEventHero);
+    safe('flyer-desc', buildFlyerDesc);
     safe('sponsor-tiers', initSponsorTiers);
     safe('donate-payvia', initDonatePayVia);
     safe('hh-seats', initHHSeats);

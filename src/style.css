@@ -5590,3 +5590,109 @@ html:not(#sbb) body.cco_body .ds-related-topics:has(sl-button:not(:defined)) { d
 /* sl-button is defined on the birthday article but has no styles, so it still shows as a stray word */
 html:not(#sbb):has(link[rel="canonical"][href*="/aid/458473/"]) body.cco_body .ds-related-topics { display: none !important; }
 html:not(#sbb) body.cco_body #LocationCoordinateOptionsToggle { background: none !important; }
+
+/* --------------------------------------------------------------------------
+   25. FLYER SKINS (html.sb-skin-<name>, set per event by PAGE_THEMES.skin)
+   The hero banner + description (rebuilt by buildFlyerDesc into intro,
+   heading/bullet columns and a note) join into one flyer-coloured card.
+   sage = Men's Club "Wisdom & Whiskey" (event 24234): sage ground, blush
+   condensed display type, dark olive bold bullets.
+   -------------------------------------------------------------------------- */
+html.sb-skin-sage {
+  --sb-flyer-bg: #70766B;   /* sampled from the event banner */
+  --sb-flyer-head: #E8D2C6;
+  --sb-flyer-ink: #33392D;
+  --sb-flyer-light: #F4E9E1;
+  --sb-flyer-dark: #3E4437;
+  --sb-flyer-font: "Rozha One", "Playfair Display", Georgia, serif;
+}
+html.sb-skin #content h1.article-header__title {
+  font-family: var(--sb-flyer-font);
+  color: var(--sb-flyer-bg);
+  text-transform: uppercase;
+  letter-spacing: -.005em;
+  line-height: 1;
+}
+html.sb-skin .sb-event-hero {
+  margin: 0;
+  border-radius: var(--sb-radius-lg) var(--sb-radius-lg) 0 0;
+  background: var(--sb-flyer-bg);
+  box-shadow: none;
+}
+html.sb-skin #RegisterHeader .event_description.sb-flyer {
+  max-width: none;
+  margin: 0 0 18px;
+  padding: 8px clamp(22px, 5vw, 64px) 48px;
+  background: var(--sb-flyer-bg);
+  border-radius: 0 0 var(--sb-radius-lg) var(--sb-radius-lg);
+  color: var(--sb-flyer-light);
+  text-align: left;
+  font-size: 18px !important;
+  box-shadow: none;
+}
+/* the CMS header box is inset 15px+15px; the flyer card must line up
+   edge-to-edge with the hero above and the info band below */
+html.sb-skin #RegisterHeader:has(.sb-flyer) { margin: 0 !important; padding: 0 !important; }
+.sb-flyer p { margin: 0; }
+.sb-flyer .sb-flyer-intro {
+  text-align: center;
+  max-width: 640px;
+  margin: 0 auto 38px;
+  font-size: 19px;
+  line-height: 1.6;
+  font-weight: 500;
+}
+.sb-flyer .sb-flyer-cols {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 34px clamp(28px, 5vw, 64px);
+}
+.sb-flyer h3 {
+  font-family: var(--sb-flyer-font) !important;
+  color: var(--sb-flyer-head) !important;
+  font-size: clamp(30px, 3.6vw, 44px) !important;
+  font-weight: 400 !important;
+  line-height: 1 !important;
+  text-transform: uppercase;
+  letter-spacing: -.01em;
+  margin: 0 0 16px !important;
+}
+.sb-flyer ul { list-style: none; margin: 0 !important; padding: 0 !important; }
+.sb-flyer li {
+  position: relative;
+  padding: 0 0 0 30px;
+  margin: 0 0 8px;
+  color: var(--sb-flyer-ink);
+  font-weight: 700;
+  font-size: 19px;
+  line-height: 1.4;
+  list-style: none !important;
+  background: none !important;
+}
+.sb-flyer li::before {
+  content: "";
+  position: absolute;
+  left: 6px;
+  top: .55em;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--sb-flyer-ink);
+}
+.sb-flyer .sb-flyer-note { text-align: center; margin-top: 38px; }
+.sb-flyer .sb-flyer-note p {
+  display: inline-block;
+  padding: 12px 24px;
+  border-radius: 999px;
+  background: var(--sb-flyer-dark);
+  color: var(--sb-flyer-light);
+  font-weight: 700;
+  letter-spacing: .02em;
+}
+html.sb-skin .sb-event-band { background: var(--sb-flyer-dark); }
+html.sb-skin .sb-band-cell .sb-eyebrow { color: var(--sb-flyer-head); }
+html.sb-skin .sb-band-cell a:hover { color: var(--sb-flyer-head) !important; }
+@media (max-width: 600px) {
+  .sb-flyer .sb-flyer-intro { font-size: 17px; margin-bottom: 28px; }
+  .sb-flyer li { font-size: 17px; }
+}
