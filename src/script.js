@@ -83,7 +83,12 @@
     // Men's Club "Wisdom & Whiskey" (flyer: sage, blush display type)
     '24234': { accent: '#70766B', accentDark: '#4A5243', band: '#3E4437',
                soft: '#ECEAE2', skin: 'sage', font: 'Rozha+One',
-               flyerIntro: false, flyerNote: false }
+               flyerIntro: false, flyerNote: false },
+    // Jewish Women's Circle "Sparks of Wisdom" (flyer: blush, plum serif, gold)
+    '24330': { accent: '#5B3F66', accentDark: '#452F4E', band: '#5B3F66',
+               soft: '#F5ECF1', skin: 'blush', layout: 'split',
+               font: 'Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Jost:wght@400;500',
+               pill: 'RSVP Required', note: 'Sponsorship opportunities available' }
   };
   var FLYER_OPTS = {}; // the matched theme (set by applyPageTheme)
   // the live header code box defines window.SB_PAGE_THEMES (23305, 23338...):
@@ -125,7 +130,7 @@
   /* Pages whose CMS title duplicates their own content heading: hide the
      article header (style.css, html.sb-notitle). Flagged early by boot.js
      too; this is the fallback. Override with window.SB_NOTITLE_PAGES. */
-  var NOTITLE_PAGES = window.SB_NOTITLE_PAGES || ['7080118', '7474052', '7437612', '7407611', '7407897', 'eventid/24234'];
+  var NOTITLE_PAGES = window.SB_NOTITLE_PAGES || ['7080118', '7474052', '7437612', '7407611', '7407897', 'eventid/24234', 'eventid/24330'];
 
   function applyNoTitle() {
     var href = window.location.href;
@@ -972,10 +977,52 @@
      stays a paragraph. The hero banner and this panel join into one
      flyer-coloured card (style.css section 25). */
 
+  /* layout:'split' (flyer with a text column + When/Where column): one
+     card under the hero holding the description (each line a paragraph)
+     on the left and the info band's data, relabelled When/Where, on the
+     right, plus an optional pill (scrolls to the reservation form) and
+     a small note. The dark band itself is hidden. */
+  function buildFlyerSplit(desc) {
+    var band = $('.sb-event-band');
+    var paras = desc.innerHTML.split(/<br\s*\/?>/i).map(function (s) { return s.trim(); })
+      .filter(Boolean).map(function (s) { return '<p>' + s + '</p>'; }).join('');
+    var info = '';
+    if (band) {
+      var cells = $all('.sb-band-cell', band);
+      var when = '', where = '';
+      cells.forEach(function (c) {
+        var label = txt($('.sb-eyebrow', c)).toLowerCase();
+        var a = $('a', c);
+        if (!a) return;
+        var href = esc(a.getAttribute('href') || '#');
+        if (label === 'date') {
+          var d = txt(a), m = /^(.*?\d{4})\s+(.+)$/.exec(d);
+          when = '<div class="sb-fs-cell"><div class="sb-fs-label">When</div>' +
+            '<a class="sb-fs-big" href="' + href + '" title="Add to calendar">' +
+            (m ? esc(m[1]) + '<br>' + esc(m[2].replace(/\s*-\s*/, ' – ')) : esc(d)) + '</a></div>';
+        } else if (label === 'location') {
+          var parts = (($('div', a) || a).innerHTML).split(/<br\s*\/?>/i);
+          where = '<div class="sb-fs-cell"><div class="sb-fs-label">Where</div>' +
+            '<a href="' + href + '" target="_blank" rel="noopener"><span class="sb-fs-big">' + parts[0] + '</span>' +
+            (parts.length > 1 ? '<span class="sb-fs-small">' + parts.slice(1).join('<br>') + '</span>' : '') + '</a></div>';
+        }
+      });
+      info = when + where;
+      band.style.display = 'none';
+    }
+    if (FLYER_OPTS.pill) info += '<a class="sb-fs-pill" href="#RegisterBody">' + esc(FLYER_OPTS.pill) + '</a>';
+    desc.setAttribute('data-sb-flyer', '1');
+    desc.classList.add('sb-flyer', 'sb-flyer-split');
+    desc.innerHTML = '<div class="sb-fs-grid"><div class="sb-fs-text">' + paras + '</div>' +
+      (info ? '<div class="sb-fs-info">' + info + '</div>' : '') + '</div>' +
+      (FLYER_OPTS.note ? '<div class="sb-fs-note">' + esc(FLYER_OPTS.note) + '</div>' : '');
+  }
+
   function buildFlyerDesc() {
     if (!document.documentElement.classList.contains('sb-skin')) return;
     var desc = $('#RegisterHeader .event_description');
     if (!desc || desc.getAttribute('data-sb-flyer')) return;
+    if (FLYER_OPTS.layout === 'split') { buildFlyerSplit(desc); return; }
     var lines = desc.innerHTML.split(/<br\s*\/?>/i).map(function (s) { return s.trim(); });
     var blocks = [], cur = [];
     lines.concat(['']).forEach(function (l) {

@@ -5698,3 +5698,95 @@ html.sb-skin .sb-band-cell a:hover { color: var(--sb-flyer-head) !important; }
 }
 /* no intro paragraph (theme flyerIntro:false): breathing room under the banner */
 .sb-flyer > .sb-flyer-cols:first-child { padding-top: 24px; }
+
+/* blush = Jewish Women's Circle "Sparks of Wisdom" (event 24330):
+   blush-white ground, plum Cormorant display, gold hairline, mauve
+   letter-spaced labels, Jost body. layout:'split' (buildFlyerSplit). */
+html.sb-skin-blush {
+  --sb-flyer-bg: #F8F2F4;
+  --sb-flyer-head: #573E63;
+  --sb-flyer-ink: #4A3A52;
+  --sb-flyer-light: #4A3A52;
+  --sb-flyer-dark: #573E63;
+  --sb-flyer-gold: #B48C4C;
+  --sb-flyer-mauve: #A0697F;
+  --sb-flyer-font: "Cormorant Garamond", "Cormorant", Georgia, serif;
+  --sb-flyer-body: "Jost", var(--sb-font-body);
+}
+html.sb-skin-blush #RegisterHeader .event_description.sb-flyer {
+  background: linear-gradient(180deg, #F8F2F4 0%, #F6EEF2 60%, #F2E8EF 100%);
+  font-family: var(--sb-flyer-body);
+  padding-top: 0;
+}
+.sb-flyer-split .sb-fs-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  border-top: 1px solid var(--sb-flyer-gold);
+  padding-top: 34px;
+}
+.sb-flyer-split .sb-fs-text { padding-right: clamp(20px, 4vw, 52px); }
+.sb-flyer-split .sb-fs-text p {
+  font-size: 19px;
+  line-height: 1.7;
+  color: var(--sb-flyer-ink);
+  margin: 0 0 18px;
+}
+.sb-flyer-split .sb-fs-info {
+  border-left: 1px solid rgba(180, 140, 76, .35);
+  padding-left: clamp(20px, 4vw, 52px);
+}
+.sb-flyer-split .sb-fs-cell { margin: 0 0 24px; }
+.sb-flyer-split .sb-fs-label {
+  font: 500 12.5px/1 var(--sb-flyer-body);
+  letter-spacing: .32em;
+  text-transform: uppercase;
+  color: var(--sb-flyer-mauve);
+  margin: 0 0 10px;
+}
+.sb-flyer-split .sb-fs-cell a { color: var(--sb-flyer-head) !important; text-decoration: none !important; }
+.sb-flyer-split .sb-fs-big {
+  display: block;
+  font-family: var(--sb-flyer-font);
+  font-weight: 500;
+  font-size: clamp(26px, 2.8vw, 32px);
+  line-height: 1.2;
+  color: var(--sb-flyer-head);
+}
+.sb-flyer-split .sb-fs-small {
+  display: block;
+  margin-top: 6px;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--sb-flyer-ink);
+}
+.sb-flyer-split .sb-fs-cell a:hover .sb-fs-big,
+.sb-flyer-split a.sb-fs-big:hover { color: var(--sb-flyer-mauve); }
+.sb-flyer-split .sb-fs-pill {
+  display: inline-block;
+  margin-top: 4px;
+  padding: 12px 28px;
+  border: 1.5px solid var(--sb-flyer-mauve);
+  border-radius: 999px;
+  font: 500 13px/1 var(--sb-flyer-body);
+  letter-spacing: .3em;
+  text-transform: uppercase;
+  color: var(--sb-flyer-mauve) !important;
+  text-decoration: none !important;
+  transition: background 160ms ease, color 160ms ease;
+}
+.sb-flyer-split .sb-fs-pill:hover { background: var(--sb-flyer-mauve); color: #fff !important; }
+.sb-flyer-split .sb-fs-note {
+  margin-top: 34px;
+  padding-top: 22px;
+  border-top: 1px solid rgba(87, 62, 99, .12);
+  text-align: right;
+  font-size: 16px;
+  letter-spacing: .12em;
+  color: var(--sb-flyer-ink);
+}
+@media (max-width: 700px) {
+  .sb-flyer-split .sb-fs-grid { grid-template-columns: 1fr; }
+  .sb-flyer-split .sb-fs-text { padding-right: 0; }
+  .sb-flyer-split .sb-fs-info { border-left: 0; padding-left: 0; border-top: 1px solid rgba(180, 140, 76, .35); padding-top: 26px; }
+  .sb-flyer-split .sb-fs-note { text-align: center; }
+}
