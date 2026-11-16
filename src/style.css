@@ -5790,3 +5790,8 @@ html.sb-skin-blush #RegisterHeader .event_description.sb-flyer {
   .sb-flyer-split .sb-fs-info { border-left: 0; padding-left: 0; border-top: 1px solid rgba(180, 140, 76, .35); padding-top: 26px; }
   .sb-flyer-split .sb-fs-note { text-align: center; }
 }
+/* the CMS sets Muli on every p/span inside the description: re-assert Jost */
+html.sb-skin-blush .sb-flyer-split p,
+html.sb-skin-blush .sb-flyer-split span.sb-fs-small,
+html.sb-skin-blush .sb-flyer-split .sb-fs-note { font-family: var(--sb-flyer-body) !important; }
+html.sb-skin-blush .sb-flyer-split span.sb-fs-big { font-family: var(--sb-flyer-font) !important; }
