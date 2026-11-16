@@ -639,16 +639,60 @@
     if (!widget || $('.sb-events-rail', widget)) return;
     var wrapper = $('.wrapper', widget);
     var lis = $all('.widget_content ul li', widget);
-    if (!wrapper || !lis.length) return;
+    if (!wrapper) return;
 
     var heading = txt($('.widget_header h5', widget)) || 'Upcoming Events';
     var readMore = $('.widget_content a.readMore', widget);
 
-    var cards = lis.map(function (li) {
-      var when = txt(li.querySelector('small'));
-      var a = li.querySelector('h6 a');
-      if (!a) return '';
-      var d = parseEventDate(when);
+    if (lis.length) {
+      renderEventsRail(wrapper, heading, readMore, lis.map(function (li) {
+        var a = li.querySelector('h6 a');
+        return a ? { when: txt(li.querySelector('small')), title: txt(a), href: a.getAttribute('href') || '#' } : null;
+      }));
+      return;
+    }
+
+    /* The widget reads the CMS Calendar only. When that is empty ("There are
+       no upcoming events posted"), fall back to the Event Reservations list
+       (same origin, upcoming events only); nothing there either -> hide the
+       section instead of showing the empty message. */
+    if (!$('#noRecordsText', widget)) return;
+    widget.style.visibility = 'hidden';
+    var LIST = '/tools/events/default_cdo/jewish/Events.htm';
+    var done = function (items) {
+      if (items && items.length) {
+        var more = el('a', null, 'All events');
+        more.href = LIST;
+        renderEventsRail(wrapper, heading, more, items);
+        widget.style.visibility = '';
+      } else {
+        widget.style.display = 'none';
+      }
+    };
+    var x = new XMLHttpRequest();
+    x.open('GET', LIST);
+    x.onload = function () {
+      if (x.status !== 200) return done(null);
+      var doc = new DOMParser().parseFromString(x.responseText, 'text/html');
+      done($all('.event', doc).map(function (ev) {
+        var a = ev.querySelector('h2 a');
+        var date = txt(ev.querySelector('.performance__date'));
+        if (!a || !date) return null;
+        // "Mon, Nov 23, 2026 - Mon, Nov 23, 2026": keep the first date; a
+        // trailing part that is not another date is a time ("- 7:30pm")
+        var parts = date.split(/\s+-\s+/);
+        var when = parts[0] + (parts[1] && !/\d{4}/.test(parts[1]) ? ' - ' + parts[1] : '');
+        return { when: when, title: txt(a), href: a.getAttribute('href') || '#' };
+      }).filter(Boolean));
+    };
+    x.onerror = function () { done(null); };
+    x.send();
+  }
+
+  function renderEventsRail(wrapper, heading, readMore, items) {
+    var cards = items.map(function (it) {
+      if (!it) return '';
+      var d = parseEventDate(it.when);
       return (
         '<div class="sb-event-card">' +
         '<div class="sb-event-main">' +
@@ -658,10 +702,10 @@
         '<div class="sb-mon">' + esc(d.mon) + '</div>' +
         '</div>' +
         '<div class="sb-event-info">' +
-        '<h3><a href="' + esc(a.getAttribute('href') || '#') + '">' + esc(txt(a)) + '</a></h3>' +
+        '<h3><a href="' + esc(it.href) + '">' + esc(it.title) + '</a></h3>' +
         (d.time ? '<div class="sb-event-when">' + esc(d.time) + '</div>' : '') +
         '</div></div>' +
-        '<div class="sb-event-foot"><a class="sb-link-caps" href="' + esc(a.getAttribute('href') || '#') + '">Details →</a></div>' +
+        '<div class="sb-event-foot"><a class="sb-link-caps" href="' + esc(it.href) + '">Details →</a></div>' +
         '</div>'
       );
     }).join('');
@@ -4182,7 +4226,8 @@
   var HH_LANDING = '/7472611';
   var SUKKOT_LANDING = '/7511266';
   function fixHighHolidayLinks() {
-    $all('a[href*="aid/418840"]').forEach(function (a) { a.setAttribute('href', HH_LANDING); });
+    // (the Sept 2026 rewrite of the "Event Reservations" menu link, aid/418840,
+    // to HH_LANDING was removed after the holidays: it hijacked the menu)
     $all('.sb-event-card').forEach(function (card) {
       var h = card.querySelector('h3 a');
       if (!h || !/rosh\s*hashan|yom\s*kippur|high\s*holiday/i.test(txt(h))) return;
