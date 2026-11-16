@@ -1043,7 +1043,7 @@
           var d = txt(a), m = /^(.*?\d{4})\s+(.+)$/.exec(d);
           when = '<div class="sb-fs-cell"><div class="sb-fs-label">When</div>' +
             '<a class="sb-fs-big" href="' + href + '" title="Add to calendar">' +
-            (m ? esc(m[1]) + '<br>' + esc(m[2].replace(/\s*-\s*/, ' – ')) : esc(d)) + '</a></div>';
+            (m ? esc(m[1]) + '<br>' + esc(m[2].split(/\s*-\s*/)[0]) /* start time only, like the flyer */ : esc(d)) + '</a></div>';
         } else if (label === 'location') {
           var parts = (($('div', a) || a).innerHTML).split(/<br\s*\/?>/i);
           where = '<div class="sb-fs-cell"><div class="sb-fs-label">Where</div>' +

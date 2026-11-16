@@ -201,7 +201,13 @@ async function build() {
   const sukkotFlag =
     "var S=window.SB_SUKKOT_PAGES||['7511266','7511368','7511370','7511371'];" +
     "for(var k=0;k<S.length;k++){if(location.href.indexOf(S[k])>-1){document.documentElement.className+=' sb-sukkot';break;}}";
-  const bootJs = resolveVer + hhFlag + noTitleFlag + sukkotFlag +
+  // Per-event flyer skins (style.css section 25): same ids/skins as
+  // PAGE_THEMES in script.js, flagged here so the page paints in the skin
+  // from the first frame (site.js adds the same classes as a fallback).
+  const skinFlag =
+    "var K={'eventid/24234':'sage','eventid/24330':'blush'};" +
+    "for(var q in K){if(location.href.indexOf(q)>-1){document.documentElement.className+=' sb-skin sb-skin-'+K[q];break;}}";
+  const bootJs = resolveVer + hhFlag + noTitleFlag + sukkotFlag + skinFlag +
     "document.write('<link rel=\"stylesheet\" href=\"'+B+'site.css\">');" +
     "})();";
   const bootFooterJs = resolveVer +

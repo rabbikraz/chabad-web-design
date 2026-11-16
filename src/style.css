@@ -5795,3 +5795,68 @@ html.sb-skin-blush .sb-flyer-split p,
 html.sb-skin-blush .sb-flyer-split span.sb-fs-small,
 html.sb-skin-blush .sb-flyer-split .sb-fs-note { font-family: var(--sb-flyer-body) !important; }
 html.sb-skin-blush .sb-flyer-split span.sb-fs-big { font-family: var(--sb-flyer-font) !important; }
+
+/* blush, whole page: the site tokens re-pointed at the flyer palette, so
+   the header, nav, drawer, buttons, reservation form and footer all follow
+   (same mechanism as the HH theme, section 22). boot.js sets the class in
+   <head> (skinFlag in build.js) so the page never flashes cream first. */
+html.sb-skin-blush {
+  --sb-bg: #F8F2F4;
+  --sb-surface: #F1E6EC;
+  --sb-text: #4A3A52;
+  --sb-divider: rgba(87, 62, 99, .14);
+  --sb-accent: #A0697F;
+  --sb-accent-100: #F4EAF0;
+  --sb-accent-200: #E9D6E0;
+  --sb-accent-300: #D9BCCB;
+  --sb-accent-600: #8C5A6E;
+  --sb-accent-700: #573E63;
+  --sb-teal: #5B3F66;
+  --sb-teal-100: #EFE6F1;
+  --sb-teal-200: #D9C6DE;
+  --sb-teal-300: #C9A9C8;
+  --sb-teal-600: #4E3558;
+  --sb-teal-700: #573E63;
+  --sb-teal-800: #3F2A48;
+  --sb-teal-900: #3A2843;
+  --sb-cream-ink: #F4EAF0;
+  --sb-font-heading: "Cormorant Garamond", Georgia, serif;
+  --sb-font-body: "Jost", "Figtree", system-ui, sans-serif;
+  --font-form-main: "Jost", "Figtree", system-ui, sans-serif;
+  --text-form-dark: #4A3A52;
+  --border-form-color: rgba(87, 62, 99, .16);
+  background: #F6EEF2;
+}
+/* gradient on the root, body transparent: a body background here blanked
+   everything below the first screen (the CMS body is its own layer) */
+html.sb-skin-blush { background: linear-gradient(180deg, #FAF6F7 0%, #F6EEF2 45%, #F1E7EF 100%) !important; }
+html.sb-skin-blush body,
+html.sb-skin-blush body.cco_body { background: transparent !important; color: #4A3A52; }
+html.sb-skin-blush #BodyContainer,
+html.sb-skin-blush #BodyContainer > .body_wrapper,
+html.sb-skin-blush body.sites-article #content,
+html.sb-skin-blush #content,
+html.sb-skin-blush .co_content_container,
+html.sb-skin-blush body.cco_body .master-content-wrapper,
+html.sb-skin-blush .cco_body .body_wrapper.co_body { background: transparent !important; }
+html.sb-skin-blush body.cco_body #header {
+  background: rgba(250, 246, 247, .94);
+  border-bottom: 1px solid rgba(180, 140, 76, .28);
+}
+html.sb-skin-blush body.cco_body #footer { background: #3A2843; border-top: 2px solid #B48C4C; }
+/* reservation form: serif plum headings, Jost text, airy white panels */
+html.sb-skin-blush #RegisterSinglePage,
+html.sb-skin-blush #RegisterSinglePage p,
+html.sb-skin-blush #RegisterSinglePage div,
+html.sb-skin-blush #RegisterSinglePage label,
+html.sb-skin-blush #RegisterSinglePage select,
+html.sb-skin-blush #RegisterSinglePage input { font-family: var(--sb-flyer-body); }
+html.sb-skin-blush #RegisterSinglePage .heading,
+html.sb-skin-blush #RegisterSinglePage h1,
+html.sb-skin-blush #RegisterSinglePage h2,
+html.sb-skin-blush #RegisterSinglePage h3,
+html.sb-skin-blush #Performances > :first-child {
+  font-family: var(--sb-flyer-font) !important;
+  font-weight: 500;
+  color: #573E63;
+}
