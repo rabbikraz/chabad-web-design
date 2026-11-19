@@ -6020,3 +6020,229 @@ html.sb-dark .sb-footer-brand-row .sb-logo-mark { box-shadow: inset 0 0 0 1px va
 html.sb-dark .sb-footer-bottom { border-top-color: rgba(var(--sbd-ink-rgb), .18); color: rgba(var(--sbd-ink-rgb), .6); }
 html.sb-dark #footer .cs-f-social-icons a { box-shadow: inset 0 0 0 1px rgba(var(--sbd-ink-rgb), .35); color: var(--sbd-ink) !important; }
 html.sb-dark #footer .cs-f-social-icons a:hover { background: rgba(var(--sbd-gold-rgb), .14); }
+
+/* --------------------------------------------------------------------------
+   27. FLYER PAGE: "A Shabbat with Rabbi Manis Friedman" (Chanukah Shabbaton
+   form, aid 7629749). Page = sb-dark variant 'manis' (flyer black #0E0E0E,
+   white, orange #FF5A1F, Inter); site.js initFlyerHero builds the flyer
+   hero above the form. Form rules carry the html:not(#sbx):not(#sbx2)
+   prefix to outrank form-style.css's ID-level selectors (see section 21).
+   -------------------------------------------------------------------------- */
+html.sb-dark.sb-dark-manis {
+  --sbd-bg: #0E0E0E;
+  --sbd-head: rgba(14, 14, 14, .95);
+  --sbd-deep: #070707;
+  --sbd-ink: #FFFFFF;
+  --sbd-ink-rgb: 255, 255, 255;
+  --sbd-muted: #B5B5B5;
+  --sbd-gold: #FF5A1F;
+  --sbd-gold-rgb: 255, 90, 31;
+  --sbd-btn-ink: #0E0E0E;
+  --sbd-line: #555555;
+}
+
+/* hero */
+.sb-fhero {
+  max-width: 816px;
+  margin: 0 auto 8px;
+  background: #0E0E0E;
+  color: #fff;
+  font-family: "Inter", Helvetica, Arial, sans-serif;
+  overflow: hidden;
+}
+.sb-fhero-photo {
+  position: relative;
+  aspect-ratio: 816 / 600;
+  background: linear-gradient(to right, #343A3A, #3A4244 25%, #3F4847 50%, #3C4446 75%, #252A2D);
+}
+.sb-fhero-photo img {
+  position: absolute;
+  left: 0;
+  top: 9%;
+  width: 100%;
+  height: 91%;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 10px);
+  mask-image: linear-gradient(to bottom, transparent, #000 10px);
+}
+.sb-fhero-photo::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 40%;
+  background: linear-gradient(to bottom, rgba(14, 14, 14, 0), #0E0E0E);
+}
+.sb-fhero-eyebrow {
+  position: absolute;
+  left: 7%;
+  top: 3.2%;
+  font-size: clamp(10px, 1.6vw, 13px);
+  font-weight: 600;
+  letter-spacing: .23em;
+}
+.sb-fhero-title {
+  position: relative;
+  z-index: 1;
+  margin-top: clamp(-124px, -15vw, -60px);
+  padding: 0 7%;
+}
+.sb-fhero-kicker { font-size: clamp(16px, 2.8vw, 22px); font-weight: 700; }
+.sb-fhero-big {
+  font-size: clamp(58px, 16.2vw, 132px);
+  font-weight: 800;
+  line-height: .92;
+  letter-spacing: -.038em;
+}
+.sb-fhero-kicker + .sb-fhero-big { margin-top: 6px; }
+.sb-fhero-foot { padding: clamp(22px, 5vw, 40px) 7% clamp(24px, 5vw, 44px); }
+.sb-fhero-date {
+  font-size: clamp(32px, 5.9vw, 48px);
+  font-weight: 800;
+  letter-spacing: -.02em;
+  color: #FF5A1F;
+}
+.sb-fhero-sub { font-size: clamp(17px, 2.8vw, 22px); font-weight: 500; margin-top: 4px; }
+
+/* form */
+html:not(#sbx):not(#sbx2).sb-dark-manis form.userform-form,
+html:not(#sbx):not(#sbx2).sb-dark-manis form.userform-form .form-all {
+  background: transparent !important;
+  color: #fff !important;
+  box-shadow: none !important;
+  border: 0 !important;
+}
+html:not(#sbx):not(#sbx2).sb-dark-manis form.userform-form .form-all {
+  max-width: 816px !important;
+  margin: 0 auto !important;
+  padding: 0 7% 48px !important;
+  box-sizing: border-box;
+}
+html:not(#sbx):not(#sbx2).sb-dark-manis form.userform-form * { font-family: "Inter", Helvetica, Arial, sans-serif !important; }
+html:not(#sbx):not(#sbx2).sb-dark-manis form.userform-form li.form-line {
+  background: transparent !important;
+  border: 0 !important;
+  border-top: 1px solid rgba(255, 255, 255, .12) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  padding: 22px 0 !important;
+  margin: 0 !important;
+}
+html:not(#sbx):not(#sbx2).sb-dark-manis form.userform-form li#id_2 { border-top: 0 !important; padding-top: 0 !important; }
+html:not(#sbx):not(#sbx2).sb-dark-manis form.userform-form .form-html,
+html:not(#sbx):not(#sbx2).sb-dark-manis form.userform-form .form-html p {
+  color: rgba(255, 255, 255, .78) !important;
+  font-size: 17px !important;
+  line-height: 1.6 !important;
+}
+html:not(#sbx):not(#sbx2).sb-dark-manis form.userform-form li.sb-fhero-dupe,
+html:not(#sbx):not(#sbx2).sb-dark-manis form.userform-form .sb-fhero-dupe { display: none !important; }
+html:not(#sbx):not(#sbx2).sb-dark-manis form.userform-form .form-label-left,
+html:not(#sbx):not(#sbx2).sb-dark-manis form.userform-form .form-label-left label,
+html:not(#sbx):not(#sbx2).sb-dark-manis form.userform-form .form-label-top,
+html:not(#sbx):not(#sbx2).sb-dark-manis form.userform-form label.form-label {
+  color: #fff !important;
+  font-size: 22px !important;
+  font-weight: 700 !important;
+  letter-spacing: -.01em !important;
+  text-transform: none !important;
+  background: transparent !important;
+}
+html:not(#sbx):not(#sbx2).sb-dark-manis form.userform-form .form-required { color: #FF5A1F !important; }
+html:not(#sbx):not(#sbx2).sb-dark-manis form.userform-form .form-sub-label {
+  color: rgba(255, 255, 255, .62) !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+}
+/* seat steppers */
+html:not(#sbx):not(#sbx2).sb-dark-manis form.userform-form .custom-number-wrapper {
+  display: inline-flex !important;
+  align-items: center !important;
+  border: 1.5px solid rgba(255, 255, 255, .25) !important;
+  border-radius: 999px !important;
+  overflow: hidden !important;
+  background: #161616 !important;
+  margin-bottom: 8px !important;
+}
+html:not(#sbx):not(#sbx2).sb-dark-manis form.userform-form .qty-btn {
+  width: 48px !important;
+  height: 48px !important;
+  background: transparent !important;
+  color: #fff !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  font-size: 24px !important;
+  font-weight: 600 !important;
+  cursor: pointer;
+}
+html:not(#sbx):not(#sbx2).sb-dark-manis form.userform-form .qty-btn:hover { background: #FF5A1F !important; color: #0E0E0E !important; }
+html:not(#sbx):not(#sbx2).sb-dark-manis form.userform-form .custom-number-wrapper input.form-number-input {
+  width: 56px !important;
+  height: 48px !important;
+  background: transparent !important;
+  border: 0 !important;
+  color: #fff !important;
+  font-size: 20px !important;
+  font-weight: 800 !important;
+  text-align: center !important;
+  box-shadow: none !important;
+}
+/* text inputs */
+html:not(#sbx):not(#sbx2).sb-dark-manis form.userform-form input.form-textbox:not(.form-number-input),
+html:not(#sbx):not(#sbx2).sb-dark-manis form.userform-form select,
+html:not(#sbx):not(#sbx2).sb-dark-manis form.userform-form textarea {
+  background: #161616 !important;
+  border: 1.5px solid rgba(255, 255, 255, .2) !important;
+  border-radius: 10px !important;
+  color: #fff !important;
+  box-shadow: none !important;
+}
+html:not(#sbx):not(#sbx2).sb-dark-manis form.userform-form input::placeholder,
+html:not(#sbx):not(#sbx2).sb-dark-manis form.userform-form textarea::placeholder { color: rgba(255, 255, 255, .4) !important; }
+html:not(#sbx):not(#sbx2).sb-dark-manis form.userform-form input:focus,
+html:not(#sbx):not(#sbx2).sb-dark-manis form.userform-form select:focus,
+html:not(#sbx):not(#sbx2).sb-dark-manis form.userform-form textarea:focus {
+  border-color: #FF5A1F !important;
+  outline: none !important;
+}
+html:not(#sbx):not(#sbx2).sb-dark-manis form.userform-form select option { background: #161616; color: #fff; }
+/* total + payment */
+html:not(#sbx):not(#sbx2).sb-dark-manis form.userform-form li#id_13 .form-input,
+html:not(#sbx):not(#sbx2).sb-dark-manis form.userform-form li#id_13 .form-input * {
+  color: #FF5A1F !important;
+  background: transparent !important;
+  font-size: 40px !important;
+  font-weight: 800 !important;
+  letter-spacing: -.02em !important;
+}
+html:not(#sbx):not(#sbx2).sb-dark-manis form.userform-form li#id_14 *:not(input):not(select):not(option):not(button) {
+  color: rgba(255, 255, 255, .85) !important;
+  background-color: transparent !important;
+  border-color: rgba(255, 255, 255, .15) !important;
+}
+/* submit, in the date's orange */
+html:not(#sbx):not(#sbx2).sb-dark-manis form.userform-form button.form-submit-button {
+  width: 100% !important;
+  height: auto !important;
+  padding: 20px 24px !important;
+  background: #FF5A1F !important;
+  color: #0E0E0E !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  font-size: 20px !important;
+  font-weight: 800 !important;
+  letter-spacing: .04em !important;
+  text-transform: uppercase !important;
+  box-shadow: none !important;
+}
+html:not(#sbx):not(#sbx2).sb-dark-manis form.userform-form button.form-submit-button:hover { background: #FFFFFF !important; }
+html:not(#sbx):not(#sbx2).sb-dark-manis form.userform-form .form-header {
+  color: #fff !important;
+  font-size: 30px !important;
+  font-weight: 800 !important;
+  letter-spacing: -.02em !important;
+}
+html:not(#sbx):not(#sbx2).sb-dark-manis form.userform-form .form-subHeader { color: rgba(255, 255, 255, .62) !important; }

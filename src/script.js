@@ -120,7 +120,7 @@
   /* DARK PAGE THEME (style.css section 26, black/cream/gold). Mirrors
      darkFlag in build.js; window.SB_DARK_PAGES overrides. */
   /* aid -> palette variant ('' = default black/cream/gold, 'navy' = Yeshiva Day) */
-  var DARK_PAGES = window.SB_DARK_PAGES || { '7629705': '', '7629737': 'navy' };
+  var DARK_PAGES = window.SB_DARK_PAGES || { '7629705': '', '7629737': 'navy', '7629749': 'manis' };
   function applyDarkTheme() {
     var href = window.location.href;
     for (var id in DARK_PAGES) {
@@ -129,6 +129,69 @@
         if (DARK_PAGES[id]) document.documentElement.classList.add('sb-dark-' + DARK_PAGES[id]);
         return;
       }
+    }
+  }
+  /* FLYER HERO (style.css section 27): rebuilds a page's flyer at the top,
+     above its form. Keyed by article id. Also hides form-intro lines that
+     only repeat the hero, and any Submit line after the first. */
+  var FLYER_HEROES = window.SB_FLYER_HEROES || {
+    '7629749': {
+      img: 'manis-friedman.jpg', alt: 'Rabbi Manis Friedman',
+      eyebrow: 'CHABAD IN SOUTH BEACH PRESENTS',
+      kicker: 'A Shabbat with Rabbi', big: ['Manis', 'Friedman'],
+      date: 'DEC 4-5', sub: 'Shabbat Chanukah',
+      repeat: /manis friedman|december 4/i,
+      font: 'Inter:wght@500;600;700;800'
+    }
+  };
+  function initFlyerHero() {
+    var href = window.location.href, cfg = null;
+    for (var id in FLYER_HEROES) { if (href.indexOf(id) !== -1) { cfg = FLYER_HEROES[id]; break; } }
+    if (!cfg || document.querySelector('.sb-fhero')) return;
+    var form = document.querySelector('form.userform-form');
+    if (!form) return;
+    if (cfg.font) {
+      var l = document.createElement('link');
+      l.rel = 'stylesheet';
+      l.href = 'https://fonts.googleapis.com/css2?family=' + cfg.font + '&display=swap';
+      document.head.appendChild(l);
+    }
+    function el(tag, cls, text) {
+      var e = document.createElement(tag);
+      if (cls) e.className = cls;
+      if (text) e.textContent = text;
+      return e;
+    }
+    var hero = el('div', 'sb-fhero');
+    var photo = el('div', 'sb-fhero-photo');
+    var img = document.createElement('img');
+    img.src = 'https://cdn.jsdelivr.net/gh/rabbikraz/chabad-web-design@' +
+              (window.SB_ASSET_V || 'redesign') + '/assets/' + cfg.img;
+    img.alt = cfg.alt || '';
+    photo.appendChild(img);
+    photo.appendChild(el('div', 'sb-fhero-eyebrow', cfg.eyebrow));
+    hero.appendChild(photo);
+    var title = el('div', 'sb-fhero-title');
+    title.appendChild(el('div', 'sb-fhero-kicker', cfg.kicker));
+    for (var i = 0; i < cfg.big.length; i++) title.appendChild(el('div', 'sb-fhero-big', cfg.big[i]));
+    hero.appendChild(title);
+    var foot = el('div', 'sb-fhero-foot');
+    foot.appendChild(el('div', 'sb-fhero-date', cfg.date));
+    foot.appendChild(el('div', 'sb-fhero-sub', cfg.sub));
+    hero.appendChild(foot);
+    form.parentNode.insertBefore(hero, form);
+    /* short intro lines that only repeat the hero (title, date line) */
+    if (cfg.repeat) {
+      var bits = form.querySelectorAll('.form-header-group, .form-header, .form-subHeader, .form-html h1, .form-html h2, .form-html h3, .form-html h4, .form-html strong');
+      for (var k = 0; k < bits.length; k++) {
+        var t = bits[k].textContent;
+        if (cfg.repeat.test(t) && t.length < 90) bits[k].classList.add('sb-fhero-dupe');
+      }
+    }
+    var subs = form.querySelectorAll('li.form-line button.form-submit-button');
+    for (var s = 1; s < subs.length; s++) {
+      var li = subs[s].closest('li');
+      if (li) li.classList.add('sb-fhero-dupe');
     }
   }
   function applySukkotTheme() {
@@ -144,7 +207,7 @@
   /* Pages whose CMS title duplicates their own content heading: hide the
      article header (style.css, html.sb-notitle). Flagged early by boot.js
      too; this is the fallback. Override with window.SB_NOTITLE_PAGES. */
-  var NOTITLE_PAGES = window.SB_NOTITLE_PAGES || ['7080118', '7474052', '7437612', '7407611', '7407897', 'eventid/24234', 'eventid/24330', '7629705', '7629737'];
+  var NOTITLE_PAGES = window.SB_NOTITLE_PAGES || ['7080118', '7474052', '7437612', '7407611', '7407897', 'eventid/24234', 'eventid/24330', '7629705', '7629737', '7629749'];
 
   function applyNoTitle() {
     var href = window.location.href;
@@ -4259,6 +4322,7 @@
     safe('hh-theme', applyHHTheme);
     safe('sukkot-theme', applySukkotTheme);
     safe('dark-theme', applyDarkTheme);
+    safe('flyer-hero', initFlyerHero);
     safe('no-title', applyNoTitle);
     safe('page-rules', runPageRules);
     safe('page-theme', applyPageTheme);
