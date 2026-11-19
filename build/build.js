@@ -210,7 +210,7 @@ async function build() {
   // Dark pages (style.css section 26, black/cream/gold). Same list as
   // DARK_PAGES in script.js; window.SB_DARK_PAGES overrides.
   const darkFlag =
-    "var D=window.SB_DARK_PAGES||{'7629705':'','7629737':'navy','7629749':'manis'};" +
+    "var D=window.SB_DARK_PAGES||{'7629705':'','7629737':'navy','7629749':'manis','7629781':'pointe','7157257':'events'};" +
     "for(var d in D){if(location.href.indexOf(d)>-1){document.documentElement.className+=' sb-dark'+(D[d]?' sb-dark-'+D[d]:'');break;}}";
   const bootJs = resolveVer + hhFlag + noTitleFlag + sukkotFlag + skinFlag + darkFlag +
     "document.write('<link rel=\"stylesheet\" href=\"'+B+'site.css\">');" +
