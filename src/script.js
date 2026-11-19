@@ -119,12 +119,14 @@
   }
   /* DARK PAGE THEME (style.css section 26, black/cream/gold). Mirrors
      darkFlag in build.js; window.SB_DARK_PAGES overrides. */
-  var DARK_PAGES = window.SB_DARK_PAGES || ['7629705'];
+  /* aid -> palette variant ('' = default black/cream/gold, 'navy' = Yeshiva Day) */
+  var DARK_PAGES = window.SB_DARK_PAGES || { '7629705': '', '7629737': 'navy' };
   function applyDarkTheme() {
     var href = window.location.href;
-    for (var i = 0; i < DARK_PAGES.length; i++) {
-      if (href.indexOf(String(DARK_PAGES[i])) !== -1) {
+    for (var id in DARK_PAGES) {
+      if (href.indexOf(id) !== -1) {
         document.documentElement.classList.add('sb-dark');
+        if (DARK_PAGES[id]) document.documentElement.classList.add('sb-dark-' + DARK_PAGES[id]);
         return;
       }
     }
@@ -142,7 +144,7 @@
   /* Pages whose CMS title duplicates their own content heading: hide the
      article header (style.css, html.sb-notitle). Flagged early by boot.js
      too; this is the fallback. Override with window.SB_NOTITLE_PAGES. */
-  var NOTITLE_PAGES = window.SB_NOTITLE_PAGES || ['7080118', '7474052', '7437612', '7407611', '7407897', 'eventid/24234', 'eventid/24330', '7629705'];
+  var NOTITLE_PAGES = window.SB_NOTITLE_PAGES || ['7080118', '7474052', '7437612', '7407611', '7407897', 'eventid/24234', 'eventid/24330', '7629705', '7629737'];
 
   function applyNoTitle() {
     var href = window.location.href;
