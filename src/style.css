@@ -5897,6 +5897,21 @@ html.sb-dark.sb-dark-navy {
   --sbd-btn-ink: #12233F;
   --sbd-line: #6B7A96;
 }
+/* pointe = Chanukah at South Pointe (aid 7629781): the flyer card's deep
+   green, cream type and lime accent; page trimmed so the card starts high */
+html.sb-dark.sb-dark-pointe {
+  --sbd-bg: #0B3D33;
+  --sbd-head: rgba(7, 42, 35, .96);
+  --sbd-deep: #072A23;
+  --sbd-ink: #F3EFE4;
+  --sbd-ink-rgb: 243, 239, 228;
+  --sbd-muted: #C9D6CC;
+  --sbd-gold: #B8F36B;
+  --sbd-gold-rgb: 184, 243, 107;
+  --sbd-btn-ink: #072A23;
+  --sbd-line: #4F7A6E;
+}
+html.sb-dark-pointe body.cco_body #co_body_container { padding-top: 14px !important; }
 html.sb-dark #header,
 html.sb-dark #footer {
   --sb-text: var(--sbd-ink);
