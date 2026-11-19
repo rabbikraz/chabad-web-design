@@ -6029,83 +6029,109 @@ html.sb-dark #footer .cs-f-social-icons a:hover { background: rgba(var(--sbd-gol
    prefix to outrank form-style.css's ID-level selectors (see section 21).
    -------------------------------------------------------------------------- */
 html.sb-dark.sb-dark-manis {
-  --sbd-bg: #0E0E0E;
-  --sbd-head: rgba(14, 14, 14, .95);
-  --sbd-deep: #070707;
+  --sbd-bg: #1C1F21;
+  --sbd-head: rgba(22, 25, 27, .95);
+  --sbd-deep: #141618;
   --sbd-ink: #FFFFFF;
   --sbd-ink-rgb: 255, 255, 255;
-  --sbd-muted: #B5B5B5;
+  --sbd-muted: #C4C8CA;
   --sbd-gold: #FF5A1F;
   --sbd-gold-rgb: 255, 90, 31;
   --sbd-btn-ink: #0E0E0E;
-  --sbd-line: #555555;
+  --sbd-line: #5C6366;
 }
 
-/* hero */
+/* hero: compact. Desktop = text left, photo right (one screen-height
+   strip, so the form/notice starts near the top); phone = short photo
+   with the name overlapping its faded bottom. The photo box clips its
+   img and pins its height with !important: a site-wide img rule
+   (height:auto) once let the photo spill below the frame behind the name. */
 .sb-fhero {
-  max-width: 816px;
-  margin: 0 auto 8px;
-  background: #0E0E0E;
+  max-width: 960px;
+  margin: 0 auto 22px;
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  grid-template-areas: "text photo";
+  min-height: 360px;
+  background: linear-gradient(100deg, #2A2F31 0%, #343A3B 55%, #3B4243 100%);
+  border-radius: 22px;
+  overflow: hidden;
   color: #fff;
   font-family: "Inter", Helvetica, Arial, sans-serif;
-  overflow: hidden;
 }
 .sb-fhero-photo {
+  grid-area: photo;
   position: relative;
-  aspect-ratio: 816 / 600;
-  background: linear-gradient(to right, #343A3A, #3A4244 25%, #3F4847 50%, #3C4446 75%, #252A2D);
+  overflow: hidden;
+  min-height: 300px;
 }
-.sb-fhero-photo img {
-  position: absolute;
-  left: 0;
-  top: 9%;
-  width: 100%;
-  height: 91%;
-  object-fit: cover;
-  object-position: center top;
+html:not(#sbx) body .sb-fhero-photo img {
+  position: absolute !important;
+  left: 0 !important;
+  top: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: none !important;
+  object-fit: cover !important;
+  object-position: center 12% !important;
   display: block;
-  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 10px);
-  mask-image: linear-gradient(to bottom, transparent, #000 10px);
+  margin: 0 !important;
+  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 28%);
+  mask-image: linear-gradient(to right, transparent 0, #000 28%);
 }
-.sb-fhero-photo::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 40%;
-  background: linear-gradient(to bottom, rgba(14, 14, 14, 0), #0E0E0E);
-}
-.sb-fhero-eyebrow {
-  position: absolute;
-  left: 7%;
-  top: 3.2%;
-  font-size: clamp(10px, 1.6vw, 13px);
-  font-weight: 600;
-  letter-spacing: .23em;
-}
-.sb-fhero-title {
+.sb-fhero-text {
+  grid-area: text;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 40px 0 40px 44px;
   position: relative;
   z-index: 1;
-  margin-top: clamp(-124px, -15vw, -60px);
-  padding: 0 7%;
 }
-.sb-fhero-kicker { font-size: clamp(16px, 2.8vw, 22px); font-weight: 700; }
+.sb-fhero-eyebrow {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .22em;
+  color: rgba(255, 255, 255, .7);
+  margin-bottom: 18px;
+}
+.sb-fhero-kicker { font-size: 20px; font-weight: 700; }
 .sb-fhero-big {
-  font-size: clamp(58px, 16.2vw, 132px);
+  font-size: clamp(54px, 7.4vw, 84px);
   font-weight: 800;
   line-height: .92;
-  letter-spacing: -.038em;
+  letter-spacing: -.035em;
+  white-space: nowrap;
 }
 .sb-fhero-kicker + .sb-fhero-big { margin-top: 6px; }
-.sb-fhero-foot { padding: clamp(22px, 5vw, 40px) 7% clamp(24px, 5vw, 44px); }
 .sb-fhero-date {
-  font-size: clamp(32px, 5.9vw, 48px);
+  margin-top: 24px;
+  font-size: 38px;
   font-weight: 800;
   letter-spacing: -.02em;
-  color: #FF5A1F;
+  color: #FF6A33;
 }
-.sb-fhero-sub { font-size: clamp(17px, 2.8vw, 22px); font-weight: 500; margin-top: 4px; }
+.sb-fhero-sub { font-size: 19px; font-weight: 500; margin-top: 2px; }
+@media (max-width: 700px) {
+  .sb-fhero {
+    grid-template-columns: 1fr;
+    grid-template-areas: "photo" "text";
+    min-height: 0;
+    border-radius: 18px;
+    background: #2A2F31;
+  }
+  .sb-fhero-photo { height: 240px; min-height: 0; }
+  html:not(#sbx) body .sb-fhero-photo img {
+    -webkit-mask-image: linear-gradient(to bottom, #000 55%, transparent 100%);
+    mask-image: linear-gradient(to bottom, #000 55%, transparent 100%);
+  }
+  .sb-fhero-text { padding: 0 22px 26px; margin-top: -64px; }
+  .sb-fhero-eyebrow { font-size: 10.5px; margin-bottom: 10px; }
+  .sb-fhero-kicker { font-size: 16px; }
+  .sb-fhero-big { font-size: clamp(46px, 15vw, 64px); }
+  .sb-fhero-date { margin-top: 16px; font-size: 30px; }
+  .sb-fhero-sub { font-size: 16px; }
+}
 
 /* form */
 html:not(#sbx):not(#sbx2).sb-dark-manis form.userform-form,
@@ -6116,9 +6142,9 @@ html:not(#sbx):not(#sbx2).sb-dark-manis form.userform-form .form-all {
   border: 0 !important;
 }
 html:not(#sbx):not(#sbx2).sb-dark-manis form.userform-form .form-all {
-  max-width: 816px !important;
+  max-width: 960px !important;
   margin: 0 auto !important;
-  padding: 0 7% 48px !important;
+  padding: 0 44px 40px !important;
   box-sizing: border-box;
 }
 html:not(#sbx):not(#sbx2).sb-dark-manis form.userform-form * { font-family: "Inter", Helvetica, Arial, sans-serif !important; }
@@ -6128,14 +6154,14 @@ html:not(#sbx):not(#sbx2).sb-dark-manis form.userform-form li.form-line {
   border-top: 1px solid rgba(255, 255, 255, .12) !important;
   border-radius: 0 !important;
   box-shadow: none !important;
-  padding: 22px 0 !important;
+  padding: 16px 0 !important;
   margin: 0 !important;
 }
 html:not(#sbx):not(#sbx2).sb-dark-manis form.userform-form li#id_2 { border-top: 0 !important; padding-top: 0 !important; }
 html:not(#sbx):not(#sbx2).sb-dark-manis form.userform-form .form-html,
 html:not(#sbx):not(#sbx2).sb-dark-manis form.userform-form .form-html p {
   color: rgba(255, 255, 255, .78) !important;
-  font-size: 17px !important;
+  font-size: 16px !important;
   line-height: 1.6 !important;
 }
 html:not(#sbx):not(#sbx2).sb-dark-manis form.userform-form li.sb-fhero-dupe,
@@ -6145,7 +6171,7 @@ html:not(#sbx):not(#sbx2).sb-dark-manis form.userform-form .form-label-left labe
 html:not(#sbx):not(#sbx2).sb-dark-manis form.userform-form .form-label-top,
 html:not(#sbx):not(#sbx2).sb-dark-manis form.userform-form label.form-label {
   color: #fff !important;
-  font-size: 22px !important;
+  font-size: 19px !important;
   font-weight: 700 !important;
   letter-spacing: -.01em !important;
   text-transform: none !important;
@@ -6164,7 +6190,7 @@ html:not(#sbx):not(#sbx2).sb-dark-manis form.userform-form .custom-number-wrappe
   border: 1.5px solid rgba(255, 255, 255, .25) !important;
   border-radius: 999px !important;
   overflow: hidden !important;
-  background: #161616 !important;
+  background: #262A2D !important;
   margin-bottom: 8px !important;
 }
 html:not(#sbx):not(#sbx2).sb-dark-manis form.userform-form .qty-btn {
@@ -6194,7 +6220,7 @@ html:not(#sbx):not(#sbx2).sb-dark-manis form.userform-form .custom-number-wrappe
 html:not(#sbx):not(#sbx2).sb-dark-manis form.userform-form input.form-textbox:not(.form-number-input),
 html:not(#sbx):not(#sbx2).sb-dark-manis form.userform-form select,
 html:not(#sbx):not(#sbx2).sb-dark-manis form.userform-form textarea {
-  background: #161616 !important;
+  background: #262A2D !important;
   border: 1.5px solid rgba(255, 255, 255, .2) !important;
   border-radius: 10px !important;
   color: #fff !important;
@@ -6208,7 +6234,7 @@ html:not(#sbx):not(#sbx2).sb-dark-manis form.userform-form textarea:focus {
   border-color: #FF5A1F !important;
   outline: none !important;
 }
-html:not(#sbx):not(#sbx2).sb-dark-manis form.userform-form select option { background: #161616; color: #fff; }
+html:not(#sbx):not(#sbx2).sb-dark-manis form.userform-form select option { background: #262A2D; color: #fff; }
 /* total + payment */
 html:not(#sbx):not(#sbx2).sb-dark-manis form.userform-form li#id_13 .form-input,
 html:not(#sbx):not(#sbx2).sb-dark-manis form.userform-form li#id_13 .form-input * {
@@ -6246,3 +6272,77 @@ html:not(#sbx):not(#sbx2).sb-dark-manis form.userform-form .form-header {
   letter-spacing: -.02em !important;
 }
 html:not(#sbx):not(#sbx2).sb-dark-manis form.userform-form .form-subHeader { color: rgba(255, 255, 255, .62) !important; }
+
+/* signup-not-open notice over a flyer form (FLYER_HEROES[...].soon) */
+.sb-fsoon { position: relative; max-width: 960px; margin: 0 auto; }
+html:not(#sbx):not(#sbx2) .sb-fsoon > form.userform-form {
+  filter: blur(6px);
+  opacity: .35;
+  max-height: 560px;
+  overflow: hidden !important;
+  pointer-events: none;
+  user-select: none;
+}
+.sb-fsoon-veil {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 26px 16px 0;
+  background: linear-gradient(to bottom, rgba(28, 31, 33, .15), #1C1F21 92%);
+}
+.sb-fsoon-card {
+  width: 100%;
+  max-width: 520px;
+  box-sizing: border-box;
+  padding: 40px 36px 34px;
+  text-align: center;
+  background: #262A2D;
+  border: 1px solid rgba(255, 255, 255, .14);
+  border-top: 3px solid #FF5A1F;
+  border-radius: 22px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, .4);
+  font-family: "Inter", Helvetica, Arial, sans-serif;
+  color: #fff;
+}
+.sb-fsoon-eyebrow {
+  display: inline-block;
+  padding: 7px 14px;
+  border-radius: 999px;
+  background: rgba(255, 90, 31, .14);
+  color: #FF5A1F;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .22em;
+}
+.sb-fsoon-title {
+  margin: 18px 0 12px;
+  font-size: clamp(30px, 6vw, 40px);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -.025em;
+}
+.sb-fsoon-card p {
+  margin: 0;
+  font-family: "Inter", Helvetica, Arial, sans-serif !important;
+}
+html:not(#sbx) body .sb-fsoon-card p.sb-fsoon-text { font-size: 17px; line-height: 1.6; color: rgba(255, 255, 255, .8) !important; }
+html:not(#sbx) body .sb-fsoon-card p.sb-fsoon-note {
+  margin-top: 22px !important;
+  padding-top: 18px;
+  border-top: 1px solid rgba(255, 255, 255, .1);
+  font-size: 14px;
+  color: rgba(255, 255, 255, .62) !important;
+}
+.sb-fsoon-note a { color: #FF5A1F !important; font-weight: 700; text-decoration: none !important; }
+.sb-fsoon-note a:hover { text-decoration: underline !important; }
+@media (max-width: 520px) {
+  .sb-fsoon-veil { padding: 20px 0 0; }
+  .sb-fsoon-card { padding: 30px 20px 26px; }
+  html:not(#sbx):not(#sbx2) .sb-fsoon > form.userform-form { max-height: 640px; }
+}
+@media (max-width: 700px) {
+  html:not(#sbx):not(#sbx2).sb-dark-manis form.userform-form .form-all { padding: 0 2px 32px !important; }
+}
+html.sb-dark-manis body.cco_body #co_body_container { padding-top: 14px !important; }

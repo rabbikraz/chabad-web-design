@@ -141,7 +141,16 @@
       kicker: 'A Shabbat with Rabbi', big: ['Manis', 'Friedman'],
       date: 'DEC 4-5', sub: 'Shabbat Chanukah',
       repeat: /manis friedman|december 4/i,
-      font: 'Inter:wght@500;600;700;800'
+      font: 'Inter:wght@500;600;700;800',
+      /* signup not open yet: the form sits blurred and locked behind a
+         notice. Delete this 'soon' block (and deploy) to open signup. */
+      soon: {
+        eyebrow: 'COMING SOON',
+        title: 'Signup opens shortly',
+        text: 'Seats for Shabbat Chanukah with Rabbi Manis Friedman will be available right here very soon. Please check back.',
+        note: 'Questions? Call or WhatsApp',
+        phone: '786-920-2302'
+      }
     }
   };
   function initFlyerHero() {
@@ -169,16 +178,14 @@
               (window.SB_ASSET_V || 'redesign') + '/assets/' + cfg.img;
     img.alt = cfg.alt || '';
     photo.appendChild(img);
-    photo.appendChild(el('div', 'sb-fhero-eyebrow', cfg.eyebrow));
     hero.appendChild(photo);
-    var title = el('div', 'sb-fhero-title');
-    title.appendChild(el('div', 'sb-fhero-kicker', cfg.kicker));
-    for (var i = 0; i < cfg.big.length; i++) title.appendChild(el('div', 'sb-fhero-big', cfg.big[i]));
-    hero.appendChild(title);
-    var foot = el('div', 'sb-fhero-foot');
-    foot.appendChild(el('div', 'sb-fhero-date', cfg.date));
-    foot.appendChild(el('div', 'sb-fhero-sub', cfg.sub));
-    hero.appendChild(foot);
+    var text = el('div', 'sb-fhero-text');
+    text.appendChild(el('div', 'sb-fhero-eyebrow', cfg.eyebrow));
+    text.appendChild(el('div', 'sb-fhero-kicker', cfg.kicker));
+    for (var i = 0; i < cfg.big.length; i++) text.appendChild(el('div', 'sb-fhero-big', cfg.big[i]));
+    text.appendChild(el('div', 'sb-fhero-date', cfg.date));
+    text.appendChild(el('div', 'sb-fhero-sub', cfg.sub));
+    hero.appendChild(text);
     form.parentNode.insertBefore(hero, form);
     /* short intro lines that only repeat the hero (title, date line) */
     if (cfg.repeat) {
@@ -192,6 +199,31 @@
     for (var s = 1; s < subs.length; s++) {
       var li = subs[s].closest('li');
       if (li) li.classList.add('sb-fhero-dupe');
+    }
+    /* not open yet: wrap the form, lock it (inert: no typing, tabbing or
+       submitting) and lay the notice card over it */
+    if (cfg.soon) {
+      var wrap = el('div', 'sb-fsoon');
+      form.parentNode.insertBefore(wrap, form);
+      wrap.appendChild(form);
+      form.setAttribute('inert', '');
+      form.setAttribute('aria-hidden', 'true');
+      form.addEventListener('submit', function (e) { e.preventDefault(); e.stopImmediatePropagation(); }, true);
+      var veil = el('div', 'sb-fsoon-veil');
+      var card = el('div', 'sb-fsoon-card');
+      card.setAttribute('role', 'status');
+      card.appendChild(el('div', 'sb-fsoon-eyebrow', cfg.soon.eyebrow));
+      card.appendChild(el('div', 'sb-fsoon-title', cfg.soon.title));
+      card.appendChild(el('p', 'sb-fsoon-text', cfg.soon.text));
+      if (cfg.soon.phone) {
+        var note = el('p', 'sb-fsoon-note', cfg.soon.note + ' ');
+        var tel = el('a', '', cfg.soon.phone);
+        tel.href = 'tel:+1' + cfg.soon.phone.replace(/\D/g, '');
+        note.appendChild(tel);
+        card.appendChild(note);
+      }
+      veil.appendChild(card);
+      wrap.appendChild(veil);
     }
   }
   function applySukkotTheme() {
