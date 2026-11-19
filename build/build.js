@@ -194,7 +194,7 @@ async function build() {
   // Pages whose CMS title is hidden (style.css html.sb-notitle). Same list
   // as NOTITLE_PAGES in script.js; window.SB_NOTITLE_PAGES overrides.
   const noTitleFlag =
-    "var N=window.SB_NOTITLE_PAGES||['7080118','7474052','7437612','7407611','7407897','eventid/24234','eventid/24330'];" +
+    "var N=window.SB_NOTITLE_PAGES||['7080118','7474052','7437612','7407611','7407897','eventid/24234','eventid/24330','7629705'];" +
     "for(var j=0;j<N.length;j++){if(location.href.indexOf(N[j])>-1){document.documentElement.className+=' sb-notitle';break;}}";
   // Sukkot pages (style.css section 23, teal/apricot). Same list as
   // SUKKOT_PAGES in script.js; window.SB_SUKKOT_PAGES overrides.
@@ -207,7 +207,12 @@ async function build() {
   const skinFlag =
     "var K={'eventid/24234':'sage','eventid/24330':'blush'};" +
     "for(var q in K){if(location.href.indexOf(q)>-1){document.documentElement.className+=' sb-skin sb-skin-'+K[q];break;}}";
-  const bootJs = resolveVer + hhFlag + noTitleFlag + sukkotFlag + skinFlag +
+  // Dark pages (style.css section 26, black/cream/gold). Same list as
+  // DARK_PAGES in script.js; window.SB_DARK_PAGES overrides.
+  const darkFlag =
+    "var D=window.SB_DARK_PAGES||['7629705'];" +
+    "for(var d=0;d<D.length;d++){if(location.href.indexOf(D[d])>-1){document.documentElement.className+=' sb-dark';break;}}";
+  const bootJs = resolveVer + hhFlag + noTitleFlag + sukkotFlag + skinFlag + darkFlag +
     "document.write('<link rel=\"stylesheet\" href=\"'+B+'site.css\">');" +
     "})();";
   const bootFooterJs = resolveVer +

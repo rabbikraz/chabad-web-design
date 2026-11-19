@@ -5860,3 +5860,136 @@ html.sb-skin-blush #Performances > :first-child {
   font-weight: 500;
   color: #573E63;
 }
+
+/* --------------------------------------------------------------------------
+   26. DARK PAGE THEME (html.sb-dark) - the whole page in the black/cream/
+   gold of a dark flyer paste (first use: 19 Kislev, aid 7629705), so the
+   flyer block no longer sits as a black box on the cream site. Flagged in
+   <head> by boot.js (darkFlag in build.js) and again by site.js
+   (DARK_PAGES). Palette: page #050505 · deep #0B0A08 · ink #F6EFDF ·
+   muted #CFC3A6 · gold #E2C88E · line #8F7F5C.
+   -------------------------------------------------------------------------- */
+html.sb-dark { background: #050505; }
+html.sb-dark #header,
+html.sb-dark #footer {
+  --sb-text: #F6EFDF;
+  --sb-divider: rgba(246, 239, 223, .14);
+  --sb-accent-100: rgba(226, 200, 142, .14);
+  --sb-accent-200: rgba(226, 200, 142, .3);
+  --sb-accent-300: #E2C88E;
+  --sb-accent-700: #CFC3A6;
+  --sb-teal-100: rgba(246, 239, 223, .08);
+  --sb-teal-300: #E2C88E;
+  --sb-teal-700: #F6EFDF;
+  --sb-teal-900: #0B0A08;
+}
+html.sb-dark body,
+html.sb-dark body.cco_body,
+html.sb-dark #BodyContainer,
+html.sb-dark #BodyContainer > .body_wrapper,
+html.sb-dark body.sites-article #content,
+html.sb-dark #content,
+html.sb-dark .co_content_container,
+html.sb-dark body.cco_body .master-content-wrapper,
+html.sb-dark .cco_body .body_wrapper.co_body { background: #050505 !important; }
+html.sb-dark #BodyContainer > .body_wrapper::before { color: #8F7F5C !important; }
+html.sb-dark .co_body .content,
+html.sb-dark #ContentBody { color: #F6EFDF; }
+
+/* header + desktop nav */
+html.sb-dark body.cco_body #header {
+  background: rgba(11, 10, 8, .96);
+  border-bottom: 1px solid rgba(226, 200, 142, .22);
+}
+html.sb-dark body.cco_body #header.on-scroll { box-shadow: 0 6px 22px rgba(0, 0, 0, .6); }
+html.sb-dark a.site_title,
+html.sb-dark #header a.site_title::before,
+html.sb-dark #header.on-scroll .branding-search a.site_title::before { color: #F6EFDF !important; }
+html.sb-dark .branding-search #header_branding .site_title .site_subtitle { color: #CFC3A6; }
+html.sb-dark .co_search_form input.co_search {
+  background: rgba(255, 255, 255, .06);
+  border-color: rgba(246, 239, 223, .25);
+  color: #F6EFDF;
+}
+html.sb-dark .co_search_form input.co_search::placeholder { color: rgba(246, 239, 223, .55); }
+html.sb-dark .co_search_form .co_global_submit .button { background-color: rgba(226, 200, 142, .16); }
+html.sb-dark .co_search_form .co_global_submit .button:before,
+html.sb-dark #topAreaTopSearch_search_wrapper { color: #F6EFDF; }
+html.sb-dark #tabContentMain .co_menu_item.home a:before,
+html.sb-dark body.sites-article #header #tabContentMain .co_menu_item span.parent a,
+html.sb-dark body.cco_body #header #tabContentMain .co_menu_item span.parent a,
+html.sb-dark body.cco_body #tabContentMain .co_menu_item span.parent a { color: #F6EFDF; }
+html.sb-dark #tabContentMain .co_menu_item.home a:hover,
+html.sb-dark body.cco_body #tabContentMain .co_menu_item.hover span.parent a {
+  background: rgba(226, 200, 142, .14);
+  color: #F6EFDF;
+}
+html.sb-dark body.cco_body #header #tabContentMain .co_menu_item.donate_link span.parent a,
+html.sb-dark body.sites-article #header #tabContentMain .co_menu_item.donate_link span.parent a,
+html.sb-dark body.cco_body #tabContentMain .co_menu_item.donate_link.hover span.parent div a {
+  background: #E2C88E;
+  color: #17130A;
+}
+html.sb-dark body.cco_body #tabContentMain .co_menu_item.donate_link span.parent a:hover { background: #F6EFDF; color: #17130A; }
+@media (min-width: 1025px) {
+  html.sb-dark #header #tabContentMain .co_menu_item .co_submenu_container {
+    background: #0B0A08 !important;
+    border-color: rgba(226, 200, 142, .2) !important;
+    border-top-color: #E2C88E !important;
+    box-shadow: 0 18px 40px rgba(0, 0, 0, .6) !important;
+  }
+  html.sb-dark #header #tabContentMain .co_menu_item .co_submenu_container a.item { color: #F6EFDF !important; }
+  html.sb-dark #header #tabContentMain .co_menu_item .co_submenu_container a.item:hover,
+  html.sb-dark #header #tabContentMain .co_menu_item .co_submenu_container a.item:hover span { color: #E2C88E !important; }
+}
+
+/* mobile drawer */
+@media (max-width: 1024px) {
+  html.sb-dark body.cco_body #header { background: #0B0A08; }
+  html.sb-dark #header .cs-mobile-menu-open,
+  html.sb-dark body.menu-open #header .cs-mobile-menu-open { background: rgba(226, 200, 142, .14); }
+  html.sb-dark #header .cs-mobile-menu-open .bar,
+  html.sb-dark body.menu-open #header .cs-mobile-menu-open .bar { background: #F6EFDF; }
+  html.sb-dark body.cco_body #header .site-nav-wrapper.site-nav-wrapper { background: #0B0A08; color: #F6EFDF; }
+  html.sb-dark body.cco_body #tabContentMain .co_menu_item { border-bottom-color: rgba(246, 239, 223, .14); }
+  html.sb-dark #tabContentMain .co_menu_item.home a:before { color: #F6EFDF; }
+  html.sb-dark body.cco_body #tabContentMain .co_menu_item span.parent a { color: #F6EFDF !important; }
+  html.sb-dark body.cco_body #tabContentMain .co_menu_item.hover span.parent a,
+  html.sb-dark body.cco_body #tabContentMain .co_menu_item span.parent a:hover { color: #E2C88E !important; }
+  html.sb-dark #tabContentMain .co_menu_item .sb-sub-toggle {
+    border-right-color: #E2C88E !important;
+    border-bottom-color: #E2C88E !important;
+  }
+  html.sb-dark #tabContentMain .co_menu_item.arrow .co_submenu_container a.item { color: rgba(246, 239, 223, .85); }
+  html.sb-dark #tabContentMain .co_menu_item.arrow .co_submenu_container a.item:hover span { color: #E2C88E; }
+  html.sb-dark body.cco_body #tabContentMain .co_menu_item.donate_link span.parent a,
+  html.sb-dark body.cco_body #tabContentMain .co_menu_item.donate_link span.parent div a {
+    background: #E2C88E !important;
+    color: #17130A !important;
+  }
+  html.sb-dark .mobile-menu-bottom-links a { color: rgba(246, 239, 223, .75) !important; }
+  html.sb-dark .mobile-menu-bottom-links a:hover { color: #E2C88E !important; }
+}
+
+/* footer */
+html.sb-dark body.cco_body #footer {
+  background: #0B0A08;
+  border-top: 1px solid rgba(226, 200, 142, .25);
+}
+html.sb-dark #footer .footer-title,
+html.sb-dark #footer .footer_container.footer_text,
+html.sb-dark #footer .footer-address { color: #F6EFDF; }
+html.sb-dark .sb-footer-phone a,
+html.sb-dark a.sb-footer-phone,
+html.sb-dark .sb-footer-col-title,
+html.sb-dark .sb-footer-bottom a,
+html.sb-dark .sb-footer-links a:hover,
+html.sb-dark body.cco_body:not(.sb-js) #footer a { color: #E2C88E !important; }
+html.sb-dark .sb-footer-phone a:hover,
+html.sb-dark a.sb-footer-phone:hover,
+html.sb-dark .sb-footer-bottom a:hover { color: #F6EFDF !important; }
+html.sb-dark .sb-footer-links a { color: rgba(246, 239, 223, .85) !important; }
+html.sb-dark .sb-footer-brand-row .sb-logo-mark { box-shadow: inset 0 0 0 1px #E2C88E; background: rgba(246, 239, 223, .08); }
+html.sb-dark .sb-footer-bottom { border-top-color: rgba(246, 239, 223, .18); color: rgba(246, 239, 223, .6); }
+html.sb-dark #footer .cs-f-social-icons a { box-shadow: inset 0 0 0 1px rgba(246, 239, 223, .35); color: #F6EFDF !important; }
+html.sb-dark #footer .cs-f-social-icons a:hover { background: rgba(226, 200, 142, .14); }
