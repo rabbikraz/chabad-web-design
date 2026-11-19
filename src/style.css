@@ -5912,6 +5912,26 @@ html.sb-dark.sb-dark-pointe {
   --sbd-line: #4F7A6E;
 }
 html.sb-dark-pointe body.cco_body #co_body_container { padding-top: 14px !important; }
+/* events = Upcoming Events (aid 7157257): a LIGHT palette on the same
+   tokens (the sb-dark rules are palette-agnostic): neutral off-white page
+   so the white event cards stand out, white header/footer, near-black ink,
+   the list's teal accent */
+html.sb-dark.sb-dark-events {
+  --sbd-bg: #F3F4F2;
+  --sbd-head: rgba(255, 255, 255, .96);
+  --sbd-deep: #FFFFFF;
+  --sbd-ink: #141414;
+  --sbd-ink-rgb: 20, 20, 20;
+  --sbd-muted: #555555;
+  --sbd-gold: #0F766E;
+  --sbd-gold-rgb: 15, 118, 110;
+  --sbd-btn-ink: #FFFFFF;
+  --sbd-line: #8A8F8C;
+}
+html.sb-dark-events body.cco_body #co_body_container { padding-top: 14px !important; }
+html.sb-dark-events body.cco_body #header { border-bottom-color: rgba(20, 20, 20, .1); }
+html.sb-dark-events body.cco_body #header.on-scroll { box-shadow: 0 6px 22px rgba(20, 20, 20, .08); }
+html.sb-dark-events body.cco_body #footer { border-top: 2px solid #141414; }
 html.sb-dark #header,
 html.sb-dark #footer {
   --sb-text: var(--sbd-ink);
@@ -6011,6 +6031,21 @@ html.sb-dark body.cco_body #tabContentMain .co_menu_item.donate_link span.parent
   }
   html.sb-dark .mobile-menu-bottom-links a { color: rgba(var(--sbd-ink-rgb), .75) !important; }
   html.sb-dark .mobile-menu-bottom-links a:hover { color: var(--sbd-gold) !important; }
+}
+
+/* drawer links + Donate: the base drawer rules carry the #header id and
+   paint cream labels / a gold Donate, which beat the token rules above
+   (invisible labels on a light palette). Re-assert at that strength. */
+@media (max-width: 1024px) {
+  html.sb-dark body.cco_body #header #tabContentMain .co_menu_item span.parent a,
+  html.sb-dark body.cco_body #header #tabContentMain .co_menu_item span.parent div a { color: var(--sbd-ink) !important; }
+  html.sb-dark body.cco_body #header #tabContentMain .co_menu_item.arrow .co_submenu_container a.item,
+  html.sb-dark body.cco_body #header #tabContentMain .co_menu_item.arrow .co_submenu_container a.item span { color: rgba(var(--sbd-ink-rgb), .82) !important; }
+  html.sb-dark body.cco_body #header #tabContentMain .co_menu_item.donate_link span.parent a,
+  html.sb-dark body.cco_body #header #tabContentMain .co_menu_item.donate_link span.parent div a {
+    background: var(--sbd-gold) !important;
+    color: var(--sbd-btn-ink) !important;
+  }
 }
 
 /* footer */
