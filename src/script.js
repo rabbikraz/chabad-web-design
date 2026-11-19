@@ -226,6 +226,75 @@
       wrap.appendChild(veil);
     }
   }
+
+  /* PAST EVENTS (style.css: .sb-ev-past): on any event list built from
+     .csb-event cards (Upcoming Events, aid 7157257), cross out events that
+     are over. Year comes from the list's .csb-season line; ends are
+     computed in Miami time:
+       "8:15 AM to 12:30 PM" -> at the last time listed
+       "7:30 PM"             -> 3 hours after the start
+       no clock time         -> end of the last day ("4-5" = the 5th)
+     Rechecks every minute while the page is open. */
+  function initPastEvents() {
+    var cards = document.querySelectorAll('a.csb-event, div.csb-event');
+    if (!cards.length) return;
+    var MONTHS = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
+    var season = document.querySelector('.csb-season');
+    var ym = season && season.textContent.match(/20\d\d/);
+    var year = ym ? +ym[0] : new Date().getFullYear();
+    /* minutes that America/New_York is behind UTC at a given moment */
+    function nyOffsetMin(d) {
+      try {
+        var p = new Intl.DateTimeFormat('en-US', { timeZone: 'America/New_York', timeZoneName: 'shortOffset' })
+          .formatToParts(d).filter(function (x) { return x.type === 'timeZoneName'; })[0].value;
+        var m = p.match(/GMT([+-])(\d+)(?::(\d+))?/);
+        if (m) return (m[1] === '-' ? 1 : -1) * (+m[2] * 60 + (+m[3] || 0));
+      } catch (e) {}
+      return d.getTimezoneOffset();
+    }
+    function nyTime(y, mo, day, h, mi) {
+      var guess = Date.UTC(y, mo, day, h, mi);
+      return guess + nyOffsetMin(new Date(guess)) * 60000;
+    }
+    var prevMonth = -1, ends = [];
+    for (var i = 0; i < cards.length; i++) {
+      var c = cards[i];
+      var mEl = c.querySelector('.csb-month'), dEl = c.querySelector('.csb-day');
+      if (!mEl || !dEl) { ends.push(null); continue; }
+      var mo = MONTHS.indexOf(mEl.textContent.trim().slice(0, 3).toLowerCase());
+      var days = dEl.textContent.match(/\d+/g);
+      if (mo < 0 || !days) { ends.push(null); continue; }
+      if (prevMonth > -1 && mo < prevMonth) year++; /* list runs Dec -> Jan */
+      prevMonth = mo;
+      var day = +days[days.length - 1];
+      var tEl = c.querySelector('.csb-time');
+      var times = [], re = /(\d{1,2})(?::(\d\d))?\s*(AM|PM)/gi, t;
+      while (tEl && (t = re.exec(tEl.textContent))) {
+        var h = +t[1] % 12 + (t[3].toUpperCase() === 'PM' ? 12 : 0);
+        times.push([h, +t[2] || 0]);
+      }
+      var end;
+      if (times.length > 1) end = nyTime(year, mo, day, times[times.length - 1][0], times[times.length - 1][1]);
+      else if (times.length === 1) end = nyTime(year, mo, day, times[0][0], times[0][1]) + 3 * 3600000;
+      else end = nyTime(year, mo, day, 23, 59);
+      ends.push(end);
+    }
+    function check() {
+      var now = window.SB_NOW ? +new Date(window.SB_NOW) : Date.now();
+      for (var k = 0; k < cards.length; k++) {
+        if (ends[k] === null || ends[k] === undefined) continue;
+        var past = now >= ends[k], card = cards[k], go = card.querySelector('.csb-go');
+        if (past === card.classList.contains('sb-ev-past')) continue;
+        card.classList.toggle('sb-ev-past', past);
+        if (go) {
+          if (past) { go.setAttribute('data-sb-label', go.textContent); go.textContent = 'Ended'; }
+          else if (go.getAttribute('data-sb-label')) go.textContent = go.getAttribute('data-sb-label');
+        }
+      }
+    }
+    check();
+    setInterval(check, 60000);
+  }
   function applySukkotTheme() {
     var href = window.location.href;
     for (var i = 0; i < SUKKOT_PAGES.length; i++) {
@@ -4355,6 +4424,7 @@
     safe('sukkot-theme', applySukkotTheme);
     safe('dark-theme', applyDarkTheme);
     safe('flyer-hero', initFlyerHero);
+    safe('past-events', initPastEvents);
     safe('no-title', applyNoTitle);
     safe('page-rules', runPageRules);
     safe('page-theme', applyPageTheme);

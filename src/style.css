@@ -6396,3 +6396,16 @@ html:not(#sbx) body .sb-fsoon-card p.sb-fsoon-note {
   html:not(#sbx):not(#sbx2).sb-dark-manis form.userform-form .form-all { padding: 0 2px 32px !important; }
 }
 html.sb-dark-manis body.cco_body #co_body_container { padding-top: 14px !important; }
+
+/* past events on .csb-event lists (initPastEvents in site.js): crossed
+   out, faded and greyed; the button reads "Ended" */
+html body a.csb-event.sb-ev-past,
+html body div.csb-event.sb-ev-past { opacity: .5; filter: grayscale(1); }
+html body .csb-event.sb-ev-past:hover { opacity: .75; }
+html body .csb-event.sb-ev-past .csb-name,
+html body .csb-event.sb-ev-past .csb-sub,
+html body .csb-event.sb-ev-past .csb-time,
+html body .csb-event.sb-ev-past .csb-day {
+  text-decoration: line-through !important;
+  text-decoration-thickness: 2px !important;
+}
