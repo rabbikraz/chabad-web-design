@@ -4247,6 +4247,88 @@
     setTimeout(function () { try { ok.focus(); } catch (e) { } }, 50);
   }
 
+  /* SHABBAT CHANUKAH DISCOUNT CODES (Shabbaton, aid 7629749). Runs only on a
+     form that has BOTH a "Discount code" text box and a "(Discount) Amount"
+     number field (priced -$1/unit in the builder). The code discounts the
+     four seat lines only; sponsor seats and "Or add any amount" stay full.
+     The Amount row is hidden with display:none, NOT form-field-hidden:
+     the ChabadOne total skips fields carrying that class. */
+  function initShabbatDiscount() {
+    var f = document.querySelector('form.userform-form');
+    if (!f) return;
+    function lbl(li) {
+      var l = li.querySelector('.form-label-left label, .form-label label, label.form-label');
+      if (!l) return '';
+      var c = l.cloneNode(true), star = c.querySelector('.form-required');
+      if (star) star.parentNode.removeChild(star);
+      return String(c.textContent || '').replace(/\s+/g, ' ').trim().toLowerCase();
+    }
+    var lis = $all('li.form-line', f);
+    function byLabel(text) {
+      for (var i = 0; i < lis.length; i++) if (lbl(lis[i]) === text) return lis[i];
+      return null;
+    }
+    var codeLi = byLabel('discount code'), amtLi = byLabel('(discount) amount');
+    var codeIn = codeLi && codeLi.querySelector('input[type="text"], input:not([type])');
+    var amtIn = amtLi && amtLi.querySelector('input');
+    if (!codeIn || !amtIn || f.getAttribute('data-sb-shdisc')) return;
+    f.setAttribute('data-sb-shdisc', '1');
+    amtLi.style.display = 'none';
+
+    var SEATS = [
+      ['friday night: dinner and real talk', 100],
+      ['shabbat day: kiddush and conversation', 100],
+      ['motzei shabbos: havdalah and chanukah kumzitz with rabbi manis', 36],
+      ['full shabbaton', 175]
+    ].map(function (s) {
+      var li = byLabel(s[0]);
+      var inp = li && li.querySelector('input');
+      var qid = li && /^id_(\d+)$/.exec(li.id || '');
+      var fj = window.formJson, per = s[1];
+      if (qid && fj && fj[qid[1] + '_pricePerItem'] != null && !isNaN(parseFloat(fj[qid[1] + '_pricePerItem']))) {
+        per = parseFloat(fj[qid[1] + '_pricePerItem']);
+      }
+      return inp ? { input: inp, price: per } : null;
+    }).filter(Boolean);
+    var CODES = { LOCAL50: { pct: 50, msg: 'Code applied: 50% off your seats' },
+                  LOCAL100: { pct: 100, msg: 'Code applied: your seats are covered' } };
+
+    var msg = document.createElement('div');
+    msg.className = 'sb-shdisc-msg';
+    msg.style.cssText = 'margin-top:8px;font-size:14px;font-weight:600;line-height:1.4;';
+    (codeIn.parentNode || codeLi).appendChild(msg);
+
+    function fire(elm, types) {
+      types.forEach(function (t) { elm.dispatchEvent(new Event(t, { bubbles: true })); });
+    }
+    var busy = false;
+    function apply() {
+      if (busy) return;
+      var raw = String(codeIn.value || '').trim(), def = CODES[raw.toUpperCase()];
+      var sub = 0;
+      SEATS.forEach(function (s) { sub += (parseFloat(s.input.value) || 0) * s.price; });
+      var off = def ? Math.round(sub * def.pct / 100) : 0;
+      if (!raw) { msg.textContent = ''; }
+      else if (def) { msg.textContent = def.msg; msg.style.color = '#2E9E5B'; }
+      else { msg.textContent = 'Code not recognized'; msg.style.color = '#D9776A'; }
+      if (amtIn.value !== String(off)) {
+        busy = true;
+        try { amtIn.value = String(off); fire(amtIn, ['input', 'change', 'keyup']); } finally { busy = false; }
+      }
+      try { if (typeof window.updateTotals === 'function') window.updateTotals(); } catch (e) { }
+    }
+    var ins = [codeIn].concat(SEATS.map(function (s) { return s.input; }));
+    ins.forEach(function (i) {
+      ['input', 'keyup', 'change'].forEach(function (t) { i.addEventListener(t, apply); });
+    });
+    // the +/- buttons change the qty in script; catch their clicks too
+    SEATS.forEach(function (s) {
+      var w = s.input.closest && s.input.closest('li');
+      if (w) w.addEventListener('click', function () { setTimeout(apply, 0); });
+    });
+    apply();
+  }
+
   function initLulavForm() {
     if (!document.documentElement.classList.contains('sb-sukkot')) return;
     var f = document.querySelector('form.userform-form');
@@ -4472,6 +4554,7 @@
     safe('late-payment', initLatePayment);
     safe('sukkot-meals', initSukkotMeals);
     safe('lulav-form', initLulavForm);
+    safe('shabbat-discount', initShabbatDiscount);
     safe('sukkot-schedule', initSukkotSchedule);
     safe('sukkot-gutters', fixSukkotGutters);
     safe('membership-standalone', initMembershipStandalone);
