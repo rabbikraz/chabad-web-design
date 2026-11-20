@@ -239,19 +239,21 @@
        "7:30 PM"             -> 3 hours after the start
        no clock time         -> end of the last day ("4-5" = the 5th)
      Rechecks every minute while the page is open. */
-  function initPastEvents() {
-    var cards = document.querySelectorAll('a.csb-event, div.csb-event');
-    if (!cards.length) return;
-    var MONTHS = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
-    var season = document.querySelector('.csb-season');
-    var ym = season && season.textContent.match(/20\d\d/);
+  /* Read the .csb-event cards of an Upcoming Events list (the page itself,
+     or a fetched copy for the home rail). Returns one entry per card:
+     { y, mo, day, end } with end = when it is over, in ms (Miami time),
+     or null for a card without a readable date. */
+  var CSB_MONTHS = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
+  function csbEventDates(cards, root) {
+    var season = (root || document).querySelector('.csb-season');
+    var ym = season && season.textContent.match(/20dd/);
     var year = ym ? +ym[0] : new Date().getFullYear();
     /* minutes that America/New_York is behind UTC at a given moment */
     function nyOffsetMin(d) {
       try {
         var p = new Intl.DateTimeFormat('en-US', { timeZone: 'America/New_York', timeZoneName: 'shortOffset' })
           .formatToParts(d).filter(function (x) { return x.type === 'timeZoneName'; })[0].value;
-        var m = p.match(/GMT([+-])(\d+)(?::(\d+))?/);
+        var m = p.match(/GMT([+-])(d+)(?::(d+))?/);
         if (m) return (m[1] === '-' ? 1 : -1) * (+m[2] * 60 + (+m[3] || 0));
       } catch (e) {}
       return d.getTimezoneOffset();
@@ -260,19 +262,19 @@
       var guess = Date.UTC(y, mo, day, h, mi);
       return guess + nyOffsetMin(new Date(guess)) * 60000;
     }
-    var prevMonth = -1, ends = [];
+    var prevMonth = -1, out = [];
     for (var i = 0; i < cards.length; i++) {
       var c = cards[i];
       var mEl = c.querySelector('.csb-month'), dEl = c.querySelector('.csb-day');
-      if (!mEl || !dEl) { ends.push(null); continue; }
-      var mo = MONTHS.indexOf(mEl.textContent.trim().slice(0, 3).toLowerCase());
-      var days = dEl.textContent.match(/\d+/g);
-      if (mo < 0 || !days) { ends.push(null); continue; }
+      if (!mEl || !dEl) { out.push(null); continue; }
+      var mo = CSB_MONTHS.indexOf(mEl.textContent.trim().slice(0, 3).toLowerCase());
+      var days = dEl.textContent.match(/d+/g);
+      if (mo < 0 || !days) { out.push(null); continue; }
       if (prevMonth > -1 && mo < prevMonth) year++; /* list runs Dec -> Jan */
       prevMonth = mo;
       var day = +days[days.length - 1];
       var tEl = c.querySelector('.csb-time');
-      var times = [], re = /(\d{1,2})(?::(\d\d))?\s*(AM|PM)/gi, t;
+      var times = [], re = /(d{1,2})(?::(dd))?s*(AM|PM)/gi, t;
       while (tEl && (t = re.exec(tEl.textContent))) {
         var h = +t[1] % 12 + (t[3].toUpperCase() === 'PM' ? 12 : 0);
         times.push([h, +t[2] || 0]);
@@ -281,8 +283,14 @@
       if (times.length > 1) end = nyTime(year, mo, day, times[times.length - 1][0], times[times.length - 1][1]);
       else if (times.length === 1) end = nyTime(year, mo, day, times[0][0], times[0][1]) + 3 * 3600000;
       else end = nyTime(year, mo, day, 23, 59);
-      ends.push(end);
+      out.push({ y: year, mo: mo, day: +days[0], end: end });
     }
+    return out;
+  }
+  function initPastEvents() {
+    var cards = document.querySelectorAll('a.csb-event, div.csb-event');
+    if (!cards.length) return;
+    var ends = csbEventDates(cards).map(function (d) { return d ? d.end : null; });
     function check() {
       var now = window.SB_NOW ? +new Date(window.SB_NOW) : Date.now();
       for (var k = 0; k < cards.length; k++) {
@@ -835,28 +843,67 @@
     }
 
     /* The widget reads the CMS Calendar only. When that is empty ("There are
-       no upcoming events posted"), fall back to the Event Reservations list
-       (same origin, upcoming events only); nothing there either -> hide the
-       section instead of showing the empty message. */
+       no upcoming events posted"), fill it from the hand-made Upcoming Events
+       page (aid 7157257, the .csb-event list: the full program, events that
+       are over skipped). If that has nothing ahead, try the Event Reservations
+       list (only events with online sign-up); nothing there either -> hide
+       the section instead of showing the empty message. */
     if (!$('#noRecordsText', widget)) return;
     widget.style.visibility = 'hidden';
+    var PAGE = '/templates/articlecco_cdo/aid/7157257/jewish/Upcoming-Events.htm';
     var LIST = '/tools/events/default_cdo/jewish/Events.htm';
-    var done = function (items) {
+    var done = function (items, href) {
       if (items && items.length) {
         var more = el('a', null, 'All events');
-        more.href = LIST;
+        more.href = href;
         renderEventsRail(wrapper, heading, more, items);
         widget.style.visibility = '';
       } else {
         widget.style.display = 'none';
       }
     };
+    var DOW = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    var MON = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
+      'August', 'September', 'October', 'November', 'December'];
+    var p = new XMLHttpRequest();
+    p.open('GET', PAGE);
+    p.onload = function () {
+      var items = [];
+      if (p.status === 200) {
+        try {
+          var doc = new DOMParser().parseFromString(p.responseText, 'text/html');
+          var cards = doc.querySelectorAll('a.csb-event, div.csb-event');
+          var dates = csbEventDates(cards, doc);
+          var now = window.SB_NOW ? +new Date(window.SB_NOW) : Date.now();
+          for (var i = 0; i < cards.length; i++) {
+            var d = dates[i], c = cards[i], name = c.querySelector('.csb-name');
+            if (!d || !name || d.end <= now) continue;
+            var tEl = c.querySelector('.csb-time');
+            // "8:15 AM to<br> 12:30 PM" -> "8:15am - 12:30pm"
+            var time = tEl ? txt(tEl).replace(/\s*(AM|PM)\b/gi, function (m, ap) { return ap.toLowerCase(); })
+              .replace(/\s+to\s+/i, ' - ') : '';
+            var dow = DOW[new Date(d.y, d.mo, d.day).getDay()];
+            items.push({
+              when: dow + ', ' + MON[d.mo] + ' ' + d.day + ', ' + d.y + (time ? ' - ' + time : ''),
+              title: txt(name),
+              href: c.getAttribute('href') || PAGE
+            });
+          }
+        } catch (e) { items = []; }
+      }
+      if (items.length) done(items, PAGE); else loadList();
+    };
+    p.onerror = function () { loadList(); };
+    p.send();
+
+    function loadList() {
     var x = new XMLHttpRequest();
     x.open('GET', LIST);
+    var listDone = function (items) { done(items, LIST); };
     x.onload = function () {
-      if (x.status !== 200) return done(null);
+      if (x.status !== 200) return listDone(null);
       var doc = new DOMParser().parseFromString(x.responseText, 'text/html');
-      done($all('.event', doc).map(function (ev) {
+      listDone($all('.event', doc).map(function (ev) {
         var a = ev.querySelector('h2 a');
         var date = txt(ev.querySelector('.performance__date'));
         if (!a || !date) return null;
@@ -867,8 +914,9 @@
         return { when: when, title: txt(a), href: a.getAttribute('href') || '#' };
       }).filter(Boolean));
     };
-    x.onerror = function () { done(null); };
+    x.onerror = function () { listDone(null); };
     x.send();
+    }
   }
 
   function renderEventsRail(wrapper, heading, readMore, items) {
