@@ -246,14 +246,14 @@
   var CSB_MONTHS = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
   function csbEventDates(cards, root) {
     var season = (root || document).querySelector('.csb-season');
-    var ym = season && season.textContent.match(/20dd/);
+    var ym = season && season.textContent.match(/20\d\d/);
     var year = ym ? +ym[0] : new Date().getFullYear();
     /* minutes that America/New_York is behind UTC at a given moment */
     function nyOffsetMin(d) {
       try {
         var p = new Intl.DateTimeFormat('en-US', { timeZone: 'America/New_York', timeZoneName: 'shortOffset' })
           .formatToParts(d).filter(function (x) { return x.type === 'timeZoneName'; })[0].value;
-        var m = p.match(/GMT([+-])(d+)(?::(d+))?/);
+        var m = p.match(/GMT([+-])(\d+)(?::(\d+))?/);
         if (m) return (m[1] === '-' ? 1 : -1) * (+m[2] * 60 + (+m[3] || 0));
       } catch (e) {}
       return d.getTimezoneOffset();
@@ -268,13 +268,13 @@
       var mEl = c.querySelector('.csb-month'), dEl = c.querySelector('.csb-day');
       if (!mEl || !dEl) { out.push(null); continue; }
       var mo = CSB_MONTHS.indexOf(mEl.textContent.trim().slice(0, 3).toLowerCase());
-      var days = dEl.textContent.match(/d+/g);
+      var days = dEl.textContent.match(/\d+/g);
       if (mo < 0 || !days) { out.push(null); continue; }
       if (prevMonth > -1 && mo < prevMonth) year++; /* list runs Dec -> Jan */
       prevMonth = mo;
       var day = +days[days.length - 1];
       var tEl = c.querySelector('.csb-time');
-      var times = [], re = /(d{1,2})(?::(dd))?s*(AM|PM)/gi, t;
+      var times = [], re = /(\d{1,2})(?::(\d\d))?\s*(AM|PM)/gi, t;
       while (tEl && (t = re.exec(tEl.textContent))) {
         var h = +t[1] % 12 + (t[3].toUpperCase() === 'PM' ? 12 : 0);
         times.push([h, +t[2] || 0]);
