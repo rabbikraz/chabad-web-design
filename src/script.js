@@ -141,16 +141,10 @@
       kicker: 'A Shabbat with Rabbi', big: ['Manis', 'Friedman'],
       date: 'DEC 4-5', sub: 'Shabbat Chanukah',
       repeat: /manis friedman|december 4/i,
-      font: 'Inter:wght@500;600;700;800',
-      /* signup not open yet: the form sits blurred and locked behind a
-         notice. Delete this 'soon' block (and deploy) to open signup. */
-      soon: {
-        eyebrow: 'COMING SOON',
-        title: 'Signup opens shortly',
-        text: 'Seats for Shabbat Chanukah with Rabbi Manis Friedman will be available right here very soon. Please check back.',
-        note: 'Questions? Call or WhatsApp',
-        phone: '786-920-2302'
-      }
+      font: 'Inter:wght@500;600;700;800'
+      /* to lock the form behind a notice again, add:
+         soon: { eyebrow: 'COMING SOON', title: '...', text: '...',
+                 note: 'Questions? Call or WhatsApp', phone: '786-920-2302' } */
     }
   };
   function initFlyerHero() {
