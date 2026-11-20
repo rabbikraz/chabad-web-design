@@ -6573,3 +6573,6 @@ html.sb-flyer-tight body .csb-events .csb-head {
   text-align: center !important;
 }
 html.sb-flyer-tight body .csb-events .csb-head > section { text-align: center !important; }
+/* the title's tight line-height lets the "p"/"g" tails hang into the season
+   line right under it; give the season line room */
+html body .csb-title + .csb-season { margin-top: 14px !important; }

@@ -834,21 +834,17 @@
     var heading = txt($('.widget_header h5', widget)) || 'Upcoming Events';
     var readMore = $('.widget_content a.readMore', widget);
 
-    if (lis.length) {
-      renderEventsRail(wrapper, heading, readMore, lis.map(function (li) {
-        var a = li.querySelector('h6 a');
-        return a ? { when: txt(li.querySelector('small')), title: txt(a), href: a.getAttribute('href') || '#' } : null;
-      }));
-      return;
-    }
-
-    /* The widget reads the CMS Calendar only. When that is empty ("There are
-       no upcoming events posted"), fill it from the hand-made Upcoming Events
-       page (aid 7157257, the .csb-event list: the full program, events that
-       are over skipped). If that has nothing ahead, try the Event Reservations
-       list (only events with online sign-up); nothing there either -> hide
-       the section instead of showing the empty message. */
-    if (!$('#noRecordsText', widget)) return;
+    /* Source order (Leibel 2026-11-19: the rail showed only Sparks, the one
+       event in the CMS Calendar):
+       1. the hand-made Upcoming Events page (aid 7157257, the .csb-event
+          list: the full program; events that are over are skipped)
+       2. the widget's own CMS Calendar items
+       3. the Event Reservations list (only events with online sign-up)
+       nothing anywhere -> hide the section instead of the empty message. */
+    var calItems = lis.map(function (li) {
+      var a = li.querySelector('h6 a');
+      return a ? { when: txt(li.querySelector('small')), title: txt(a), href: a.getAttribute('href') || '#' } : null;
+    }).filter(Boolean);
     widget.style.visibility = 'hidden';
     var PAGE = '/templates/articlecco_cdo/aid/7157257/jewish/Upcoming-Events.htm';
     var LIST = '/tools/events/default_cdo/jewish/Events.htm';
@@ -891,10 +887,16 @@
           }
         } catch (e) { items = []; }
       }
-      if (items.length) done(items, PAGE); else loadList();
+      if (items.length) done(items, PAGE); else fallback();
     };
-    p.onerror = function () { loadList(); };
+    p.onerror = function () { fallback(); };
     p.send();
+
+    function fallback() {
+      if (!calItems.length) return loadList();
+      renderEventsRail(wrapper, heading, readMore, calItems);
+      widget.style.visibility = '';
+    }
 
     function loadList() {
     var x = new XMLHttpRequest();
