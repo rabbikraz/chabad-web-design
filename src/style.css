@@ -6409,3 +6409,45 @@ html body .csb-event.sb-ev-past .csb-day {
   text-decoration: line-through !important;
   text-decoration-thickness: 2px !important;
 }
+
+/* --------------------------------------------------------------------------
+   28. TIGHT FLYER PAGES (html.sb-flyer-tight, TIGHT_PAGES in site.js):
+   the flyer starts right under the header and is the whole page.
+   - the site's ב"ה is hidden (these flyers print their own BS"D)
+   - the CMS's stacked top spacing (local_content padding, the empty 28px
+     title strip, #co_body_container's 50px) collapses
+   - the article column is centered exactly (it sat 22px left on desktop)
+   - slimmer side gutters on phones
+   -------------------------------------------------------------------------- */
+html.sb-flyer-tight #BodyContainer > .body_wrapper::before,
+html.sb-flyer-tight body.cco_body .bh { display: none !important; content: none !important; }
+html.sb-flyer-tight body.cco_body .co_content_container.local_content { padding-top: 14px !important; }
+/* the strip only holds the (hidden) page title; an id-level base rule
+   kept it 28px tall, so it goes entirely */
+html.sb-flyer-tight body.cco_body #BodyContainer #co_content_container .master-content-wrapper.g960 { display: none !important; }
+html.sb-flyer-tight body.cco_body #co_body_container { padding-top: 0 !important; }
+html.sb-flyer-tight body.cco_body #co_body_container,
+html.sb-flyer-tight body.cco_body #co_content_container.content {
+  float: none !important;
+  width: auto !important;
+  max-width: 100% !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+@media (max-width: 600px) {
+  html.sb-flyer-tight body.cco_body .co_content_container.local_content {
+    padding: 10px 10px 40px !important;
+  }
+  /* Yeshiva Day: the paste's 72px headline is wider than a phone column and
+     ran off the right edge; scale it, and trim the card's 24px sides */
+  html.sb-dark-navy .article-body div[style*="font-size:72px"] { font-size: clamp(44px, 16vw, 72px) !important; }
+  html.sb-dark-navy .article-body > div[style*="max-width:680px"] { padding-left: 16px !important; padding-right: 16px !important; }
+}
+/* Upcoming Events list: its header row is space-between with an empty
+   first section, which shoved the title right; center it instead */
+html.sb-flyer-tight body .csb-events .csb-head {
+  justify-content: center !important;
+  gap: 0 !important;
+  text-align: center !important;
+}
+html.sb-flyer-tight body .csb-events .csb-head > section { text-align: center !important; }
