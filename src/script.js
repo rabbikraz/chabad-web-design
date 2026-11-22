@@ -2991,6 +2991,95 @@
   }
 
 
+  /* ---------------- Meal form: Shabbatons that have their own sign-up ----------------
+     Some Shabbosim are a Shabbaton with a separate form (e.g. Dec 5 2026 =
+     Chanukah Shabbaton, article 7629749). The meal form's paste stays
+     untouched: when such a date is selected in #shabbosDate (by the visitor,
+     or by default as "the coming Shabbos") everything after the dropdown is
+     hidden and a card sends them to the Shabbaton page, so nobody pays for
+     meals that week here. The dropdown option is relabelled to say so. Each
+     entry's `match` is tested against the option's text, value and data-*
+     attributes (dates there may read "Dec 5", "Dec 4-5" or "2026-12-05"). */
+  var MEAL_SHABBATONS = [
+    {
+      match: /2026-12-0[45]|12\/0?5\/(20)?26|\bDec(?:ember)?\.?\s+(?:4\s*[-–]\s*)?5\b/i,
+      until: '2026-12-06',
+      tag: 'Chanukah Shabbaton',
+      title: 'Shabbat, December 5 is our Chanukah Shabbaton',
+      text: 'Meals for this Shabbat are part of the Shabbaton, which has its own sign-up page.',
+      button: 'Sign up for the Shabbaton',
+      href: '/templates/articlecco_cdo/aid/7629749'
+    }
+  ];
+
+  function initMealShabbatonRedirect() {
+    var root = document.getElementById('shabbatFormContainer');
+    var sel = document.getElementById('shabbosDate');
+    if (!root || !sel) return;
+    var today = new Date().toISOString().slice(0, 10);
+    var list = MEAL_SHABBATONS.filter(function (s) { return !s.until || today < s.until; });
+    if (!list.length) return;
+
+    function optHay(o) {
+      var h = (o.text || '') + ' ' + (o.value || '');
+      for (var i = 0; i < o.attributes.length; i++) {
+        if (/^data-/.test(o.attributes[i].name)) h += ' ' + o.attributes[i].value;
+      }
+      return h;
+    }
+    function shabbatonFor(o) {
+      if (!o) return null;
+      var h = optHay(o);
+      for (var i = 0; i < list.length; i++) if (list[i].match.test(h)) return list[i];
+      return null;
+    }
+
+    var card = null, hidden = [];
+    function unhide() {
+      hidden.forEach(function (n) { n.classList.remove('sb-meal-sh-hidden'); });
+      hidden = [];
+      if (card && card.parentNode) card.parentNode.removeChild(card);
+      card = null;
+    }
+    function apply() {
+      // relabel matching options (idempotent: the form may re-render them)
+      for (var i = 0; i < sel.options.length; i++) {
+        var o = sel.options[i], s = shabbatonFor(o);
+        if (s && o.text.indexOf(s.tag) === -1) o.text = o.text + ' — ' + s.tag;
+      }
+      var sh = shabbatonFor(sel.options[sel.selectedIndex]);
+      if (!sh) { unhide(); return; }
+      if (card) return;
+      // hide everything after the dropdown inside the form container
+      var top = sel;
+      for (var n = sel; n && n !== root; n = n.parentNode) {
+        top = n;
+        for (var sib = n.nextElementSibling; sib; sib = sib.nextElementSibling) {
+          if (sib.classList.contains('sb-meal-sh-card')) continue;
+          sib.classList.add('sb-meal-sh-hidden');
+          hidden.push(sib);
+        }
+      }
+      card = el('div', 'sb-meal-sh-card',
+        '<div class="sb-meal-sh-title">' + esc(sh.title) + '</div>' +
+        '<p>' + esc(sh.text) + '</p>' +
+        '<a class="sb-btn sb-btn-primary" href="' + esc(sh.href) + '">' + esc(sh.button) + '</a>' +
+        '<p class="sb-meal-sh-note">Booking a different Shabbat? Pick another date above.</p>');
+      top.parentNode.insertBefore(card, top.nextSibling);
+    }
+    sel.addEventListener('change', function () { safe('meal-shabbaton', apply); });
+    // the form fills / re-renders the dropdown itself (Hebcal load, language)
+    new MutationObserver(function () { safe('meal-shabbaton', apply); })
+      .observe(sel, { childList: true });
+    apply();
+    // selection set programmatically after load (no change event)
+    var last = sel.value, polls = 0;
+    var t = setInterval(function () {
+      if (sel.value !== last) { last = sel.value; safe('meal-shabbaton', apply); }
+      if (++polls > 40) clearInterval(t);
+    }, 250);
+  }
+
   /* ---------------- Google Ads conversions (custom-built forms) ----------------
      The meal form and the late-payment form are our own pastes, not ChabadOne
      forms: they never change the URL, they just reveal #successMessage after
@@ -4642,6 +4731,7 @@
     safe('donate-payvia', initDonatePayVia);
     safe('hh-seats', initHHSeats);
     safe('meal-wording', initMealFormWording);
+    safe('meal-shabbaton', initMealShabbatonRedirect);
     safe('late-payment', initLatePayment);
     safe('ads-conversions', initAdsConversions);
     safe('sukkot-meals', initSukkotMeals);

@@ -6585,3 +6585,20 @@ html.sb-flyer-tight body .csb-events .csb-head > section { text-align: center !i
 /* the title's tight line-height lets the "p"/"g" tails hang into the season
    line right under it; give the season line room */
 html body .csb-title + .csb-season { margin-top: 14px !important; }
+
+/* Meal form: a Shabbaton date is picked (initMealShabbatonRedirect) —
+   the rest of the form is hidden and this card points to the Shabbaton page */
+html:not(#sbx) #shabbatFormContainer .sb-meal-sh-hidden { display: none !important; }
+#shabbatFormContainer .sb-meal-sh-card {
+  margin: 18px 0 8px;
+  padding: 22px 22px 18px;
+  background: var(--sb-accent-100, #F8EDD6);
+  border: 2px solid var(--sb-accent, #C08A2E);
+  border-radius: 14px;
+  text-align: center;
+  color: var(--sb-text, #17232E);
+}
+#shabbatFormContainer .sb-meal-sh-title { font-family: var(--sb-font-heading); font-size: 1.45rem; line-height: 1.25; margin-bottom: 6px; }
+#shabbatFormContainer .sb-meal-sh-card p { margin: 0 0 14px; font-size: 1.05rem; line-height: 1.5; }
+#shabbatFormContainer .sb-meal-sh-card .sb-btn { display: inline-block; text-decoration: none; }
+#shabbatFormContainer .sb-meal-sh-card p.sb-meal-sh-note { margin: 14px 0 0; font-size: .92rem; opacity: .75; }
