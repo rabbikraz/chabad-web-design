@@ -1037,6 +1037,15 @@ body.cco_body #tabContentMain .co_menu_item.donate_link span.parent a:hover {
     gap: 0;
   }
   body.cco_body #tabContentMain .co_menu_item { width: 100%; border-bottom: 1px solid rgba(251, 245, 233, .14); }
+  /* the CMS strips the border off the current section's item
+     (body.cco_body #tabContentMain .co_menu_item.selected { border: none })
+     and nudges its label down, so on any page under e.g. Community that
+     row lost its divider and its arrow sat off-centre. html + body ties
+     the themed drawer rules (html.sb-x ...), which come later in this file
+     and so keep their own line colours. */
+  html body.cco_body #tabContentMain .co_menu_item.selected { border-bottom: 1px solid rgba(251, 245, 233, .14); padding-top: 0; }
+  html body.cco_body #tabContentMain .co_menu_item.selected.donate_link { border-bottom: none; }
+  html body.cco_body #header #tabContentMain .co_menu_item.selected span.parent { margin-top: 0 !important; margin-bottom: 0 !important; }
   #tabContentMain .co_menu_item.home a:before { color: var(--sb-bg); }
   #tabContentMain .co_menu_item.home a { padding: 16px 0; }
   body.cco_body #header #tabContentMain .co_menu_item span.parent a,
