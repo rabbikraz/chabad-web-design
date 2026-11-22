@@ -807,6 +807,38 @@ body.cco_body #tabContentMain .co_menu_item.donate_link span.parent a:hover {
     padding: 12px 20px;
   }
 }
+/* Desktop header is ONE row: logo left, menu right. With five menu items
+   (e.g. "Sukkot 5787 / 2026") the menu used to wrap under the logo at
+   ~1260-1500px, leaving two half-empty rows. The wrap only exists for the
+   no-JS utility bar (hidden once JS runs), so turn it off with JS and keep
+   each label + its chevron on one line. A middle tier trims spacing. */
+@media (min-width: 1025px) {
+  body.cco_body.sb-js #header .header-wrapper { flex-wrap: nowrap; }
+  body.cco_body.sb-js #header .branding-search { min-width: 0; }
+  body.cco_body.sb-js #header .site-nav-wrapper { flex: 0 0 auto; }
+  body.cco_body #header #tabContentMain .co_menu_item span.parent a,
+  body.sites-article #header #tabContentMain .co_menu_item span.parent a { white-space: nowrap !important; }
+}
+@media (min-width: 1261px) and (max-width: 1520px) {
+  body.cco_body #header .header-wrapper { gap: 20px; }
+  body.cco_body #header #tabContentMain .co_menu_item span.parent a,
+  body.sites-article #header #tabContentMain .co_menu_item span.parent a {
+    padding: 12px 7px;
+    font-size: 15px !important;
+  }
+  body.cco_body #header #tabContentMain .co_menu_item.donate_link span.parent a { padding: 12px 18px; }
+}
+/* narrowest desktop widths: smaller labels, and the site name may break
+   onto two lines rather than being cut off */
+@media (min-width: 1025px) and (max-width: 1180px) {
+  body.cco_body #header #tabContentMain .co_menu_item:not(.donate_link) span.parent a,
+  body.sites-article #header #tabContentMain .co_menu_item:not(.donate_link) span.parent a {
+    padding: 11px 4px !important;
+    font-size: 14px !important;
+  }
+  body.cco_body #header .header-wrapper { gap: 16px; }
+  body.cco_body #header a.site_title, a.site_title { white-space: normal !important; line-height: 1.15; }
+}
 /* last squeeze tier before the 1024px drawer takes over */
 @media (min-width: 1025px) and (max-width: 1260px) {
   body.cco_body #header a.site_title,
