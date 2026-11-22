@@ -2991,6 +2991,47 @@
   }
 
 
+  /* ---------------- Google Ads conversions (custom-built forms) ----------------
+     The meal form and the late-payment form are our own pastes, not ChabadOne
+     forms: they never change the URL, they just reveal #successMessage after
+     PayPal approves the payment. When that message becomes visible we report
+     one conversion to Google Ads, with the order total as its value. The
+     Google tag (gtag.js) itself is loaded by the CMS Custom Footer Code box.
+     Fill in ADS_ID and the labels from Google Ads > Goals > Conversions
+     (send_to looks like 'AW-123456789/AbC-dEfGhIj'); an empty label = off. */
+  var ADS_ID = '';                   // 'AW-123456789'
+  var ADS_CONVERSIONS = [
+    { name: 'shabbat-meal', container: 'shabbatFormContainer', label: '' },
+    { name: 'late-payment', container: 'sbPayFormContainer', label: '' }
+  ];
+
+  function initAdsConversions() {
+    if (!ADS_ID) return;
+    ADS_CONVERSIONS.forEach(function (c) {
+      var root = document.getElementById(c.container);
+      if (!root || !c.label) return;
+      var sent = false;
+      function check() {
+        if (sent) return;
+        var msg = root.querySelector('#successMessage') || document.getElementById('successMessage');
+        if (!msg || msg.style.display === 'none' || !msg.offsetParent) return;
+        sent = true;
+        obs.disconnect();
+        var totalEl = document.getElementById('grandTotal');
+        var value = totalEl ? parseFloat(String(totalEl.innerText).replace(/[^0-9.]/g, '')) : NaN;
+        window.dataLayer = window.dataLayer || [];
+        var gtag = window.gtag || function () { window.dataLayer.push(arguments); };
+        gtag('config', ADS_ID);
+        var ev = { send_to: ADS_ID + '/' + c.label };
+        if (value > 0) { ev.value = value; ev.currency = 'USD'; }
+        gtag('event', 'conversion', ev);
+      }
+      var obs = new MutationObserver(check);
+      obs.observe(document.body, { attributes: true, attributeFilter: ['style', 'class'], subtree: true, childList: true });
+      check();
+    });
+  }
+
   /* ---------------- Shabbos Meal Payment page (late sign-ups / past Shabbosim) ----------------
      Paste = "apps/meals/Late Payment Form.html" (style block + markup ONLY).
      The logic lives here because ChabadOne's editor hangs on Save when a
@@ -4602,6 +4643,7 @@
     safe('hh-seats', initHHSeats);
     safe('meal-wording', initMealFormWording);
     safe('late-payment', initLatePayment);
+    safe('ads-conversions', initAdsConversions);
     safe('sukkot-meals', initSukkotMeals);
     safe('lulav-form', initLulavForm);
     safe('shabbat-discount', initShabbatDiscount);
