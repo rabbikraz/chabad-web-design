@@ -4472,7 +4472,8 @@
     }).filter(Boolean);
     var CODES = { LOCAL50: { pct: 50, msg: 'Code applied: 50% off your seats' },
                   LOCAL100: { pct: 100, msg: 'Code applied: your seats are covered' },
-                  AVI10: { pct: 10, msg: 'Code applied: 10% off your seats' } };
+                  AVI10: { pct: 10, msg: 'Code applied: 10% off your seats' },
+                  SUBSIDIZED: { pct: 30, msg: 'Code applied: 30% off your seats' } };
 
     var msg = document.createElement('div');
     msg.className = 'sb-shdisc-msg';
