@@ -194,7 +194,7 @@ async function build() {
   // Pages whose CMS title is hidden (style.css html.sb-notitle). Same list
   // as NOTITLE_PAGES in script.js; window.SB_NOTITLE_PAGES overrides.
   const noTitleFlag =
-    "var N=window.SB_NOTITLE_PAGES||['7080118','7474052','7437612','7407611','7407897','eventid/24234','eventid/24330','7629705','7629737','7629749','7629781','7157257','7224263','7224206','7223919','7232040','7232029'];" +
+    "var N=window.SB_NOTITLE_PAGES||['7080118','7474052','7437612','7407611','7407897','eventid/24234','eventid/24330','7629705','7629737','7629749','7629781','7157257','7224263','7224206','7223919','7232040','7232029','7640802'];" +
     "for(var j=0;j<N.length;j++){if(location.href.indexOf(N[j])>-1){document.documentElement.className+=' sb-notitle';break;}}";
   // Sukkot pages (style.css section 23, teal/apricot). Same list as
   // SUKKOT_PAGES in script.js; window.SB_SUKKOT_PAGES overrides.
