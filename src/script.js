@@ -223,7 +223,7 @@
 
   /* TIGHT FLYER PAGES (style.css section 28): flyer starts right under the
      header, site ב"ה hidden (the flyer has its own BS"D), column centered */
-  var TIGHT_PAGES = window.SB_TIGHT_PAGES || ['7629705', '7629737', '7629749', '7629781', '7157257'];
+  var TIGHT_PAGES = window.SB_TIGHT_PAGES || ['7629705', '7629737', '7629749', '7629781', '7157257', '7640802'];
   function applyTightFlyer() {
     var href = window.location.href;
     for (var i = 0; i < TIGHT_PAGES.length; i++) {
