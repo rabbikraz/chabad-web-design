@@ -6730,9 +6730,28 @@ html.sb-dark-manis body.cco_body #co_body_container { padding-top: 14px !importa
 
 /* past events on .csb-event lists (initPastEvents in site.js): crossed
    out, faded and greyed; the button reads "Ended" */
+/* the fade/grey sits on the card's children so the check badge (the
+   card's ::after) stays full-colour */
 html body a.csb-event.sb-ev-past,
-html body div.csb-event.sb-ev-past { opacity: .5; filter: grayscale(1); }
-html body .csb-event.sb-ev-past:hover { opacity: .75; }
+html body div.csb-event.sb-ev-past { position: relative; }
+html body .csb-event.sb-ev-past > * { opacity: .5; filter: grayscale(1); transition: opacity 160ms ease; }
+html body .csb-event.sb-ev-past:hover > * { opacity: .75; }
+html body .csb-event.sb-ev-past::after {
+  content: "\2713";
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 2;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #2E9E5B;
+  color: #fff;
+  font: 700 18px/30px system-ui, -apple-system, "Segoe UI", sans-serif;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, .18);
+  pointer-events: none;
+}
 html body .csb-event.sb-ev-past .csb-name,
 html body .csb-event.sb-ev-past .csb-sub,
 html body .csb-event.sb-ev-past .csb-time,
