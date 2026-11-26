@@ -88,7 +88,30 @@
     '24330': { accent: '#5B3F66', accentDark: '#452F4E', band: '#5B3F66',
                soft: '#F5ECF1', skin: 'blush', layout: 'split',
                font: 'Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Jost:wght@400;500',
-               pill: 'RSVP Required', note: 'Sponsorship opportunities available' }
+               pill: 'RSVP Required', note: 'Sponsorship opportunities available' },
+    // Chanukah Cookie Decorating (flyer: mustard header with iced menorah +
+    // dreidel cookies, white body, royal-blue icon tiles, Fredoka/Nunito).
+    // layout:'cookie' rebuilds the top of the page as that flyer
+    // (buildFlyerCookie); the CMS banner + description are hidden.
+    '24439': { accent: '#2D52AA', accentDark: '#1F3C86', band: '#14193A',
+               soft: '#FFF4D6', skin: 'cookie', layout: 'cookie',
+               font: 'Fredoka:wght@600;700&family=Nunito:wght@600;700;800',
+               cookie: {
+                 eyebrow: 'Chabad in South Beach',
+                 title: ['Chanukah', 'Cookie', 'Decorating'],
+                 sub: 'with cookie artist Esty Mann',
+                 img: 'chanukah/cookies.jpg', imgAlt: 'Iced menorah and dreidel cookies',
+                 rows: [
+                   { icon: 'cal', big: 'Tuesday, Dec 1', small: '5:30 – 6:30 PM', link: 'ical' },
+                   { icon: 'pin', big: '320 Meridian Ave', small: 'Miami Beach', link: 'map',
+                     href: 'https://maps.google.com/?q=320+Meridian+Ave,+Miami+Beach,+FL+33139' },
+                   { icon: 'kid', big: 'For kids of all ages!', small: 'Under 4 must come with a parent' },
+                   { icon: 'art', big: 'Crafts, snacks & more!' },
+                   { icon: 'tag', big: '$10 per child', small: 'RSVP required' },
+                   { icon: 'link', big: 'Sign up below', href: '#RegisterBody',
+                     small: 'More info: Devory · <a href="tel:5636051996">563-605-1996</a>' }
+                 ]
+               } }
   };
   var FLYER_OPTS = {}; // the matched theme (set by applyPageTheme)
   // the live header code box defines window.SB_PAGE_THEMES (23305, 23338...):
@@ -320,7 +343,7 @@
   /* Pages whose CMS title duplicates their own content heading: hide the
      article header (style.css, html.sb-notitle). Flagged early by boot.js
      too; this is the fallback. Override with window.SB_NOTITLE_PAGES. */
-  var NOTITLE_PAGES = window.SB_NOTITLE_PAGES || ['7080118', '7474052', '7437612', '7407611', '7407897', 'eventid/24234', 'eventid/24330', '7629705', '7629737', '7629749', '7629781', '7157257', '7224263', '7224206', '7223919', '7232040', '7232029', '7640802'];
+  var NOTITLE_PAGES = window.SB_NOTITLE_PAGES || ['7080118', '7474052', '7437612', '7407611', '7407897', 'eventid/24234', 'eventid/24330', 'eventid/24439', '7629705', '7629737', '7629749', '7629781', '7157257', '7224263', '7224206', '7223919', '7232040', '7232029', '7640802'];
 
   function applyNoTitle() {
     var href = window.location.href;
@@ -1294,8 +1317,59 @@
       (FLYER_OPTS.note ? '<div class="sb-fs-note">' + esc(FLYER_OPTS.note) + '</div>' : '');
   }
 
+  /* layout:'cookie' (flyer with a coloured header block + icon rows): the
+     whole top of the page is rebuilt from FLYER_OPTS.cookie: header block
+     (eyebrow, display title, subtitle, artwork from assets/) over a wave,
+     then one row per flyer line, each with a square icon tile. Rows with
+     link:'ical' / link:'map' take the CMS's own calendar / map links. The
+     CMS banner, title + description column and info band are hidden. */
+  var CK_ICONS = {
+    cal: '<rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/>',
+    pin: '<path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/>',
+    kid: '<circle cx="12" cy="5" r="2.5"/><path d="M12 8v7M7 10.5h10M12 15l-3.5 6M12 15l3.5 6"/>',
+    art: '<path d="M12 3a9 9 0 1 0 0 18c1.4 0 2-1 2-2 0-1.3-1-1.7-1-3 0-1.1.9-2 2-2h2.2A3.8 3.8 0 0 0 21 10.2C21 6.2 17 3 12 3z"/><circle cx="7.5" cy="11" r="1.2"/><circle cx="10" cy="7" r="1.2"/><circle cx="15" cy="7" r="1.2"/>',
+    tag: '<path d="M3 12V4a1 1 0 0 1 1-1h8l9 9-9 9-9-9z"/><circle cx="7.5" cy="7.5" r="1.5"/>',
+    link: '<path d="M10 14a4.5 4.5 0 0 0 6.4 0l3.2-3.2a4.5 4.5 0 0 0-6.4-6.4L11.5 6"/><path d="M14 10a4.5 4.5 0 0 0-6.4 0l-3.2 3.2a4.5 4.5 0 0 0 6.4 6.4l1.7-1.6"/>'
+  };
+  function buildFlyerCookie() {
+    var c = FLYER_OPTS.cookie, form = $('#RegisterSinglePage');
+    if (!c || !form || $('.sb-ck')) return;
+    var band = $('.sb-event-band'), links = {};
+    if (band) {
+      $all('.sb-band-cell', band).forEach(function (cell) {
+        var label = txt($('.sb-eyebrow', cell)).toLowerCase(), a = $('a', cell);
+        if (a) links[label === 'date' ? 'ical' : label === 'location' ? 'map' : label] = a.getAttribute('href');
+      });
+    }
+    var rows = c.rows.map(function (r) {
+      var href = (r.link && links[r.link]) || r.href || '';
+      var big = esc(r.big);
+      if (href) {
+        big = '<a href="' + esc(href) + '"' + (/^https?:/i.test(href) ? ' target="_blank" rel="noopener"' : '') +
+          (r.link === 'ical' ? ' title="Add to calendar"' : '') + '>' + big + '</a>';
+      }
+      return '<div class="sb-ck-row"><span class="sb-ck-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
+        'stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + (CK_ICONS[r.icon] || '') +
+        '</svg></span><div class="sb-ck-txt"><div class="sb-ck-big">' + big + '</div>' +
+        (r.small ? '<div class="sb-ck-small">' + r.small + '</div>' : '') + '</div></div>';
+    }).join('');
+    var img = c.img ? '<img class="sb-ck-art" src="https://cdn.jsdelivr.net/gh/rabbikraz/chabad-web-design@' +
+      (window.SB_ASSET_V || 'redesign') + '/assets/' + c.img + '" alt="' + esc(c.imgAlt || '') + '">' : '';
+    var card = el('div', 'sb-ck',
+      '<div class="sb-ck-head"><div class="sb-ck-bsd">BS”D</div><div class="sb-ck-headin">' +
+      '<div class="sb-ck-words"><div class="sb-ck-eyebrow">' + esc(c.eyebrow) + '</div>' +
+      '<h1 class="sb-ck-title">' + c.title.map(esc).join('<br>') + '</h1>' +
+      (c.sub ? '<div class="sb-ck-sub">' + esc(c.sub) + '</div>' : '') + '</div>' + img + '</div>' +
+      '<svg class="sb-ck-wave" viewBox="0 0 1200 60" preserveAspectRatio="none" aria-hidden="true">' +
+      '<path d="M0 30 C 200 0, 400 60, 600 30 S 1000 0, 1200 30 V60 H0z" fill="currentColor"/></svg></div>' +
+      '<div class="sb-ck-rows">' + rows + '</div>');
+    form.insertBefore(card, form.firstChild);
+    document.documentElement.classList.add('sb-ck-page');
+  }
+
   function buildFlyerDesc() {
     if (!document.documentElement.classList.contains('sb-skin')) return;
+    if (FLYER_OPTS.layout === 'cookie') { buildFlyerCookie(); return; }
     var desc = $('#RegisterHeader .event_description');
     if (!desc || desc.getAttribute('data-sb-flyer')) return;
     if (FLYER_OPTS.layout === 'split') { buildFlyerSplit(desc); return; }

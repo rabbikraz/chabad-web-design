@@ -5902,6 +5902,158 @@ html.sb-skin-blush #Performances > :first-child {
   color: #573E63;
 }
 
+/* cookie = Chanukah Cookie Decorating (event 24439): mustard header block
+   with the iced cookie art, white body, royal-blue icon tiles, navy type,
+   Fredoka display / Nunito text. buildFlyerCookie (site.js) builds .sb-ck;
+   boot.js flags the class early (skin map in build.js). */
+html.sb-skin-cookie {
+  --ck-yellow: #EFBF37;
+  --ck-navy: #14193A;
+  --ck-blue: #2D52AA;
+  --ck-muted: #4A5068;
+  --ck-display: "Fredoka", "Nunito", system-ui, sans-serif;
+  --ck-text: "Nunito", "Figtree", system-ui, sans-serif;
+  --sb-bg: #FFFDF7;
+  --sb-surface: #FFF4D6;
+  --sb-text: #14193A;
+  --sb-divider: rgba(20, 25, 58, .12);
+  --sb-accent: #2D52AA;
+  --sb-accent-100: #E8EEFA;
+  --sb-accent-200: #CBD7F1;
+  --sb-accent-300: #EFBF37;
+  --sb-accent-600: #24458F;
+  --sb-accent-700: #1F3C86;
+  --sb-teal: #2D52AA;
+  --sb-teal-100: #E8EEFA;
+  --sb-teal-200: #CBD7F1;
+  --sb-teal-300: #8FA6DA;
+  --sb-teal-600: #24458F;
+  --sb-teal-700: #1F3C86;
+  --sb-teal-800: #182F6A;
+  --sb-teal-900: #14193A;
+  --sb-cream-ink: #FFF7E0;
+  --sb-font-heading: var(--ck-display);
+  --sb-font-body: var(--ck-text);
+  --font-form-main: var(--ck-text);
+  --text-form-dark: #14193A;
+  --border-form-color: rgba(20, 25, 58, .16);
+  background: #FFFDF7 !important;
+}
+html.sb-skin-cookie body,
+html.sb-skin-cookie body.cco_body { background: transparent !important; color: var(--ck-navy); }
+html.sb-skin-cookie #BodyContainer,
+html.sb-skin-cookie #BodyContainer > .body_wrapper,
+html.sb-skin-cookie #content,
+html.sb-skin-cookie .co_content_container,
+html.sb-skin-cookie body.cco_body .master-content-wrapper,
+html.sb-skin-cookie .cco_body .body_wrapper.co_body { background: transparent !important; }
+html.sb-skin-cookie body.cco_body #header { background: rgba(255, 253, 247, .95); border-bottom: 1px solid rgba(20, 25, 58, .1); }
+html.sb-skin-cookie body.cco_body #footer { background: var(--ck-navy); border-top: 4px solid var(--ck-yellow); }
+/* the rebuilt flyer replaces the CMS banner, title/description and band */
+html.sb-ck-page #RegisterSinglePage .sb-event-hero,
+html.sb-ck-page #RegisterSinglePage #RegisterHeader,
+html.sb-ck-page #RegisterSinglePage .sb-event-band { display: none !important; }
+html.sb-skin-cookie #RegisterSinglePage { background: transparent !important; border: 0 !important; box-shadow: none !important; }
+
+.sb-ck {
+  background: #fff;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 18px 44px rgba(20, 25, 58, .12);
+  margin: 0 0 34px;
+  color: var(--ck-navy);
+  font-family: var(--ck-text);
+}
+.sb-ck-head {
+  position: relative;
+  background: var(--ck-yellow);
+  padding: 22px clamp(22px, 5vw, 52px) 78px;
+}
+.sb-ck-bsd { font: 800 11px/1 var(--ck-text); letter-spacing: .08em; margin-bottom: 18px; }
+.sb-ck-headin {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 44%);
+  align-items: center;
+  gap: clamp(14px, 3vw, 36px);
+}
+html.sb-skin-cookie #RegisterSinglePage .sb-ck .sb-ck-eyebrow {
+  font: 800 15px/1.2 var(--ck-text) !important;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--ck-navy);
+}
+html.sb-skin-cookie .sb-ck h1.sb-ck-title {
+  font-family: var(--ck-display) !important;
+  font-weight: 700 !important;
+  font-size: clamp(44px, 6.6vw, 80px) !important;
+  line-height: .98 !important;
+  letter-spacing: -.01em;
+  color: var(--ck-navy) !important;
+  margin: 14px 0 16px !important;
+  padding: 0 !important;
+  text-transform: none !important;
+}
+html.sb-skin-cookie #RegisterSinglePage .sb-ck .sb-ck-sub { font: 800 clamp(17px, 1.8vw, 21px)/1.3 var(--ck-text) !important; color: var(--ck-navy); }
+.sb-ck-art {
+  display: block; width: 100%; height: auto;
+  /* the art is cut from the flyer's yellow: fade its edges into the block */
+  -webkit-mask-image: radial-gradient(ellipse 72% 70% at 50% 50%, #000 62%, transparent 100%);
+  mask-image: radial-gradient(ellipse 72% 70% at 50% 50%, #000 62%, transparent 100%);
+}
+/* the flyer prints its own BS"D: drop the site's ב"ה line */
+html.sb-skin-cookie #BodyContainer > .body_wrapper::before,
+html.sb-skin-cookie body.cco_body .bh { display: none !important; content: none !important; }
+.sb-ck-wave { position: absolute; left: 0; right: 0; bottom: -1px; width: 100%; height: 52px; color: #fff; display: block; }
+.sb-ck-rows { padding: 8px clamp(22px, 7vw, 96px) 36px; }
+.sb-ck-row { display: flex; align-items: center; gap: 22px; margin: 0 0 20px; }
+.sb-ck-row:last-child { margin-bottom: 0; }
+.sb-ck-ico {
+  flex: 0 0 auto;
+  width: 60px;
+  height: 60px;
+  border-radius: 15px;
+  background: var(--ck-blue);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.sb-ck-ico svg { width: 28px; height: 28px; }
+html.sb-skin-cookie #RegisterSinglePage .sb-ck .sb-ck-big,
+html.sb-skin-cookie #RegisterSinglePage .sb-ck .sb-ck-big a { font: 800 clamp(21px, 2.3vw, 27px)/1.2 var(--ck-text) !important; color: var(--ck-navy); }
+html.sb-skin-cookie #RegisterSinglePage .sb-ck .sb-ck-small { font: 700 clamp(15.5px, 1.6vw, 18px)/1.35 var(--ck-text) !important; color: var(--ck-muted); margin-top: 3px; }
+html.sb-skin-cookie .sb-ck .sb-ck-big a { color: inherit !important; text-decoration: none !important; }
+html.sb-skin-cookie .sb-ck .sb-ck-row:last-child .sb-ck-big a,
+html.sb-skin-cookie .sb-ck .sb-ck-big a:hover,
+html.sb-skin-cookie .sb-ck .sb-ck-small a { color: var(--ck-blue) !important; text-decoration: none !important; }
+@media (max-width: 700px) {
+  .sb-ck { border-radius: 18px; }
+  .sb-ck-head { padding-bottom: 60px; }
+  .sb-ck-headin { grid-template-columns: 1fr; }
+  .sb-ck-art { max-width: 340px; margin: 0 auto; }
+  .sb-ck-wave { height: 36px; }
+  .sb-ck-rows { padding: 4px 20px 26px; }
+  .sb-ck-row { gap: 16px; margin-bottom: 16px; }
+  .sb-ck-ico { width: 50px; height: 50px; border-radius: 13px; }
+  .sb-ck-ico svg { width: 24px; height: 24px; }
+}
+/* reservation form below: Fredoka headings, Nunito text, blue buttons */
+html.sb-skin-cookie #RegisterSinglePage,
+html.sb-skin-cookie #RegisterSinglePage p,
+html.sb-skin-cookie #RegisterSinglePage div,
+html.sb-skin-cookie #RegisterSinglePage label,
+html.sb-skin-cookie #RegisterSinglePage select,
+html.sb-skin-cookie #RegisterSinglePage input { font-family: var(--ck-text); }
+html.sb-skin-cookie #RegisterSinglePage .heading,
+html.sb-skin-cookie #RegisterSinglePage h2,
+html.sb-skin-cookie #RegisterSinglePage h3,
+html.sb-skin-cookie #Performances > :first-child,
+html.sb-skin-cookie #Performances > :first-child span {
+  font-family: var(--ck-display) !important;
+  font-weight: 700;
+  color: var(--ck-navy);
+}
+
 /* --------------------------------------------------------------------------
    26. DARK PAGE THEME (html.sb-dark) - the whole page in the black/cream/
    gold of a dark flyer paste (first use: 19 Kislev, aid 7629705), so the

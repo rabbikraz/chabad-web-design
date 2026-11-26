@@ -194,7 +194,7 @@ async function build() {
   // Pages whose CMS title is hidden (style.css html.sb-notitle). Same list
   // as NOTITLE_PAGES in script.js; window.SB_NOTITLE_PAGES overrides.
   const noTitleFlag =
-    "var N=window.SB_NOTITLE_PAGES||['7080118','7474052','7437612','7407611','7407897','eventid/24234','eventid/24330','7629705','7629737','7629749','7629781','7157257','7224263','7224206','7223919','7232040','7232029','7640802'];" +
+    "var N=window.SB_NOTITLE_PAGES||['7080118','7474052','7437612','7407611','7407897','eventid/24234','eventid/24330','eventid/24439','7629705','7629737','7629749','7629781','7157257','7224263','7224206','7223919','7232040','7232029','7640802'];" +
     "for(var j=0;j<N.length;j++){if(location.href.indexOf(N[j])>-1){document.documentElement.className+=' sb-notitle';break;}}";
   // Sukkot pages (style.css section 23, teal/apricot). Same list as
   // SUKKOT_PAGES in script.js; window.SB_SUKKOT_PAGES overrides.
@@ -205,7 +205,7 @@ async function build() {
   // PAGE_THEMES in script.js, flagged here so the page paints in the skin
   // from the first frame (site.js adds the same classes as a fallback).
   const skinFlag =
-    "var K={'eventid/24234':'sage','eventid/24330':'blush'};" +
+    "var K={'eventid/24234':'sage','eventid/24330':'blush','eventid/24439':'cookie'};" +
     "for(var q in K){if(location.href.indexOf(q)>-1){document.documentElement.className+=' sb-skin sb-skin-'+K[q];break;}}";
   // Dark pages (style.css section 26, black/cream/gold). Same list as
   // DARK_PAGES in script.js; window.SB_DARK_PAGES overrides.
