@@ -100,7 +100,7 @@
                  eyebrow: 'Chabad in South Beach',
                  title: ['Chanukah', 'Cookie', 'Decorating'],
                  sub: 'with cookie artist Esty Mann',
-                 img: 'chanukah/cookies-v2.jpg', imgAlt: 'Iced menorah and dreidel cookies',
+                 img: '/media/images/1398/noeD13980839.png', imgFallback: 'chanukah/cookies-v2.jpg', imgAlt: 'Iced menorah and dreidel cookies',
                  rows: [
                    { icon: 'cal', big: 'Tuesday, Dec 1', small: '5:30 – 6:30 PM', link: 'ical' },
                    { icon: 'pin', big: '320 Meridian Ave', small: 'Miami Beach', link: 'map',
@@ -1353,8 +1353,14 @@
         '</svg></span><div class="sb-ck-txt"><div class="sb-ck-big">' + big + '</div>' +
         (r.small ? '<div class="sb-ck-small">' + r.small + '</div>' : '') + '</div></div>';
     }).join('');
-    var img = c.img ? '<img class="sb-ck-art" src="https://cdn.jsdelivr.net/gh/rabbikraz/chabad-web-design@' +
-      (window.SB_ASSET_V || 'redesign') + '/assets/' + c.img + '" alt="' + esc(c.imgAlt || '') + '">' : '';
+    // img: a site path / full URL (an image uploaded in ChabadOne) or a file
+    // in assets/; imgFallback (assets/) loads if the first one fails
+    function ckAsset(f) {
+      return /^(https?:)?\//.test(f) ? f : 'https://cdn.jsdelivr.net/gh/rabbikraz/chabad-web-design@' +
+        (window.SB_ASSET_V || 'redesign') + '/assets/' + f;
+    }
+    var img = c.img ? '<img class="sb-ck-art" src="' + esc(ckAsset(c.img)) + '" alt="' + esc(c.imgAlt || '') + '"' +
+      (c.imgFallback ? ' data-fallback="' + esc(ckAsset(c.imgFallback)) + '"' : '') + '>' : '';
     var card = el('div', 'sb-ck',
       '<div class="sb-ck-head"><div class="sb-ck-bsd">BS”D</div><div class="sb-ck-headin">' +
       '<div class="sb-ck-words"><div class="sb-ck-eyebrow">' + esc(c.eyebrow) + '</div>' +
@@ -1364,6 +1370,12 @@
       '<path d="M0 30 C 200 0, 400 60, 600 30 S 1000 0, 1200 30 V60 H0z" fill="currentColor"/></svg></div>' +
       '<div class="sb-ck-rows">' + rows + '</div>');
     form.insertBefore(card, form.firstChild);
+    var art = card.querySelector('.sb-ck-art[data-fallback]');
+    if (art) art.addEventListener('error', function () {
+      var fb = art.getAttribute('data-fallback');
+      art.removeAttribute('data-fallback');
+      if (fb) art.src = fb;
+    });
     document.documentElement.classList.add('sb-ck-page');
   }
 
