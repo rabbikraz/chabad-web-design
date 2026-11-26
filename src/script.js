@@ -1353,12 +1353,8 @@
         '</svg></span><div class="sb-ck-txt"><div class="sb-ck-big">' + big + '</div>' +
         (r.small ? '<div class="sb-ck-small">' + r.small + '</div>' : '') + '</div></div>';
     }).join('');
-    // the event's own banner (set in ChabadOne) is the artwork, so the owner
-    // can swap it there; the bundled cut-out is only the fallback
-    var cmsImg = $('.sb-event-hero img') || $('#RegisterHeader .banner_image img');
-    var src = (cmsImg && cmsImg.getAttribute('src') && !/spacer\.gif/i.test(cmsImg.getAttribute('src')) && cmsImg.getAttribute('src')) ||
-      (c.img ? 'https://cdn.jsdelivr.net/gh/rabbikraz/chabad-web-design@' + (window.SB_ASSET_V || 'redesign') + '/assets/' + c.img : '');
-    var img = src ? '<img class="sb-ck-art" src="' + esc(src) + '" alt="' + esc(c.imgAlt || '') + '">' : '';
+    var img = c.img ? '<img class="sb-ck-art" src="https://cdn.jsdelivr.net/gh/rabbikraz/chabad-web-design@' +
+      (window.SB_ASSET_V || 'redesign') + '/assets/' + c.img + '" alt="' + esc(c.imgAlt || '') + '">' : '';
     var card = el('div', 'sb-ck',
       '<div class="sb-ck-head"><div class="sb-ck-bsd">BS”D</div><div class="sb-ck-headin">' +
       '<div class="sb-ck-words"><div class="sb-ck-eyebrow">' + esc(c.eyebrow) + '</div>' +
