@@ -5967,12 +5967,12 @@ html.sb-skin-cookie #RegisterSinglePage { background: transparent !important; bo
 .sb-ck-head {
   position: relative;
   background: var(--ck-yellow);
-  padding: 22px clamp(22px, 5vw, 52px) 78px;
+  padding: 16px clamp(20px, 4vw, 44px) 52px;
 }
-.sb-ck-bsd { font: 800 11px/1 var(--ck-text); letter-spacing: .08em; margin-bottom: 18px; }
+.sb-ck-bsd { font: 800 11px/1 var(--ck-text); letter-spacing: .08em; margin-bottom: 10px; }
 .sb-ck-headin {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 44%);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 34%);
   align-items: center;
   gap: clamp(14px, 3vw, 36px);
 }
@@ -5985,11 +5985,11 @@ html.sb-skin-cookie #RegisterSinglePage .sb-ck .sb-ck-eyebrow {
 html.sb-skin-cookie .sb-ck h1.sb-ck-title {
   font-family: var(--ck-display) !important;
   font-weight: 700 !important;
-  font-size: clamp(44px, 6.6vw, 80px) !important;
+  font-size: clamp(38px, 4.4vw, 54px) !important;
   line-height: .98 !important;
   letter-spacing: -.01em;
   color: var(--ck-navy) !important;
-  margin: 14px 0 16px !important;
+  margin: 10px 0 10px !important;
   padding: 0 !important;
   text-transform: none !important;
 }
@@ -6003,39 +6003,44 @@ html.sb-skin-cookie #RegisterSinglePage .sb-ck .sb-ck-sub { font: 800 clamp(17px
 /* the flyer prints its own BS"D: drop the site's ב"ה line */
 html.sb-skin-cookie #BodyContainer > .body_wrapper::before,
 html.sb-skin-cookie body.cco_body .bh { display: none !important; content: none !important; }
-.sb-ck-wave { position: absolute; left: 0; right: 0; bottom: -1px; width: 100%; height: 52px; color: #fff; display: block; }
-.sb-ck-rows { padding: 8px clamp(22px, 7vw, 96px) 36px; }
-.sb-ck-row { display: flex; align-items: center; gap: 22px; margin: 0 0 20px; }
-.sb-ck-row:last-child { margin-bottom: 0; }
+.sb-ck-wave { position: absolute; left: 0; right: 0; bottom: -1px; width: 100%; height: 38px; color: #fff; display: block; }
+.sb-ck-rows { padding: 6px clamp(20px, 4vw, 44px) 26px; display: grid; grid-template-columns: 1fr; gap: 14px; }
+.sb-ck-row { display: flex; align-items: center; gap: 16px; margin: 0; }
+/* PC: the rows side by side, two columns */
+@media (min-width: 860px) {
+  .sb-ck-rows { grid-template-columns: 1fr 1fr; gap: 16px 32px; }
+}
 .sb-ck-ico {
   flex: 0 0 auto;
-  width: 60px;
-  height: 60px;
-  border-radius: 15px;
+  width: 50px;
+  height: 50px;
+  border-radius: 13px;
   background: var(--ck-blue);
   color: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
 }
-.sb-ck-ico svg { width: 28px; height: 28px; }
+.sb-ck-ico svg { width: 24px; height: 24px; }
 html.sb-skin-cookie #RegisterSinglePage .sb-ck .sb-ck-big,
-html.sb-skin-cookie #RegisterSinglePage .sb-ck .sb-ck-big a { font: 800 clamp(21px, 2.3vw, 27px)/1.2 var(--ck-text) !important; color: var(--ck-navy); }
-html.sb-skin-cookie #RegisterSinglePage .sb-ck .sb-ck-small { font: 700 clamp(15.5px, 1.6vw, 18px)/1.35 var(--ck-text) !important; color: var(--ck-muted); margin-top: 3px; }
+html.sb-skin-cookie #RegisterSinglePage .sb-ck .sb-ck-big a { font: 800 clamp(19px, 1.9vw, 22px)/1.2 var(--ck-text) !important; color: var(--ck-navy); }
+html.sb-skin-cookie #RegisterSinglePage .sb-ck .sb-ck-small,
+html.sb-skin-cookie #RegisterSinglePage .sb-ck .sb-ck-small a { font: 700 clamp(14.5px, 1.4vw, 16px)/1.3 var(--ck-text) !important; color: var(--ck-muted); margin-top: 2px; }
 html.sb-skin-cookie .sb-ck .sb-ck-big a { color: inherit !important; text-decoration: none !important; }
-html.sb-skin-cookie .sb-ck .sb-ck-row:last-child .sb-ck-big a,
 html.sb-skin-cookie .sb-ck .sb-ck-big a:hover,
 html.sb-skin-cookie .sb-ck .sb-ck-small a { color: var(--ck-blue) !important; text-decoration: none !important; }
 @media (max-width: 700px) {
   .sb-ck { border-radius: 18px; }
-  .sb-ck-head { padding-bottom: 60px; }
-  .sb-ck-headin { grid-template-columns: 1fr; }
-  .sb-ck-art { max-width: 340px; margin: 0 auto; }
-  .sb-ck-wave { height: 36px; }
-  .sb-ck-rows { padding: 4px 20px 26px; }
-  .sb-ck-row { gap: 16px; margin-bottom: 16px; }
-  .sb-ck-ico { width: 50px; height: 50px; border-radius: 13px; }
-  .sb-ck-ico svg { width: 24px; height: 24px; }
+  .sb-ck-head { padding-bottom: 40px; }
+  /* phone: art beside the title, small, instead of a full row under it */
+  .sb-ck-headin { grid-template-columns: minmax(0, 1fr) 34%; gap: 8px; }
+  .sb-ck-wave { height: 26px; }
+  html.sb-skin-cookie .sb-ck h1.sb-ck-title { font-size: clamp(28px, 8.4vw, 36px) !important; margin: 6px 0 8px !important; }
+  html.sb-skin-cookie #RegisterSinglePage .sb-ck .sb-ck-eyebrow { font-size: 11.5px !important; letter-spacing: .12em; }
+  html.sb-skin-cookie #RegisterSinglePage .sb-ck .sb-ck-sub { font-size: 14.5px !important; }
+  .sb-ck-rows { padding: 2px 18px 20px; gap: 12px; }
+  .sb-ck-ico { width: 44px; height: 44px; border-radius: 12px; }
+  .sb-ck-ico svg { width: 22px; height: 22px; }
 }
 /* reservation form below: Fredoka headings, Nunito text, blue buttons */
 html.sb-skin-cookie #RegisterSinglePage,

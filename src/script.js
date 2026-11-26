@@ -108,8 +108,7 @@
                    { icon: 'kid', big: 'For kids of all ages!', small: 'Under 4 must come with a parent' },
                    { icon: 'art', big: 'Crafts, snacks & more!' },
                    { icon: 'tag', big: '$10 per child', small: 'RSVP required' },
-                   { icon: 'link', big: 'Sign up below', href: '#RegisterBody',
-                     small: 'More info: Devory · <a href="tel:5636051996">563-605-1996</a>' }
+                   { icon: 'phone', big: 'More info: Devory', small: '<a href="tel:5636051996">563-605-1996</a>' }
                  ]
                } }
   };
@@ -1329,6 +1328,7 @@
     kid: '<circle cx="12" cy="5" r="2.5"/><path d="M12 8v7M7 10.5h10M12 15l-3.5 6M12 15l3.5 6"/>',
     art: '<path d="M12 3a9 9 0 1 0 0 18c1.4 0 2-1 2-2 0-1.3-1-1.7-1-3 0-1.1.9-2 2-2h2.2A3.8 3.8 0 0 0 21 10.2C21 6.2 17 3 12 3z"/><circle cx="7.5" cy="11" r="1.2"/><circle cx="10" cy="7" r="1.2"/><circle cx="15" cy="7" r="1.2"/>',
     tag: '<path d="M3 12V4a1 1 0 0 1 1-1h8l9 9-9 9-9-9z"/><circle cx="7.5" cy="7.5" r="1.5"/>',
+    phone: '<path d="M5 3h4l2 5-2.5 1.5a11 11 0 0 0 6 6L16 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 5a2 2 0 0 1 2-2z"/>',
     link: '<path d="M10 14a4.5 4.5 0 0 0 6.4 0l3.2-3.2a4.5 4.5 0 0 0-6.4-6.4L11.5 6"/><path d="M14 10a4.5 4.5 0 0 0-6.4 0l-3.2 3.2a4.5 4.5 0 0 0 6.4 6.4l1.7-1.6"/>'
   };
   function buildFlyerCookie() {
