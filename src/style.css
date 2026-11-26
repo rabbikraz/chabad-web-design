@@ -5918,7 +5918,7 @@ html.sb-skin-blush #Performances > :first-child {
    Fredoka display / Nunito text. buildFlyerCookie (site.js) builds .sb-ck;
    boot.js flags the class early (skin map in build.js). */
 html.sb-skin-cookie {
-  --ck-yellow: #EDC65D;   /* matches the cookie art's background */
+  --ck-yellow: #F3C445;   /* matches the cookie art's background */
   --ck-navy: #14193A;
   --ck-blue: #2D52AA;
   --ck-muted: #4A5068;

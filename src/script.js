@@ -100,7 +100,7 @@
                  eyebrow: 'Chabad in South Beach',
                  title: ['Chanukah', 'Cookie', 'Decorating'],
                  sub: 'with cookie artist Esty Mann',
-                 img: '/media/images/1398/noeD13980839.png', imgFallback: 'chanukah/cookies-v2.jpg', imgAlt: 'Iced menorah and dreidel cookies',
+                 img: 'chanukah/cookies-v3.jpg', imgAlt: 'Iced menorah and dreidel cookies',
                  rows: [
                    { icon: 'cal', big: 'Tuesday, Dec 1', small: '5:30 – 6:30 PM', link: 'ical' },
                    { icon: 'pin', big: '320 Meridian Ave', small: 'Miami Beach', link: 'map',
