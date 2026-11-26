@@ -2545,6 +2545,17 @@ body.cco_body form.sb-mf textarea.form-textarea {
   #RegisterSinglePage .reservation .g100 { flex: 0 1 auto; }
   #RegisterSinglePage .reservation .price-display { margin-left: auto; }
 }
+/* category / quantity / Continue are bare inline-blocks: when they wrap on
+   a phone the next row sits flush on the one above (Continue touched the
+   quantity box). Flex-wrap with a real gap, bottoms aligned. */
+#RegisterSinglePage .toggle_options {
+  display: flex !important;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 14px 16px;
+}
+#RegisterSinglePage .toggle_options > .inline_block { margin: 0 !important; }
+#RegisterSinglePage .toggle_options > .float_right { margin-left: auto; float: none; }
 /* the category picker labels ("Select a category" / "Reservations") */
 #RegisterSinglePage .toggle_options .inline_block > div:first-child {
   font-size: 12px;
